@@ -6,7 +6,7 @@ import authReducer from "./auth/authSlice";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["verifyOtp"],
+  whitelist: ["otp","user"],
 };
 
 const persistedReducer = persistReducer(persistConfig, authReducer);

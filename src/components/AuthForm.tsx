@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   TextField,
   IconButton,
@@ -8,14 +7,24 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { SignState } from "../types/authTypes";
-import useAuthForm from "../hooks/useAuthForm";
 import GoogleAuth from "./GoogleAuth";
+import { Link } from 'react-router-dom';
 
-const AuthForm: React.FC = () => {
-  const [signState, setSignState] = useState<SignState>("sign in");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const formik = useAuthForm(signState);
+interface AuthFormProps {
+  signState: SignState;
+  setSignState: React.Dispatch<React.SetStateAction<SignState>>;
+  showPassword: boolean;
+  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  formik: any;
+}
 
+const AuthForm: React.FC<AuthFormProps> = ({
+  signState,
+  setSignState,
+  showPassword,
+  setShowPassword,
+  formik,
+}) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-lg w-full p-6 bg-white border border-gray-300 rounded-md shadow-lg">
@@ -135,9 +144,12 @@ const AuthForm: React.FC = () => {
             <>
               <div className="flex items-center justify-between mb-4">
                 <FormControlLabel control={<Checkbox />} label="Remember Me" />
-                <span className="text-blue-600 cursor-pointer">
+                <Link 
+                  to="/auth/forgot-password"
+                  className="text-blue-600 cursor-pointer"
+                >
                   Forgot Password?
-                </span>
+                </Link>
               </div>
             </>
           )}

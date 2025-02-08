@@ -1,13 +1,13 @@
 import { useFormik } from "formik";
-import { validationSchema } from "../utils/validationSchema";
+import { AuthFormValidationSchema } from "../utils/validationSchema";
 import { UserAuthFormData, SignState } from "../types/authTypes";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, NavigateFunction } from "react-router-dom";
-import { signUpUser } from "../redux/auth/authThunk";
+import { signinUser, signUpUser } from "../redux/auth/authThunk";
 import { showSuccessToast, showErrorToast } from "../utils/toast";
 import { AppDispatch } from "../redux/store";
-import { setOtp } from "../redux/auth/authSlice";
+import { setOtp, setUser } from "../redux/auth/authSlice";
 
 const useAuthForm = (formState: SignState) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,7 +21,7 @@ const useAuthForm = (formState: SignState) => {
       password: "",
       cPassword: "",
     },
-    validationSchema: validationSchema(formState),
+    validationSchema: AuthFormValidationSchema(formState),
     onSubmit: async (values: UserAuthFormData) => {
       console.log("Form submitted", values);
 
@@ -37,11 +37,22 @@ const useAuthForm = (formState: SignState) => {
           }
           dispatch(setOtp(otpData));
           showSuccessToast(response.message);
-          formik.setErrors({})
-          navigate("/verifyOtp")
+          formik.resetForm()
+          navigate("/auth/verifyOtp")
         } else {
-
-
+          const {email,password} = values
+          const response = await dispatch(signinUser({email:email,password:password})).unwrap()
+          console.log("response from signin",response)
+          dispatch(setUser(response.data))
+          showSuccessToast(`${response.message} Welcome back ${response.data.fname}`);
+          formik.resetForm()
+          if (response.data.role === "user") {
+            navigate("/"); 
+          } else if (response.data.role === "trainer") {
+            navigate("/trainer/dashboard"); 
+          } else {
+            navigate("/admin/dashboard"); 
+          }
         } 
       } catch (error:any) {
         console.log(`API Error ${error}`)

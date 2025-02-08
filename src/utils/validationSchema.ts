@@ -6,8 +6,8 @@ const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const nameRegex = /^[A-Za-z\s]+$/;
 
-export const validationSchema = (formState: SignState) => {
- return Yup.object({
+export const AuthFormValidationSchema = (formState: SignState) => {
+  return Yup.object({
     fname:
       formState === "sign up"
         ? Yup.string()
@@ -35,8 +35,27 @@ export const validationSchema = (formState: SignState) => {
     cPassword:
       formState === "sign up"
         ? Yup.string()
-            .oneOf([Yup.ref("password"),""], "*Passwords must match")
+            .oneOf([Yup.ref("password"), ""], "*Passwords must match")
             .required("*Confirm password is required")
         : Yup.string(),
   });
 };
+
+export const emailValidationSchema = Yup.object({
+  email: Yup.string()
+    .matches(emailRegex, "*Invalid email format")
+    .required("*Email is required"),
+});
+
+export const passwordValidationSchema = Yup.object({
+  password: Yup.string()
+    .matches(
+      passwordRegex,
+      "*Password must contain at least 8 characters, including one uppercase, one lowercase, one number, and one special character"
+    )
+    .required("*Password is required"),
+
+  cPassword: Yup.string()
+    .oneOf([Yup.ref("password"), ""], "*Passwords must match")
+    .required("*Confirm password is required"),
+});

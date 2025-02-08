@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthUser, Otp } from "./authTypes";
-import { signUpUser } from "./authThunk";
+import { resendOtp, signUpUser, verifyOtp, signinUser, forgotPassLink, forgotPassword } from "./authThunk";
 
 const initialState: AuthUser = {
-  Otp: null,
+  otp: null,
   user: null,
   isLoading: false,
   error: null,
@@ -14,20 +14,21 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setOtp: (state, action: PayloadAction<Otp>) => {
-      state.Otp = action.payload;
-      console.log(state.Otp)
+      state.otp = action.payload;
+      console.log(state.otp);
     },
     updateOtpCountDown: (state, action: PayloadAction<number>) => {
-      if (state.Otp) {
-        state.Otp.otpCountDown = action.payload;
+      if (state.otp) {
+        state.otp.otpCountDown = action.payload;
       }
     },
-    clearOtp: (state) => {
-      state.Otp = null;
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
+      //handle signup user
       .addCase(signUpUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -40,9 +41,85 @@ const authSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to create user";
-      });
+      })
+      //handle resendOtp
+      .addCase(resendOtp.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(resendOtp.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(resendOtp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to resend otp";
+      })
+      //handle verifyOtp
+      .addCase(verifyOtp.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(verifyOtp.fulfilled, (state) => {
+        state.isLoading = true;
+        state.otp = null;
+        state.error = null;
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to verify otp";
+      })
+      //handle signin user
+      .addCase(signinUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(signinUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(signinUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to signin user";
+      })
+      //handle forgotPassword
+      .addCase(forgotPassLink.pending,(state) => {
+        state.isLoading = true
+      })
+      .addCase(forgotPassLink.fulfilled,(state) => {
+        state.isLoading = false
+        state.error = null
+      })
+      .addCase(forgotPassLink.rejected,(state,action)=>{
+        state.isLoading = false
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to send link";
+      })
+      //handle resetPassword
+      .addCase(forgotPassword.pending,(state) => {
+        state.isLoading = true
+      })
+      .addCase(forgotPassword.fulfilled,(state) => {
+        state.isLoading = false
+        state.error = null
+      })
+      .addCase(forgotPassword.rejected,(state,action)=>{
+        state.isLoading = false
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to reset password ";
+      })
   },
 });
 
-export const { setOtp, clearOtp,updateOtpCountDown } = authSlice.actions;
+export const { setOtp, updateOtpCountDown,setUser } = authSlice.actions;
 export default authSlice.reducer;
