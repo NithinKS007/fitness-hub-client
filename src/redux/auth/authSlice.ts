@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthUser, Otp } from "./authTypes";
-import { resendOtp, signUpUser, verifyOtp, signinUser, forgotPassLink, forgotPassword } from "./authThunk";
+import { resendOtp, signUpUser, verifyOtp, signinUser, forgotPassLink, forgotPassword, googleAuth } from "./authThunk";
 
 const initialState: AuthUser = {
   otp: null,
@@ -118,6 +118,23 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to reset password ";
       })
+      //handle google authentication
+      .addCase(googleAuth.pending,(state) => {
+        state.isLoading = true
+      })
+      .addCase(googleAuth.fulfilled,(state)=>{
+        state.isLoading = false
+        state.error = null
+      })
+      .addCase(googleAuth.rejected,(state,action)=>{
+        state.isLoading = false
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to verify google user ";
+      })
+      
+
   },
 });
 

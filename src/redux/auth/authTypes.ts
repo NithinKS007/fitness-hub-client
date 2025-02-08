@@ -42,3 +42,7 @@ export interface RequestPasswordChange {
   token:string
   password: string;
 }
+
+export interface RequestGoogleAuth{
+  token:string
+}

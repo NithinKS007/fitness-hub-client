@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { User, ResendOtpRequest, verifyOtpRequest,RequestSignin,RequestGenLink, RequestPasswordChange } from "./authTypes";
+import { User, ResendOtpRequest, verifyOtpRequest,RequestSignin,RequestGenLink, RequestPasswordChange,RequestGoogleAuth } from "./authTypes";
 
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
@@ -98,9 +98,26 @@ export const forgotPassword = createAsyncThunk(
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
-        return rejectWithValue("Failed to generate link");
+        return rejectWithValue("Failed to reset forgotpassword");
       }
     }
   }
 );
+
+export const googleAuth = createAsyncThunk(
+  "auth/googleAuth",
+  async({token}:RequestGoogleAuth,{rejectWithValue}) => {
+    try {
+      const response = await axiosInstance.post(`auth/google/`, { token });
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to verify google user");
+      }
+    }
+  }
+)
 

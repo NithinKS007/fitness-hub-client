@@ -9,13 +9,15 @@ import DBPageTrainer from "./pages/trainer/DBPageTrainer";
 import DBPageUser from "./pages/user/DBPageUser";
 import ForgotPassPage from "./pages/ForgotPassPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   return (
     <Routes>
       {/*commonRoutes*/}
+      <Route path="/" element={<HomePage/>}/>
       <Route path="/auth" element={<AuthPage />} />
-      <Route path="/auth/verifyOtp" element={<OtpPage />} />
+      <Route path="/auth/verify-otp" element={<OtpPage />} />
       <Route path="/auth/forgot-password" element={<ForgotPassPage/>} />
       <Route path="/auth/reset-password/:token" element={<ResetPasswordPage/>}/>
 

@@ -38,7 +38,7 @@ const useAuthForm = (formState: SignState) => {
           dispatch(setOtp(otpData));
           showSuccessToast(response.message);
           formik.resetForm()
-          navigate("/auth/verifyOtp")
+          navigate("/auth/verify-otp")
         } else {
           const {email,password} = values
           const response = await dispatch(signinUser({email:email,password:password})).unwrap()

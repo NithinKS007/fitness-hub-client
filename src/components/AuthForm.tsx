@@ -16,6 +16,7 @@ interface AuthFormProps {
   showPassword: boolean;
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
   formik: any;
+  handleGoogleAuthSuccess: (res: any) => void;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({
@@ -24,6 +25,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   showPassword,
   setShowPassword,
   formik,
+  handleGoogleAuthSuccess,
 }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -153,7 +155,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
               </div>
             </>
           )}
-          <GoogleAuth />
+          <GoogleAuth handleGoogleAuthSuccess={handleGoogleAuthSuccess} />
           <button
             type="submit"
             className="w-full py-2 mt-4 bg-blue-700 text-white rounded-md"
