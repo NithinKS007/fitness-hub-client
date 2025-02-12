@@ -1,9 +1,11 @@
 import React from 'react'
+import AppAppBar from '../components/TopNavBar'
 
-const HomePage:React.FC = () => {
+
+const HomePage: React.FC = () => {
   return (
-    <div>
-      Welcome home 
+    <div className="flex flex-col min-h-screen">
+      <AppAppBar />
     </div>
   )
 }

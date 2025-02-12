@@ -10,6 +10,7 @@ const useGoogleAuth = () => {
   const navigate: NavigateFunction = useNavigate();
 
   const handleGoogleAuthSuccess = async (res: any) => {
+    
     try {
       const response = await dispatch(googleAuth({ token: res.credential })).unwrap()
       console.log("response from the backend for google login", response);

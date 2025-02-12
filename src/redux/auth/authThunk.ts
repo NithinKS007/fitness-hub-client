@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { User, ResendOtpRequest, verifyOtpRequest,RequestSignin,RequestGenLink, RequestPasswordChange,RequestGoogleAuth } from "./authTypes";
+import { User, ResendOtpRequest, verifyOtpRequest,RequestSignin,RequestGenLink, RequestPasswordChange,RequestGoogleAuth, Trainer } from "./authTypes";
 
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
@@ -120,4 +120,22 @@ export const googleAuth = createAsyncThunk(
     }
   }
 )
+
+export const trainerEntroll = createAsyncThunk(
+  "auth/trainerEntroll",
+  async (trainerData : Trainer, { rejectWithValue }) => {
+    console.log(trainerData, "for send");
+    try {
+      const response = await axiosInstance.post(`auth/trainer-entroll/`, trainerData);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to create trainer");
+      }
+    }
+  }
+);
 

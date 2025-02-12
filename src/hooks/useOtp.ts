@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { setOtp, updateOtpCountDown } from "../redux/auth/authSlice";
+import { clearOtpDetails, setOtp, updateOtpCountDown } from "../redux/auth/authSlice";
 import { resendOtp, verifyOtp } from "../redux/auth/authThunk";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,11 @@ const useOtp = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+
+
+    const otpTimeout = setTimeout(() => {
+      dispatch(clearOtpDetails()); 
+    }, 300000); 
     const timer = setInterval(() => {
       if (!otp) return;
 
@@ -23,13 +28,17 @@ const useOtp = () => {
 
       if (remainingSeconds <= 0) {
         setIsTimerExpired(true);
-        clearInterval(timer);
+        clearInterval(timer)
+        dispatch(clearOtpDetails());
       } else {
         setIsTimerExpired(false);
         dispatch(updateOtpCountDown(remainingSeconds));
       }
     }, 1000);
-    return () => clearInterval(timer);
+    return () => {
+      clearTimeout(otpTimeout); 
+      clearInterval(timer); 
+    };
   }, [dispatch, otp?.otpExpireTime]);
 
   const handleResendOtp = async (event: React.FormEvent) => {

@@ -3,6 +3,9 @@ export interface UserAuthFormData {
   lname: string;
   email: string;
   password: string;
-  cPassword:string
+  cPassword: string;
+  phone?: string;
+  dateOfBirth?: string | Date;
+  yearsOfExperience?: string;
 }
 export type SignState = "sign in" | "sign up";

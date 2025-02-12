@@ -1,12 +1,30 @@
 export type Role = "user" | "admin" | "trainer";
 
 export interface User {
+  _id?: string 
   fname: string;
   lname: string;
   email: string;
   password: string;
   role?: Role;
+  isBlocked?: boolean;
+  otpVerified?: boolean;
+  googleVerified?: boolean;
+  phone?: string;
+  profilePic?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+export interface Trainer extends User {
+  trainerData?: {
+    yearsOfExperience?: string;
+    specializations?: string[];
+    certifications?: string[];
+    isApproved?: boolean;
+  };
+}
+
 export interface Otp {
   otpEmail: string;
   otpCountDown: number;
@@ -39,10 +57,11 @@ export interface RequestGenLink {
 }
 
 export interface RequestPasswordChange {
-  token:string
+  token: string;
   password: string;
 }
 
-export interface RequestGoogleAuth{
-  token:string
+export interface RequestGoogleAuth {
+  token: string;
 }
+

@@ -1,6 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthUser, Otp } from "./authTypes";
-import { resendOtp, signUpUser, verifyOtp, signinUser, forgotPassLink, forgotPassword, googleAuth } from "./authThunk";
+import {
+  resendOtp,
+  signUpUser,
+  verifyOtp,
+  signinUser,
+  forgotPassLink,
+  forgotPassword,
+  googleAuth,
+  trainerEntroll,
+} from "./authThunk";
 
 const initialState: AuthUser = {
   otp: null,
@@ -14,16 +23,22 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setOtp: (state, action: PayloadAction<Otp>) => {
+
+      console.log("otp",action.payload)
       state.otp = action.payload;
-      console.log(state.otp);
     },
     updateOtpCountDown: (state, action: PayloadAction<number>) => {
+      console.log("count",action.payload)
       if (state.otp) {
-        state.otp.otpCountDown = action.payload;
+        state.otp.otpCountDown = action.payload
       }
     },
     setUser: (state, action) => {
+      console.log("user",action.payload)
       state.user = action.payload;
+    },
+    clearOtpDetails: (state) => {
+      state.otp = null;
     },
   },
   extraReducers: (builder) => {
@@ -89,54 +104,65 @@ const authSlice = createSlice({
             : "Failed to signin user";
       })
       //handle forgotPassword
-      .addCase(forgotPassLink.pending,(state) => {
-        state.isLoading = true
+      .addCase(forgotPassLink.pending, (state) => {
+        state.isLoading = true;
       })
-      .addCase(forgotPassLink.fulfilled,(state) => {
-        state.isLoading = false
-        state.error = null
+      .addCase(forgotPassLink.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
       })
-      .addCase(forgotPassLink.rejected,(state,action)=>{
-        state.isLoading = false
+      .addCase(forgotPassLink.rejected, (state, action) => {
+        state.isLoading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
             : "Failed to send link";
       })
       //handle resetPassword
-      .addCase(forgotPassword.pending,(state) => {
-        state.isLoading = true
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
       })
-      .addCase(forgotPassword.fulfilled,(state) => {
-        state.isLoading = false
-        state.error = null
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
       })
-      .addCase(forgotPassword.rejected,(state,action)=>{
-        state.isLoading = false
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
             : "Failed to reset password ";
       })
       //handle google authentication
-      .addCase(googleAuth.pending,(state) => {
-        state.isLoading = true
+      .addCase(googleAuth.pending, (state) => {
+        state.isLoading = true;
       })
-      .addCase(googleAuth.fulfilled,(state)=>{
-        state.isLoading = false
-        state.error = null
+      .addCase(googleAuth.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
       })
-      .addCase(googleAuth.rejected,(state,action)=>{
-        state.isLoading = false
+      .addCase(googleAuth.rejected, (state, action) => {
+        state.isLoading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
             : "Failed to verify google user ";
       })
-      
-
+      .addCase(trainerEntroll.pending,(state) => {
+        state.isLoading = true
+      })
+      .addCase(trainerEntroll.fulfilled,(state)=>{
+        (state.isLoading = false), (state.error = null);
+      })
+      .addCase(trainerEntroll.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to create trainer";
+      })
   },
 });
 
-export const { setOtp, updateOtpCountDown,setUser } = authSlice.actions;
+export const { setOtp, updateOtpCountDown, setUser, clearOtpDetails } = authSlice.actions;
 export default authSlice.reducer;

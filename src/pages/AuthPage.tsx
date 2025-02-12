@@ -7,7 +7,8 @@ import useGoogleAuth from "../hooks/useGoogleAuth";
 const AuthPage: React.FC = () => {
   const [signState, setSignState] = useState<SignState>("sign in");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const formik = useAuthForm(signState);
+  const { handleUserAuth } = useAuthForm(signState)
+  
   const {handleGoogleAuthSuccess} = useGoogleAuth()
 
   return (
@@ -16,7 +17,7 @@ const AuthPage: React.FC = () => {
       setSignState={setSignState}
       showPassword={showPassword}
       setShowPassword={setShowPassword}
-      formik={formik}
+      formik={handleUserAuth}
       handleGoogleAuthSuccess ={handleGoogleAuthSuccess}
     />
   );
