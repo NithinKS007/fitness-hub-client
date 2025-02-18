@@ -1,11 +1,14 @@
-import { Trainer, User } from "../auth/authTypes";
+import { User } from "../auth/authTypes";
 
 export interface AdminState {
   users: User[];
-  trainers: Trainer[];
+  trainers: User[];
   isLoading: boolean;
   error: string | null;
+  userDetails:User |{};
 }
+
+
 
 export interface updateBlockStatus {
   _id: string;

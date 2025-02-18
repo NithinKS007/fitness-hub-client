@@ -6,7 +6,6 @@ import ProtectedAdmin from "./components/ProtectedAdmin";
 import ProtectedTrainer from "./components/ProtectedTrainer";
 import DBPageAdmin from "./pages/admin/DBPageAdmin";
 import DBPageTrainer from "./pages/trainer/DBPageTrainer";
-import DBPageUser from "./pages/user/DBPageUser";
 import ForgotPassPage from "./pages/ForgotPassPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import HomePage from "./pages/HomePage";
@@ -15,24 +14,36 @@ import UsersListPage from "./pages/admin/UsersListPage";
 import TrainerEntrollmentPage from "./pages/trainer/TrainerEntrollmentPage";
 import TrainerListPage from "./pages/admin/TrainerListPage";
 import InboxPage from "./pages/admin/InboxPage";
+import TrainerLayout from "./layouts/TrainerLayout";
+import ClientsListPage from "./pages/trainer/ClientsListPage";
+import ChatPage from "./pages/trainer/ChatPage";
+import SessionSchedulesPage from "./pages/trainer/SessionSchedulesPage";
+import TrainerProfilePage from "./pages/trainer/ProfilePage";
+import TrainerDetailsPage from "./pages/admin/TrainerDetailsPage";
+import UserDetailsPage from "./pages/admin/UserDetailsPage";
+import PageNotFound from "./pages/PageNotFound";
+import ULProfile from "./layouts/ULProfile";
+import UserProfilePage from "./pages/user/UserProfilePage";
+import DBPageUser from "./pages/user/DBPageUser";
 
 const App = () => {
   return (
     <Routes>
       {/*commonRoutes*/}
       <Route path="/" element={<HomePage />} />
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/auth/verify-otp" element={<OtpPage />} />
-      <Route path="/auth/forgot-password" element={<ForgotPassPage />} />
-      <Route
-        path="/auth/reset-password/:token"
-        element={<ResetPasswordPage />}
-      />
-      <Route path="/trainer-entrollment" element={<TrainerEntrollmentPage/>}/>
+      <Route path="/sign-in" element={<AuthPage />} />
+      <Route path="/verify-otp" element={<OtpPage />} />
+      <Route path="/forgot-password" element={<ForgotPassPage />} />
+      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+      <Route path="/trainer-entrollment" element={<TrainerEntrollmentPage />} />
+      <Route path="*" element={<PageNotFound />} />
 
       {/*userRoutes*/}
       <Route element={<ProtectedUser />}>
-        <Route path="/user/dashboard" element={<DBPageUser />} />
+        <Route element={<ULProfile />}>
+          <Route path="/user/profile" element={<UserProfilePage />} />
+          <Route path="/user/dashboard" element={<DBPageUser />} />
+        </Route>
       </Route>
 
       {/*adminRoutes*/}
@@ -42,12 +53,29 @@ const App = () => {
           <Route path="/admin/users" element={<UsersListPage />} />
           <Route path="/admin/trainers" element={<TrainerListPage />} />
           <Route path="/admin/inbox" element={<InboxPage />} />
+          <Route
+            path="/admin/trainer-details/:_id"
+            element={<TrainerDetailsPage />}
+          />
+          <Route
+            path="/admin/user-details/:_id"
+            element={<UserDetailsPage />}
+          />
         </Route>
       </Route>
 
       {/*trainerRoutes*/}
       <Route element={<ProtectedTrainer />}>
-        <Route path="/trainer/dashboard" element={<DBPageTrainer />} />
+        <Route element={<TrainerLayout />}>
+          <Route path="/trainer/dashboard" element={<DBPageTrainer />} />
+          <Route path="/trainer/clients" element={<ClientsListPage />} />
+          <Route path="/trainer/chat" element={<ChatPage />} />
+          <Route
+            path="/trainer/session-schedules"
+            element={<SessionSchedulesPage />}
+          />
+          <Route path="/trainer/profile" element={<TrainerProfilePage />} />
+        </Route>
       </Route>
     </Routes>
   );

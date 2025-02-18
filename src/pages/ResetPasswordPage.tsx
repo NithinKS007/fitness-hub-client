@@ -14,7 +14,6 @@ const ResetPasswordPage: React.FC = () => {
     if(!token){
         return
     }
-
     const formik = useFormik({
         initialValues:{
             password:"",
@@ -25,7 +24,6 @@ const ResetPasswordPage: React.FC = () => {
             try {
                 const {password} = values
                 const response = await dispatch(forgotPassword({password,token})).unwrap()
-                console.log("response for resetting password",response)
                 showSuccessToast(`${response.message}`)
                 formik.resetForm()
             } catch (error) {

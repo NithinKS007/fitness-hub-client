@@ -10,24 +10,32 @@ const useGoogleAuth = () => {
   const navigate: NavigateFunction = useNavigate();
 
   const handleGoogleAuthSuccess = async (res: any) => {
-    
     try {
-      const response = await dispatch(googleAuth({ token: res.credential })).unwrap()
-      console.log("response from the backend for google login", response);
-      dispatch(setUser(response.data))
-      showSuccessToast(`${response.message} Welcome back ${response.data.fname}`)
-      if (response.data.role === "user") {
-        navigate("/"); 
-      } else if (response.data.role === "trainer") {
-        navigate("/trainer/dashboard"); 
-      } else {
-        navigate("/admin/dashboard"); 
+      const response = await dispatch(
+        googleAuth({ token: res.credential })
+      ).unwrap();
+      dispatch(setUser(response.data));
+      showSuccessToast(
+        `${response.message} Welcome back ${response.data.fname}`
+      );
+
+      switch (response.data.role) {
+        case "user":
+          navigate("/user/dashboard");
+          break;
+        case "trainer":
+          navigate("/trainer/dashboard");
+          break;
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        default:
+          break;
       }
-    } catch (error:any) {
-      console.log(`API Error ${error}`)
-      showErrorToast(`${error}`)
+    } catch (error: any) {
+      console.log(`API Error ${error}`);
+      showErrorToast(`${error}`);
     }
-  
   };
 
   return { handleGoogleAuthSuccess };

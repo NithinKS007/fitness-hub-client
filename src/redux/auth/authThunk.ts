@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { User, ResendOtpRequest, verifyOtpRequest,RequestSignin,RequestGenLink, RequestPasswordChange,RequestGoogleAuth, Trainer } from "./authTypes";
+import { User, ResendOtpRequest, verifyOtpRequest,RequestSignin,RequestGenLink, RequestPasswordChange,RequestGoogleAuth, SignupUser, SignupTrainer } from "./authTypes";
 
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
-  async ({ userData }: { userData: User }, { rejectWithValue }) => {
+  async ({ userData }: { userData: SignupUser }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("auth/sign-up", userData);
       return response.data;
@@ -123,7 +123,7 @@ export const googleAuth = createAsyncThunk(
 
 export const trainerEntroll = createAsyncThunk(
   "auth/trainerEntroll",
-  async (trainerData : Trainer, { rejectWithValue }) => {
+  async (trainerData : SignupTrainer, { rejectWithValue }) => {
     console.log(trainerData, "for send");
     try {
       const response = await axiosInstance.post(`auth/trainer-entroll/`, trainerData);
@@ -139,3 +139,36 @@ export const trainerEntroll = createAsyncThunk(
   }
 );
 
+export const updateUserProfile = createAsyncThunk(
+  "auth/updateUserProfile",
+  async ({ userData }: { userData: User }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(`auth/update-profile/`, userData);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to update user profile ");
+      }
+    }
+  }
+)
+
+export const signOutUser =  createAsyncThunk(
+  "auth/signOutUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`auth/sign-out/`);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to signout");
+      }
+    }
+  }
+)

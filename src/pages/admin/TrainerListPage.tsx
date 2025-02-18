@@ -4,20 +4,13 @@ import { useDispatch } from "react-redux";
 import { getUsers } from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
 import { AppDispatch } from "../../redux/store";
-import { Trainer } from "../../redux/auth/authTypes";
+import { User } from "../../redux/auth/authTypes";
 import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import Button from "@mui/material/Button";
-import TableCell from "@mui/material/TableCell";
-
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import VerifiedIcon from '@mui/icons-material/Verified';
-
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useNavigate } from "react-router-dom";
 
 interface TableColumn {
   label: string;
@@ -67,6 +60,7 @@ const direction: DirectionOption[] = [{ value: "A to Z" }, { value: "Z to A" }];
 const TrainerListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { trainers, loading, error } = useSelector((state: any) => state.admin);
+  const navigate = useNavigate();
 
   const handleUpdateBlockStatus = useUpdateBlockStatus();
 
@@ -78,12 +72,16 @@ const TrainerListPage: React.FC = () => {
     fetchTrainers();
   }, [dispatch]);
 
+  const handleTrainerDetails = (_id: string) => {
+    navigate(`/admin/trainer-details/${_id}`);
+  };
+
   if (loading) return <ShimmerTableLoader columns={columns} />;
   if (error) return <div>{error}</div>;
 
   const fetchedTrainersData =
     trainers.length > 0
-      ? trainers.map((trainer: Trainer, index: number) => {
+      ? trainers.map((trainer: User, index: number) => {
           const dateObj = new Date(trainer.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
@@ -95,11 +93,12 @@ const TrainerListPage: React.FC = () => {
             verified: trainer.otpVerified || trainer.googleVerified,
             isApproved: trainer?.trainerData?.isApproved,
             details: (
-              <div>
-                <TableCell sx={{ padding: "4px" }}>
-                  <Button variant="outlined">More</Button>
-                </TableCell>
-              </div>
+              <Button
+                onClick={() => handleTrainerDetails(trainer?._id as string)}
+                variant="outlined"
+              >
+                More
+              </Button>
             ),
           };
         })

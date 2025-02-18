@@ -1,13 +1,12 @@
-import React from 'react'
-import AppAppBar from '../components/TopNavBar'
-
+import React from "react";
+import UserLayouts from "../layouts/ULwithNavFooter";
 
 const HomePage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      <AppAppBar />
+      <UserLayouts><div className=" min-h-screen">Home page for user</div></UserLayouts>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

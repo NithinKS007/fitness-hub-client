@@ -1,39 +1,63 @@
 import React, { useState } from "react";
 import SideNavBar from "../components/SideNavBar/SideNavBar";
 import { Outlet, useLocation } from "react-router-dom";
-import { Dashboard, People, Mail } from "@mui/icons-material";
-import { SiTrainerroad } from "react-icons/si";
 import { useTheme } from "@mui/material/styles";
-// import Breadcrumb from "../components/BrudCrumb";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import Dashboard from "@mui/icons-material/Dashboard";
+import Chat from "@mui/icons-material/Chat";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 import useSignOut from "../hooks/useSignOut";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
+import BookingIcon from "@mui/icons-material/Bookmark"; 
 
-const AdminLayout: React.FC = () => {
+const ULProfile: React.FC = () => {
   const [open, setOpen] = useState(false);
-
-  const handleSignout = useSignOut()
-  const adminNavItems = [
-    { icon: <Dashboard />, text: "DASHBOARD", path: "/admin/dashboard" },
-    { icon: <People />, text: "USERS", path: "/admin/users" },
+  const handleSignout = useSignOut();
+  const userNavItems = [
     {
-      icon: <SiTrainerroad size={24} />,
-      text: "TRAINERS",
-      path: "/admin/trainers",
+      icon: <Dashboard />,
+      text: "DASHBOARD",
+      path: "/user/dashboard",
     },
-    { icon: <Mail />, text: "INBOX", path: "/admin/inbox" },
+    {
+        icon: <SubscriptionsIcon />,
+      text: "SUBSCRIPTIONS",
+      path: "/user/subscriptions",
+    },
+    {
+        icon: <BookingIcon />,
+      text: "BOOKINGS",
+      path: "/user/bookings",
+    },
+    {
+      icon: <Chat />,
+      text: "CHAT",
+      path: "/user/chats",
+    },
+    {
+      icon: <AccountBalanceWalletIcon />,
+      text: "WALLET",
+      path: "/user/wallet",
+    },
+    {
+      icon: <AccountCircle />,
+      text: "PROFILE",
+      path: "/user/profile",
+    },
   ];
 
   const navItemsFooter = [
     {
       icon: <SettingsApplicationsIcon />,
       text: "Settings",
-      path: "/admin/settings",
+      path: "/user/settings",
     },
     {
       icon: <ExitToAppIcon />,
       text: "Signout",
-      path: "/signout",
+      path: "",
     },
   ];
   const handleDrawerToggle = () => {
@@ -54,7 +78,7 @@ const AdminLayout: React.FC = () => {
   return (
     <div style={{ display: "flex", height: "100%" }}>
       <SideNavBar
-        navItems={adminNavItems}
+        navItems={userNavItems}
         navItemsFooter={navItemsFooter}
         open={open}
         onDrawerToggle={handleDrawerToggle}
@@ -72,15 +96,12 @@ const AdminLayout: React.FC = () => {
           paddingRight:"20px",
           paddingTop: "5%",
         }}
-        className="bg-gray-50 min-h-screen"
+        className="bg-gray-100  min-h-screen"
       >
-        {/* <div className="mb-5">
-          <Breadcrumb pathname={location.pathname} />
-        </div> */}
         <Outlet />
       </main>
     </div>
   );
 };
 
-export default AdminLayout;
+export default ULProfile;

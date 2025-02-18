@@ -49,8 +49,10 @@ const SideNavBarFooter: React.FC<SideNavBarFooterProps> = ({
                   mx: 2,
                   justifyContent: open ? "initial" : "center",
                   backgroundColor: isActive ? drawerBgColor : "transparent",
+                  borderRadius: isActive ? "5px" : "0",  
                   "&:hover": {
                     backgroundColor: !isActive ? hoverBgColor : drawerBgColor,
+                    borderRadius: "5px", 
                   },
                 }}
                 component={item.path === "/settings" ? "button" : "div"}
@@ -66,7 +68,7 @@ const SideNavBarFooter: React.FC<SideNavBarFooterProps> = ({
                     color: isActive ? activeTextColor : iconColor,
                   }}
                 >
-                  {item.icon}
+                {React.cloneElement(item.icon, { sx: { fontSize: "2rem" } })}
                 </ListItemIcon>
                 <ListItemText
                   primary={item.text}

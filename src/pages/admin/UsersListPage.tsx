@@ -10,15 +10,7 @@ import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import Button from "@mui/material/Button";
-import TableCell from "@mui/material/TableCell";
-
-
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import VerifiedIcon from '@mui/icons-material/Verified';
-
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useNavigate } from "react-router-dom";
 
 interface TableColumn {
   label: string;
@@ -71,9 +63,15 @@ const UsersListPage: React.FC = () => {
     await dispatch(getUsers("user"));
   };
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     fetchUsers();
   }, [dispatch]);
+
+  const handleUserDetails = (_id: string) => {
+    navigate(`/admin/user-details/${_id}`);
+  };
 
   if (loading) return <ShimmerTableLoader columns={columns} />;
   if (error) return <div>{error}</div>;
@@ -90,13 +88,7 @@ const UsersListPage: React.FC = () => {
             slno: index + 1,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: user.otpVerified || user.googleVerified,
-            details: (
-              <div>
-                <TableCell sx={{ padding: "4px" }}>
-                  <Button variant="outlined">More</Button>
-                </TableCell>
-              </div>
-            ),
+            details: <Button  onClick={() => handleUserDetails(user?._id as string)} variant="outlined">More</Button>,
           };
         })
       : [];

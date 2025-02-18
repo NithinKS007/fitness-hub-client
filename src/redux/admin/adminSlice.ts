@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AdminState } from "./adminTypes";
 import {
-  getTrainersApprovalRejectionList,
   getUsers,
+  updatedApprovalStatus,
   updateUserBlockStatus,
+  userDetails,
 } from "./adminThunk";
 
 const initialState: AdminState = {
@@ -11,6 +12,7 @@ const initialState: AdminState = {
   trainers: [],
   isLoading: false,
   error: null,
+  userDetails : {}
 };
 
 const adminSlice = createSlice({
@@ -65,21 +67,47 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to update block status";
       })
-      .addCase(getTrainersApprovalRejectionList.pending, (state) => {
+      .addCase(updatedApprovalStatus.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getTrainersApprovalRejectionList.fulfilled, (state, action) => {
+      .addCase(updatedApprovalStatus.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.trainers = action.payload.data;
-        state.error = null;
+        const { action:trainerAction } = action.meta.arg;
+        const updatedUser = action.payload.data;
+
+        if(trainerAction==="rejected"){
+           state.trainers = state.trainers.filter((trainer)=>trainer._id!==updatedUser._id)
+        } else {
+          state.trainers = state?.trainers?.map((trainer) =>
+            trainer._id === updatedUser._id ? updatedUser : trainer
+          );
+          state.error = null;
+        }
+        
       })
-      .addCase(getTrainersApprovalRejectionList.rejected, (state, action) => {
+      .addCase(updatedApprovalStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
-            : "Failed to fetch trainers approval list";
-      });
+            : "Failed to update trainer approval status";
+      })
+        //fetching user or trainers details
+        .addCase(userDetails.pending, (state) => {
+          state.isLoading = true;
+        })
+        .addCase(userDetails.fulfilled, (state,action) => {
+          state.isLoading = false;
+          state.userDetails = action.payload.data
+          state.error = null;
+        })
+        .addCase(userDetails.rejected, (state, action) => {
+          state.isLoading = false;
+          state.error =
+            typeof action.payload === "string"
+              ? action.payload
+              : "Failed to retrieve userDetails";
+        })
   },
 });
 

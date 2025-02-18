@@ -1,27 +1,15 @@
 import React, { useEffect } from "react";
 import ReuseTable from "../../components/ReuseTable";
 import { useDispatch } from "react-redux";
-import { getTrainersApprovalRejectionList, getUsers } from "../../redux/admin/adminThunk";
+import { getUsers, updatedApprovalStatus } from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
 import { AppDispatch } from "../../redux/store";
-import { Trainer } from "../../redux/auth/authTypes";
+import { User } from "../../redux/auth/authTypes";
 import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
-import Button from "@mui/material/Button"; // For the Approve and Reject buttons
-
-import CheckIcon from "@mui/icons-material/Check";
-import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from "@mui/material/IconButton";
-
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import VerifiedIcon from "@mui/icons-material/Verified";
-
-import HowToRegIcon from "@mui/icons-material/HowToReg";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { RequestTrainerVerification } from "../../redux/admin/adminTypes";
+import Button from "@mui/material/Button";
 
 interface TableColumn {
   label: string;
@@ -73,7 +61,7 @@ const InboxPage: React.FC = () => {
   const handleUpdateBlockStatus = useUpdateBlockStatus();
 
   const fetchTrainers = async () => {
-    await dispatch(getUsers("trainer"))
+    await dispatch(getUsers("trainer"));
   };
 
   useEffect(() => {
@@ -87,79 +75,85 @@ const InboxPage: React.FC = () => {
     return <div>Your inbox is empty</div>;
   }
 
-  const handleTrainerApproveOrReject = async (_id:string,action:string) => {
+  const handleTrainerApproveOrReject = async (_id: string, action: string) => {
+    console.log("id for approval", _id, action);
+    const response = await dispatch(updatedApprovalStatus({ _id, action }));
 
-    console.log("id for approval",_id,action)
-    //  await dispatch()
+    console.log("Response", response);
   };
-
-
-  console.log("b",trainers);
-  
 
   const fetchedTrainersData =
-  trainers.length > 0
-    ? trainers
-        .filter((trainer: Trainer) => {
-          return (
-            trainer?.role === "trainer" &&
-            trainer?.trainerData?.isApproved === false &&
-            (trainer?.otpVerified === true || trainer?.googleVerified === true)
-          );
-        })
-        .map((trainer: Trainer, index: number) => {
-          const dateObj = new Date(trainer.createdAt as string);
-          const formattedDate = dateObj.toLocaleDateString("en-GB");
-          const formattedTime = dateObj.toLocaleTimeString("en-GB");
+    trainers.length > 0
+      ? trainers
+          .filter((trainer: User) => {
+            return (
+              trainer?.role === "trainer" &&
+              trainer?.trainerData?.isApproved === false &&
+              (trainer?.otpVerified === true ||
+                trainer?.googleVerified === true)
+            );
+          })
+          .map((trainer: User, index: number) => {
+            const dateObj = new Date(trainer.createdAt as string);
+            const formattedDate = dateObj.toLocaleDateString("en-GB");
+            const formattedTime = dateObj.toLocaleTimeString("en-GB");
 
-          return {
-            ...trainer,
-            slno: index + 1,
-            createdAt: `${formattedDate} ${formattedTime}`,
-            verified: trainer.otpVerified || trainer.googleVerified,
-            isApproved: trainer.trainerData?.isApproved,
-            actions: (
-              <div>
-                <Button
-                  size="small"
-                  onClick={() => handleTrainerApproveOrReject(trainer?._id as string,"approved")}
-                  sx={{ fontSize: "14px", marginRight: "8px" }}
-                  variant="outlined"
-                >
-                  Approve
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => handleTrainerApproveOrReject(trainer?._id as string,"rejected")}
-                  sx={{ fontSize: "14px", color: "red", borderColor: "red" }}
-                  variant="outlined"
-                >
-                  Reject
-                </Button>
-              </div>
-            ),
-          };
-        })
-    : [];
-
-    console.log("f",fetchedTrainersData)
-    return (
-      <>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <SearchBarTable />
-          <Filter sort={sort} filter={filter} direction={direction} />
-        </div>
-        {fetchedTrainersData.length > 0 ? (
-          <ReuseTable
-            columns={columns}
-            data={fetchedTrainersData}
-            handleUpdateBlockStatus={handleUpdateBlockStatus}
-          />
-        ) : (
-          <div>Your inbox is empty</div>
-        )}
-      </>
-    );
-  };
+            return {
+              ...trainer,
+              slno: index + 1,
+              createdAt: `${formattedDate} ${formattedTime}`,
+              verified: trainer.otpVerified || trainer.googleVerified,
+              isApproved: trainer.trainerData?.isApproved,
+              actions: (
+                <>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      handleTrainerApproveOrReject(
+                        trainer?._id as string,
+                        "approved"
+                      )
+                    }
+                    sx={{ fontSize: "14px", marginRight: "8px" }}
+                    variant="outlined"
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      handleTrainerApproveOrReject(
+                        trainer?._id as string,
+                        "rejected"
+                      )
+                    }
+                    sx={{ fontSize: "14px", color: "red", borderColor: "red" }}
+                    variant="outlined"
+                  >
+                    Reject
+                  </Button>
+                </>
+              ),
+            };
+          })
+      : [];
+  return (
+    <>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <SearchBarTable />
+        <Filter sort={sort} filter={filter} direction={direction} />
+      </div>
+      {fetchedTrainersData.length > 0 ? (
+        <ReuseTable
+          columns={columns}
+          data={fetchedTrainersData}
+          handleUpdateBlockStatus={handleUpdateBlockStatus}
+        />
+      ) : (
+        <div>Your inbox is empty</div>
+      )}
+    </>
+  );
+};
 
 export default InboxPage;

@@ -34,8 +34,8 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
 }) => {
   const drawerBgColor = "#1e3a8a";
   const hoverBgColor = "rgba(0, 0, 0, 0.2)";
-  const iconColor = "black";
-  const textColor = "black";
+  const iconColor = "#616161";
+  const textColor = "#616161";
   const activeTextColor = "white";
 
   return (
@@ -52,10 +52,10 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
         variant="permanent"
         open={open}
         sx={{
-          width: open ? 240 : 70,
+          width: open ? 290 : 100,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: open ? 240 : 70,
+            width: open ? 290 : 100,
             visibility: open ? "visible" : "visible",
             transition: "width 0.3s, visibility 0s 0.3s",
             overflowX: "hidden",

@@ -8,6 +8,11 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AppBar } from "./sideNavBarStyles";
 import { Theme } from "@mui/material/styles";
+import AccountDropDown from "../AccountDropDown";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
+import useSignOut from "../../hooks/useSignOut";
 
 interface SideNavAppBarProps {
   onDrawerToggle: () => void;
@@ -23,6 +28,15 @@ const SideNavAppBar: React.FC<SideNavAppBarProps> = ({
   iconColor,
   onProfileClick,
 }) => {
+
+  const user = useSelector((state:RootState)=>state?.auth?.user)
+
+  const navigate = useNavigate()
+    const redirectToLogin = () => {
+     navigate("/sign-in");
+  };
+  const handleSignOut = useSignOut()
+
   return (
     <>
       <AppBar
@@ -56,11 +70,9 @@ const SideNavAppBar: React.FC<SideNavAppBarProps> = ({
           <Box sx={{ flexGrow: 1 }} />
 
           <IconButton color="inherit">
-            <NotificationsIcon sx={{ color: iconColor }} />
+            <NotificationsIcon sx={{ color: iconColor ,width:"35px" ,height:"35px"}} />
           </IconButton>
-          <IconButton color="inherit" onClick={onProfileClick}>
-            <AccountCircleIcon sx={{ color: iconColor }} />
-          </IconButton>
+          <AccountDropDown color = {iconColor} user={user} redirectToLogin={redirectToLogin} signout={handleSignOut}/>
         </Toolbar>
       </AppBar>
     </>

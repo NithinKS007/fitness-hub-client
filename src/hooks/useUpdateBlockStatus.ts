@@ -11,7 +11,6 @@ const useUpdateBlockStatus = () => {
      const {_id,isBlocked} = status
     try {
       const response = await dispatch(updateUserBlockStatus({_id,isBlocked})).unwrap();
-      console.log("updated response", response)
       const updatedEntity = response.data; 
       console.log(updatedEntity,"updated entity data")
 

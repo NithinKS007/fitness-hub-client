@@ -1,34 +1,53 @@
 import React, { useState } from "react";
 import SideNavBar from "../components/SideNavBar/SideNavBar";
 import { Outlet, useLocation } from "react-router-dom";
-import { Dashboard, People, Mail } from "@mui/icons-material";
-import { SiTrainerroad } from "react-icons/si";
 import { useTheme } from "@mui/material/styles";
 // import Breadcrumb from "../components/BrudCrumb";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import Dashboard from "@mui/icons-material/Dashboard";
+import People from "@mui/icons-material/People";
+import Chat from "@mui/icons-material/Chat";
+import Event from "@mui/icons-material/Event";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 import useSignOut from "../hooks/useSignOut";
 
-const AdminLayout: React.FC = () => {
+const TrainerLayout: React.FC = () => {
   const [open, setOpen] = useState(false);
-
   const handleSignout = useSignOut()
-  const adminNavItems = [
-    { icon: <Dashboard />, text: "DASHBOARD", path: "/admin/dashboard" },
-    { icon: <People />, text: "USERS", path: "/admin/users" },
+  const trainerNavItems = [
     {
-      icon: <SiTrainerroad size={24} />,
-      text: "TRAINERS",
-      path: "/admin/trainers",
+      icon: <Dashboard  />,
+      text: "DASHBOARD",
+      path: "/trainer/dashboard",
     },
-    { icon: <Mail />, text: "INBOX", path: "/admin/inbox" },
+    {
+      icon: <People />,
+      text: "CLIENTS",
+      path: "/trainer/clients",
+    },
+    {
+      icon: <Chat />,
+      text: "CHAT",
+      path: "/trainer/chat",
+    },
+    {
+      icon: <Event />,
+      text: "SESSIONS",
+      path: "/trainer/session-schedules",
+    },
+    {
+      icon: <AccountCircle />,
+      text: "PROFILE",
+      path: "/trainer/profile",
+    },
   ];
 
   const navItemsFooter = [
     {
       icon: <SettingsApplicationsIcon />,
       text: "Settings",
-      path: "/admin/settings",
+      path: "/trainer/settings",
     },
     {
       icon: <ExitToAppIcon />,
@@ -52,10 +71,10 @@ const AdminLayout: React.FC = () => {
   const location = useLocation();
 
   return (
-    <div style={{ display: "flex", height: "100%" }}>
+    <div style={{ display: "flex", height: "100%" ,}}>
       <SideNavBar
-        navItems={adminNavItems}
-        navItemsFooter={navItemsFooter}
+        navItems={trainerNavItems}
+        navItemsFooter={navItemsFooter} 
         open={open}
         onDrawerToggle={handleDrawerToggle}
         onSettingsClick={handleSettingsClick}
@@ -72,7 +91,7 @@ const AdminLayout: React.FC = () => {
           paddingRight:"20px",
           paddingTop: "5%",
         }}
-        className="bg-gray-50 min-h-screen"
+        className="bg-gray-100 min-h-screen"
       >
         {/* <div className="mb-5">
           <Breadcrumb pathname={location.pathname} />
@@ -83,4 +102,4 @@ const AdminLayout: React.FC = () => {
   );
 };
 
-export default AdminLayout;
+export default TrainerLayout;

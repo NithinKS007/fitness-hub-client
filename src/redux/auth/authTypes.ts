@@ -1,7 +1,7 @@
 export type Role = "user" | "admin" | "trainer";
 
 export interface User {
-  _id?: string 
+  _id?: string;
   fname: string;
   lname: string;
   email: string;
@@ -14,15 +14,35 @@ export interface User {
   profilePic?: string;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface Trainer extends User {
+  dateOfBirth?: string;
+  age?: string;
+  gender?: "male" | "female";
+  height?: string;
+  weight?: string;
   trainerData?: {
     yearsOfExperience?: string;
     specializations?: string[];
     certifications?: string[];
     isApproved?: boolean;
+    aboutMe?: string;
   };
+  medicalDetails: {
+    bloodGroup?: string;
+    medicalConditions?: string;
+    otherConcerns?: string;
+  };
+}
+
+export interface SignupUser {
+  fname: string;
+  lname: string;
+  email: string;
+  password: string;
+}
+export interface SignupTrainer extends SignupUser {
+  phone?: string;
+  dateOfBirth?: string;
+  yearsOfExperience?: string;
 }
 
 export interface Otp {
@@ -64,4 +84,3 @@ export interface RequestPasswordChange {
 export interface RequestGoogleAuth {
   token: string;
 }
-

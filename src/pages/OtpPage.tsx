@@ -3,6 +3,7 @@ import useOtp from "../hooks/useOtp";
 import React, { useRef, useState } from "react";
 
 const OtpPage: React.FC = () => {
+
   const { otp, isTimerExpired, handleResendOtp, handleVerifyOtp } = useOtp();
   const [otpData, setOtpData] = useState(new Array(6).fill(""));
   const otpBoxRef = useRef<(HTMLInputElement | null)[]>([]);
@@ -14,12 +15,19 @@ const OtpPage: React.FC = () => {
   ) => {
     const value = e.target.value;
     const newOtp = [...otpData];
-    newOtp[idx] = value;
-    setOtpData(newOtp);
 
-    if (value && idx < numberOfDigits - 1) {
-        
-      otpBoxRef.current[idx + 1]?.focus();
+    if (value) {
+      newOtp[idx] = value;
+      setOtpData(newOtp);
+      if (idx < numberOfDigits - 1) {
+        otpBoxRef.current[idx + 1]?.focus();
+      }
+    } else {
+      newOtp[idx] = "";
+      setOtpData(newOtp);
+      if (idx > 0) {
+        otpBoxRef.current[idx - 1]?.focus();
+      }
     }
   };
 

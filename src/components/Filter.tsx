@@ -11,9 +11,17 @@ const Filter: React.FC<FilterProps> = ({ sort, filter, direction }) => {
     <Box sx={{ display: "flex", justifyContent: "end", marginBottom: 1 }}>
       <FormControl size="small" sx={{ minWidth: 180, marginRight: 1 }}>
         <InputLabel>Filter by</InputLabel>
-        <Select label="Filter by"  sx={{ minWidth: 180 }}> 
+        <Select
+          label="Filter by"
+          sx={{ minWidth: 180 }}
+          MenuProps={{
+            PaperProps: {
+              elevation: 1,
+            },
+          }}
+        >
           {filter.map((item, index) => (
-            <MenuItem  key={index} value={item.value}>
+            <MenuItem key={index} value={item.value}>
               {item.value}
             </MenuItem>
           ))}
@@ -22,7 +30,15 @@ const Filter: React.FC<FilterProps> = ({ sort, filter, direction }) => {
 
       <FormControl size="small" sx={{ minWidth: 180, marginRight: 1 }}>
         <InputLabel>Sort by</InputLabel>
-        <Select label="Sort by"  sx={{ minWidth: 180}}>
+        <Select
+          label="Sort by"
+          sx={{ minWidth: 180 }}
+          MenuProps={{
+            PaperProps: {
+              elevation: 1,
+            },
+          }}
+        >
           {sort.map((item, index) => (
             <MenuItem key={index} value={item.value}>
               {item.value}
@@ -33,7 +49,15 @@ const Filter: React.FC<FilterProps> = ({ sort, filter, direction }) => {
 
       <FormControl size="small" sx={{ minWidth: 180 }}>
         <InputLabel>Direction</InputLabel>
-        <Select label="Direction"  sx={{ minWidth: 180}}>
+        <Select
+          label="Direction"
+          sx={{ minWidth: 180 }}
+          MenuProps={{
+            PaperProps: {
+              elevation: 1,
+            },
+          }}
+        >
           {direction.map((item, index) => (
             <MenuItem key={index} value={item.value}>
               {item.value}

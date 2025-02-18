@@ -1,9 +1,9 @@
 import React from 'react'
 
-const DBPageUser:React.FC  = () => {
+const DBPageUser = () => {
   return (
     <div>
-      user dashboard
+      user db
     </div>
   )
 }

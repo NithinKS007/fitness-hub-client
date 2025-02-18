@@ -13,14 +13,8 @@ const useOtp = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-
-
-    const otpTimeout = setTimeout(() => {
-      dispatch(clearOtpDetails()); 
-    }, 300000); 
+    if (!otp) return;
     const timer = setInterval(() => {
-      if (!otp) return;
-
       const currentTime = new Date().getTime();
       const expireTime = new Date(otp.otpExpireTime).getTime();
       const remainingTime = expireTime - currentTime;
@@ -29,23 +23,23 @@ const useOtp = () => {
       if (remainingSeconds <= 0) {
         setIsTimerExpired(true);
         clearInterval(timer)
-        dispatch(clearOtpDetails());
       } else {
         setIsTimerExpired(false);
         dispatch(updateOtpCountDown(remainingSeconds));
       }
     }, 1000);
     return () => {
-      clearTimeout(otpTimeout); 
       clearInterval(timer); 
     };
-  }, [dispatch, otp?.otpExpireTime]);
+  }, [dispatch,otp?.otpExpireTime]);
 
   const handleResendOtp = async (event: React.FormEvent) => {
+
     event?.preventDefault();
     if (!otp?.otpEmail) {
       return;
     }
+
     const newotpExpireTime = new Date(Date.now() + 60 * 1000).toISOString();
 
     const resendOtpData = {
@@ -73,9 +67,9 @@ const useOtp = () => {
     const {otpEmail} = otp
     try {
       const response = await dispatch(verifyOtp({email:otpEmail, otp:otpData })).unwrap();
-      console.log("response for verifying the otp",response);
       showSuccessToast(response.message)
-      navigate("/auth")
+      navigate("/sign-in")
+      dispatch(clearOtpDetails())
     } catch (error) {
       console.log(`Failed to verify OTP: ${error}`);
       showErrorToast(`${error}`);

@@ -4,7 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { RootState } from "../redux/store";
 
 const ProtectedAdmin: React.FC = () => {
-  const admin = useSelector((state: RootState) => state.auth.user);
+  const admin = useSelector((state: RootState) => state?.auth?.user)
 
   return !admin ? (
     <Navigate to="/" />

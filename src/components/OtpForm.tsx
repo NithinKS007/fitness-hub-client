@@ -1,3 +1,6 @@
+import React from "react"
+import { Box, Button, Typography, TextField, Grid } from "@mui/material"
+
 interface OtpFormProps {
   otp: {
     otpEmail: string;
@@ -10,7 +13,7 @@ interface OtpFormProps {
   otpData: string[];
   handleOtpChange: (e: React.ChangeEvent<HTMLInputElement>, idx: number) => void;
   handleSubmit: (event: React.FormEvent) => void;
-  otpBoxRef: React.RefObject<(HTMLInputElement | null)[]>
+  otpBoxRef: React.RefObject<(HTMLInputElement | null)[]>;
 }
 
 const OtpForm: React.FC<OtpFormProps> = ({
@@ -22,49 +25,115 @@ const OtpForm: React.FC<OtpFormProps> = ({
   handleSubmit,
   otpBoxRef,
 }) => {
-  
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h1 className="text-2xl font-semibold text-center mb-6">Verify OTP</h1>
-        <form onSubmit={handleSubmit}>
-          {isTimerExpired ? (
-            <p className="text-red-500 text-center">OTP Expired</p>
-          ) : (
-            <div>
-              <p className="text-center">{otp?.otpCountDown} seconds</p>
-            </div>
-          )}
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        bgcolor: "grey.100",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          width: "100%",
+          bgcolor: "background.paper",
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        <Box
+          sx={{
+            display: { xs: "none", md: "flex" },
+            bgcolor: "grey.300",
+            width: { xs: "100%", md: "50%" },
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+          }}
+        >
+          <Typography variant="h4" color="text.secondary" align="center">
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: { xs: "100%", md: "50%" },
+            p: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ width: "100%", maxWidth: "400px", textAlign: "center" }}>
+            <Typography variant="h5" gutterBottom>
+              Verify OTP
+            </Typography>
 
-          <div className="flex justify-between mb-4">
-            {otpData.map((digit, idx) => (
-              <input
-                key={idx}
-                type="text"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleOtpChange(e, idx)}
-                ref={(reference) => {
-                  if (otpBoxRef.current) {
-                    otpBoxRef.current[idx] = reference; 
-                  }
+            <form onSubmit={handleSubmit}>
+              {isTimerExpired ? (
+                <Typography color="error" variant="body2" align="center">
+                  OTP Expired
+                </Typography>
+              ) : (
+                <Typography align="center" variant="body2">
+                {otp?.otpCountDown !== undefined ? `${otp.otpCountDown}s` : 'Loading...'}
+              </Typography>              
+              )}
+
+              <Grid container spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+                {otpData.map((digit, idx) => (
+                  <Grid item key={idx}>
+                    <TextField
+                      value={digit}
+                      onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleOtpChange(e, idx)}
+                      inputRef={(reference) => {
+                        if (otpBoxRef.current) {
+                          otpBoxRef.current[idx] = reference;
+                        }
+                      }}
+                      sx={{
+                        width: 50,
+                        height: 50,
+                        textAlign: "center",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
+                      variant="outlined"
+                      inputProps={{
+                        maxLength: 1,
+                        style: { textAlign: 'center' },
+                      }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+
+              <Button
+                type="submit"
+                fullWidth
+                sx={{
+                  mt: 3,
+                  bgcolor: "black",
+                  "&:hover": {
+                    bgcolor: "grey.800",
+                  },
+                  color: "white",
+                    height:"50px"
                 }}
-                className="w-12 h-12 text-center border-2 border-gray-300 rounded-md"
-              />
-            ))}
-          </div>
+                onClick={isTimerExpired ? (e) => handleResendOtp(e) : undefined}
+              >
+                {isTimerExpired ? "Resend OTP" : "Verify OTP"}
+              </Button>
+            </form>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  )
+}
 
-          <button
-            type="submit"
-            className="w-full py-2 mt-4 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={isTimerExpired ? (e) => handleResendOtp(e) : undefined}
-          >
-            {isTimerExpired ? "Resend OTP" : "Verify OTP"}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-export default OtpForm;
+export default OtpForm

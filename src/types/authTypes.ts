@@ -5,7 +5,7 @@ export interface UserAuthFormData {
   password: string;
   cPassword: string;
   phone?: string;
-  dateOfBirth?: string | Date;
+  dateOfBirth?: string 
   yearsOfExperience?: string;
 }
 export type SignState = "sign in" | "sign up";

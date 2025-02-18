@@ -2,7 +2,8 @@ import { styled, Theme, CSSObject } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 
-export const drawerWidth = 240;
+export const drawerWidth = 300; 
+
 
 export const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,

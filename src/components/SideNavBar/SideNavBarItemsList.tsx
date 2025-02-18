@@ -41,14 +41,16 @@ const SideNavBarItemsList: React.FC<SideNavBarItemsListProps> = ({
           return (
             <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                sx={{
-                  minHeight: 48,
+                 sx={{
+                  minHeight: 60,
                   px: 2.5,
                   mx: 2,
                   justifyContent: open ? "initial" : "center",
                   backgroundColor: isActive ? drawerBgColor : "transparent",
+                  borderRadius: isActive ? "5px" : "0",  
                   "&:hover": {
                     backgroundColor: !isActive ? hoverBgColor : drawerBgColor,
+                    borderRadius: "5px", 
                   },
                 }}
                 component={Link}
@@ -62,14 +64,17 @@ const SideNavBarItemsList: React.FC<SideNavBarItemsListProps> = ({
                     color: isActive ? activeTextColor : iconColor,
                   }}
                 >
-                  {item.icon}
+                {React.cloneElement(item.icon, { sx: { fontSize: "2rem" } })}
+
                 </ListItemIcon>
+
                 <ListItemText
                   primary={item.text}
                   sx={{
                     opacity: open ? 1 : 0,
                     color: isActive ? activeTextColor : textColor,
                   }}
+                  
                 />
               </ListItemButton>
             </ListItem>

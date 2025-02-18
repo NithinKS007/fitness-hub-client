@@ -9,6 +9,8 @@ import {
   forgotPassword,
   googleAuth,
   trainerEntroll,
+  updateUserProfile,
+  signOutUser,
 } from "./authThunk";
 
 const initialState: AuthUser = {
@@ -23,22 +25,23 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setOtp: (state, action: PayloadAction<Otp>) => {
-
-      console.log("otp",action.payload)
+      console.log("otp", action.payload);
       state.otp = action.payload;
     },
     updateOtpCountDown: (state, action: PayloadAction<number>) => {
-      console.log("count",action.payload)
+      console.log("count", action.payload);
       if (state.otp) {
-        state.otp.otpCountDown = action.payload
+        state.otp.otpCountDown = action.payload;
       }
-    },
-    setUser: (state, action) => {
-      console.log("user",action.payload)
-      state.user = action.payload;
     },
     clearOtpDetails: (state) => {
       state.otp = null;
+    },
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+    clearUser: (state) => {
+      state.user = null;
     },
   },
   extraReducers: (builder) => {
@@ -148,10 +151,11 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to verify google user ";
       })
-      .addCase(trainerEntroll.pending,(state) => {
-        state.isLoading = true
+      //handle trainer entrollment
+      .addCase(trainerEntroll.pending, (state) => {
+        state.isLoading = true;
       })
-      .addCase(trainerEntroll.fulfilled,(state)=>{
+      .addCase(trainerEntroll.fulfilled, (state) => {
         (state.isLoading = false), (state.error = null);
       })
       .addCase(trainerEntroll.rejected, (state, action) => {
@@ -161,8 +165,39 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to create trainer";
       })
+      //handle update user profile
+      .addCase(updateUserProfile.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUserProfile.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to update user profile";
+      })
+      //handle sign out user
+      .addCase(signOutUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(signOutUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(signOutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to sign out user";
+      });
   },
 });
 
-export const { setOtp, updateOtpCountDown, setUser, clearOtpDetails } = authSlice.actions;
+export const { setOtp, updateOtpCountDown, setUser, clearOtpDetails ,clearUser } =
+  authSlice.actions;
 export default authSlice.reducer;

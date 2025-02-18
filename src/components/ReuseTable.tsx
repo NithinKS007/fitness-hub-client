@@ -37,15 +37,18 @@ const ReuseTable: React.FC<TableProps> = ({
 }) => {
   return (
     <>
-      <TableContainer component={Card}>
+      <TableContainer
+        component={Card}
+        
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox" sx={{ padding: "4px" }}>
+              <TableCell padding="checkbox" sx={{ padding: "8px" }}> 
                 <Checkbox />
               </TableCell>
               {columns.map((column) => (
-                <TableCell key={column.field} sx={{ padding: "4px" }}>
+                <TableCell key={column.field} sx={{ padding: "8px" }}>
                   {column.label}
                 </TableCell>
               ))}
@@ -55,7 +58,7 @@ const ReuseTable: React.FC<TableProps> = ({
           <TableBody>
             {data.map((row, index) => (
               <TableRow key={index}>
-                <TableCell padding="checkbox" sx={{ padding: "4px" }}>
+                <TableCell padding="checkbox" sx={{ padding: "8px" }}>
                   <Checkbox
                     checked={row.isBlocked}
                     onChange={() =>
@@ -67,7 +70,7 @@ const ReuseTable: React.FC<TableProps> = ({
                   />
                 </TableCell>
                 {columns.map((column) => (
-                  <TableCell key={column.field} sx={{ padding: "4px" }}>
+                  <TableCell key={column.field} sx={{ padding: "8px" }}>
                     {column.field === "isBlocked" ? (
                       row.isBlocked ? (
                         <BlockIcon sx={{ color: "#FF3B30" }} />
@@ -84,7 +87,7 @@ const ReuseTable: React.FC<TableProps> = ({
                       row.profilePic ? (
                         <Avatar src={row.profilePic} alt="Profile" />
                       ) : (
-                        <Avatar sx={{ width: 27, height: 27 }} />
+                        <Avatar sx={{color:"#616161 ",backgroundColor:"#61512"}}/>
                       )
                     ) : column.field === "isApproved" ? (
                       row.isApproved ? (

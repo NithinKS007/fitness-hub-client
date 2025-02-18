@@ -17,6 +17,7 @@ import { AppDispatch } from "../redux/store";
 import { setOtp, setUser } from "../redux/auth/authSlice";
 
 const useAuthForm = (formState: SignState = "sign in") => {
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate: NavigateFunction = useNavigate();
 
@@ -28,9 +29,10 @@ const useAuthForm = (formState: SignState = "sign in") => {
       password: "",
       cPassword: "",
     },
+
     validationSchema: userAuthvalidationSchema(formState),
+    
     onSubmit: async (values: UserAuthFormData) => {
-      console.log("Form submitted", values);
 
       try {
         if (formState === "sign up") {
@@ -47,25 +49,33 @@ const useAuthForm = (formState: SignState = "sign in") => {
           dispatch(setOtp(otpData));
           showSuccessToast(response.message);
           handleUserAuth.resetForm();
-          navigate("/auth/verify-otp");
+          navigate("/verify-otp");
         } else {
           const { email, password } = values;
           const response = await dispatch(
             signinUser({ email, password })
           ).unwrap();
-          console.log("response from signin", response);
-          dispatch(setUser(response.data));
+          localStorage.setItem('accessToken', response.data.accessToken);
+          dispatch(setUser(response.data.userData))
+
           showSuccessToast(
-            `${response.message} Welcome back ${response.data.fname}`
+            `${response.message} Welcome back ${response.data.userData.fname}`
           );
           handleUserAuth.resetForm();
-          if (response.data.role === "user") {
-            navigate("/");
-          } else if (response.data.role === "trainer") {
-            navigate("/trainer/dashboard");
-          } else {
-            navigate("/admin/dashboard");
+          switch (response.data.userData.role) {
+            case "user":
+              navigate("/user/dashboard");
+              break;
+            case "trainer":
+              navigate("/trainer/dashboard");
+              break;
+            case "admin":
+              navigate("/admin/dashboard");
+              break;
+            default:
+              break;
           }
+          
         }
       } catch (error: any) {
         console.log(`API Error ${error}`);
@@ -87,7 +97,6 @@ const useAuthForm = (formState: SignState = "sign in") => {
     },
     validationSchema: trainerEntrollValidationSchema(),
     onSubmit: async (values: UserAuthFormData) => {
-      console.log("Form submitted", values);
       try {
         const trainerData = {
           fname: values.fname,
@@ -96,10 +105,8 @@ const useAuthForm = (formState: SignState = "sign in") => {
           phone:values.phone,
           dateOfBirth: values.dateOfBirth,
           password: values.password,
-          yearsOfExperience: values?.yearsOfExperience,
+          yearsOfExperience: values.yearsOfExperience,
         };
-
-        console.log(trainerData)
         const response = await dispatch(trainerEntroll(trainerData)).unwrap();
         const otpExpireTime = new Date(Date.now() + 60 * 1000).toISOString();
 
@@ -111,7 +118,7 @@ const useAuthForm = (formState: SignState = "sign in") => {
         dispatch(setOtp(otpData));
         showSuccessToast(response.message);
         handleTrainerAuth.resetForm();
-        navigate("/auth/verify-otp");
+        navigate("/verify-otp");
       } catch (error: any) {
         console.log(`API Error ${error}`);
         showErrorToast(`${error}`);
