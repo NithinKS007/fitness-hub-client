@@ -4,6 +4,7 @@ import { RootState } from "../../redux/store";
 import useUpdateProfileForm from "../../hooks/useUpdateProfileForm";
 import React, { useState } from "react";
 import NavigationTabs from "../../components/Tabs";
+import useChangePassword from "../../hooks/useChangePassword";
 
 const UserProfilePage: React.FC = () => {
   const [value, setValue] = useState(0);
@@ -11,11 +12,13 @@ const UserProfilePage: React.FC = () => {
   const isEditable = userData?.role === "user" ? true : false;
 
   const { formik, handleProfilePicChange } = useUpdateProfileForm(userData);
-  const tabItems = [{ label: "Profile", path: "/admin/user-details" }];
+  const tabItems = [{ label: "Profile", path: "/user/profile" }];
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  const { changePasswordFormik } = useChangePassword();
 
+   console.log("change",changePasswordFormik)
   return (
     <>
       <div style={{ marginBottom: "25px", marginLeft: "110px" }}>
@@ -29,6 +32,7 @@ const UserProfilePage: React.FC = () => {
         formik={formik}
         isEditable={isEditable}
         handleProfilePicChange={handleProfilePicChange}
+        changePasswordFormik={changePasswordFormik}
       />
     </>
   );

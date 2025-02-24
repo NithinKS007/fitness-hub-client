@@ -61,6 +61,28 @@ export const passwordValidationSchema = Yup.object({
     .required("*Confirm password is required"),
 });
 
+export const changePasswordValidationSchema = () => {
+  return Yup.object({
+    password: Yup.string()
+      .matches(
+        passwordRegex,
+        "*Password must contain at least 8 characters, including one uppercase, one lowercase, one number, and one special character"
+      )
+      .required("*Password is required"),
+
+    newPassword: Yup.string()
+      .matches(
+        passwordRegex,
+        "*Password must contain at least 8 characters, including one uppercase, one lowercase, one number, and one special character"
+      )
+      .required("*New password is required"),
+
+    cPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword"), ""], "*Passwords must match")
+      .required("*Confirm password is required"),
+  });
+};
+
 export const trainerEntrollValidationSchema = () => {
   return Yup.object({
     fname: Yup.string()
@@ -97,7 +119,7 @@ export const trainerEntrollValidationSchema = () => {
 };
 
 export const updateProfileValidationSchema = (role: Role) => {
-  const c =  Yup.object({
+  return Yup.object({
     fname: Yup.string()
       .matches(nameRegex, "*Name can only contain letters and spaces")
       .required("*First name is required"),
@@ -180,26 +202,19 @@ export const updateProfileValidationSchema = (role: Role) => {
             .max(500, "*Other concerns must be less than 500 characters")
             .notRequired()
         : Yup.string().notRequired(),
-    certifications:
-      role === "trainer"
-        ? Yup.array()
-            .of(
-              Yup.mixed()
-                .test(
-                  "fileFormat",
-                  "*Only PDF files are allowed",
-                  (file) => file && (file as File).type === "application/pdf"
-                )
-                .test(
-                  "fileSize",
-                  "*File size must be less than 25MB",
-                  (file) => file && (file as File).size <= 25 * 1024 * 1024
-                )
-            )
-            .notRequired()
-        : Yup.array().notRequired(),
   });
-
-  console.log(c)
-  return c
 };
+
+export const subscriptionValidationSchema = Yup.object({
+  planType: Yup.string().required("Plan type is required"),
+  subPeriod: Yup.string().required("Subscription period is required"),
+  price: Yup.number()
+    .required("Price is required")
+    .min(0, "Price cannot be negative")
+    .moreThan(0, "Price must be greater than zero"),
+  sessionsPerWeek: Yup.number()
+    .required("Sessions per week is required")
+    .min(1, "Sessions per week cannot be less than 1"),
+  durationInWeeks: Yup.number().required("Duration in weeks is required"), 
+  totalSessions: Yup.number().required("Total sessions is required"),
+});

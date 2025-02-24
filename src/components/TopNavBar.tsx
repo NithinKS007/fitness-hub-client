@@ -6,7 +6,6 @@ import {
   Container,
   Toolbar,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { User } from "../redux/auth/authTypes";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +19,7 @@ const navItems = [
   { label: "About", href: "/about" },
   { label: "Contact us", href: "/contact-us" },
 ];
-const color = "#61512"
+const color = "#61512";
 
 interface TopNavBarProps {
   user: User | null;
@@ -29,9 +28,8 @@ interface TopNavBarProps {
 const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width:768px)");
 
-  const handleSignOut = useSignOut()
+  const handleSignOut = useSignOut();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -43,12 +41,13 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
     navigate("/sign-in");
   };
 
-
   return (
     <AppBar
       position="fixed"
       sx={{
-        bgcolor: isScrolled ? "rgba(255, 255, 255, 0.6)" : "rgba(255, 255, 255, 0.9)",
+        bgcolor: isScrolled
+          ? "rgba(255, 255, 255, 0.6)"
+          : "rgba(255, 255, 255, 0.9)",
         backdropFilter: "blur(15px)",
         transition: "all 0.3s ease-in-out",
         boxShadow: isScrolled
@@ -78,33 +77,32 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
               FT HUB
             </Typography>
           </Box>
-          {isMobile ? (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <AccountDropDown signout={handleSignOut} user={user} redirectToLogin={redirectToLogin} color={"black"}/>
+
+          <>
+            <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+              {navItems.map((item) => (
+                <Button
+                  key={item.label}
+                  onClick={() => navigate(item.href)}
+                  sx={{
+                    color: "text.primary",
+                    textTransform: "none",
+                    fontSize: "0.95rem",
+                    padding: "6px 8px",
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
             </Box>
-          ) : (
-            <>
-              
-                <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-                  {navItems.map((item) => (
-                    <Button
-                      key={item.label}
-                      onClick={() => navigate(item.href)}
-                      sx={{
-                        color: "text.primary",
-                        textTransform: "none",
-                        fontSize: "0.95rem",
-                        padding: "6px 8px",
-                      }}
-                    >
-                      {item.label}
-                    </Button>
-                  ))}
-                </Box>
-       
-              <AccountDropDown signout={handleSignOut} user={user} redirectToLogin={redirectToLogin}  color={color} />
-            </>
-          )}
+
+            <AccountDropDown
+              signout={handleSignOut}
+              user={user}
+              redirectToLogin={redirectToLogin}
+              color={color}
+            />
+          </>
         </Toolbar>
       </Container>
     </AppBar>

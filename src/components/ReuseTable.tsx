@@ -39,7 +39,6 @@ const ReuseTable: React.FC<TableProps> = ({
     <>
       <TableContainer
         component={Card}
-        
       >
         <Table>
           <TableHead>

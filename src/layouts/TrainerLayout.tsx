@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import SideNavBar from "../components/SideNavBar/SideNavBar";
 import { Outlet, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-// import Breadcrumb from "../components/BrudCrumb";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import Dashboard from "@mui/icons-material/Dashboard";
@@ -41,6 +40,7 @@ const TrainerLayout: React.FC = () => {
       text: "PROFILE",
       path: "/trainer/profile",
     },
+    
   ];
 
   const navItemsFooter = [
@@ -59,14 +59,6 @@ const TrainerLayout: React.FC = () => {
     setOpen(!open);
   };
 
-  const handleSettingsClick = () => {
-    console.log("Settings Clicked");
-  };
-
-  const handleProfileClick = () => {
-    console.log("Profile Clicked");
-  };
-
   const theme = useTheme();
   const location = useLocation();
 
@@ -77,9 +69,7 @@ const TrainerLayout: React.FC = () => {
         navItemsFooter={navItemsFooter} 
         open={open}
         onDrawerToggle={handleDrawerToggle}
-        onSettingsClick={handleSettingsClick}
         onLogoutClick={handleSignout}
-        onProfileClick={handleProfileClick}
         theme={theme}
         location={location}
       />
@@ -93,9 +83,6 @@ const TrainerLayout: React.FC = () => {
         }}
         className="bg-gray-100 min-h-screen"
       >
-        {/* <div className="mb-5">
-          <Breadcrumb pathname={location.pathname} />
-        </div> */}
         <Outlet />
       </main>
     </div>

@@ -1,9 +1,10 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { TextField, Box, Button, Typography } from "@mui/material"
+import React from "react";
+import { Link } from "react-router-dom";
+import { TextField, Box, Button, Typography } from "@mui/material";
+import fitnessCouple from "../assets/fitnessCouple.png";
 
 interface ForgotPasswordProps {
-  formik: any
+  formik: any;
 }
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
@@ -33,15 +34,22 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
           sx={{
             width: { xs: "100%", md: "50%" },
             bgcolor: "grey.300",
-            display: { xs: "none", md: "flex" }, 
+            display: { xs: "none", md: "flex" },
             alignItems: "center",
             justifyContent: "center",
             minHeight: "100vh",
+            backgroundColor: "black",
           }}
         >
-          <Typography variant="h4" color="text.secondary">
-            Image Placeholder
-          </Typography>
+          <img
+            src={fitnessCouple}
+            style={{
+              maxWidth: "100%",
+              maxHeight: "75vh",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
         </Box>
         <Box
           sx={{
@@ -53,7 +61,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
           }}
         >
           <Box sx={{ width: "100%", maxWidth: "550px", textAlign: "center" }}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h6" gutterBottom>
               Forgot Password?
             </Typography>
 
@@ -65,10 +73,12 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
                   label="Enter your email address"
                   type="email"
                   variant="outlined"
+                  size="small" // Smaller input size
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
                 />
 
                 <Button
@@ -81,7 +91,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
                     "&:hover": {
                       bgcolor: "grey.800",
                     },
-                    height: "50px",
+                    height: "48px", // Slightly adjusted height for better proportions
+                    borderRadius: 2, // Rounded corners
                   }}
                   disabled={formik.isSubmitting}
                 >
@@ -101,7 +112,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default ForgotPassword
+export default ForgotPassword;

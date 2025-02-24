@@ -4,7 +4,6 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AppBar } from "./sideNavBarStyles";
 import { Theme } from "@mui/material/styles";
@@ -19,14 +18,12 @@ interface SideNavAppBarProps {
   open: boolean;
   theme: Theme;
   iconColor: string;
-  onProfileClick: () => void;
 }
 const SideNavAppBar: React.FC<SideNavAppBarProps> = ({
   onDrawerToggle,
   open,
   theme,
   iconColor,
-  onProfileClick,
 }) => {
 
   const user = useSelector((state:RootState)=>state?.auth?.user)

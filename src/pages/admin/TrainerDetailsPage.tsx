@@ -27,14 +27,15 @@ const TrainerDetailsPage: React.FC = () => {
     if (_id) {
       dispatch(userDetails(_id));
     }
-  }, [dispatch, _id]);
+  }, [dispatch, _id])
 
   const isEditable = authUser?.role === "trainer" ? true : false;
   const { formik } = useUpdateProfileForm(userData);
 
+
   return (
     <>
-      <div style={{ marginLeft: "150px" }}>
+      <div style={{ marginLeft: "70px" }}>
         <NavigationTabs
           value={value}
           handleChange={handleChange}

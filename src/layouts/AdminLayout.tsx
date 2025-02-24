@@ -4,7 +4,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Dashboard, People, Mail } from "@mui/icons-material";
 import { SiTrainerroad } from "react-icons/si";
 import { useTheme } from "@mui/material/styles";
-// import Breadcrumb from "../components/BrudCrumb";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import useSignOut from "../hooks/useSignOut";
@@ -28,25 +27,18 @@ const AdminLayout: React.FC = () => {
     {
       icon: <SettingsApplicationsIcon />,
       text: "Settings",
-      path: "/admin/settings",
+      path: "",
     },
     {
       icon: <ExitToAppIcon />,
       text: "Signout",
-      path: "/signout",
+      path: "",
     },
   ];
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
 
-  const handleSettingsClick = () => {
-    console.log("Settings Clicked");
-  };
-
-  const handleProfileClick = () => {
-    console.log("Profile Clicked");
-  };
 
   const theme = useTheme();
   const location = useLocation();
@@ -58,9 +50,7 @@ const AdminLayout: React.FC = () => {
         navItemsFooter={navItemsFooter}
         open={open}
         onDrawerToggle={handleDrawerToggle}
-        onSettingsClick={handleSettingsClick}
         onLogoutClick={handleSignout}
-        onProfileClick={handleProfileClick}
         theme={theme}
         location={location}
       />
@@ -74,9 +64,6 @@ const AdminLayout: React.FC = () => {
         }}
         className="bg-gray-50 min-h-screen"
       >
-        {/* <div className="mb-5">
-          <Breadcrumb pathname={location.pathname} />
-        </div> */}
         <Outlet />
       </main>
     </div>

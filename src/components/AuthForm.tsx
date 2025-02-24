@@ -1,4 +1,4 @@
-import type React from "react"
+import type React from "react";
 import {
   TextField,
   IconButton,
@@ -8,19 +8,20 @@ import {
   Box,
   Typography,
   Button,
-} from "@mui/material"
-import { Visibility, VisibilityOff } from "@mui/icons-material"
-import type { SignState } from "../types/authTypes"
-import GoogleAuth from "./GoogleAuth"
-import { Link } from "react-router-dom"
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import type { SignState } from "../types/authTypes";
+import GoogleAuth from "./GoogleAuth";
+import { Link } from "react-router-dom";
+import fitnessCouple from "../assets/fitnessCouple.png";
 
 interface AuthFormProps {
-  signState: SignState
-  setSignState: React.Dispatch<React.SetStateAction<SignState>>
-  showPassword: boolean
-  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>
-  formik: any
-  handleGoogleAuthSuccess: (res: any) => void
+  signState: SignState;
+  setSignState: React.Dispatch<React.SetStateAction<SignState>>;
+  showPassword: boolean;
+  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  formik: any;
+  handleGoogleAuthSuccess: (res: any) => void;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({
@@ -38,7 +39,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "grey.100",
         width: "100%",
         overflow: "hidden",
       }}
@@ -55,17 +55,24 @@ const AuthForm: React.FC<AuthFormProps> = ({
       >
         <Box
           sx={{
-            width: { xs: "100%", md: "50%" }, 
+            width: { xs: "100%", md: "50%" },
             bgcolor: "grey.300",
-            display: { xs: "none", md: "flex" }, 
+            display: { xs: "none", md: "flex" },
             alignItems: "center",
             justifyContent: "center",
             minHeight: "100vh",
+            backgroundColor: "black",
           }}
         >
-          <Typography variant="h4" color="text.secondary">
-        
-          </Typography>
+          <img
+            src={fitnessCouple}
+            style={{
+              maxWidth: "100%",
+              maxHeight: "75vh",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
         </Box>
         <Box
           sx={{
@@ -73,12 +80,14 @@ const AuthForm: React.FC<AuthFormProps> = ({
             p: 4,
             display: "flex",
             justifyContent: "center",
-            alignItems: "center", 
+            alignItems: "center",
           }}
         >
-          <Box sx={{ width: "100%", maxWidth: "550px", textAlign: "center" }}> 
-            <Typography variant="h4" gutterBottom>
-              {signState === "sign in" ? "Sign in to your account" : "Create your account"}
+          <Box sx={{ width: "100%", maxWidth: "550px", textAlign: "center" }}>
+            <Typography variant="h5" gutterBottom>
+              {signState === "sign in"
+                ? "Sign in to your account"
+                : "Create your account"}
             </Typography>
 
             <form onSubmit={formik.handleSubmit}>
@@ -90,20 +99,28 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       name="fname"
                       label="First Name"
                       variant="outlined"
+                      size="small" // Smaller input size
                       value={formik.values.fname}
                       onChange={formik.handleChange}
-                      error={formik.touched.fname && Boolean(formik.errors.fname)}
+                      error={
+                        formik.touched.fname && Boolean(formik.errors.fname)
+                      }
                       helperText={formik.touched.fname && formik.errors.fname}
+                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
                     />
                     <TextField
                       fullWidth
                       name="lname"
                       label="Last Name"
                       variant="outlined"
+                      size="small" // Smaller input size
                       value={formik.values.lname}
                       onChange={formik.handleChange}
-                      error={formik.touched.lname && Boolean(formik.errors.lname)}
+                      error={
+                        formik.touched.lname && Boolean(formik.errors.lname)
+                      }
                       helperText={formik.touched.lname && formik.errors.lname}
+                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
                     />
                   </Box>
                 )}
@@ -114,10 +131,12 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   label="Email"
                   type="email"
                   variant="outlined"
+                  size="small" // Smaller input size
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
                 />
 
                 <TextField
@@ -126,19 +145,26 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   variant="outlined"
+                  size="small" // Smaller input size
                   value={formik.values.password}
                   onChange={formik.handleChange}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
                   helperText={formik.touched.password && formik.errors.password}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                        <IconButton
+                          onClick={() => setShowPassword((prev) => !prev)}
+                          edge="end"
+                        >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
                     ),
                   }}
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
                 />
 
                 {signState === "sign up" && (
@@ -148,26 +174,48 @@ const AuthForm: React.FC<AuthFormProps> = ({
                     label="Confirm Password"
                     type={showPassword ? "text" : "password"}
                     variant="outlined"
+                    size="small" // Smaller input size
                     value={formik.values.cPassword}
                     onChange={formik.handleChange}
-                    error={formik.touched.cPassword && Boolean(formik.errors.cPassword)}
-                    helperText={formik.touched.cPassword && formik.errors.cPassword}
+                    error={
+                      formik.touched.cPassword &&
+                      Boolean(formik.errors.cPassword)
+                    }
+                    helperText={
+                      formik.touched.cPassword && formik.errors.cPassword
+                    }
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                          <IconButton
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            edge="end"
+                          >
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
                         </InputAdornment>
                       ),
                     }}
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
                   />
                 )}
 
                 {signState === "sign in" && (
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <FormControlLabel control={<Checkbox />} label="Remember Me" />
-                    <Link to="/forgot-password" style={{ color: "blue", textDecoration: "none" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      label="Remember Me"
+                    />
+                    <Link
+                      to="/forgot-password"
+                      style={{ color: "blue", textDecoration: "none" }}
+                    >
                       Forgot Password?
                     </Link>
                   </Box>
@@ -185,7 +233,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
                     "&:hover": {
                       bgcolor: "grey.800",
                     },
-                    height:"50px"
+                    height: "48px", // Slightly taller button for better design
+                    borderRadius: 2, // Rounded corners
                   }}
                 >
                   {formik.isSubmitting
@@ -201,10 +250,16 @@ const AuthForm: React.FC<AuthFormProps> = ({
 
             <Box sx={{ mt: 2, textAlign: "center" }}>
               <Typography variant="body2" color="text.secondary">
-                {signState === "sign up" ? "Already have an account?" : "Don't have an account?"}
+                {signState === "sign up"
+                  ? "Already have an account?"
+                  : "Don't have an account?"}
                 <Box
                   component="span"
-                  onClick={() => setSignState(signState === "sign up" ? "sign in" : "sign up")}
+                  onClick={() =>
+                    setSignState(
+                      signState === "sign up" ? "sign in" : "sign up"
+                    )
+                  }
                   sx={{
                     ml: 1,
                     color: "primary.main",
@@ -215,13 +270,12 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   {signState === "sign up" ? "Sign In" : "Sign Up"}
                 </Box>
               </Typography>
-              <p>2unni468N@</p>
             </Box>
           </Box>
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;

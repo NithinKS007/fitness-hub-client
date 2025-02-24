@@ -2,37 +2,38 @@ import React, { useState } from "react";
 import SideNavBar from "../components/SideNavBar/SideNavBar";
 import { Outlet, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
-import Dashboard from "@mui/icons-material/Dashboard";
-import Chat from "@mui/icons-material/Chat";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
+import GridViewIcon from "@mui/icons-material/GridView";
+import ChatIcon from "@mui/icons-material/Chat";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import useSignOut from "../hooks/useSignOut";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
-import BookingIcon from "@mui/icons-material/Bookmark"; 
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 
 const ULProfile: React.FC = () => {
   const [open, setOpen] = useState(false);
   const handleSignout = useSignOut();
+
   const userNavItems = [
     {
-      icon: <Dashboard />,
+      icon: <GridViewIcon />,
       text: "DASHBOARD",
       path: "/user/dashboard",
     },
     {
-        icon: <SubscriptionsIcon />,
+      icon: <SubscriptionsIcon />,
       text: "SUBSCRIPTIONS",
       path: "/user/subscriptions",
     },
     {
-        icon: <BookingIcon />,
+      icon: <CollectionsBookmarkIcon />,
       text: "BOOKINGS",
       path: "/user/bookings",
     },
     {
-      icon: <Chat />,
+      icon: <ChatIcon />,
       text: "CHAT",
       path: "/user/chats",
     },
@@ -42,7 +43,7 @@ const ULProfile: React.FC = () => {
       path: "/user/wallet",
     },
     {
-      icon: <AccountCircle />,
+      icon: <AccountCircleIcon />,
       text: "PROFILE",
       path: "/user/profile",
     },
@@ -50,26 +51,18 @@ const ULProfile: React.FC = () => {
 
   const navItemsFooter = [
     {
-      icon: <SettingsApplicationsIcon />,
+      icon: <SettingsIcon />,
       text: "Settings",
       path: "/user/settings",
     },
     {
-      icon: <ExitToAppIcon />,
+      icon: <LogoutIcon />,
       text: "Signout",
       path: "",
     },
   ];
   const handleDrawerToggle = () => {
     setOpen(!open);
-  };
-
-  const handleSettingsClick = () => {
-    console.log("Settings Clicked");
-  };
-
-  const handleProfileClick = () => {
-    console.log("Profile Clicked");
   };
 
   const theme = useTheme();
@@ -82,9 +75,7 @@ const ULProfile: React.FC = () => {
         navItemsFooter={navItemsFooter}
         open={open}
         onDrawerToggle={handleDrawerToggle}
-        onSettingsClick={handleSettingsClick}
         onLogoutClick={handleSignout}
-        onProfileClick={handleProfileClick}
         theme={theme}
         location={location}
       />
@@ -92,8 +83,8 @@ const ULProfile: React.FC = () => {
         style={{
           flexGrow: 1,
           transition: "margin-left 0.3s ease",
-          paddingLeft:"20px",
-          paddingRight:"20px",
+          paddingLeft: "20px",
+          paddingRight: "20px",
           paddingTop: "5%",
         }}
         className="bg-gray-100  min-h-screen"

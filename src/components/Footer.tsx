@@ -23,7 +23,7 @@ const Footer = () => {
   ];
 
   return (
-    <Box sx={{ bgcolor: 'black', color: 'white', py: 7 }}>
+    <Box sx={{ bgcolor: 'black', color: 'white', py: 7,width:"100%" }}>
       <Container maxWidth={false}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>

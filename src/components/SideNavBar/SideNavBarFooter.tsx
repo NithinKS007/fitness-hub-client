@@ -20,7 +20,6 @@ interface SideNavBarFooterProps {
   iconColor: string;
   textColor: string;
   activeTextColor: string;
-  onSettingsClick: () => void;
   onLogoutClick: () => void;
 }
 const SideNavBarFooter: React.FC<SideNavBarFooterProps> = ({
@@ -32,7 +31,6 @@ const SideNavBarFooter: React.FC<SideNavBarFooterProps> = ({
   iconColor,
   textColor,
   activeTextColor,
-  onSettingsClick,
   onLogoutClick,
 }) => {
   return (
@@ -49,16 +47,14 @@ const SideNavBarFooter: React.FC<SideNavBarFooterProps> = ({
                   mx: 2,
                   justifyContent: open ? "initial" : "center",
                   backgroundColor: isActive ? drawerBgColor : "transparent",
-                  borderRadius: isActive ? "5px" : "0",  
+                  borderRadius: isActive ? "5px" : "0",
                   "&:hover": {
                     backgroundColor: !isActive ? hoverBgColor : drawerBgColor,
-                    borderRadius: "5px", 
+                    borderRadius: "5px",
                   },
                 }}
-                component={item.path === "/settings" ? "button" : "div"}
-                onClick={
-                  item.path === "/settings" ? onSettingsClick : onLogoutClick
-                }
+                onClick={item.text === "Signout" ? onLogoutClick : undefined}
+                
               >
                 <ListItemIcon
                   sx={{
@@ -68,7 +64,7 @@ const SideNavBarFooter: React.FC<SideNavBarFooterProps> = ({
                     color: isActive ? activeTextColor : iconColor,
                   }}
                 >
-                {React.cloneElement(item.icon, { sx: { fontSize: "2rem" } })}
+                  {React.cloneElement(item.icon, { sx: { fontSize: "2rem" } })}
                 </ListItemIcon>
                 <ListItemText
                   primary={item.text}

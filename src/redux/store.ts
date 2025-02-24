@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./auth/authSlice";
 import adminReducer from "./admin/adminSlice"
+import subscritionReducer from "./subscription/subscriptionSlice"
 
 const persistConfig = {
   key: "root",
@@ -15,7 +16,8 @@ const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: {
     auth: persistedReducer,
-    admin:adminReducer
+    admin:adminReducer,
+    subscription:subscritionReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

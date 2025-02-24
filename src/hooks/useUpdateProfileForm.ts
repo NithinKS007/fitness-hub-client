@@ -46,10 +46,10 @@ const useUpdateProfileForm = (profileData: any) => {
           phone: profileData.phone || "",
           profilePic: profileData.profilePic || "",
           role: profileData.role,
-          yearsOfExperience: profileData.trainerData?.yearsOfExperience || "",
-          certifications: profileData.trainerData?.certifications || [],
-          specializations: profileData.trainerData?.specializations || [],
-          aboutMe: profileData.trainerData?.aboutMe || "",
+          yearsOfExperience: profileData?.yearsOfExperience || "",
+          certifications: profileData?.certifications || [],
+          specializations: profileData?.specializations || [],
+          aboutMe: profileData?.aboutMe || "",
         });
       } else if (profileData.role === "user") {
         setInitialValues({
@@ -67,9 +67,9 @@ const useUpdateProfileForm = (profileData: any) => {
           age:profileData.age || "",
           height:profileData.height || "",
           weight:profileData.weight || "",
-          bloodGroup:profileData.medicalDetails?.bloodGroup || "",
-          medicalConditions:profileData.medicalDetails?.medicalConditions || "",
-          otherConcerns:profileData.medicalDetails?.otherConcerns || ""
+          bloodGroup:profileData?.bloodGroup || "",
+          medicalConditions:profileData?.medicalConditions || "",
+          otherConcerns:profileData?.otherConcerns || ""
         });
       } else {
         setInitialValues({
@@ -95,8 +95,6 @@ const useUpdateProfileForm = (profileData: any) => {
       reader.readAsDataURL(file);
     }
   }
-
-
 
   const handlePdfChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -127,8 +125,6 @@ const useUpdateProfileForm = (profileData: any) => {
 
         console.log("Formik certifications field after update:", formik.values.certifications);
 
-         
-        
       } catch (error) {
         console.error("Error reading files", error);
       }
@@ -140,11 +136,12 @@ const useUpdateProfileForm = (profileData: any) => {
     validationSchema: updateProfileValidationSchema(initialValues.role),
     onSubmit: async (values) => {
       console.log("Form values submitted:", values);
+      console.log("selected files",selectedFiles)
       console.log("Certification Files:", formik.values.certifications);
 
       try {
         const response = await dispatch(
-          updateUserProfile({ userData:{...values ,certifications:selectedFiles} })
+          updateUserProfile({ userData:{...values ,certifications:formik.values.certifications} })
         ).unwrap();
         console.log("response", response);
         dispatch(setUser(response.data));

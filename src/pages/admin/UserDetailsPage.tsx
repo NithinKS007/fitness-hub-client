@@ -1,11 +1,11 @@
 import React, { useEffect, useState} from "react";
-import Profile from "../../components/Profile";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import useUpdateProfileForm from "../../hooks/useUpdateProfileForm";
 import { useParams } from "react-router-dom";
 import { userDetails } from "../../redux/admin/adminThunk";
 import NavigationTabs from "../../components/Tabs";
+import UserProfile from "../../components/UserProfile";
 
 const UserDetailsPage: React.FC = () => {
    const [value, setValue] = useState(0);
@@ -32,14 +32,14 @@ const UserDetailsPage: React.FC = () => {
   
   return (
     <>
-     <div style={{ marginBottom: "30px", marginLeft: "150px" }}>
+     <div style={{ marginBottom: "30px", marginLeft: "105px" }}>
      <NavigationTabs
         value={value}
         handleChange={handleChange}
         tabItems={tabItems}
       />
       </div>
-      <Profile
+      <UserProfile
         formik={formik}
         isEditable={isEditable}
       />

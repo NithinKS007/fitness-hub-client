@@ -25,24 +25,48 @@ import PageNotFound from "./pages/PageNotFound";
 import ULProfile from "./layouts/ULProfile";
 import UserProfilePage from "./pages/user/UserProfilePage";
 import DBPageUser from "./pages/user/DBPageUser";
+import GetTrainer from "./pages/GetTrainer";
+import ULwithNavFooter from "./layouts/ULwithNavFooter";
+import ViewTrainerDetailsUS from "./pages/ViewTrainerDetailsUS";
+import UserSubscriptionsPage from "./pages/user/UserSubscriptionPage";
+import UserBookingsPage from "./pages/user/UserBookingsPage";
+import UserChatsPage from "./pages/user/UserChatsPage";
+import UserWalletPage from "./pages/user/UserWalletPage";
+import SubscriptionSettingPage from "./pages/trainer/SubscriptionSettingPage";
 
 const App = () => {
   return (
     <Routes>
       {/*commonRoutes*/}
-      <Route path="/" element={<HomePage />} />
       <Route path="/sign-in" element={<AuthPage />} />
       <Route path="/verify-otp" element={<OtpPage />} />
       <Route path="/forgot-password" element={<ForgotPassPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-      <Route path="/trainer-entrollment" element={<TrainerEntrollmentPage />} />
+
       <Route path="*" element={<PageNotFound />} />
+      {/* Common Routes wrapped with ULwithNavFooter layout */}
+      <Route element={<ULwithNavFooter />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/find-trainer" element={<GetTrainer />} />
+        <Route
+          path="/trainer-entrollment"
+          element={<TrainerEntrollmentPage />}
+        />
+        <Route path="/trainer-details/" element={<ViewTrainerDetailsUS />} />
+      </Route>
 
       {/*userRoutes*/}
       <Route element={<ProtectedUser />}>
         <Route element={<ULProfile />}>
-          <Route path="/user/profile" element={<UserProfilePage />} />
           <Route path="/user/dashboard" element={<DBPageUser />} />
+          <Route
+            path="/user/subscriptions"
+            element={<UserSubscriptionsPage />}
+          />
+          <Route path="/user/profile" element={<UserProfilePage />} />
+          <Route path="/user/bookings" element={<UserBookingsPage />} />
+          <Route path="/user/chats" element={<UserChatsPage />} />
+          <Route path="/user/wallet" element={<UserWalletPage />} />
         </Route>
       </Route>
 
@@ -75,6 +99,7 @@ const App = () => {
             element={<SessionSchedulesPage />}
           />
           <Route path="/trainer/profile" element={<TrainerProfilePage />} />
+          <Route path="/trainer/subscription" element={<SubscriptionSettingPage />} />
         </Route>
       </Route>
     </Routes>

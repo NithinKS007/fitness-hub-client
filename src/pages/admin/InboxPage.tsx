@@ -10,6 +10,7 @@ import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import Button from "@mui/material/Button";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 interface TableColumn {
   label: string;
@@ -77,9 +78,15 @@ const InboxPage: React.FC = () => {
 
   const handleTrainerApproveOrReject = async (_id: string, action: string) => {
     console.log("id for approval", _id, action);
-    const response = await dispatch(updatedApprovalStatus({ _id, action }));
-
-    console.log("Response", response);
+   
+    try {
+      const response = await dispatch(updatedApprovalStatus({ _id, action })).unwrap()
+      console.log("Response", response);
+      showSuccessToast(`${response.message}`)
+    } catch (error) {
+       console.log(`API Error ${error}`);
+      showErrorToast(`${error}`);
+    }
   };
 
   const fetchedTrainersData =
@@ -88,7 +95,7 @@ const InboxPage: React.FC = () => {
           .filter((trainer: User) => {
             return (
               trainer?.role === "trainer" &&
-              trainer?.trainerData?.isApproved === false &&
+              trainer?.isApproved === false &&
               (trainer?.otpVerified === true ||
                 trainer?.googleVerified === true)
             );
@@ -103,11 +110,12 @@ const InboxPage: React.FC = () => {
               slno: index + 1,
               createdAt: `${formattedDate} ${formattedTime}`,
               verified: trainer.otpVerified || trainer.googleVerified,
-              isApproved: trainer.trainerData?.isApproved,
+              isApproved: trainer?.isApproved,
               actions: (
                 <>
                   <Button
                     size="small"
+
                     onClick={() =>
                       handleTrainerApproveOrReject(
                         trainer?._id as string,
@@ -115,7 +123,7 @@ const InboxPage: React.FC = () => {
                       )
                     }
                     sx={{ fontSize: "14px", marginRight: "8px" }}
-                    variant="outlined"
+                    variant="text"
                   >
                     Approve
                   </Button>
@@ -128,7 +136,7 @@ const InboxPage: React.FC = () => {
                       )
                     }
                     sx={{ fontSize: "14px", color: "red", borderColor: "red" }}
-                    variant="outlined"
+                    variant="text"
                   >
                     Reject
                   </Button>

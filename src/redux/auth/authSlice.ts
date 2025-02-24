@@ -11,6 +11,7 @@ import {
   trainerEntroll,
   updateUserProfile,
   signOutUser,
+  updatePassword,
 } from "./authThunk";
 
 const initialState: AuthUser = {
@@ -194,7 +195,22 @@ const authSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to sign out user";
-      });
+      })
+      //change Password in user profile
+      .addCase(updatePassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updatePassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to update password of the user";
+      })
   },
 });
 

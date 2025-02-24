@@ -44,7 +44,7 @@ export const AppBar = styled(MuiAppBar, {
   zIndex: theme.zIndex.drawer + 1,
   backgroundColor: "white",
   boxShadow: "none",
-  borderBottom: "2px solid #f0f0f0",
+  borderBottom: "1px solid #f0f0f0",
 }));
 
 export const Drawer = styled(MuiDrawer, {
@@ -57,5 +57,6 @@ export const Drawer = styled(MuiDrawer, {
   "& .MuiDrawer-paper": {
     ...(open ? openedMixin(theme) : closedMixin(theme)),
     boxShadow: open ? "none" : "none",
+    backgroundColor: "#303234",
   },
 }));

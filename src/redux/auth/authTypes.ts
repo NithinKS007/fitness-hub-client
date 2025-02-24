@@ -19,18 +19,16 @@ export interface User {
   gender?: "male" | "female";
   height?: string;
   weight?: string;
-  trainerData?: {
-    yearsOfExperience?: string;
-    specializations?: string[];
-    certifications?: string[];
-    isApproved?: boolean;
-    aboutMe?: string;
-  };
-  medicalDetails: {
-    bloodGroup?: string;
-    medicalConditions?: string;
-    otherConcerns?: string;
-  };
+
+  yearsOfExperience?: string;
+  specializations?: string[];
+  certifications?: string[];
+  isApproved?: boolean;
+  aboutMe?: string;
+
+  bloodGroup?: string;
+  medicalConditions?: string;
+  otherConcerns?: string;
 }
 
 export interface SignupUser {
@@ -83,4 +81,9 @@ export interface RequestPasswordChange {
 
 export interface RequestGoogleAuth {
   token: string;
+}
+
+export interface RequestUpdatePassword {
+  password: string;
+  newPassword: string;
 }

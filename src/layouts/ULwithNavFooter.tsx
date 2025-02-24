@@ -3,18 +3,18 @@ import TopNavBar from "../components/TopNavBar";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import Footer from "../components/Footer";
+import { Outlet } from "react-router-dom";
 
-interface ULwithNavFooterProps {
-  children: React.ReactNode; 
-}
-const ULwithNavFooter: React.FC<ULwithNavFooterProps> = ({ children }) => {
+const ULwithNavFooter: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen flex flex-col">
       <TopNavBar user={user} />
-      {children}
-      <Footer/>
+      <main className="flex-1">
+        <Outlet /> 
+      </main>
+      <Footer />
     </div>
   );
 };

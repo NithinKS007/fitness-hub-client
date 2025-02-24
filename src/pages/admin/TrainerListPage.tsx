@@ -91,7 +91,7 @@ const TrainerListPage: React.FC = () => {
             slno: index + 1,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: trainer.otpVerified || trainer.googleVerified,
-            isApproved: trainer?.trainerData?.isApproved,
+            isApproved: trainer?.isApproved,
             details: (
               <Button
                 onClick={() => handleTrainerDetails(trainer?._id as string)}

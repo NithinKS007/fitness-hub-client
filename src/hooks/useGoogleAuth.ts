@@ -14,12 +14,15 @@ const useGoogleAuth = () => {
       const response = await dispatch(
         googleAuth({ token: res.credential })
       ).unwrap();
-      dispatch(setUser(response.data));
+
+       console.log("response",response)
+       localStorage.setItem('accessToken', response.data.accessToken);
+       dispatch(setUser(response.data.userData));
       showSuccessToast(
-        `${response.message} Welcome back ${response.data.fname}`
+        `${response.message} Welcome back ${response.data.userData.fname}`
       );
 
-      switch (response.data.role) {
+      switch (response.data.userData.role) {
         case "user":
           navigate("/user/dashboard");
           break;

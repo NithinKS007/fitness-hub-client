@@ -24,11 +24,22 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({
         value={value}
         onChange={handleChange}
         role="navigation"
-        indicatorColor="primary"
-        textColor="primary"
+        sx={{ marginLeft: "10px" }}
       >
         {tabItems.map((item, index) => (
-          <Tab key={index} label={item.label} component={Link} to={item.path} />
+          <Tab
+            key={index}
+            label={item.label}
+            component={Link}
+            to={item.path}
+            sx={{
+              backgroundColor: value === index ? "rgba(0, 123, 255, 0.1)" : "transparent", 
+              color: value === index ? "blue" : "inherit",
+              "&:hover": {
+                backgroundColor: value === index ? "rgba(0, 123, 255, 0.2)" : "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          />
         ))}
       </Tabs>
     </>

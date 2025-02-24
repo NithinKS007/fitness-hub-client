@@ -14,9 +14,7 @@ interface SideNavBarProps {
   navItemsFooter: { icon: JSX.Element; text: string; path: string }[];
   open: boolean;
   onDrawerToggle: () => void;
-  onSettingsClick: () => void;
   onLogoutClick: () => void;
-  onProfileClick: () => void;
   theme: Theme;
   location: any;
 }
@@ -25,16 +23,14 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
   navItems,
   open,
   onDrawerToggle,
-  onSettingsClick,
   onLogoutClick,
-  onProfileClick,
   theme,
   location,
   navItemsFooter,
 }) => {
-  const drawerBgColor = "#1e3a8a";
+  const drawerBgColor = "#1d4ed8";
   const hoverBgColor = "rgba(0, 0, 0, 0.2)";
-  const iconColor = "#616161";
+  const iconColor = "#757575"; 
   const textColor = "#616161";
   const activeTextColor = "white";
 
@@ -46,7 +42,6 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
         open={open}
         theme={theme}
         iconColor={iconColor}
-        onProfileClick={onProfileClick}
       />
       <Drawer
         variant="permanent"
@@ -88,7 +83,6 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
           iconColor={iconColor}
           textColor={textColor}
           activeTextColor={activeTextColor}
-          onSettingsClick={onSettingsClick}
           onLogoutClick={onLogoutClick}
         />
       </Drawer>

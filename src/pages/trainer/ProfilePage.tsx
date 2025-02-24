@@ -14,9 +14,9 @@ const TrainerProfilePage: React.FC = () => {
 
   const tabItems = [
     { label: "Profile", path: "/trainer/profile" },
-    { label: "Schedule Adding", path: "/trainer/schedule-setting" },
+    { label: "Subscription", path: "/trainer/subscription" },
     { label: "Add video & Docs for clients", path: "/trainer/add-video" },
-  ];
+  ]
 
   const trainerProfileData = useSelector(
     (state: RootState) => state?.auth?.user
@@ -27,7 +27,7 @@ const TrainerProfilePage: React.FC = () => {
 
   return (
     <>
-      <div style={{ marginBottom: "20px", marginLeft: "150px" }}>
+      <div style={{ marginBottom: "20px", marginLeft: "50px" }}>
         <NavigationTabs
           value={value}
           handleChange={handleChange}

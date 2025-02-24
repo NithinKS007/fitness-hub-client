@@ -13,54 +13,56 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import Avatar from "@mui/material/Avatar";
-import { useState,useRef } from "react";
+import { useState, useRef } from "react";
 
 interface AccountDropDownProps {
-  color:any,
+  color: any;
   user: any;
   redirectToLogin: () => void;
-  signout:()=>void
+  signout: () => void;
 }
 const userMenuItems = [
   { label: "Dashboard", action: "user-dashboard", path: "/user/dashboard" },
-  { label: "Subscriptions", action: "user-subscriptions", path: "/user/subscriptions",
+  {
+    label: "Subscriptions",
+    action: "user-subscriptions",
+    path: "/user/subscriptions",
   },
-  { label: "Profile", action: "user-profile", path: "/user/profile",
-  },
+  { label: "Profile", action: "user-profile", path: "/user/profile" },
   { label: "Bookings", action: "user-bookings", path: "/user/bookings" },
   { label: "Chats", action: "user-chats", path: "/user/chats" },
   { label: "Wallet", action: "user-wallet", path: "/user/wallet" },
-  { label: "Signout", action: "signout" },
+  { label: "Signout", action: "signout", path: "" },
 ];
 
 const adminMenuItems = [
-
   { label: "Dashboard", action: "admin-dashboard", path: "/admin/dashboard" },
   { label: "Users", action: "admin-users", path: "/admin/users" },
   { label: "Trainers", action: "admin-trainers", path: "/admin/trainers" },
   { label: "Inbox", action: "admin-inbox", path: "/admin/inbox" },
   { label: "Settings", action: "admin-settings", path: "/admin/settings" },
-  { label: "Signout", action: "signout" },
-
-]
+  { label: "Signout", action: "signout", path: "" },
+];
 
 const trainerMenuItems = [
-
-  { label: "Dashboard", action: "trainer-dashboard", path: "/trainer/dashboard" },
+  {
+    label: "Dashboard",
+    action: "trainer-dashboard",
+    path: "/trainer/dashboard",
+  },
   { label: "Clients", action: "trainer-clients", path: "/trainer/clients" },
   { label: "Chat", action: "trainer-chat", path: "/trainer/chat" },
   { label: "Sessions", action: "trainer-sessions", path: "/trainer/sessions" },
   { label: "Profile", action: "trainer-profile", path: "/trainer/profile" },
   { label: "Settings", action: "trainer-settings", path: "/trainer/settings" },
-  { label: "Signout", action: "signout",}
-   
-]
+  { label: "Signout", action: "signout", path: "" },
+];
 
 const AccountDropDown: React.FC<AccountDropDownProps> = ({
   color,
   user,
   redirectToLogin,
-  signout
+  signout,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
@@ -72,7 +74,10 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
   };
 
   const handleClose = (event: Event | React.SyntheticEvent) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+    if (
+      anchorRef.current &&
+      anchorRef.current.contains(event.target as HTMLElement)
+    ) {
       return;
     }
     setOpen(false);
@@ -154,7 +159,7 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
   };
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2}}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
       {user ? (
         <IconButton
           sx={{ color: "#1a1a1a", padding: "8px" }}
@@ -189,14 +194,23 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
                       aria-labelledby="composition-button"
                       onKeyDown={handleListKeyDown}
                     >
-                      {getMenuItems().map((item:{label:string,action:string,path ?:string}, index:number) => (
-                        <MenuItem
-                          key={index}
-                          onClick={() => handleMenuAction(item.action)}
-                        >
-                          {item.label}
-                        </MenuItem>
-                      ))}
+                      {getMenuItems().map(
+                        (
+                          item: {
+                            label: string;
+                            action: string;
+                            path?: string;
+                          },
+                          index: number
+                        ) => (
+                          <MenuItem
+                            key={index}
+                            onClick={() => handleMenuAction(item.action)}
+                          >
+                            {item.label}
+                          </MenuItem>
+                        )
+                      )}
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>
@@ -207,11 +221,11 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
             <Avatar
               alt="Profile"
               src={userData.profilePic}
-              sx={{ width: 35, height: 35,color:color }}
+              sx={{ width: 35, height: 35, color: color }}
             />
           ) : (
-            <Avatar sx={{ width: 35, height: 35,color:color}}>
-              <AccountCircleIcon sx={{ fontSize: 35 ,color:color}} />
+            <Avatar sx={{ width: 35, height: 35, color: color }}>
+              <AccountCircleIcon sx={{ fontSize: 35, color: color }} />
             </Avatar>
           )}
         </IconButton>
@@ -227,12 +241,11 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
           }}
           onClick={redirectToLogin}
         >
-          SIGN IN
+          GET STARTED
         </Button>
       )}
     </Box>
   );
 };
-
 
 export default AccountDropDown;
