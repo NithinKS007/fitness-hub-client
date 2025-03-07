@@ -1,7 +1,12 @@
 import { Button } from "@mui/material";
 import { FilterList } from "@mui/icons-material";
+import React from "react";
 
-const FilterButton = ({ onClick }: { onClick: () => void }) => {
+interface FilterButtonProps {
+  onClick: () => void;
+}
+
+const FilterButton:React.FC<FilterButtonProps> = ({ onClick }) => {
   return (
     <Button
       sx={{
@@ -15,7 +20,7 @@ const FilterButton = ({ onClick }: { onClick: () => void }) => {
         fontSize: "16px",
         textTransform: "none",
       }}
-      onClick={onClick} 
+      onClick={onClick}
     >
       <FilterList sx={{ fontSize: 20, marginRight: 1, color: "#333" }} />
       Filter

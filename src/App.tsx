@@ -33,7 +33,10 @@ import UserBookingsPage from "./pages/user/UserBookingsPage";
 import UserChatsPage from "./pages/user/UserChatsPage";
 import UserWalletPage from "./pages/user/UserWalletPage";
 import SubscriptionSettingPage from "./pages/trainer/SubscriptionSettingPage";
-
+import OnSuccessPage from "./components/OnSuccessPage";
+import OnFailurePage from "./components/OnFailurePage";
+import AddContentsPage from "./pages/trainer/AddContentsPage";
+import TrainerSubscriptionDetailsPage from "./pages/admin/TrainerSubscriptionDetailsPage";
 const App = () => {
   return (
     <Routes>
@@ -43,8 +46,11 @@ const App = () => {
       <Route path="/forgot-password" element={<ForgotPassPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
+      <Route path="/subscription-success" element={<OnSuccessPage />} />
+      <Route path="/subscription-failed" element={<OnFailurePage />} />
+
       <Route path="*" element={<PageNotFound />} />
-      {/* Common Routes wrapped with ULwithNavFooter layout */}
+
       <Route element={<ULwithNavFooter />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/find-trainer" element={<GetTrainer />} />
@@ -52,7 +58,10 @@ const App = () => {
           path="/trainer-entrollment"
           element={<TrainerEntrollmentPage />}
         />
-        <Route path="/trainer-details/" element={<ViewTrainerDetailsUS />} />
+        <Route
+          path="/trainer-details/:_id"
+          element={<ViewTrainerDetailsUS />}
+        />
       </Route>
 
       {/*userRoutes*/}
@@ -81,6 +90,10 @@ const App = () => {
             path="/admin/trainer-details/:_id"
             element={<TrainerDetailsPage />}
           />
+           <Route
+            path="/admin/trainer-subscriptions/:_id"
+            element={<TrainerSubscriptionDetailsPage />}
+          />
           <Route
             path="/admin/user-details/:_id"
             element={<UserDetailsPage />}
@@ -98,8 +111,15 @@ const App = () => {
             path="/trainer/session-schedules"
             element={<SessionSchedulesPage />}
           />
+          <Route
+            path="/trainer/add-contents"
+            element={<AddContentsPage />}
+          />
           <Route path="/trainer/profile" element={<TrainerProfilePage />} />
-          <Route path="/trainer/subscription" element={<SubscriptionSettingPage />} />
+          <Route
+            path="/trainer/subscriptions"
+            element={<SubscriptionSettingPage />}
+          />
         </Route>
       </Route>
     </Routes>

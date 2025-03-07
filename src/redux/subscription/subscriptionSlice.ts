@@ -1,20 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { SubscriptionState } from "./subscriptionTypes";
-import { addSubscription, getTrainerSubscriptions } from "./subscriptionThunk"; 
+import {
+  addSubscription,
+  cancelSubscriptionUser,
+  deleteSubscription,
+  getSubscribedDetails,
+  getTrainerSubscribedUsers,
+  getTrainerSubscriptionById,
+  getTrainerSubscriptions,
+  getUserSubscriptionsData,
+  purchaseSubscription,
+  updateSubscription,
+  updateSubscriptionBlockStatus,
+} from "./subscriptionThunk";
 
 const initialState: SubscriptionState = {
   isLoading: false,
   error: null,
   subscriptions: [],
+  userSubscribedTrainerPlans:[],
+  subscribersOfTrainer:[]
 };
 
 const subscriptionSlice = createSlice({
   name: "subscription",
   initialState,
-  reducers: {},
+  reducers: {
+  },
   extraReducers: (builder) => {
     builder
-    //add subscriptions
+      //add subscriptions
       .addCase(addSubscription.pending, (state) => {
         state.isLoading = true;
       })
@@ -38,7 +53,7 @@ const subscriptionSlice = createSlice({
       .addCase(getTrainerSubscriptions.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.subscriptions = action.payload.data
+        state.subscriptions = action.payload.data;
       })
       .addCase(getTrainerSubscriptions.rejected, (state, action) => {
         state.isLoading = false;
@@ -46,8 +61,185 @@ const subscriptionSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to get trainer subscriptions";
-      });
+      })
+
+      //update block status
+      .addCase(updateSubscriptionBlockStatus.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateSubscriptionBlockStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const updatedSubscription = action.payload.data;
+
+        console.log("subscription payload");
+        state.subscriptions = state.subscriptions.map((sub) =>
+          sub._id === updatedSubscription._id ? updatedSubscription : sub
+        );
+        state.error = null;
+      })
+
+      .addCase(updateSubscriptionBlockStatus.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to update subscription block status";
+      })
+
+      // delete subscriptions
+      .addCase(deleteSubscription.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteSubscription.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const updatedSubscription = action.payload.data;
+        state.subscriptions = state.subscriptions.filter(
+          (sub) => sub._id !== updatedSubscription._id
+        );
+        state.error = null;
+      })
+
+      .addCase(deleteSubscription.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to delete subscription";
+      })
+      .addCase(updateSubscription.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateSubscription.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const updatedSubscription = action.payload.data;
+        state.subscriptions = state.subscriptions.map((sub) =>
+          sub._id === updatedSubscription._id ? updatedSubscription : sub
+        );
+        state.error = null;
+      })
+
+      .addCase(updateSubscription.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to edit subscription";
+      })
+
+      .addCase(getTrainerSubscriptionById.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getTrainerSubscriptionById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.subscriptions = action.payload.data;
+      })
+      .addCase(getTrainerSubscriptionById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get trainer subscription by id";
+      })
+
+      //redirect to subscription checkout
+      .addCase(purchaseSubscription.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(purchaseSubscription.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(purchaseSubscription.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to redirect to subscription checkout";
+      })
+      
+      .addCase(getSubscribedDetails.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSubscribedDetails.fulfilled, (state,action) => {
+
+        console.log("paylooad data coming",action.payload)
+        state.isLoading = false;
+        state.error = null;
+        state.userSubscribedTrainerPlans = [
+          ...state.userSubscribedTrainerPlans,
+          action.payload.data.subscriptionData,
+        ];
+      })
+      .addCase(getSubscribedDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get subscription data for state update";
+      })
+
+      //get list of user subscribed plans
+      .addCase(getUserSubscriptionsData.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserSubscriptionsData.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.userSubscribedTrainerPlans = action.payload.data
+      })
+      .addCase(getUserSubscriptionsData.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get user subscribed trainers data";
+      })
+      //get list of subscribers of trainer
+      .addCase(getTrainerSubscribedUsers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getTrainerSubscribedUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.subscribersOfTrainer = action.payload.data
+      })
+      .addCase(getTrainerSubscribedUsers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get subscribers of trainer";
+      })
+
+      .addCase(cancelSubscriptionUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(cancelSubscriptionUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        const {stripeSubscriptionId ,isActive,cancelAction} = action.payload.data.subscriptionCancelledData
+
+        if(cancelAction==="cancelImmediately") {
+          state.userSubscribedTrainerPlans = state.userSubscribedTrainerPlans.map((sub) => {
+            if (stripeSubscriptionId === sub.stripeSubscriptionId) {
+              return { ...sub, isActive }; 
+            }
+            return sub;
+        })
+        }
+      
+      })
+      .addCase(cancelSubscriptionUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to cancel user subscriptions";
+      })
+    
   },
 });
+
 
 export default subscriptionSlice.reducer;

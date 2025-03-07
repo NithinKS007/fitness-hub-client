@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AdminState } from "./adminTypes";
 import {
+  getApprovalPendingList,
+  getTrainers,
   getUsers,
+  trainerDetails,
   updatedApprovalStatus,
   updateUserBlockStatus,
   userDetails,
@@ -12,7 +15,8 @@ const initialState: AdminState = {
   trainers: [],
   isLoading: false,
   error: null,
-  userDetails : {}
+  userDetails: {},
+  trainerDetails: {}
 };
 
 const adminSlice = createSlice({
@@ -21,17 +25,13 @@ const adminSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      //fetch users based on the role data
+      //fetch users
       .addCase(getUsers.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        if (action.meta.arg === "user") {
-          state.users = action.payload.data;
-        } else if (action.meta.arg === "trainer") {
-          state.trainers = action.payload.data;
-        }
+        state.users = action.payload.data;
         state.error = null;
       })
       .addCase(getUsers.rejected, (state, action) => {
@@ -40,6 +40,22 @@ const adminSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to fetch users";
+      })
+      //fetch trainers
+      .addCase(getTrainers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getTrainers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.trainers = action.payload.data;
+        state.error = null;
+      })
+      .addCase(getTrainers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to fetch trainers";
       })
       //update user block status
       .addCase(updateUserBlockStatus.pending, (state) => {
@@ -59,7 +75,7 @@ const adminSlice = createSlice({
         }
         state.error = null;
       })
-      //fetch list to approve or reject trainer
+
       .addCase(updateUserBlockStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
@@ -67,23 +83,43 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to update block status";
       })
+
+      //fetch trainer approval list
+      .addCase(getApprovalPendingList.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getApprovalPendingList.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.trainers = action.payload.data
+        state.error = null
+      })
+      .addCase(getApprovalPendingList.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get trainers list for approval";
+      })
+
+      //fetch  approve or reject trainer
       .addCase(updatedApprovalStatus.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(updatedApprovalStatus.fulfilled, (state, action) => {
         state.isLoading = false;
-        const { action:trainerAction } = action.meta.arg;
+        const { action: trainerAction } = action.meta.arg;
         const updatedUser = action.payload.data;
 
-        if(trainerAction==="rejected"){
-           state.trainers = state.trainers.filter((trainer)=>trainer._id!==updatedUser._id)
+        if (trainerAction === "rejected") {
+          state.trainers = state.trainers.filter(
+            (trainer) => trainer._id !== updatedUser._id
+          );
         } else {
           state.trainers = state?.trainers?.map((trainer) =>
             trainer._id === updatedUser._id ? updatedUser : trainer
           );
           state.error = null;
         }
-        
       })
       .addCase(updatedApprovalStatus.rejected, (state, action) => {
         state.isLoading = false;
@@ -92,22 +128,38 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to update trainer approval status";
       })
-        //fetching user or trainers details
-        .addCase(userDetails.pending, (state) => {
-          state.isLoading = true;
-        })
-        .addCase(userDetails.fulfilled, (state,action) => {
-          state.isLoading = false;
-          state.userDetails = action.payload.data
-          state.error = null;
-        })
-        .addCase(userDetails.rejected, (state, action) => {
-          state.isLoading = false;
-          state.error =
-            typeof action.payload === "string"
-              ? action.payload
-              : "Failed to retrieve userDetails";
-        })
+      //fetching user details
+      .addCase(userDetails.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(userDetails.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userDetails = action.payload.data;
+        state.error = null;
+      })
+      .addCase(userDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to retrieve userDetails";
+      })
+      .addCase(trainerDetails.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(trainerDetails.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.trainerDetails = action.payload.data;
+        state.error = null;
+      })
+      .addCase(trainerDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to retrieve trainerDetails";
+      });
+
   },
 });
 

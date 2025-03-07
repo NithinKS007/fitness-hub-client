@@ -17,7 +17,8 @@ interface TrainerAuthFormProps {
   formik: any;
 }
 
-const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
+const 
+TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
   open,
   handleClose,
   formik,
@@ -31,7 +32,6 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backdropFilter: "blur(3px)", // Subtle blur effect for background
       }}
     >
       <Paper
@@ -44,7 +44,7 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
           width: "85%",
           maxWidth: 600,
           borderRadius: 3,
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
           p: 4,
           backgroundColor: "#fff",
         }}
@@ -67,7 +67,7 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
           sx={{
             fontWeight: 500,
             mb: 3,
-            color: "#202124", // Google-inspired text color
+            color: "#202124",
           }}
         >
           Trainer Enrollment Form

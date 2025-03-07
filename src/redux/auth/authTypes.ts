@@ -1,7 +1,35 @@
+import { Subscription } from "../subscription/subscriptionTypes";
+
 export type Role = "user" | "admin" | "trainer";
 
 export interface User {
-  _id?: string;
+  _id: string;
+  fname: string;
+  lname: string;
+  email: string;
+  password: string;
+  role?: Role;
+  isBlocked?: boolean;
+  otpVerified?: boolean;
+  googleVerified?: boolean;
+  phone?: string;
+  profilePic?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  dateOfBirth?: string;
+  age?: string;
+  gender?: "male" | "female";
+  height?: string;
+  weight?: string;
+
+  bloodGroup?: string;
+  medicalConditions?: string;
+  otherConcerns?: string;
+}
+
+export interface Trainer {
+  trainerCollectionOriginalId:string,
+  _id: string;
   fname: string;
   lname: string;
   email: string;
@@ -22,13 +50,13 @@ export interface User {
 
   yearsOfExperience?: string;
   specializations?: string[];
-  certifications?: string[];
+  certifications?: { fileName: string; url: string }[];
   isApproved?: boolean;
   aboutMe?: string;
+}
 
-  bloodGroup?: string;
-  medicalConditions?: string;
-  otherConcerns?: string;
+export interface TrainerWithSubscriptionDetails extends Trainer{
+  subscriptionDetails :Subscription[]
 }
 
 export interface SignupUser {

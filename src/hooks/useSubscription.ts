@@ -1,22 +1,36 @@
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { subscriptionValidationSchema } from "../utils/validationSchema";
 import {
   addSubscription,
+  deleteSubscription,
   getTrainerSubscriptions,
+  updateSubscription,
+  updateSubscriptionBlockStatus,
 } from "../redux/subscription/subscriptionThunk";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { useModal } from "./useModal";
 import { useSelector } from "react-redux";
+import { updateBlockStatus } from "../redux/admin/adminTypes";
 
 const useSubscription = () => {
-  const planTypes = ["premium", "silver", "gold"];
-  const subPeriods = ["monthly", "yearly", "quarterly", "halfYearly"];
-  const { handleClose } = useModal();
+
+  const { subscriptions, isLoading, error } = useSelector(
+    (state: RootState) => state.subscription
+  );
+
+  const allSubPeriods = ["monthly", "yearly", "quarterly", "halfYearly"];
+  const subscriptionPeriods = subscriptions.map(sub => sub.subPeriod);
+
+  const newSubs = allSubPeriods.filter((sub) => !subscriptionPeriods.includes(sub));
+  
+  const { handleClose : modalHandleClose,handleOpen,open } = useModal();
 
   const dispatch = useDispatch<AppDispatch>();
+  const [isEditMode, setIsEditMode] = useState(false);
+
 
   const calculateDurationInWeeks = (period: string) => {
     switch (period) {
@@ -35,7 +49,6 @@ const useSubscription = () => {
 
   const formik = useFormik({
     initialValues: {
-      planType: "",
       subPeriod: "",
       price: 0,
       durationInWeeks: 0,
@@ -50,7 +63,7 @@ const useSubscription = () => {
         const totalSessions = durationInWeeks * values.sessionsPerWeek;
 
         const subscriptionData = {
-          planType: values.planType,
+          _id: isEditMode ? editId : undefined,
           subPeriod: values.subPeriod,
           price: Number(values.price),
           durationInWeeks,
@@ -58,19 +71,25 @@ const useSubscription = () => {
           totalSessions,
         };
 
-        const response = await dispatch(
-          addSubscription(subscriptionData)
-        ).unwrap();
-        handleClose();
-        console.log("Subscription added:", response);
-        formik.resetForm();
-        showSuccessToast(`${response.message}`);
+        if(isEditMode && editId){
+          const response = await dispatch(updateSubscription({subscriptionData})).unwrap();
+          showSuccessToast(`${response.message}`);
+   
+        } else {
+          const response = await dispatch(
+            addSubscription(subscriptionData)
+          ).unwrap();
+          showSuccessToast(`${response.message}`);
+        }
+        handleClose()
       } catch (error) {
-        console.error("API Error:", error);
+        console.error("API Error:", error); 
         showErrorToast(`${error}`);
       }
     },
   });
+  const [currentSubPeriod, setCurrentSubPeriod] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
     const durationInWeeks = calculateDurationInWeeks(formik.values.subPeriod);
@@ -80,7 +99,6 @@ const useSubscription = () => {
     formik.setFieldValue("totalSessions", totalSessions);
   }, [formik.values.subPeriod, formik.values.sessionsPerWeek]);
 
-  //fetch subscriptions data
   const fetchTrainerSubscriptions = async () => {
     await dispatch(getTrainerSubscriptions());
   };
@@ -89,36 +107,81 @@ const useSubscription = () => {
     fetchTrainerSubscriptions();
   }, [dispatch]);
 
-  const { subscriptions, isLoading, error } = useSelector(
-    (state: RootState) => state.subscription
-  );
 
 
-  const UpdateSubsBlockstatus = async () => {
-
+  const UpdateSubsBlockstatus = async (status: updateBlockStatus) => {
+    const { _id, isBlocked } = status;
+    try {
+      const response = await dispatch(
+        updateSubscriptionBlockStatus({ _id, isBlocked })
+      ).unwrap();
+      showSuccessToast(
+        response.data.isBlocked
+          ? "The subscription plan is not available to the user."
+          : "The subscription plan is available."
+      );
+    } catch (error) {
+      console.error("API Error:", error);
+      showErrorToast(`${error}`);
+    }
   };
 
-  const deleteSubscription = async (_id: string) => {
+  const deleteSubs = async (_id: string) => {
+    try {
+      const response = await dispatch(deleteSubscription(_id)).unwrap()
+      showSuccessToast(`${response.message}`)
+    } catch (error) {
+      console.error("API Error:", error);
+      showErrorToast(`${error}`);
+    }
 
-  };
+  }
 
   const editSubscription = async (_id: string) => {
+    const subscriptionToEdit = subscriptions.find(sub=>sub._id===_id)
+    console.log("to edit",subscriptionToEdit)
+    if(subscriptionToEdit){
+      setEditId(_id);
+      setIsEditMode(true);
+      setCurrentSubPeriod(subscriptionToEdit.subPeriod); 
+      formik.setValues({
+        subPeriod: subscriptionToEdit.subPeriod,
+        price: subscriptionToEdit.price,
+        durationInWeeks: subscriptionToEdit.durationInWeeks,
+        sessionsPerWeek: subscriptionToEdit.sessionsPerWeek,
+        totalSessions: subscriptionToEdit.totalSessions,
+      });
+      handleOpen()
+    }
     
   };
+  const handleClose = () => {
+    modalHandleClose(); 
+    formik.resetForm();
+    setIsEditMode(false);
+    setEditId(null);
+  };
 
+  const subPeriodsForForm = isEditMode && currentSubPeriod
+    ? [currentSubPeriod, ...newSubs.filter(sub => sub !== currentSubPeriod)] 
+    : newSubs;
 
   return {
     UpdateSubsBlockstatus,
-    deleteSubscription,
+    deleteSubs,
     editSubscription,
 
     subscriptions,
-    isLoading, 
-    error, 
+    isLoading,
+    error,
 
-    planTypes, 
-    subPeriods, 
-    formik, 
+    subPeriods:subPeriodsForForm,
+    formik,
+    isEditMode,
+
+    handleOpen, 
+    handleClose,
+    open, 
   };
 };
 

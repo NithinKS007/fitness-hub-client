@@ -206,7 +206,6 @@ export const updateProfileValidationSchema = (role: Role) => {
 };
 
 export const subscriptionValidationSchema = Yup.object({
-  planType: Yup.string().required("Plan type is required"),
   subPeriod: Yup.string().required("Subscription period is required"),
   price: Yup.number()
     .required("Price is required")

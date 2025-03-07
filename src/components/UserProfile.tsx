@@ -32,8 +32,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
     <>
       <Box
         sx={{
-          width: "85%",
-          maxWidth: "1500px",
+          width: "80%",
+          maxWidth: "1000px",
           marginX: "auto",
           marginBottom: "15px",
           display: "flex",
@@ -43,7 +43,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
       >
         <Paper sx={{ p: 3, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
-            Personal Information
+           ACCOUNT INFORMATION
           </Typography>
           <Divider sx={{ mb: 3 }} />
 
@@ -58,6 +58,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               sx={{
                 display: "flex",
                 justifyContent: "center",
+                alignItems: "center",
                 flex: { md: "0 0 25%" },
                 mb: { xs: 3, md: 0 },
               }}
@@ -106,8 +107,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   error={formik.touched.fname && Boolean(formik.errors.fname)}
                   helperText={formik.touched.fname && formik.errors.fname}
                   disabled={!isEditable}
-                  size="small" // Already small, kept as is
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
                 <TextField
                   name="lname"
@@ -119,8 +120,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   error={formik.touched.lname && Boolean(formik.errors.lname)}
                   helperText={formik.touched.lname && formik.errors.lname}
                   disabled={!isEditable}
-                  size="small" // Already small, kept as is
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
                 <TextField
                   fullWidth
@@ -128,8 +129,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   name="email"
                   value={formik.values.email || ""}
                   disabled
-                  size="small" // Already small, kept as is
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
                 <TextField
                   fullWidth
@@ -141,8 +142,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   disabled={!isEditable}
                   error={formik.touched.phone && Boolean(formik.errors.phone)}
                   helperText={formik.touched.phone && formik.errors.phone}
-                  size="small" // Already small, kept as is
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
                 <FormControl
                   fullWidth
@@ -179,8 +180,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   error={formik.touched.age && Boolean(formik.errors.age)}
                   helperText={formik.touched.age && formik.errors.age}
                   disabled={!isEditable}
-                  size="small" // Already small, kept as is
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
                 <TextField
                   name="dateOfBirth"
@@ -189,7 +190,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   value={formik?.values?.dateOfBirth || ""}
                   onChange={formik?.handleChange}
                   onBlur={formik?.handleBlur}
-                  size="small" // Already small, kept as is
+                  size="small"
                   error={
                     formik.touched.dateOfBirth &&
                     Boolean(formik.errors.dateOfBirth)
@@ -198,7 +199,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                     formik.touched.dateOfBirth && formik.errors.dateOfBirth
                   }
                   disabled={!isEditable}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
                 <TextField
                   fullWidth
@@ -211,8 +212,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   disabled={!isEditable}
                   error={formik.touched.height && Boolean(formik.errors.height)}
                   helperText={formik.touched.height && formik.errors.height}
-                  size="small" // Already small, kept as is
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
                 <TextField
                   fullWidth
@@ -225,8 +226,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                   disabled={!isEditable}
                   error={formik.touched.weight && Boolean(formik.errors.weight)}
                   helperText={formik.touched.weight && formik.errors.weight}
-                  size="small" // Already small, kept as is
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
               </Box>
             </Box>
@@ -235,7 +236,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
 
         <Paper sx={{ p: 3, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
-            Health Related Details
+           HEALTH DETAILS
           </Typography>
           <Divider sx={{ mb: 3 }} />
 
@@ -252,8 +253,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                 formik.touched.bloodGroup && Boolean(formik.errors.bloodGroup)
               }
               helperText={formik.touched.bloodGroup && formik.errors.bloodGroup}
-              size="small" // Already small, kept as is
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+              size="small"
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
             />
 
             <TextField
@@ -273,8 +274,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               }
               multiline
               rows={2}
-              size="small" // Already small, kept as is
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+              size="small"
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
             />
 
             <TextField
@@ -293,21 +294,23 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               }
               multiline
               rows={2}
-              size="small" // Already small, kept as is
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+              size="small"
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
             />
           </Box>
 
           {isEditable ? (
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: "20px" }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "flex-end", mt: "20px" }}
+            >
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#1d4ed8" }}
                 onClick={() => formik.handleSubmit()}
                 disabled={!isEditable}
                 sx={{
-                  height: "48px", // Adjusted height for better proportions
-                  borderRadius: 2, // Rounded corners
+                  height: "48px",
+                  borderRadius: 2,
                 }}
               >
                 Save Changes
@@ -322,8 +325,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
       {isEditable ? (
         <Box
           sx={{
-            width: "85%",
-            maxWidth: "1500px",
+            width: "80%",
+            maxWidth: "1000px",
             marginX: "auto",
             marginBottom: "15px",
             display: "flex",
@@ -333,7 +336,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
         >
           <Paper sx={{ p: 3, borderRadius: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Change Password
+             CHANGE PASSWORD
             </Typography>
             <Divider sx={{ mb: 3 }} />
 
@@ -354,8 +357,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                 }
                 label="Current Password"
                 type="password"
-                size="small" // Already small, kept as is
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                size="small"
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
               />
               <TextField
                 fullWidth
@@ -373,8 +376,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                 }
                 label="New Password"
                 type="password"
-                size="small" // Already small, kept as is
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                size="small"
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
               />
               <TextField
                 fullWidth
@@ -392,8 +395,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                 }
                 label="Confirm New Password"
                 type="password"
-                size="small" // Already small, kept as is
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                size="small"
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
               />
             </Box>
 
@@ -406,8 +409,8 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                 onClick={() => changePasswordFormik?.handleSubmit()}
                 disabled={!isEditable}
                 sx={{
-                  height: "48px", // Adjusted height for better proportions
-                  borderRadius: 2, // Rounded corners
+                  height: "48px",
+                  borderRadius: 2,
                 }}
               >
                 Save Changes

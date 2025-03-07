@@ -7,64 +7,31 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { ChatBubbleOutline, Star } from "@mui/icons-material";
+import { ChatBubbleOutline } from "@mui/icons-material";
 
 interface TrainerGridProps {
-  isSidebarOpen: boolean;
+  trainersList: any[];
+  handleTrainerDetails: (_id: string) => void;
 }
-const demoTrainers = [
-  {
-    name: "Anurag Mishra",
-    coached: 0,
-    rating: 4,
-    slotsAvailable: 2,
-    time: ["9:00 PM", "9:30 PM"],
-  },
-  {
-    name: "John Doe",
-    coached: 10,
-    rating: 3.5,
-    slotsAvailable: 3,
-    time: ["8:00 AM", "10:00 AM"],
-  },
-  {
-    name: "Jane Smith",
-    coached: 5,
-    rating: 4.5,
-    slotsAvailable: 1,
-    time: ["11:00 AM", "2:00 PM"],
-  },
-  {
-    name: "Alice Cooper",
-    coached: 12,
-    rating: 5,
-    slotsAvailable: 4,
-    time: ["12:00 PM", "3:00 PM"],
-  },
-  {
-    name: "Bob Dylan",
-    coached: 8,
-    rating: 3,
-    slotsAvailable: 2,
-    time: ["9:00 AM", "1:00 PM"],
-  },
-];
 
-const TrainerCard = ({ trainer }: any) => {
+const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
   return (
     <Card
       sx={{
+        width: "100%",
+        maxWidth: "100%",
+        minHeight: "350px",
         borderRadius: "10px",
         boxShadow: 1,
         display: "flex",
         flexDirection: "column",
-        margin: "15px",
       }}
+      onClick={() => handleTrainerDetails(trainer._id)}
     >
       <CardContent sx={{ p: 0 }}>
         <Box
           sx={{
-            pt: 3,
+            pt: 1,
             px: 2,
             display: "flex",
             flexDirection: "column",
@@ -72,99 +39,30 @@ const TrainerCard = ({ trainer }: any) => {
             height: "100%",
           }}
         >
-          <Box
+          <Avatar
+            src={trainer.profilePic || ""}
             sx={{
-              width: 96,
-              height: 96,
-              borderRadius: "50%",
-              overflow: "hidden",
-              backgroundColor: "#f5f5f5",
+              width: "330px",
+              height: "250px",
+              borderRadius: "10px",
+              mb: 2,
+              fontSize: "80px",
+              bgcolor: "#e0e0e0",
             }}
-          >
-            <Avatar
-              sx={{
-                width: "100%",
-                height: "100%",
-                bgcolor: "#f5f5f5",
-              }}
-            />
-          </Box>
+          ></Avatar>
+
           <Typography
             variant="h6"
             sx={{
               fontSize: "20px",
               fontWeight: 500,
               color: "#1a1a1a",
-              mt: 2,
             }}
           >
-            {trainer.name}
+            {trainer.fname + " " + trainer.lname}
           </Typography>
 
-          <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-            <Star sx={{ color: "black", fontSize: "16px" }} /> 
-            <Typography sx={{ color: "#1a1a1a", ml: 1, fontSize: "16px" }}>
-              {trainer.rating} 
-            </Typography>
-            <Typography sx={{ color: "#1a1a1a", mx: 1, fontSize: "16px" }}>
-              | 
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "16px",
-                color: "#666666",
-              }}
-            >
-              {trainer.coached} People Coached
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              width: "100%",
-              bgcolor: "#f8f8f8",
-              p: 2,
-              borderRadius: "8px",
-              mt: 2,
-            }}
-          >
-            <Typography
-              sx={{ color: "#666666", fontSize: "14px", textAlign: "center" }}
-            >
-              {trainer.slotsAvailable} slots available
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mt: 1,
-              }}
-            >
-              <Box sx={{ display: "flex", flexWrap: "nowrap" }}>
-                {trainer.time.map((time: string, index: number) => (
-                  <Typography
-                    key={index}
-                    sx={{
-                      color: "#1a1a1a",
-                      fontSize: "16px",
-                      marginRight: "12px",
-                      display: "flex",
-                    }}
-                  >
-                    {time}
-                  </Typography>
-                ))}
-              </Box>
-
-              <Box>
-                <Typography sx={{ color: "#666666", ml: 1, textAlign: "end" }}>
-                  View →
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Box sx={{ display: "flex", width: "100%", mt: 2 }}>
+          <Box sx={{ display: "flex", width: "100%", mt: 1 }}>
             <Button
               variant="outlined"
               sx={{
@@ -207,14 +105,39 @@ const TrainerCard = ({ trainer }: any) => {
   );
 };
 
-const TrainerGrid: React.FC<TrainerGridProps> = ({ isSidebarOpen }) => {
+const TrainerGrid: React.FC<TrainerGridProps> = ({
+  trainersList,
+  handleTrainerDetails,
+}) => {
   return (
-    <Grid container>
-      {demoTrainers.map((trainer, index) => (
-        <Grid item xs={12} sm={6} md={isSidebarOpen ? 4 : 3} key={index}>
-          <TrainerCard trainer={trainer} />
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        justifyContent: { xs: "center", md: "flex-start" },
+      }}
+    >
+
+      {trainersList && trainersList.length > 0 ? (
+        trainersList?.map((trainer) => (
+          <Grid item key={trainer._id} xs={12} sm={6} md={4} lg={3}>
+            <TrainerCard
+              trainer={trainer}
+              handleTrainerDetails={handleTrainerDetails}
+            />
+          </Grid>
+        ))
+      ) : (
+        <Grid item xs={12}>
+          <Typography
+            variant="h6"
+            color="textSecondary"
+            sx={{ marginTop: "20px" }}
+          >
+            No Trainers Found
+          </Typography>
         </Grid>
-      ))}
+      )}
     </Grid>
   );
 };

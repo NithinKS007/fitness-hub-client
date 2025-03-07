@@ -27,7 +27,8 @@ interface TableColumn {
 interface TableProps {
   columns: TableColumn[];
   data: any[];
-  handleUpdateBlockStatus: (status: updateBlockStatus) => void;
+  handleUpdateBlockStatus?: (status: updateBlockStatus) => void;
+
 }
 
 const ReuseTable: React.FC<TableProps> = ({
@@ -37,14 +38,13 @@ const ReuseTable: React.FC<TableProps> = ({
 }) => {
   return (
     <>
-      <TableContainer
-        component={Card}
-      >
+      <TableContainer component={Card}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox" sx={{ padding: "8px" }}> 
-                <Checkbox />
+
+              <TableCell padding="checkbox" sx={{ padding: "8px" }}>
+                Block/unblock
               </TableCell>
               {columns.map((column) => (
                 <TableCell key={column.field} sx={{ padding: "8px" }}>
@@ -60,14 +60,19 @@ const ReuseTable: React.FC<TableProps> = ({
                 <TableCell padding="checkbox" sx={{ padding: "8px" }}>
                   <Checkbox
                     checked={row.isBlocked}
-                    onChange={() =>
-                      handleUpdateBlockStatus({
-                        _id: row._id,
-                        isBlocked: !row.isBlocked,
-                      })
-                    }
+                    onChange={() => {
+                      if (handleUpdateBlockStatus) {
+                        handleUpdateBlockStatus({
+                          _id: row._id,
+                          isBlocked: !row.isBlocked,
+                        });
+                      }
+                    }}
                   />
+
+                
                 </TableCell>
+
                 {columns.map((column) => (
                   <TableCell key={column.field} sx={{ padding: "8px" }}>
                     {column.field === "isBlocked" ? (
@@ -86,7 +91,9 @@ const ReuseTable: React.FC<TableProps> = ({
                       row.profilePic ? (
                         <Avatar src={row.profilePic} alt="Profile" />
                       ) : (
-                        <Avatar sx={{color:"#616161 ",backgroundColor:"#61512"}}/>
+                        <Avatar
+                          sx={{ color: "#616161 ", backgroundColor: "#61512" }}
+                        />
                       )
                     ) : column.field === "isApproved" ? (
                       row.isApproved ? (

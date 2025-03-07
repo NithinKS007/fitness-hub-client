@@ -1,21 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReuseTable from "../../components/ReuseTable";
 import { useDispatch } from "react-redux";
-import { getUsers } from "../../redux/admin/adminThunk";
+import { getTrainers } from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
 import { AppDispatch } from "../../redux/store";
-import { User } from "../../redux/auth/authTypes";
+import { Trainer } from "../../redux/auth/authTypes";
 import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; // Added Menu and MenuItem
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 interface TableColumn {
   label: string;
   field: string;
 }
+
 interface SortOption {
   value: string;
 }
@@ -57,15 +59,22 @@ const filter: FilterOption[] = [
   { value: "Not Approved" },
 ];
 const direction: DirectionOption[] = [{ value: "A to Z" }, { value: "Z to A" }];
+
 const TrainerListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { trainers, loading, error } = useSelector((state: any) => state.admin);
   const navigate = useNavigate();
-
   const handleUpdateBlockStatus = useUpdateBlockStatus();
 
+  // State for menu
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(
+    null
+  );
+  const open = Boolean(anchorEl);
+
   const fetchTrainers = async () => {
-    await dispatch(getUsers("trainer"));
+    await dispatch(getTrainers());
   };
 
   useEffect(() => {
@@ -74,14 +83,32 @@ const TrainerListPage: React.FC = () => {
 
   const handleTrainerDetails = (_id: string) => {
     navigate(`/admin/trainer-details/${_id}`);
+    handleClose();
+  };
+
+  const handleTrainerSubscriptions = (_id: string) => {
+    navigate(`/admin/trainer-subscriptions/${_id}`);
+    handleClose();
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, _id: string) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedTrainerId(_id);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedTrainerId(null);
   };
 
   if (loading) return <ShimmerTableLoader columns={columns} />;
   if (error) return <div>{error}</div>;
 
+  
+
   const fetchedTrainersData =
     trainers.length > 0
-      ? trainers.map((trainer: User, index: number) => {
+      ? trainers.map((trainer: Trainer, index: number) => {
           const dateObj = new Date(trainer.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
@@ -93,12 +120,44 @@ const TrainerListPage: React.FC = () => {
             verified: trainer.otpVerified || trainer.googleVerified,
             isApproved: trainer?.isApproved,
             details: (
-              <Button
-                onClick={() => handleTrainerDetails(trainer?._id as string)}
-                variant="outlined"
-              >
-                More
-              </Button>
+              <>
+                <IconButton
+                  onClick={(event) =>
+                    handleClick(event, trainer?._id as string)
+                  }
+                  aria-label="More options"
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Paper>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open && selectedTrainerId === trainer?._id}
+                    onClose={handleClose}
+                    sx={{
+                      "& .MuiPaper-root": {
+                        boxShadow: "none",
+                        border: 1,
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() =>
+                        handleTrainerDetails(trainer?._id as string)
+                      }
+                    >
+                      Details
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        handleTrainerSubscriptions(trainer?._id as string)
+                      }
+                    >
+                      Subscriptions
+                    </MenuItem>
+                  </Menu>
+                </Paper>
+              </>
             ),
           };
         })

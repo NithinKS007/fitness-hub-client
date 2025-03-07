@@ -47,10 +47,10 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
         variant="permanent"
         open={open}
         sx={{
-          width: open ? 290 : 100,
+          width: open ? 250 : 90,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: open ? 290 : 100,
+            width: open ? 250 : 90,
             visibility: open ? "visible" : "visible",
             transition: "width 0.3s, visibility 0s 0.3s",
             overflowX: "hidden",

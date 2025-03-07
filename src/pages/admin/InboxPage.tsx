@@ -1,16 +1,19 @@
 import React, { useEffect } from "react";
 import ReuseTable from "../../components/ReuseTable";
 import { useDispatch } from "react-redux";
-import { getUsers, updatedApprovalStatus } from "../../redux/admin/adminThunk";
+import {
+  getApprovalPendingList,
+  updatedApprovalStatus,
+} from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
-import { AppDispatch } from "../../redux/store";
-import { User } from "../../redux/auth/authTypes";
+import { AppDispatch, RootState } from "../../redux/store";
+import { Trainer } from "../../redux/auth/authTypes";
 import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
-import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import Button from "@mui/material/Button";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
+import ShimmerTableLoader from "../../components/ShimmerTable";
 
 interface TableColumn {
   label: string;
@@ -57,93 +60,84 @@ const filter: FilterOption[] = [
 const direction: DirectionOption[] = [{ value: "A to Z" }, { value: "Z to A" }];
 const InboxPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { trainers, loading, error } = useSelector((state: any) => state.admin);
+  const { trainers, isLoading, error } = useSelector(
+    (state: RootState) => state.admin
+  );
 
   const handleUpdateBlockStatus = useUpdateBlockStatus();
 
   const fetchTrainers = async () => {
-    await dispatch(getUsers("trainer"));
+    await dispatch(getApprovalPendingList());
   };
 
   useEffect(() => {
     fetchTrainers();
   }, [dispatch]);
 
-  if (loading) return <ShimmerTableLoader columns={columns} />;
   if (error) return <div>{error}</div>;
 
-  if (trainers?.length === 0) {
-    return <div>Your inbox is empty</div>;
-  }
-
   const handleTrainerApproveOrReject = async (_id: string, action: string) => {
-    console.log("id for approval", _id, action);
-   
     try {
-      const response = await dispatch(updatedApprovalStatus({ _id, action })).unwrap()
+      const response = await dispatch(
+        updatedApprovalStatus({ _id, action })
+      ).unwrap();
       console.log("Response", response);
-      showSuccessToast(`${response.message}`)
+      showSuccessToast(`${response.message}`);
     } catch (error) {
-       console.log(`API Error ${error}`);
+      console.log(`API Error ${error}`);
       showErrorToast(`${error}`);
     }
   };
 
+  const isCheckBoxButtonNeeded = true
+
+  console.log("fet", trainers);
   const fetchedTrainersData =
     trainers.length > 0
-      ? trainers
-          .filter((trainer: User) => {
-            return (
-              trainer?.role === "trainer" &&
-              trainer?.isApproved === false &&
-              (trainer?.otpVerified === true ||
-                trainer?.googleVerified === true)
-            );
-          })
-          .map((trainer: User, index: number) => {
-            const dateObj = new Date(trainer.createdAt as string);
-            const formattedDate = dateObj.toLocaleDateString("en-GB");
-            const formattedTime = dateObj.toLocaleTimeString("en-GB");
+      ? trainers.map((trainer: Trainer, index: number) => {
+          const dateObj = new Date(trainer.createdAt as string);
+          const formattedDate = dateObj.toLocaleDateString("en-GB");
+          const formattedTime = dateObj.toLocaleTimeString("en-GB");
 
-            return {
-              ...trainer,
-              slno: index + 1,
-              createdAt: `${formattedDate} ${formattedTime}`,
-              verified: trainer.otpVerified || trainer.googleVerified,
-              isApproved: trainer?.isApproved,
-              actions: (
-                <>
-                  <Button
-                    size="small"
-
-                    onClick={() =>
-                      handleTrainerApproveOrReject(
-                        trainer?._id as string,
-                        "approved"
-                      )
-                    }
-                    sx={{ fontSize: "14px", marginRight: "8px" }}
-                    variant="text"
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() =>
-                      handleTrainerApproveOrReject(
-                        trainer?._id as string,
-                        "rejected"
-                      )
-                    }
-                    sx={{ fontSize: "14px", color: "red", borderColor: "red" }}
-                    variant="text"
-                  >
-                    Reject
-                  </Button>
-                </>
-              ),
-            };
-          })
+          console.log("this is the trainers id", trainer._id);
+          return {
+            ...trainer,
+            slno: index + 1,
+            createdAt: `${formattedDate} ${formattedTime}`,
+            verified: trainer.otpVerified || trainer.googleVerified,
+            isApproved: trainer?.isApproved,
+            actions: (
+              <>
+                <Button
+                  size="small"
+                  onClick={() =>
+                    handleTrainerApproveOrReject(
+                      trainer?.trainerCollectionOriginalId as string,
+                      "approved"
+                    )
+                  }
+                  sx={{ fontSize: "14px", marginRight: "8px" }}
+                  variant="text"
+                >
+                  Approve
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() =>
+                    handleTrainerApproveOrReject(
+                      trainer?.trainerCollectionOriginalId as string,
+                      "rejected"
+                    )
+                  }
+                  sx={{ fontSize: "14px", color: "red", borderColor: "red" }}
+                  variant="text"
+                >
+                  Reject
+                </Button>
+              </>
+            ),
+          };
+        })
       : [];
   return (
     <>
@@ -151,11 +145,14 @@ const InboxPage: React.FC = () => {
         <SearchBarTable />
         <Filter sort={sort} filter={filter} direction={direction} />
       </div>
-      {fetchedTrainersData.length > 0 ? (
+      {isLoading ? (
+        <ShimmerTableLoader columns={columns} />
+      ) : fetchedTrainersData.length > 0 ? (
         <ReuseTable
           columns={columns}
           data={fetchedTrainersData}
           handleUpdateBlockStatus={handleUpdateBlockStatus}
+          
         />
       ) : (
         <div>Your inbox is empty</div>

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 interface NavItem {
   icon: JSX.Element;
   text: string;
-  path: string;
+  path: string 
 }
 
 interface SideNavBarItemsListProps {
@@ -37,20 +37,27 @@ const SideNavBarItemsList: React.FC<SideNavBarItemsListProps> = ({
     <>
       <List>
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          
+          const isActivePath = (location: string, path: string) => {
+            
+            return location.includes(path)
+          };
+
+          const isActive = isActivePath(location.pathname, item.path);
+
           return (
             <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                 sx={{
+                sx={{
                   minHeight: 60,
                   px: 2.5,
                   mx: 2,
                   justifyContent: open ? "initial" : "center",
                   backgroundColor: isActive ? drawerBgColor : "transparent",
-                  borderRadius: isActive ? "5px" : "0",  
+                  borderRadius: isActive ? "5px" : "0",
                   "&:hover": {
                     backgroundColor: !isActive ? hoverBgColor : drawerBgColor,
-                    borderRadius: "5px", 
+                    borderRadius: "5px",
                   },
                 }}
                 component={Link}
@@ -64,8 +71,7 @@ const SideNavBarItemsList: React.FC<SideNavBarItemsListProps> = ({
                     color: isActive ? activeTextColor : iconColor,
                   }}
                 >
-                {React.cloneElement(item.icon, { sx: { fontSize: "2rem" } })}
-
+                  {React.cloneElement(item.icon, { sx: { fontSize: "1.5rem" } })}
                 </ListItemIcon>
 
                 <ListItemText
@@ -74,7 +80,6 @@ const SideNavBarItemsList: React.FC<SideNavBarItemsListProps> = ({
                     opacity: open ? 1 : 0,
                     color: isActive ? activeTextColor : textColor,
                   }}
-                  
                 />
               </ListItemButton>
             </ListItem>

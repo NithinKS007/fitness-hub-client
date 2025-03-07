@@ -6,7 +6,14 @@ import {
   Container,
   Toolbar,
   Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { User } from "../redux/auth/authTypes";
 import { useNavigate } from "react-router-dom";
 import AccountDropDown from "./AccountDropDown";
@@ -27,8 +34,8 @@ interface TopNavBarProps {
 
 const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
-
   const handleSignOut = useSignOut();
 
   useEffect(() => {
@@ -37,9 +44,32 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   const redirectToLogin = () => {
     navigate("/sign-in");
   };
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ my: 2, fontWeight: 700 }}>
+        FT HUB
+      </Typography>
+      <List>
+        {navItems.map((item) => (
+          <ListItem key={item.label} disablePadding>
+            <ListItemButton
+              onClick={() => navigate(item.href)}
+              sx={{ textAlign: "center" }}
+            >
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
     <AppBar
@@ -58,7 +88,11 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
       <Container maxWidth="xl">
         <Toolbar
           disableGutters
-          sx={{ height: "75px", justifyContent: "space-between" }}
+          sx={{
+            height: "75px",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
           <Box
             component="a"
@@ -77,34 +111,60 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
               FT HUB
             </Typography>
           </Box>
-
-          <>
-            <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-              {navItems.map((item) => (
-                <Button
-                  key={item.label}
-                  onClick={() => navigate(item.href)}
-                  sx={{
-                    color: "text.primary",
-                    textTransform: "none",
-                    fontSize: "0.95rem",
-                    padding: "6px 8px",
-                  }}
-                >
-                  {item.label}
-                </Button>
-              ))}
-            </Box>
-
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ display: { sm: "none" }, color: "text.primary" }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Box
+            sx={{
+              display: { xs: "none", sm: "flex" },
+              gap: 3,
+              alignItems: "center",
+              flexGrow: 1,
+              justifyContent: "center",
+            }}
+          >
+            {navItems.map((item) => (
+              <Button
+                key={item.label}
+                onClick={() => navigate(item.href)}
+                sx={{
+                  color: "text.primary",
+                  textTransform: "none",
+                  fontSize: "0.95rem",
+                  padding: "6px 8px",
+                }}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <AccountDropDown
               signout={handleSignOut}
               user={user}
               redirectToLogin={redirectToLogin}
               color={color}
             />
-          </>
+          </Box>
         </Toolbar>
       </Container>
+      <Drawer
+        anchor="left"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        sx={{
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
+        }}
+      >
+        {drawer}
+      </Drawer>
     </AppBar>
   );
 };

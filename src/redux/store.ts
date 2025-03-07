@@ -4,11 +4,12 @@ import storage from "redux-persist/lib/storage";
 import authReducer from "./auth/authSlice";
 import adminReducer from "./admin/adminSlice"
 import subscritionReducer from "./subscription/subscriptionSlice"
+import userReducer from "./user/userSlice"
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["otp","user"],
+  whitelist: ["otp","user","trainer","admin"],
 };
 
 const persistedReducer = persistReducer(persistConfig, authReducer);
@@ -17,7 +18,8 @@ const store = configureStore({
   reducer: {
     auth: persistedReducer,
     admin:adminReducer,
-    subscription:subscritionReducer
+    subscription:subscritionReducer,
+    user:userReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

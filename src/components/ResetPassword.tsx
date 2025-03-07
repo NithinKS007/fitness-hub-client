@@ -68,7 +68,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
                 <TextField
                   fullWidth
                   name="password"
-                  size="small" // Smaller input size
+                  size="small" 
                   label="New Password"
                   type="password"
                   variant="outlined"
@@ -82,7 +82,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
                 <TextField
                   fullWidth
                   name="cPassword"
-                  size="small" // Smaller input size
+                  size="small" 
                   label="Confirm Password"
                   type="password"
                   variant="outlined"
@@ -103,7 +103,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
                     "&:hover": {
                       bgcolor: "grey.800",
                     },
-                    height: "48px", // Slightly taller button for better design
+                    height: "48px", 
                     borderRadius: 2, 
                   }}
                   disabled={formik.isSubmitting}

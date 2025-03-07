@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -19,17 +19,17 @@ import { Close as CloseIcon } from "@mui/icons-material";
 interface SubscriptionFormProps {
   open: boolean;
   onClose: () => void;
-  planTypes: string[];
   subPeriods: string[];
   formik: any;
+  isEditMode: boolean;
 }
 
 const TrainerSubscriptionForm: React.FC<SubscriptionFormProps> = ({
   open,
   onClose,
-  planTypes,
   subPeriods,
   formik,
+  isEditMode,
 }) => {
   return (
     <Modal
@@ -77,45 +77,12 @@ const TrainerSubscriptionForm: React.FC<SubscriptionFormProps> = ({
             color: "#202124",
           }}
         >
-          ADD NEW PLAN
+          {isEditMode ? "EDIT SUBSCRIPTION" : "ADD NEW PLAN"}
         </Typography>
 
         <Divider sx={{ mb: 3, borderColor: "rgba(0, 0, 0, 0.12)" }} />
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          <FormControl
-            fullWidth
-            size="small"
-            error={formik.touched.planType && Boolean(formik.errors.planType)}
-          >
-            <InputLabel id="plan-type-label">Plan Type</InputLabel>
-            <Select
-              labelId="plan-type-label"
-              name="planType"
-              value={formik.values.planType}
-              label="Plan Type"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    boxShadow: "none",
-                    border: "1px solid gray",
-                  },
-                },
-              }}
-            >
-              {planTypes.map((plan) => (
-                <MenuItem  key={plan} value={plan}>
-                  {plan.charAt(0).toUpperCase() + plan.slice(1)}
-                </MenuItem>
-              ))}
-            </Select>
-            {formik.touched.planType && formik.errors.planType && (
-              <FormHelperText>{formik.errors.planType}</FormHelperText>
-            )}
-          </FormControl>
-
           <FormControl
             fullWidth
             size="small"
@@ -138,11 +105,15 @@ const TrainerSubscriptionForm: React.FC<SubscriptionFormProps> = ({
                 },
               }}
             >
-              {subPeriods.map((period) => (
-                <MenuItem key={period} value={period}>
-                  {period.charAt(0).toUpperCase() + period.slice(1)}
-                </MenuItem>
-              ))}
+              {subPeriods && subPeriods.length > 0 ? (
+                subPeriods.map((period) => (
+                  <MenuItem key={period} value={period}>
+                    {period.charAt(0).toUpperCase() + period.slice(1)}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>No options available</MenuItem>
+              )}
             </Select>
             {formik.touched.subPeriod && formik.errors.subPeriod && (
               <FormHelperText>{formik.errors.subPeriod}</FormHelperText>
@@ -245,7 +216,7 @@ const TrainerSubscriptionForm: React.FC<SubscriptionFormProps> = ({
               borderRadius: 2,
             }}
           >
-            ADD SUBSCRIPTION
+            {isEditMode ? "UPDATE SUBSCRIPTION" : "ADD SUBSCRIPTION"}
           </Button>
         </Box>
       </Paper>

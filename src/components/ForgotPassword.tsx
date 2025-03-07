@@ -73,12 +73,12 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
                   label="Enter your email address"
                   type="email"
                   variant="outlined"
-                  size="small" // Smaller input size
+                  size="small"
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                 />
 
                 <Button
@@ -91,8 +91,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
                     "&:hover": {
                       bgcolor: "grey.800",
                     },
-                    height: "48px", // Slightly adjusted height for better proportions
-                    borderRadius: 2, // Rounded corners
+                    height: "48px", 
+                    borderRadius: 2, 
                   }}
                   disabled={formik.isSubmitting}
                 >

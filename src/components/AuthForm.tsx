@@ -99,28 +99,28 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       name="fname"
                       label="First Name"
                       variant="outlined"
-                      size="small" // Smaller input size
+                      size="small" 
                       value={formik.values.fname}
                       onChange={formik.handleChange}
                       error={
                         formik.touched.fname && Boolean(formik.errors.fname)
                       }
                       helperText={formik.touched.fname && formik.errors.fname}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                     />
                     <TextField
                       fullWidth
                       name="lname"
                       label="Last Name"
                       variant="outlined"
-                      size="small" // Smaller input size
+                      size="small" 
                       value={formik.values.lname}
                       onChange={formik.handleChange}
                       error={
                         formik.touched.lname && Boolean(formik.errors.lname)
                       }
                       helperText={formik.touched.lname && formik.errors.lname}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                     />
                   </Box>
                 )}
@@ -131,12 +131,12 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   label="Email"
                   type="email"
                   variant="outlined"
-                  size="small" // Smaller input size
+                  size="small" 
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                 />
 
                 <TextField
@@ -145,7 +145,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   variant="outlined"
-                  size="small" // Smaller input size
+                  size="small" 
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   error={
@@ -164,7 +164,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                 />
 
                 {signState === "sign up" && (
@@ -174,7 +174,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                     label="Confirm Password"
                     type={showPassword ? "text" : "password"}
                     variant="outlined"
-                    size="small" // Smaller input size
+                    size="small" 
                     value={formik.values.cPassword}
                     onChange={formik.handleChange}
                     error={
@@ -196,7 +196,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                   />
                 )}
 
@@ -233,8 +233,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
                     "&:hover": {
                       bgcolor: "grey.800",
                     },
-                    height: "48px", // Slightly taller button for better design
-                    borderRadius: 2, // Rounded corners
+                    height: "48px",
+                    borderRadius: 2, 
                   }}
                 >
                   {formik.isSubmitting
@@ -271,6 +271,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                 </Box>
               </Typography>
             </Box>
+            <p>2unni468N@</p>
           </Box>
         </Box>
       </Box>

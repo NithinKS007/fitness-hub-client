@@ -29,14 +29,15 @@ const Profile: React.FC<ProfileProps> = ({
   handlePdfChange,
 }) => {
   return (
-    <Container maxWidth={false} sx={{ py: 4 }}>
+    <Container maxWidth={false} sx={{ py: 4}}>
       <Paper
         sx={{
           p: 4,
           borderRadius: 2,
-          width: "95%",
-          maxWidth: "1400px",
+          width: "80%",
+          maxWidth: "1000px",
           marginX: "auto",
+          marginBottom: "15px",
         }}
       >
         <form onSubmit={formik.handleSubmit}>
@@ -64,8 +65,8 @@ const Profile: React.FC<ProfileProps> = ({
                   <Avatar
                     src={formik.values.profilePic || ""}
                     sx={{
-                      width: 150,
-                      height: 150,
+                      width: 120,
+                      height: 120,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -73,7 +74,7 @@ const Profile: React.FC<ProfileProps> = ({
                     }}
                   >
                     {!formik.values.profilePic && (
-                      <AccountCircleIcon sx={{ fontSize: 90 }} />
+                      <AccountCircleIcon sx={{ fontSize: 110 }} />
                     )}
                   </Avatar>
                 </label>
@@ -109,11 +110,11 @@ const Profile: React.FC<ProfileProps> = ({
                     value={formik.values.fname || ""}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    size="small" // Already small, kept as is
+                    size="small"
                     error={formik.touched.fname && Boolean(formik.errors.fname)}
                     helperText={formik.touched.fname && formik.errors.fname}
                     disabled={!isEditable}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -124,11 +125,11 @@ const Profile: React.FC<ProfileProps> = ({
                     value={formik.values.lname || ""}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    size="small" // Already small, kept as is
+                    size="small"
                     error={formik.touched.lname && Boolean(formik.errors.lname)}
                     helperText={formik.touched.lname && formik.errors.lname}
                     disabled={!isEditable}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -137,9 +138,9 @@ const Profile: React.FC<ProfileProps> = ({
                     fullWidth
                     label="Email"
                     value={formik.values.email || ""}
-                    size="small" // Already small, kept as is
+                    size="small"
                     disabled
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -150,11 +151,11 @@ const Profile: React.FC<ProfileProps> = ({
                     value={formik.values.phone || ""}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    size="small" // Already small, kept as is
+                    size="small"
                     error={formik.touched.phone && Boolean(formik.errors.phone)}
                     helperText={formik.touched.phone && formik.errors.phone}
                     disabled={!isEditable}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -165,7 +166,7 @@ const Profile: React.FC<ProfileProps> = ({
                     value={formik?.values?.dateOfBirth || ""}
                     onChange={formik?.handleChange}
                     onBlur={formik?.handleBlur}
-                    size="small" // Already small, kept as is
+                    size="small"
                     error={
                       formik.touched.dateOfBirth &&
                       Boolean(formik.errors.dateOfBirth)
@@ -174,7 +175,7 @@ const Profile: React.FC<ProfileProps> = ({
                       formik.touched.dateOfBirth && formik.errors.dateOfBirth
                     }
                     disabled={!isEditable}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                   />
                 </Grid>
                 {formik.values.role === "trainer" && (
@@ -187,7 +188,7 @@ const Profile: React.FC<ProfileProps> = ({
                       value={formik.values.yearsOfExperience || ""}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      size="small" // Already small, kept as is
+                      size="small"
                       error={
                         formik.touched.yearsOfExperience &&
                         Boolean(formik.errors.yearsOfExperience)
@@ -197,7 +198,7 @@ const Profile: React.FC<ProfileProps> = ({
                         formik.errors.yearsOfExperience
                       }
                       disabled={!isEditable}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                     />
                   </Grid>
                 )}
@@ -216,7 +217,7 @@ const Profile: React.FC<ProfileProps> = ({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   placeholder="Write something about yourself..."
-                  sx={{ mt: 2, "& .MuiOutlinedInput-root": { borderRadius: 2 } }} // Rounded corners
+                  sx={{ mt: 2, "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
                   disabled={!isEditable}
                 />
               )}
@@ -232,8 +233,8 @@ const Profile: React.FC<ProfileProps> = ({
             borderRadius: 2,
             boxShadow: 1,
             mt: 4,
-            width: "95%",
-          maxWidth: "1400px",
+            width: "80%",
+            maxWidth: "1000px",
             marginX: "auto",
           }}
         >
@@ -314,11 +315,11 @@ const Profile: React.FC<ProfileProps> = ({
                   <Button
                     type="submit"
                     variant="contained"
-                    style={{ backgroundColor: "black", color: "white" }}
+                    style={{ backgroundColor: "#1d4ed8", color: "white" }}
                     onClick={formik.handleSubmit}
                     sx={{
-                      height: "48px", // Adjusted height for better proportions
-                      borderRadius: 2, // Rounded corners
+                      height: "48px", 
+                      borderRadius: 2, 
                     }}
                   >
                     Save Changes

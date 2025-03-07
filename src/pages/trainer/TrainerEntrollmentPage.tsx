@@ -2,6 +2,7 @@ import React from "react";
 import WhatWeDo from "../../components/WhatWeDo";
 import { useModal } from "../../hooks/useModal";
 import useAuthForm from "../../hooks/useAuthForm";
+import GetACoachBanner from "../../assets/getACoachBanner.webp";
 
 const TrainerEntrollmentPage: React.FC = () => {
   const { handleOpen, handleClose, open } = useModal();
@@ -10,6 +11,7 @@ const TrainerEntrollmentPage: React.FC = () => {
   return (
     <>
         <WhatWeDo
+         bannerImage={GetACoachBanner}
           handleOpen={handleOpen}
           handleClose={handleClose}
           open={open}

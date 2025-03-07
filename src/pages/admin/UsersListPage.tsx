@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReuseTable from "../../components/ReuseTable";
 import { useDispatch } from "react-redux";
 import { getUsers } from "../../redux/admin/adminThunk";
@@ -9,8 +9,10 @@ import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
+import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; // Added Menu and MenuItem
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 interface TableColumn {
   label: string;
@@ -60,8 +62,15 @@ const UsersListPage: React.FC = () => {
 
   const handleUpdateBlockStatus = useUpdateBlockStatus();
   const fetchUsers = async () => {
-    await dispatch(getUsers("user"));
+    await dispatch(getUsers());
   };
+
+    // State for menu
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(
+      null
+    );
+    const open = Boolean(anchorEl);
 
   const navigate = useNavigate()
 
@@ -72,6 +81,17 @@ const UsersListPage: React.FC = () => {
   const handleUserDetails = (_id: string) => {
     navigate(`/admin/user-details/${_id}`);
   };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, _id: string) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedTrainerId(_id);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedTrainerId(null);
+  };
+
 
   if (loading) return <ShimmerTableLoader columns={columns} />;
   if (error) return <div>{error}</div>;
@@ -88,7 +108,39 @@ const UsersListPage: React.FC = () => {
             slno: index + 1,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: user.otpVerified || user.googleVerified,
-            details: <Button  onClick={() => handleUserDetails(user?._id as string)} variant="outlined">More</Button>,
+            details: (
+              <>
+                <IconButton
+                  onClick={(event) =>
+                    handleClick(event, user?._id as string)
+                  }
+                  aria-label="More options"
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Paper>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open && selectedTrainerId === user?._id}
+                    onClose={handleClose}
+                    sx={{
+                      "& .MuiPaper-root": {
+                        boxShadow: "none",
+                        border: 1,
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() =>
+                        handleUserDetails(user?._id as string)                      }
+                    >
+                      Details
+                    </MenuItem>
+                    
+                  </Menu>
+                </Paper>
+              </>
+            ),
           };
         })
       : [];

@@ -1,164 +1,278 @@
-import { Box, Typography, Button, Avatar, Container } from "@mui/material";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import { Box } from "@mui/material";
 import NavigationTabs from "../components/Tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Reviews from "../components/Reviews";
+import ViewTrainerDetailsCommon from "../components/ViewTrainerDetailsCommon";
+import { useParams } from "react-router-dom";
+import { getTrainerDetailsWithSubscription } from "../redux/user/userThunk";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import { useSelector } from "react-redux";
+import TrainerSpecificationLeftSide from "../components/TrainerSpecificationLeftSide";
+import ShowSubscriptionPlansPage from "./ShowSubscriptionPlansPage";
+import { getUserSubscriptionsData, purchaseSubscription } from "../redux/subscription/subscriptionThunk";
+import { showErrorToast } from "../utils/toast";
+import { useStripe } from "@stripe/react-stripe-js";
+import { Subscription } from "../redux/subscription/subscriptionTypes";
 
 const ViewTrainerDetailsUS = () => {
-  const [value, setValue] = useState(0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const [activeTab, setActiveTab] = useState<number>(0);
+  const [selectedPlan, setSelectedPlan] = useState<Subscription | null>(null);
+
+  const [showPlans, setShowPlans] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { _id } = useParams<{ _id: string }>();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const trainerDetails = useSelector((state: RootState) => state.user.trainerDetailsWithSubscription);
+  const stripe = useStripe();
+  const isPurchaseableUser = user?.role === "user";
+  const isLoggedIn = user ? true :false
+
+  const mySubscriptionPlans = useSelector((state: RootState) => state.subscription.userSubscribedTrainerPlans)
+
+  const { isLoading, error } = useSelector( (state: RootState) => state.subscription);
+  
+
+  useEffect(() => {
+    if (_id) {
+      dispatch(getTrainerDetailsWithSubscription(_id));
+    }
+
+    if (user && user.role === "user") {
+      dispatch(getUserSubscriptionsData());
+    }
+    getUserSubscriptionsData()
+  }, [dispatch, _id,user]);
+
+
 
   const tabItems = [
-    { label: "details", path: "/trainer-details" },
-    { label: "Subscriptions", path: "/trainer-subscriptions" },
-    { label: "Videos", path: "/trainer-videos" },
+    { label: "Review" },
+    { label: "About Me" },
+    { label: "Show Plans" },
   ];
 
-  return (
-    <>
-      <Box sx={{ marginTop: 20,marginLeft:20,marginRight:20, boxShadow: 1, borderRadius: 2 }}>
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
+    setShowPlans(false);
+  };
+
+
+
+  const handleSeePlansClick = () => {
+    setActiveTab(2);
+    setShowPlans(true);
+  };
+
+ 
+  const isHeSubscribedToTheTrainer = mySubscriptionPlans.some((sub) =>
+    trainerDetails?.subscriptionDetails.some(
+      (trainerSub) => sub.trainerId === trainerSub.trainerId && sub.isActive==="active"
+    )
+  )
+
+  const handlePlanClick = (plan: Subscription) => {
+    setSelectedPlan(plan);
+  };
+
+  const handleSubscription = (event: React.SyntheticEvent<EventTarget>): void => {
+    event.preventDefault();
+
+    if (selectedPlan && stripe) {
+      dispatch(
+        purchaseSubscription({
+          subscriptionId: selectedPlan._id as string,
+          stripe,
+        })
+      )
+    } else if(!selectedPlan){
+      showErrorToast("Please select before continuing")
+    }
+  };
+
+ 
+  
+  
+
+  const renderContent = () => {
+    if (showPlans && !isHeSubscribedToTheTrainer) {
+      return (
+        <ShowSubscriptionPlansPage
+          trainerSubscriptions={trainerDetails?.subscriptionDetails || []}
+          isPurchaseableUser={isPurchaseableUser}
+          isLoggedIn = {isLoggedIn}
+          selectedPlan = {selectedPlan}
+          isLoading={isLoading}
+          error={error}
+          handlePlanClick={handlePlanClick}
+          handleSubscription={handleSubscription}
+
+        />
+      );
+    } else if (isHeSubscribedToTheTrainer && showPlans) {
+      return (
         <Box
           sx={{
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.9))",
-            height: "195px",
-            width: "100%",
-            borderTopLeftRadius: 5,
-            borderTopRightRadius: 5,
-          }}
-        />
-
-        <Container
-          maxWidth="lg"
-          sx={{
-            mt: -15,
+            display: "flex",
+            minHeight: "200px",
+            justifyContent: "space-between",
           }}
         >
+          <TrainerSpecificationLeftSide
+            certifications={trainerDetails?.certifications || []}
+            specializations={trainerDetails?.specializations || []}
+          />
           <Box
             sx={{
               display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignItems: { xs: "flex-start", md: "flex-end" },
-              justifyContent: "space-between",
-              pb: 3,
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: 1,
+              borderRadius: 2,
+              padding: "16px",
+              width: "50%",
+              marginRight: 20,
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "flex-end", gap: 3 }}>
-              <Box sx={{ textAlign: "center" }}>
-                <Avatar
-                  src="/api/placeholder/154/154"
-                  sx={{
-                    width: 154,
-                    height: 154,
-                    border: "4px solid white",
-                    bgcolor: "#f5f5f5",
-                    mb: 2,
-                  }}
-                />
-                <Typography
-                  sx={{
-                    display: "inline-block",
-                    bgcolor: "#11D900",
-                    color: "white",
-                    px: 2,
-                    py: 0.5,
-                    borderRadius: "100px",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  STANDARD
-                </Typography>
-              </Box>
-              <Box sx={{ mt: 20 }}>
-                <Typography
-                  variant="h1"
-                  sx={{
-                    fontWeight: 500,
-                    fontSize: "32px",
-                    lineHeight: "40px",
-                    mb: 0.5,
-                  }}
-                >
-                  Isha Sharma
-                </Typography>
-                <Typography
-                  sx={{
-                    color: "#9E9E9E",
-                    fontSize: "16px",
-                    lineHeight: "24px",
-                  }}
-                >
-                  Strength and Conditioning
-                </Typography>
-              </Box>
-            </Box>
+            <>You have been subscribed to the trainer enjoy the benefits of your subscription</>
+          </Box>
+        </Box>
+      );
+    }
+    switch (activeTab) {
+      case 0:
+        return (
+          <Box
+            sx={{
+              display: "flex",
+              minHeight: "200px",
+              justifyContent: "space-between",
+            }}
+          >
+            <TrainerSpecificationLeftSide
+              certifications={trainerDetails?.certifications || []}
+              specializations={trainerDetails?.specializations || []}
+            />
+            <Reviews />
+          </Box>
+        );
+      case 1:
+        return (
+          <Box
+            sx={{
+              display: "flex",
+              minHeight: "200px",
+              justifyContent: "space-between",
+            }}
+          >
+            <TrainerSpecificationLeftSide
+              certifications={trainerDetails?.certifications || []}
+              specializations={trainerDetails?.specializations || []}
+            />
             <Box
               sx={{
                 display: "flex",
-                gap: 2,
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: 1,
+                borderRadius: 2,
+                padding: "16px",
+                width: "50%",
+                marginRight: 20,
               }}
             >
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: "black",
-                  color: "white",
-                  px: 4,
-                  height: "44px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  fontSize: "16px",
-                  fontWeight: 500,
-                  boxShadow: "none",
-                  "&:hover": {
-                    bgcolor: "#333",
-                    boxShadow: "none",
-                  },
-                }}
-              >
-                See Plans
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<ChatBubbleOutlineIcon />}
-                sx={{
-                  color: "black",
-                  borderColor: "#E0E0E0",
-                  px: 3,
-                  height: "44px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  fontSize: "16px",
-                  fontWeight: 500,
-                  "&:hover": {
-                    borderColor: "#999",
-                    bgcolor: "transparent",
-                  },
-                }}
-              >
-                Chat With Coach
-              </Button>
+              {trainerDetails?.aboutMe ? (
+                <p>{trainerDetails.aboutMe}</p>
+              ) : (
+                <p>No information available.</p>
+              )}
             </Box>
           </Box>
-        </Container>
-      </Box>
-      <Box
-        sx={{
-          marginTop: 1,
-          backgroundColor: "transparent",
-          display: "flex",
-          justifyContent: "center", 
-          marginBottom:2
-        }}
-      >
-        <NavigationTabs
-          tabItems={tabItems}
-          value={value}
-          handleChange={handleChange}
+        );
+      case 2:
+        return trainerDetails &&
+          trainerDetails?.subscriptionDetails?.length > 0 &&
+          !isHeSubscribedToTheTrainer ? (
+          <ShowSubscriptionPlansPage
+            trainerSubscriptions={trainerDetails?.subscriptionDetails || []}
+            isPurchaseableUser={isPurchaseableUser}
+            isLoggedIn = {isLoggedIn}
+            selectedPlan = {selectedPlan}
+            isLoading={isLoading}
+            error={error}
+            handlePlanClick={handlePlanClick}
+            handleSubscription={handleSubscription}
+          />
+        ) : isHeSubscribedToTheTrainer ? (
+          <Box
+            sx={{
+              display: "flex",
+              minHeight: "200px",
+              justifyContent: "space-between",
+            }}
+          >
+            <TrainerSpecificationLeftSide
+              certifications={trainerDetails?.certifications || []}
+              specializations={trainerDetails?.specializations || []}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: 1,
+                borderRadius: 2,
+                padding: "16px",
+                width: "50%",
+                marginRight: 20,
+              }}
+            >
+              <>You have been subscribed to the trainer enjoy the benefits of your subscription</>
+            </Box>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              padding: "16px",
+              width: "80%",
+              margin: "0 auto",
+              boxShadow: 1,
+              borderRadius: 2,
+            }}
+          >
+            <p>No Subscriptions Available</p>
+          </Box>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <Box sx={{ minHeight: "1000px" }}>
+        <ViewTrainerDetailsCommon
+          trainerDetails={trainerDetails}
+          handleShowPlan={handleSeePlansClick}
         />
+        <Box
+          sx={{
+            marginTop: 1,
+            backgroundColor: "transparent",
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: 2,
+          }}
+        >
+          <NavigationTabs
+            tabItems={tabItems}
+            value={activeTab}
+            handleChange={handleChange}
+          />
+        </Box>
+        {renderContent()}
       </Box>
     </>
   );
