@@ -1,5 +1,6 @@
 import React from "react"
 import { Box, Button, Typography, TextField, Grid } from "@mui/material"
+import fitnessCouple2 from "../assets/fitnessCouple2.jpg"
 
 interface OtpFormProps {
   otp: {
@@ -35,6 +36,7 @@ const OtpForm: React.FC<OtpFormProps> = ({
         bgcolor: "grey.100",
       }}
     >
+      <img src={fitnessCouple2} alt="" />
       <Box
         sx={{
           display: "flex",

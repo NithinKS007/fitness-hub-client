@@ -13,7 +13,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import type { SignState } from "../types/authTypes";
 import GoogleAuth from "./GoogleAuth";
 import { Link } from "react-router-dom";
-import fitnessCouple from "../assets/fitnessCouple.png";
+import fitnessCouple2 from "../assets/fitnessCouple2.jpg"
 
 interface AuthFormProps {
   signState: SignState;
@@ -65,10 +65,10 @@ const AuthForm: React.FC<AuthFormProps> = ({
           }}
         >
           <img
-            src={fitnessCouple}
+            src={fitnessCouple2}
             style={{
               maxWidth: "100%",
-              maxHeight: "75vh",
+              maxHeight: "100vhvh",
               objectFit: "cover",
               display: "block",
             }}

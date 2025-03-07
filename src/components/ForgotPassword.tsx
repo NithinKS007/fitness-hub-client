@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { TextField, Box, Button, Typography } from "@mui/material";
-import fitnessCouple from "../assets/fitnessCouple.png";
+import fitnessCouple2 from "../assets/fitnessCouple2.jpg"
 
 interface ForgotPasswordProps {
   formik: any;
@@ -42,7 +42,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
           }}
         >
           <img
-            src={fitnessCouple}
+            src={fitnessCouple2}
             style={{
               maxWidth: "100%",
               maxHeight: "75vh",
