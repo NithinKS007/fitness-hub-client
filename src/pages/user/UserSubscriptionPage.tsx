@@ -3,18 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { cancelSubscriptionUser, getUserSubscriptionsData } from "../../redux/subscription/subscriptionThunk";
 import ReuseTable from "../../components/ReuseTable";
-import { Button, IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import SearchBarTable from "../../components/SearchBarTable";
 import Filter from "../../components/Filter";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 interface TableColumn {
   label: string;
   field: string;
-}
-interface SortOption {
-  value: string;
 }
 
 interface FilterOption {
@@ -25,7 +23,6 @@ const columns: TableColumn[] = [
   { label: "Image", field: "profilePic" },
   { label: "Name", field: "name" },
   { label: "Email", field: "email" },
-  { label: "Availability", field: "isBlocked" },
   { label: "Price", field: "price" },
   { label: "Start Date", field: "startDate" },
   { label: "Expiry Date", field: "endDate" },
@@ -37,13 +34,6 @@ const columns: TableColumn[] = [
   { label: "Action", field: "actions" },
 ];
 
-const sort: SortOption[] = [
-  { value: "10000 - 25000" },
-  { value: "25000 - 50000" },
-  { value: "50000 - 75000" },
-  { value: "75000 - 100000" },
-  { value: "above - 100000" },
-];
 const filter: FilterOption[] = [
   { value: "All" },
   { value: "Active" },
@@ -71,17 +61,18 @@ const UserSubscriptionsPage: React.FC = () => {
     (state: RootState) => state.subscription.userSubscribedTrainerPlans
   );
 
-  const { isLoading, error } = useSelector(
-    (state: RootState) => state.subscription
-  );
-  console.log("my plans", userSubscribedPlans);
+  const { isLoading, error } = useSelector((state: RootState) => state.subscription)
 
-  const handleCancelSubscriptionsUser = async(stripeSubscriptionId: string, action: string,userSubCollectionId:string) => {
-    console.log("Cancel action:", action, "for subscription", stripeSubscriptionId);
+  const handleCancelSubscriptionsUser = async(stripeSubscriptionId: string, action: string,subId:string) => {
 
-    const response = await dispatch(cancelSubscriptionUser({stripeSubscriptionId,action,userSubCollectionId})).unwrap()
+    try {
+      const response = await dispatch(cancelSubscriptionUser({stripeSubscriptionId,action,subId})).unwrap()
+      showSuccessToast(response.message)
+    } catch (error) {
+      console.error("API Error:", error);
+      showErrorToast(`${error}`);
+    }
 
-    console.log("response received for cancellation",response)
   };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, subscriptionId: string) => {
@@ -97,24 +88,25 @@ const UserSubscriptionsPage: React.FC = () => {
   const fetchedUserSubscriptionsData =
     userSubscribedPlans.length > 0
       ? userSubscribedPlans.map((sub, index) => {
-          const name = `${sub.subscribedTrainerDetails?.fname?.charAt(0).toUpperCase() + sub.subscribedTrainerDetails?.fname?.slice(1).toLowerCase()} ${sub.subscribedTrainerDetails?.lname?.charAt(0).toUpperCase() + sub.subscribedTrainerDetails?.lname?.slice(1).toLowerCase()}`;
+          const name = `${sub.subscribedTrainerData?.fname?.charAt(0).toUpperCase() + sub.subscribedTrainerData?.fname?.slice(1).toLowerCase()} ${sub.subscribedTrainerData?.lname?.charAt(0).toUpperCase() + sub.subscribedTrainerData?.lname?.slice(1).toLowerCase()}`;
           const price = `RS ${sub.price.toFixed(2)}`; 
           const subPeriod =
             sub.subPeriod.charAt(0).toUpperCase() +
             sub.subPeriod.slice(1).toLowerCase(); 
 
             const isSubscriptionActive = sub.isActive==="active"
+            const isActive = sub.isActive.charAt(0).toUpperCase() + sub.isActive.slice(1);
+
           return {
             ...sub,
             slno: index + 1,
             name: name,
-            email: sub.subscribedTrainerDetails.email,
-            isBlocked: sub.subscribedTrainerDetails.isBlocked,
-            profilePic: sub.subscribedTrainerDetails.profilePic,
+            email: sub.subscribedTrainerData.email,
+            profilePic: sub.subscribedTrainerData.profilePic,
             price: price,
             startDate: sub.startDate,
             endDate: sub.endDate,
-            isActive: sub.isActive,
+            isActive: isActive,
             subPeriod: subPeriod,
             durationInWeeks: sub.durationInWeeks,
             sessionsPerWeek: sub.sessionsPerWeek,

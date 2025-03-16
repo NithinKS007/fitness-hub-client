@@ -10,7 +10,7 @@ import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import { useNavigate } from "react-router-dom";
-import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; // Added Menu and MenuItem
+import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 interface TableColumn {
@@ -66,7 +66,6 @@ const TrainerListPage: React.FC = () => {
   const navigate = useNavigate();
   const handleUpdateBlockStatus = useUpdateBlockStatus();
 
-  // State for menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(
     null
@@ -122,9 +121,7 @@ const TrainerListPage: React.FC = () => {
             details: (
               <>
                 <IconButton
-                  onClick={(event) =>
-                    handleClick(event, trainer?._id as string)
-                  }
+                  onClick={(event) => handleClick(event, trainer?._id as string)}
                   aria-label="More options"
                 >
                   <MoreVertIcon />
@@ -142,9 +139,7 @@ const TrainerListPage: React.FC = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() =>
-                        handleTrainerDetails(trainer?._id as string)
-                      }
+                      onClick={() => handleTrainerDetails(trainer?._id as string)}
                     >
                       Details
                     </MenuItem>
@@ -154,6 +149,16 @@ const TrainerListPage: React.FC = () => {
                       }
                     >
                       Subscriptions
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        handleUpdateBlockStatus({
+                          _id: trainer.userId,
+                          isBlocked: !trainer.isBlocked,
+                        })
+                      }
+                    >
+                      {trainer.isBlocked ? "Unblock" : "Block"}
                     </MenuItem>
                   </Menu>
                 </Paper>
@@ -172,7 +177,6 @@ const TrainerListPage: React.FC = () => {
       <ReuseTable
         columns={columns}
         data={fetchedTrainersData}
-        handleUpdateBlockStatus={handleUpdateBlockStatus}
       />
     </>
   );

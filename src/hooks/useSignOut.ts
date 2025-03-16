@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { signOutUser } from "../redux/auth/authThunk";
-import { clearUser } from "../redux/auth/authSlice";
+import { clearAuthPerson } from "../redux/auth/authSlice";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const useSignOut = () => {
   const handleSignout = async () => {
     try {
       const response = await dispatch(signOutUser()).unwrap();
-      dispatch(clearUser())
+      dispatch(clearAuthPerson())
       localStorage.clear()
       showSuccessToast(response.message)
       navigate("/sign-in")

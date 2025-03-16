@@ -12,16 +12,31 @@ const AuthPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { handleUserAuth } = useAuthForm(signState);
   const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state?.auth?.user)
+  const trainer = useSelector((state: RootState) => state?.auth?.trainer)
+  const admin = useSelector((state: RootState) => state?.auth?.admin)
+
+  const getAuthPerson = ()=>{
+    if(user){
+      return user
+    }
+    if(trainer){
+      return trainer
+    }
+    if(admin){
+      return admin
+    }
+  }
+
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (user) {
+    if (getAuthPerson()) {
       navigate("/");
     } else {
       setLoading(false);
     }
-  }, [user, navigate]);
+  }, [getAuthPerson(), navigate]);
 
   const { handleGoogleAuthSuccess } = useGoogleAuth();
   if (loading) {

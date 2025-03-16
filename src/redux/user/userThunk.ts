@@ -39,43 +39,9 @@ export const getTrainerDetailsWithSubscription = createAsyncThunk(
       }
     }
   }
-);
+)
 
-//   export const trainerSearchSuggestions = createAsyncThunk(
-// "user/trainerSearchSuggestions",
-//     async (query:string, { rejectWithValue }) => {
-//       console.log("quey",query)
-//       try {
-//         const response = await axiosInstance.get(`user/trainer-suggestions?query=${query}`,);
-//         return response.data
-//       } catch (error: any) {
-//         console.log(error);
-//         if (error.response && error.response.data.message) {
-//           return rejectWithValue(error.response.data.message);
-//         } else {
-//           return rejectWithValue("Failed to get suggestion list");
-//         }
-//       }
-//     }
-//   );
 
-// export const searchWithFilterTrainer = createAsyncThunk(
-//   "user/searchWithFilterTrainer",
-//   async ({ searchParams }: { searchParams: Record<any, any> }, { rejectWithValue }) => {
-//     try {
-//       console.log("Search Params:", searchParams);
-//       const response = await axiosInstance.get("user/trainer-search", {
-//         params: searchParams,
-//       });
 
-//       return response.data;
-//     } catch (error: any) {
-//       console.log(error);
-//       if (error.response && error.response.data.message) {
-//         return rejectWithValue(error.response.data.message);
-//       } else {
-//         return rejectWithValue("Failed to get search with filter of trainers");
-//       }
-//     }
-//   }
-// );
+
+

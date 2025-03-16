@@ -33,10 +33,11 @@ import UserBookingsPage from "./pages/user/UserBookingsPage";
 import UserChatsPage from "./pages/user/UserChatsPage";
 import UserWalletPage from "./pages/user/UserWalletPage";
 import SubscriptionSettingPage from "./pages/trainer/SubscriptionSettingPage";
-import OnSuccessPage from "./components/OnSuccessPage";
-import OnFailurePage from "./components/OnFailurePage";
 import AddContentsPage from "./pages/trainer/AddContentsPage";
 import TrainerSubscriptionDetailsPage from "./pages/admin/TrainerSubscriptionDetailsPage";
+import OnFailurePage from "./pages/OnFailurePage";
+import OnSuccessPage from "./pages/OnSuccessPage"
+
 const App = () => {
   return (
     <Routes>
@@ -45,9 +46,6 @@ const App = () => {
       <Route path="/verify-otp" element={<OtpPage />} />
       <Route path="/forgot-password" element={<ForgotPassPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-
-      <Route path="/subscription-success" element={<OnSuccessPage />} />
-      <Route path="/subscription-failed" element={<OnFailurePage />} />
 
       <Route path="*" element={<PageNotFound />} />
 
@@ -58,6 +56,11 @@ const App = () => {
           path="/trainer-entrollment"
           element={<TrainerEntrollmentPage />}
         />
+
+        <Route element={<ProtectedUser />}>
+          <Route path="/subscription-success" element={<OnSuccessPage />} />
+          <Route path="/subscription-failed" element={<OnFailurePage />} />
+        </Route>
         <Route
           path="/trainer-details/:_id"
           element={<ViewTrainerDetailsUS />}
@@ -90,7 +93,7 @@ const App = () => {
             path="/admin/trainer-details/:_id"
             element={<TrainerDetailsPage />}
           />
-           <Route
+          <Route
             path="/admin/trainer-subscriptions/:_id"
             element={<TrainerSubscriptionDetailsPage />}
           />
@@ -111,10 +114,7 @@ const App = () => {
             path="/trainer/session-schedules"
             element={<SessionSchedulesPage />}
           />
-          <Route
-            path="/trainer/add-contents"
-            element={<AddContentsPage />}
-          />
+          <Route path="/trainer/add-contents" element={<AddContentsPage />} />
           <Route path="/trainer/profile" element={<TrainerProfilePage />} />
           <Route
             path="/trainer/subscriptions"

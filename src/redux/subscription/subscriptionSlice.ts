@@ -9,17 +9,21 @@ import {
   getTrainerSubscriptionById,
   getTrainerSubscriptions,
   getUserSubscriptionsData,
+  isSubscribedToTheTrainer,
   purchaseSubscription,
   updateSubscription,
   updateSubscriptionBlockStatus,
 } from "./subscriptionThunk";
+
 
 const initialState: SubscriptionState = {
   isLoading: false,
   error: null,
   subscriptions: [],
   userSubscribedTrainerPlans:[],
-  subscribersOfTrainer:[]
+  subscribersOfTrainer:[],
+  isSubscribedToTheTrainer:null
+  
 };
 
 const subscriptionSlice = createSlice({
@@ -170,6 +174,13 @@ const subscriptionSlice = createSlice({
           ...state.userSubscribedTrainerPlans,
           action.payload.data.subscriptionData,
         ];
+        state.isSubscribedToTheTrainer = {
+          ...state.isSubscribedToTheTrainer,
+          [action.payload.data.subscriptionData.trainerId]: {
+            isSubscribed: action.payload.data.isSubscribed,
+          },
+        }
+
       })
       .addCase(getSubscribedDetails.rejected, (state, action) => {
         state.isLoading = false;
@@ -236,6 +247,29 @@ const subscriptionSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to cancel user subscriptions";
+      })
+
+      //to check is he subscribed to the trainer true or false
+      .addCase(isSubscribedToTheTrainer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(isSubscribedToTheTrainer.fulfilled, (state, action) => {
+        const subscribedData = action.payload.data.isUserSubscribedToTheTrainer
+        state.isLoading = false;
+        state.error = null;
+        state.isSubscribedToTheTrainer = {
+          ...state.isSubscribedToTheTrainer,
+          [subscribedData.trainerId]: {
+            isSubscribed: subscribedData.isSubscribed,
+          },
+        };
+      })
+      .addCase(isSubscribedToTheTrainer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Error in checking user subscription status";
       })
     
   },

@@ -6,7 +6,7 @@ import useUpdateProfileForm from "../../hooks/useUpdateProfileForm";
 
 const TrainerProfilePage: React.FC = () => {
   const trainerProfileData = useSelector(
-    (state: RootState) => state?.auth?.user
+    (state: RootState) => state?.auth?.trainer
   );
   const isEditable = trainerProfileData?.role === "trainer";
   const { formik, handleProfilePicChange, handlePdfChange } =

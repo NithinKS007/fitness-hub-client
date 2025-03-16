@@ -26,9 +26,20 @@ export interface User {
   medicalConditions?: string;
   otherConcerns?: string;
 }
-
+export interface Admin {
+  _id: string;
+  fname: string;
+  lname: string;
+  email: string;
+  password: string;
+  role?: Role;
+  isBlocked?: boolean;
+  otpVerified?: boolean;
+  googleVerified?: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface Trainer {
-  trainerCollectionOriginalId:string,
   _id: string;
   fname: string;
   lname: string;
@@ -48,6 +59,7 @@ export interface Trainer {
   height?: string;
   weight?: string;
 
+  userId:string
   yearsOfExperience?: string;
   specializations?: string[];
   certifications?: { fileName: string; url: string }[];
@@ -77,9 +89,11 @@ export interface Otp {
   otpExpireTime: string;
 }
 
-export interface AuthUser {
+export interface Auth {
   otp: Otp | null;
-  user: User | null;
+  user: User | null
+  trainer:Trainer | null
+  admin:Admin | null
   isLoading: boolean;
   error: string | null;
 }

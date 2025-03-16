@@ -1,11 +1,9 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import { Drawer } from "./sideNavBarStyles";
 import SideNavAppBar from "./SideNavAppBar";
 import SideNavBarItemsList from "./SideNavBarItemsList";
-import SideNavBarFooter from "./SideNavBarFooter";
 import SideNavBarHeader from "./SideNavBarHeader";
 import { Theme } from "@mui/material/styles";
 
@@ -23,10 +21,8 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
   navItems,
   open,
   onDrawerToggle,
-  onLogoutClick,
   theme,
   location,
-  navItemsFooter,
 }) => {
   const drawerBgColor = "#1d4ed8";
   const hoverBgColor = "rgba(0, 0, 0, 0.2)";
@@ -47,10 +43,10 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
         variant="permanent"
         open={open}
         sx={{
-          width: open ? 250 : 90,
+          width: open ? 280 : 90,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: open ? 250 : 90,
+            width: open ? 280 : 90,
             visibility: open ? "visible" : "visible",
             transition: "width 0.3s, visibility 0s 0.3s",
             overflowX: "hidden",
@@ -71,19 +67,6 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
           iconColor={iconColor}
           textColor={textColor}
           activeTextColor={activeTextColor}
-        />
-
-        <Divider sx={{ marginTop: "auto" }} />
-        <SideNavBarFooter
-          navItemsFooter={navItemsFooter}
-          open={open}
-          location={location}
-          drawerBgColor={drawerBgColor}
-          hoverBgColor={hoverBgColor}
-          iconColor={iconColor}
-          textColor={textColor}
-          activeTextColor={activeTextColor}
-          onLogoutClick={onLogoutClick}
         />
       </Drawer>
     </Box>

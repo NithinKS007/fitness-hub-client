@@ -53,42 +53,7 @@ const user = createSlice({
             ? action.payload
             : "Failed to get trainer details with subscription";
       })
-
-      // .addCase(trainerSearchSuggestions.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(trainerSearchSuggestions.fulfilled, (state, action) => {
-
-      //   console.log("payloaddata",action.payload.data)
-      //   state.isLoading = false;
-      //   state.error = null;
-      //   state.trainerSuggestions = action.payload.data
-      // })
-      // .addCase(trainerSearchSuggestions.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.error =
-      //     typeof action.payload === "string"
-      //       ? action.payload
-      //       : "Failed to get trainer search suggestion";
-      // })
-
-      //   .addCase(searchWithFilterTrainer.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(searchWithFilterTrainer.fulfilled, (state, action) => {
-
-      //   console.log("payloaddata",action.payload.data)
-      //   state.isLoading = false;
-      //   state.error = null;
-      //   state.trainersList = action.payload.data
-      // })
-      // .addCase(searchWithFilterTrainer.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.error =
-      //     typeof action.payload === "string"
-      //       ? action.payload
-      //       : "Failed to get trainer search suggestion";
-      // })
+      
   },
 });
 

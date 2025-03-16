@@ -31,8 +31,7 @@ const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
       <CardContent sx={{ p: 0 }}>
         <Box
           sx={{
-            pt: 1,
-            px: 2,
+            px:1,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -115,6 +114,7 @@ const TrainerGrid: React.FC<TrainerGridProps> = ({
       spacing={2}
       sx={{
         justifyContent: { xs: "center", md: "flex-start" },
+        cursor:"pointer",
       }}
     >
 

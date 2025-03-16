@@ -102,6 +102,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   )}
                   {filter.type === "autocomplete" && (
                     <Autocomplete
+                    
                       multiple
                       options={filter.options || []}
                       value={filterValues[filter.label] || []}

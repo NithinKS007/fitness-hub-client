@@ -128,7 +128,7 @@ const useSubscription = () => {
 
   const deleteSubs = async (_id: string) => {
     try {
-      const response = await dispatch(deleteSubscription(_id)).unwrap()
+      const response = await dispatch(deleteSubscription({_id})).unwrap()
       showSuccessToast(`${response.message}`)
     } catch (error) {
       console.error("API Error:", error);
@@ -139,7 +139,6 @@ const useSubscription = () => {
 
   const editSubscription = async (_id: string) => {
     const subscriptionToEdit = subscriptions.find(sub=>sub._id===_id)
-    console.log("to edit",subscriptionToEdit)
     if(subscriptionToEdit){
       setEditId(_id);
       setIsEditMode(true);
@@ -163,7 +162,7 @@ const useSubscription = () => {
   };
 
   const subPeriodsForForm = isEditMode && currentSubPeriod
-    ? [currentSubPeriod, ...newSubs.filter(sub => sub !== currentSubPeriod)] 
+    ? [...newSubs.filter(sub => sub !== currentSubPeriod)] 
     : newSubs;
 
   return {

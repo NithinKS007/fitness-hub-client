@@ -1,20 +1,21 @@
-import React, { useEffect } from "react";
-import { Box, IconButton } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import useSubscription from "../../hooks/useSubscription";
 import ReuseTable from "../../components/ReuseTable";
 import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getTrainerSubscriptionById } from "../../redux/subscription/subscriptionThunk";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 interface TableColumn {
   label: string;
   field: string;
 }
+
 interface SortOption {
   value: string;
 }
@@ -24,8 +25,7 @@ interface FilterOption {
 }
 
 const TrainerSubscriptionDetailsPage: React.FC = () => {
-  const { subscriptions, UpdateSubsBlockstatus } =
-    useSubscription();
+  const { subscriptions, UpdateSubsBlockstatus } = useSubscription();
 
   const { _id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -36,6 +36,13 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
   const trainerSubscriptionData = useSelector(
     (state: RootState) => state.subscription.subscriptions
   );
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<
+    string | null
+  >(null);
+
+  const open = Boolean(anchorEl);
 
   useEffect(() => {
     fetchTrainerSubscriptionData();
@@ -48,6 +55,7 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
     { label: "Duration in Weeks", field: "durationInWeeks" },
     { label: "Sessions Per Week", field: "sessionsPerWeek" },
     { label: "Total Sessions", field: "totalSessions" },
+    { label: "Details", field: "details" },
   ];
 
   const sort: SortOption[] = [
@@ -75,6 +83,46 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
             slno: index + 1,
             subPeriod:
               sub.subPeriod.charAt(0).toUpperCase() + sub.subPeriod.slice(1),
+            details: (
+              <>
+                <IconButton
+                  onClick={(event) => {
+                    setAnchorEl(event.currentTarget);
+                    setSelectedSubscriptionId(sub?._id as string);
+                  }}
+                  aria-label="More options"
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Paper>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open && selectedSubscriptionId === sub._id}
+                    onClose={() => {
+                      setAnchorEl(null);
+                      setSelectedSubscriptionId(null);
+                    }}
+                    sx={{
+                      "& .MuiPaper-root": {
+                        boxShadow: "none",
+                        border: 1,
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() =>
+                        UpdateSubsBlockstatus({
+                          _id: sub._id as string,
+                          isBlocked: !sub.isBlocked,
+                        })
+                      }
+                    >
+                      {sub.isBlocked ? "Unblock" : "Block"}
+                    </MenuItem>
+                  </Menu>
+                </Paper>
+              </>
+            ),
           };
         })
       : [];
@@ -95,11 +143,7 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
         <Filter sort={sort} filter={filter} />
       </div>
       <div className="ml-15">
-        <ReuseTable
-          columns={columns}
-          data={fetchedTrainerSubscriptionData}
-          handleUpdateBlockStatus={UpdateSubsBlockstatus}
-        />
+        <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
       </div>
     </>
   );

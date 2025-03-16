@@ -5,11 +5,13 @@ import authReducer from "./auth/authSlice";
 import adminReducer from "./admin/adminSlice"
 import subscritionReducer from "./subscription/subscriptionSlice"
 import userReducer from "./user/userSlice"
+import contentReducer from "./content/contentSlice"
+import bookingSlotReducer from "./booking/bookingSlice"
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["otp","user","trainer","admin"],
+  whitelist: ["otp","user","admin","trainer"],
 };
 
 const persistedReducer = persistReducer(persistConfig, authReducer);
@@ -19,7 +21,9 @@ const store = configureStore({
     auth: persistedReducer,
     admin:adminReducer,
     subscription:subscritionReducer,
-    user:userReducer
+    user:userReducer,
+    content:contentReducer,
+    bookingSlot:bookingSlotReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

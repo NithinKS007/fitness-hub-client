@@ -9,8 +9,7 @@ import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
-import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; // Added Menu and MenuItem
-import Button from "@mui/material/Button";
+import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; 
 import { useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -136,7 +135,16 @@ const UsersListPage: React.FC = () => {
                     >
                       Details
                     </MenuItem>
-                    
+                    <MenuItem
+                      onClick={() =>
+                        handleUpdateBlockStatus({
+                          _id: user._id,
+                          isBlocked: !user.isBlocked,
+                        })
+                      }
+                    >
+                      {user.isBlocked ? "Unblock" : "Block"}
+                    </MenuItem>
                   </Menu>
                 </Paper>
               </>
@@ -154,7 +162,6 @@ const UsersListPage: React.FC = () => {
       <ReuseTable
         columns={columns}
         data={usersData}
-        handleUpdateBlockStatus={handleUpdateBlockStatus}
       />
     </>
   );

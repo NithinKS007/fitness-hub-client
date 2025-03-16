@@ -4,6 +4,7 @@ export interface SubscriptionState {
   error: string | null;
   userSubscribedTrainerPlans:UserSubscribedTrainerPlans[]
   subscribersOfTrainer:subscribersOfTrainer[]
+  isSubscribedToTheTrainer:{ [trainerId: string]: { isSubscribed: boolean} } | null
 }
 
 export interface Subscription {
@@ -31,12 +32,13 @@ export interface UserSubscribedTrainerPlans {
   stripeSubscriptionId: string;  
   subPeriod: string; 
   cancelAtPeriodEnd:boolean
-  subscribedTrainerDetails:{
+  subscribedTrainerData:{
     email: string;
     fname: string;
     isBlocked: boolean;
     lname: string;
     profilePic: string | null;
+
   }
   totalSessions: number;  
   trainerId: string; 
@@ -46,11 +48,19 @@ export interface UserSubscribedTrainerPlans {
 }
 
 export interface subscribersOfTrainer extends UserSubscribedTrainerPlans {
-  subscribedUserDetails:{
+  subscribedUserData:{
     email: string;
     fname: string;
     isBlocked: boolean;
     lname: string;
     profilePic: string | null;
   }
+}
+
+export interface RequestDeleteSubscription {
+  _id:string
+}
+
+export interface RequestSessionIdForSubscription {
+  sessionId:string
 }

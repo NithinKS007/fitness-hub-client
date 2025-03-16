@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
 
 const Reviews = () => {
   return (
@@ -9,13 +8,12 @@ const Reviews = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-
           boxShadow: 1,
           borderRadius: 2,
-          padding: "16px", 
-
-          width: "50%", 
-          marginRight: 20,
+          padding: "16px",
+          width: { xs: "100%", md: "50%" },
+          marginRight: { xs: 0, md: 20 },
+          marginTop: { xs: 2, md: 0 },
         }}
       >
         <Typography variant="body1">Reviews will be displayed here</Typography>

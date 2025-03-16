@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AuthUser, Otp } from "./authTypes";
+import { Auth, Otp } from "./authTypes";
 import {
   resendOtp,
   signUpUser,
@@ -12,11 +12,14 @@ import {
   updateUserProfile,
   signOutUser,
   updatePassword,
+  updateTrainerProfile,
 } from "./authThunk";
 
-const initialState: AuthUser = {
+const initialState: Auth = {
   otp: null,
   user: null,
+  trainer: null,
+  admin: null,
   isLoading: false,
   error: null,
 };
@@ -26,11 +29,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setOtp: (state, action: PayloadAction<Otp>) => {
-      console.log("otp", action.payload);
       state.otp = action.payload;
     },
     updateOtpCountDown: (state, action: PayloadAction<number>) => {
-      console.log("count", action.payload);
       if (state.otp) {
         state.otp.otpCountDown = action.payload;
       }
@@ -41,8 +42,16 @@ const authSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
     },
-    clearUser: (state) => {
+    setTrainer: (state, action) => {
+      state.trainer = action.payload;
+    },
+    setAdmin: (state, action) => {
+      state.admin = action.payload;
+    },
+    clearAuthPerson: (state) => {
       state.user = null;
+      state.admin = null;
+      state.trainer = null;
     },
   },
   extraReducers: (builder) => {
@@ -166,6 +175,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to create trainer";
       })
+
       //handle update user profile
       .addCase(updateUserProfile.pending, (state) => {
         state.isLoading = true;
@@ -181,6 +191,23 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to update user profile";
       })
+
+      //handle update trainer profile
+      .addCase(updateTrainerProfile.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateTrainerProfile.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(updateTrainerProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to update trainer profile";
+      })
+
       //handle sign out user
       .addCase(signOutUser.pending, (state) => {
         state.isLoading = true;
@@ -210,10 +237,17 @@ const authSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to update password of the user";
-      })
+      });
   },
 });
 
-export const { setOtp, updateOtpCountDown, setUser, clearOtpDetails ,clearUser } =
-  authSlice.actions;
+export const {
+  setOtp,
+  updateOtpCountDown,
+  setUser,
+  setAdmin,
+  setTrainer,
+  clearOtpDetails,
+  clearAuthPerson,
+} = authSlice.actions;
 export default authSlice.reducer;

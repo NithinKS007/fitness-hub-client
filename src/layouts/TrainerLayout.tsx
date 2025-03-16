@@ -10,7 +10,7 @@ import Chat from "@mui/icons-material/Chat";
 import Event from "@mui/icons-material/Event";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import useSignOut from "../hooks/useSignOut";
-import { PostAddRounded, SubscriptionsRounded, SubscriptRounded } from "@mui/icons-material";
+import { PostAddRounded, SubscriptionsRounded} from "@mui/icons-material";
 
 const TrainerLayout: React.FC = () => {
   const [open, setOpen] = useState(false);

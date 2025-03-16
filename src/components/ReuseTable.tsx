@@ -8,12 +8,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Checkbox,
   Card,
   Avatar,
 } from "@mui/material";
 import PaginationTable from "./PaginationTable";
-import { updateBlockStatus } from "../redux/admin/adminTypes";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -27,25 +25,15 @@ interface TableColumn {
 interface TableProps {
   columns: TableColumn[];
   data: any[];
-  handleUpdateBlockStatus?: (status: updateBlockStatus) => void;
-
 }
 
-const ReuseTable: React.FC<TableProps> = ({
-  columns,
-  data,
-  handleUpdateBlockStatus,
-}) => {
+const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
   return (
     <>
       <TableContainer component={Card}>
         <Table>
           <TableHead>
             <TableRow>
-
-              <TableCell padding="checkbox" sx={{ padding: "8px" }}>
-                Block/unblock
-              </TableCell>
               {columns.map((column) => (
                 <TableCell key={column.field} sx={{ padding: "8px" }}>
                   {column.label}
@@ -57,22 +45,6 @@ const ReuseTable: React.FC<TableProps> = ({
           <TableBody>
             {data.map((row, index) => (
               <TableRow key={index}>
-                <TableCell padding="checkbox" sx={{ padding: "8px" }}>
-                  <Checkbox
-                    checked={row.isBlocked}
-                    onChange={() => {
-                      if (handleUpdateBlockStatus) {
-                        handleUpdateBlockStatus({
-                          _id: row._id,
-                          isBlocked: !row.isBlocked,
-                        });
-                      }
-                    }}
-                  />
-
-                
-                </TableCell>
-
                 {columns.map((column) => (
                   <TableCell key={column.field} sx={{ padding: "8px" }}>
                     {column.field === "isBlocked" ? (

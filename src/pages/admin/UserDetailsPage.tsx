@@ -10,15 +10,15 @@ const UserDetailsPage: React.FC = () => {
   const { _id } = useParams<{ _id: string }>();
   const dispatch = useDispatch<AppDispatch>();
 
-  const authUser = useSelector((state: RootState) => state?.auth?.user);
+  const authPerson = useSelector((state: RootState) => state?.auth?.user);
   const userData = useSelector((state: RootState) => state.admin.userDetails);
   useEffect(() => {
     if (_id) {
-      dispatch(userDetails(_id));
+      dispatch(userDetails({_id}));
     }
   }, [dispatch, _id]);
 
-  const isEditable = authUser?.role === "user" ? true : false;
+  const isEditable = authPerson?.role === "user" ? true : false;
   const { formik } = useUpdateProfileForm(userData);
 
   return (

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosinstance from "../../config/axios";
-import { RequestTrainerVerification, updateBlockStatus } from "./adminTypes";
+import { RequestTrainerDetails, RequestTrainerVerification, RequestUserDetails, updateBlockStatus } from "./adminTypes";
 
 export const getUsers = createAsyncThunk(
   "admin/getUsers",
@@ -86,7 +86,7 @@ export const updatedApprovalStatus = createAsyncThunk(
 
 export const userDetails = createAsyncThunk(
   "admin/userDetails",
-  async (_id : string, { rejectWithValue }) => {
+  async ({_id }: RequestUserDetails, { rejectWithValue }) => {
     try {
       const response = await axiosinstance.get(`/admin/users/${_id}`);
       return response.data;
@@ -102,7 +102,7 @@ export const userDetails = createAsyncThunk(
 
 export const trainerDetails = createAsyncThunk(
   "admin/trainerDetails",
-  async (_id : string, { rejectWithValue }) => {
+  async ({_id }: RequestTrainerDetails, { rejectWithValue }) => {
     try {
       const response = await axiosinstance.get(`/admin/trainers/${_id}`);
       return response.data;

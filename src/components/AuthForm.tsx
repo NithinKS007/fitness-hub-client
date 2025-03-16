@@ -13,7 +13,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import type { SignState } from "../types/authTypes";
 import GoogleAuth from "./GoogleAuth";
 import { Link } from "react-router-dom";
-import fitnessCouple2 from "../assets/fitnessCouple2.jpg"
+import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
 
 interface AuthFormProps {
   signState: SignState;
@@ -56,20 +56,22 @@ const AuthForm: React.FC<AuthFormProps> = ({
         <Box
           sx={{
             width: { xs: "100%", md: "50%" },
-            bgcolor: "grey.300",
             display: { xs: "none", md: "flex" },
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "100vh",
-            backgroundColor: "black",
+            minHeight: "100vh", 
+            bgcolor: "black",
+            overflow: "hidden",
           }}
         >
-          <img
+          <Box
+            component="img"
             src={fitnessCouple2}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100vhvh",
-              objectFit: "cover",
+            alt="Fitness Couple"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover", 
               display: "block",
             }}
           />
@@ -99,28 +101,28 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       name="fname"
                       label="First Name"
                       variant="outlined"
-                      size="small" 
+                      size="small"
                       value={formik.values.fname}
                       onChange={formik.handleChange}
                       error={
                         formik.touched.fname && Boolean(formik.errors.fname)
                       }
                       helperText={formik.touched.fname && formik.errors.fname}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
+                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                     />
                     <TextField
                       fullWidth
                       name="lname"
                       label="Last Name"
                       variant="outlined"
-                      size="small" 
+                      size="small"
                       value={formik.values.lname}
                       onChange={formik.handleChange}
                       error={
                         formik.touched.lname && Boolean(formik.errors.lname)
                       }
                       helperText={formik.touched.lname && formik.errors.lname}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
+                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                     />
                   </Box>
                 )}
@@ -131,12 +133,12 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   label="Email"
                   type="email"
                   variant="outlined"
-                  size="small" 
+                  size="small"
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
 
                 <TextField
@@ -145,7 +147,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   variant="outlined"
-                  size="small" 
+                  size="small"
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   error={
@@ -164,7 +166,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
 
                 {signState === "sign up" && (
@@ -174,7 +176,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                     label="Confirm Password"
                     type={showPassword ? "text" : "password"}
                     variant="outlined"
-                    size="small" 
+                    size="small"
                     value={formik.values.cPassword}
                     onChange={formik.handleChange}
                     error={
@@ -196,7 +198,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                   />
                 )}
 
@@ -234,7 +236,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       bgcolor: "grey.800",
                     },
                     height: "48px",
-                    borderRadius: 2, 
+                    borderRadius: 2,
                   }}
                 >
                   {formik.isSubmitting

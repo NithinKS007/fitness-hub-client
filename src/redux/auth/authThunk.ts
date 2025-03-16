@@ -11,6 +11,7 @@ import {
   SignupUser,
   SignupTrainer,
   RequestUpdatePassword,
+  Trainer,
 } from "./authTypes";
 
 export const signUpUser = createAsyncThunk(
@@ -169,7 +170,7 @@ export const updateUserProfile = createAsyncThunk(
   async ({ userData }: { userData: User }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
-        `auth/update-profile/`,
+        `user/update-profile/`,
         userData
       );
       return response.data;
@@ -179,6 +180,28 @@ export const updateUserProfile = createAsyncThunk(
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue("Failed to update user profile ");
+      }
+    }
+  }
+)
+
+export const updateTrainerProfile = createAsyncThunk(
+  "auth/updateTrainerProfile",
+  async ({ TrainerData }: { TrainerData: Trainer }, { rejectWithValue }) => {
+
+    console.log("trainer data for updating the profile",TrainerData)
+    try {
+      const response = await axiosInstance.put(
+        `trainer/update-profile/`,
+        TrainerData
+      );
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to update trainer profile ");
       }
     }
   }

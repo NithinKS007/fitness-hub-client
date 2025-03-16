@@ -5,18 +5,24 @@ export interface AdminState {
   trainers: Trainer[];
   isLoading: boolean;
   error: string | null;
-  userDetails:User |{};
-  trainerDetails: Trainer | {}
+  userDetails: User | {};
+  trainerDetails: Trainer | {};
 }
-
-
 
 export interface updateBlockStatus {
   _id: string;
-  isBlocked:boolean
+  isBlocked: boolean;
 }
 
 export type RequestTrainerVerification = {
+  _id: string;
+  action?: string;
+};
+
+export interface RequestUserDetails {
+  _id: string;
+}
+
+export interface RequestTrainerDetails{
   _id:string
-  action?:string
 }

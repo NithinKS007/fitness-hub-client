@@ -3,12 +3,9 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Button from "@mui/material/Button";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
+import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -17,10 +14,11 @@ import { useState, useRef } from "react";
 
 interface AccountDropDownProps {
   color: any;
-  user: any;
+  authPerson: any;
   redirectToLogin: () => void;
   signout: () => void;
 }
+
 const userMenuItems = [
   { label: "Dashboard", action: "user-dashboard", path: "/user/dashboard" },
   {
@@ -60,33 +58,19 @@ const trainerMenuItems = [
 
 const AccountDropDown: React.FC<AccountDropDownProps> = ({
   color,
-  user,
+  authPerson,
   redirectToLogin,
   signout,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
-  const userData = useSelector((state: RootState) => state.auth.user);
+  const userData = useSelector((state: RootState) => state?.auth?.user);
+  const trainerData = useSelector((state: RootState) => state?.auth?.trainer);
+  const adminData = useSelector((state: RootState) => state?.auth?.admin);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleClose = (event: Event | React.SyntheticEvent) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
-    setOpen(false);
-  };
-
-  const handleListKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Tab" || event.key === "Escape") {
-      setOpen(false);
-    }
   };
 
   const handleMenuAction = (action: string) => {
@@ -145,90 +129,59 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
       default:
         break;
     }
+    setOpen(false);
   };
 
   const getMenuItems = () => {
-    switch (userData?.role) {
-      case "admin":
-        return adminMenuItems;
-      case "trainer":
-        return trainerMenuItems;
-      default:
-        return userMenuItems;
-    }
+    if (userData?.role === "user") return userMenuItems;
+    if (trainerData?.role === "trainer") return trainerMenuItems;
+    if (adminData?.role === "admin") return adminMenuItems;
+    return [];
   };
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-      {user ? (
-        <IconButton
-          sx={{ color: "#1a1a1a", padding: "8px" }}
-          ref={anchorRef}
-          id="composition-button"
-          aria-controls={open ? "composition-menu" : undefined}
-          aria-expanded={open ? "true" : undefined}
-          aria-haspopup="true"
-          onClick={handleToggle}
-        >
-          <Popper
-            open={open}
-            anchorEl={anchorRef.current}
-            role={undefined}
-            placement="bottom-start"
-            transition
-            disablePortal
+      {authPerson ? (
+        <>
+          <IconButton
+            sx={{ color: "#1a1a1a", padding: "8px" }}
+            ref={anchorRef}
+            onClick={handleToggle}
           >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                style={{
-                  transformOrigin:
-                    placement === "bottom-start" ? "left top" : "left bottom",
-                }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList
-                      autoFocusItem={open}
-                      id="composition-menu"
-                      aria-labelledby="composition-button"
-                      onKeyDown={handleListKeyDown}
-                    >
-                      {getMenuItems().map(
-                        (
-                          item: {
-                            label: string;
-                            action: string;
-                            path?: string;
-                          },
-                          index: number
-                        ) => (
-                          <MenuItem
-                            key={index}
-                            onClick={() => handleMenuAction(item.action)}
-                          >
-                            {item.label}
-                          </MenuItem>
-                        )
-                      )}
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
+            {userData?.profilePic ? (
+              <Avatar
+                alt="Profile"
+                src={userData.profilePic}
+                sx={{ width: 35, height: 35, color: color }}
+              />
+            ) : (
+              <Avatar sx={{ width: 35, height: 35, color: color }}>
+                <AccountCircleIcon sx={{ fontSize: 35, color: color }} />
+              </Avatar>
             )}
-          </Popper>
-          {userData?.profilePic ? (
-            <Avatar
-              alt="Profile"
-              src={userData.profilePic}
-              sx={{ width: 35, height: 35, color: color }}
-            />
-          ) : (
-            <Avatar sx={{ width: 35, height: 35, color: color }}>
-              <AccountCircleIcon sx={{ fontSize: 35, color: color }} />
-            </Avatar>
+          </IconButton>
+          {open && (
+            <Paper
+              sx={{
+                position: "absolute",
+                top: "60px",
+                right: "20px",
+                width: "160px",
+              }}
+            >
+              <MenuList>
+                {getMenuItems().map((item, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => handleMenuAction(item.action)}
+                  >
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Paper>
           )}
-        </IconButton>
+        </>
       ) : (
         <Button
           variant="contained"

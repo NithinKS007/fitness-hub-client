@@ -1,10 +1,10 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { TextField, Box, Button, Typography } from "@mui/material"
+import React from "react";
+import { Link } from "react-router-dom";
+import { TextField, Box, Button, Typography } from "@mui/material";
 import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
 
 interface ResetPasswordProps {
-  formik: any
+  formik: any;
 }
 
 const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
@@ -33,25 +33,26 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
         <Box
           sx={{
             width: { xs: "100%", md: "50%" },
-            bgcolor: "grey.300",
             display: { xs: "none", md: "flex" },
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "100vh",
-            backgroundColor: "black",
+            minHeight: "100vh", 
+            bgcolor: "black", 
+            overflow: "hidden", 
           }}
         >
-          <img
+          <Box
+            component="img"
             src={fitnessCouple2}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "95vh",
-              objectFit: "cover",
+            alt="Fitness Couple"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover", 
               display: "block",
             }}
           />
         </Box>
-
         <Box
           sx={{
             width: { xs: "100%", md: "50%" },
@@ -62,19 +63,20 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
           }}
         >
           <Box sx={{ width: "100%", maxWidth: "550px", textAlign: "center" }}>
-
             <form onSubmit={formik.handleSubmit}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <TextField
                   fullWidth
                   name="password"
-                  size="small" 
+                  size="small"
                   label="New Password"
                   type="password"
                   variant="outlined"
                   value={formik.values.password}
                   onChange={formik.handleChange}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
                   helperText={formik.touched.password && formik.errors.password}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
@@ -82,14 +84,19 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
                 <TextField
                   fullWidth
                   name="cPassword"
-                  size="small" 
+                  size="small"
                   label="Confirm Password"
                   type="password"
                   variant="outlined"
                   value={formik.values.cPassword}
                   onChange={formik.handleChange}
-                  error={formik.touched.cPassword && Boolean(formik.errors.cPassword)}
-                  helperText={formik.touched.cPassword && formik.errors.cPassword}
+                  error={
+                    formik.touched.cPassword &&
+                    Boolean(formik.errors.cPassword)
+                  }
+                  helperText={
+                    formik.touched.cPassword && formik.errors.cPassword
+                  }
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
 
@@ -103,8 +110,8 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
                     "&:hover": {
                       bgcolor: "grey.800",
                     },
-                    height: "48px", 
-                    borderRadius: 2, 
+                    height: "48px",
+                    borderRadius: 2,
                   }}
                   disabled={formik.isSubmitting}
                 >
@@ -115,7 +122,10 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
 
             <Box sx={{ mt: 2, textAlign: "center" }}>
               <Typography variant="body2" color="text.secondary">
-                <Link to="/sign-in" style={{ color: "blue", textDecoration: "none" }}>
+                <Link
+                  to="/sign-in"
+                  style={{ color: "blue", textDecoration: "none" }}
+                >
                   Back to Sign In
                 </Link>
               </Typography>
@@ -124,7 +134,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default ResetPassword
+export default ResetPassword;

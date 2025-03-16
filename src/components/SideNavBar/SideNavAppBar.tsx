@@ -27,7 +27,20 @@ const SideNavAppBar: React.FC<SideNavAppBarProps> = ({
 }) => {
 
   const user = useSelector((state:RootState)=>state?.auth?.user)
+  const trainer = useSelector((state:RootState)=>state?.auth?.trainer)
+  const admin = useSelector((state:RootState)=>state?.auth?.admin)
 
+  const getAuthPerson = () =>{
+    if(user){
+      return user
+    }
+    if(trainer){
+      return trainer
+    }
+    if(admin){
+      return admin
+    }
+  }
   const navigate = useNavigate()
     const redirectToLogin = () => {
      navigate("/sign-in");
@@ -69,7 +82,7 @@ const SideNavAppBar: React.FC<SideNavAppBarProps> = ({
           <IconButton color="inherit">
             <NotificationsIcon sx={{ color: iconColor ,width:"35px" ,height:"35px"}} />
           </IconButton>
-          <AccountDropDown color = {iconColor} user={user} redirectToLogin={redirectToLogin} signout={handleSignOut}/>
+          <AccountDropDown color = {iconColor} authPerson={getAuthPerson()} redirectToLogin={redirectToLogin} signout={handleSignOut}/>
         </Toolbar>
       </AppBar>
     </>

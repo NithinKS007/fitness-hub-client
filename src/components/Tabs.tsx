@@ -22,7 +22,6 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({
         value={value}
         onChange={handleChange}
         role="navigation"
-        sx={{ marginLeft: "10px" }}
       >
         {tabItems.map((item, index) => (
           <Tab

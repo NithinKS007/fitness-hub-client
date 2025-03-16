@@ -4,7 +4,7 @@ import { RootState } from "../redux/store";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedTrainer:React.FC = () => {
-    const trainer = useSelector((state: RootState) => state?.auth?.user);
+    const trainer = useSelector((state: RootState) => state?.auth?.trainer)
 
     return !trainer ? (
       <Navigate to="/" />

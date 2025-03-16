@@ -57,7 +57,7 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to fetch trainers";
       })
-      //update user block status
+      //update  block status
       .addCase(updateUserBlockStatus.pending, (state) => {
         state.isLoading = true;
       })
@@ -66,11 +66,11 @@ const adminSlice = createSlice({
         const updatedUser = action.payload.data;
         if (updatedUser.role === "user") {
           state.users = state?.users?.map((user) =>
-            user._id === updatedUser._id ? updatedUser : user
+            user._id === updatedUser._id ? {...user,isBlocked:updatedUser.isBlocked}: user
           );
         } else if (updatedUser.role === "trainer") {
           state.trainers = state?.trainers?.map((trainer) =>
-            trainer._id === updatedUser._id ? updatedUser : trainer
+            trainer.userId === updatedUser._id ?{...trainer,isBlocked:updatedUser.isBlocked}: trainer
           );
         }
         state.error = null;
@@ -108,15 +108,15 @@ const adminSlice = createSlice({
       .addCase(updatedApprovalStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         const { action: trainerAction } = action.meta.arg;
-        const updatedUser = action.payload.data;
+        const updatedTrainer = action.payload.data;
 
         if (trainerAction === "rejected") {
           state.trainers = state.trainers.filter(
-            (trainer) => trainer._id !== updatedUser._id
+            (trainer) => trainer._id !== updatedTrainer._id
           );
         } else {
           state.trainers = state?.trainers?.map((trainer) =>
-            trainer._id === updatedUser._id ? updatedUser : trainer
+            trainer._id === updatedTrainer._id ? updatedTrainer : trainer
           );
           state.error = null;
         }

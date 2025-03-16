@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import store from "../redux/store";
-import { clearUser } from "../redux/auth/authSlice";
+import { clearAuthPerson } from "../redux/auth/authSlice";
 import { showErrorToast } from "../utils/toast";
+const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL.replace("{cloud_name}",import.meta.env.VITE_CLOUDINARY_NAME)
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -10,6 +11,15 @@ const axiosInstance: AxiosInstance = axios.create({
   },
   withCredentials: true,
 });
+
+export const cloudinaryAxiosInstance = axios.create({
+  baseURL: `${CLOUDINARY_URL}`,
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+  withCredentials:false
+})
+
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -29,7 +39,7 @@ axiosInstance.interceptors.response.use(
   
      if(error.response && error.response.data.status===403) {
       
-      store.dispatch(clearUser());
+      store.dispatch(clearAuthPerson());
       localStorage.clear();
       showErrorToast(error.response.data.message);
       window.location.href = '/sign-in';
@@ -37,25 +47,16 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.data.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      console.log("inside axios if condition refresh token triggering")
-
       try {
-
-        console.log("inside axios refresh token triggering")
         const response = await axiosInstance.post('/auth/refresh-token', {}, { withCredentials: true });
-
-        console.log(response,"haha")
         const { newAccessToken } = response.data.data
-
-        console.log("new accesstoken",newAccessToken)
-
         localStorage.setItem('accessToken', newAccessToken);
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (err) {
         console.log("getting inside catch block axios for refreshing")
         console.log('Refresh token failed', err)
-        store.dispatch(clearUser());
+        store.dispatch(clearAuthPerson());
         localStorage.clear();
         window.location.href = '/sign-in';
         showErrorToast("Your session has expired. Please sign-in again.");

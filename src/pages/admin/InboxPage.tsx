@@ -10,7 +10,6 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { Trainer } from "../../redux/auth/authTypes";
 import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
-import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import Button from "@mui/material/Button";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import ShimmerTableLoader from "../../components/ShimmerTable";
@@ -64,8 +63,6 @@ const InboxPage: React.FC = () => {
     (state: RootState) => state.admin
   );
 
-  const handleUpdateBlockStatus = useUpdateBlockStatus();
-
   const fetchTrainers = async () => {
     await dispatch(getApprovalPendingList());
   };
@@ -89,9 +86,6 @@ const InboxPage: React.FC = () => {
     }
   };
 
-  const isCheckBoxButtonNeeded = true
-
-  console.log("fet", trainers);
   const fetchedTrainersData =
     trainers.length > 0
       ? trainers.map((trainer: Trainer, index: number) => {
@@ -112,7 +106,7 @@ const InboxPage: React.FC = () => {
                   size="small"
                   onClick={() =>
                     handleTrainerApproveOrReject(
-                      trainer?.trainerCollectionOriginalId as string,
+                      trainer?._id as string,
                       "approved"
                     )
                   }
@@ -125,7 +119,7 @@ const InboxPage: React.FC = () => {
                   size="small"
                   onClick={() =>
                     handleTrainerApproveOrReject(
-                      trainer?.trainerCollectionOriginalId as string,
+                      trainer?._id as string,
                       "rejected"
                     )
                   }
@@ -151,8 +145,6 @@ const InboxPage: React.FC = () => {
         <ReuseTable
           columns={columns}
           data={fetchedTrainersData}
-          handleUpdateBlockStatus={handleUpdateBlockStatus}
-          
         />
       ) : (
         <div>Your inbox is empty</div>

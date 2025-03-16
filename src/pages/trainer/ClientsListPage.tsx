@@ -66,28 +66,26 @@ const ClientsListPage: React.FC = () => {
   );
 
   const { isLoading } = useSelector((state: RootState) => state.subscription);
-  console.log("my plans", userSubscribedPlans);
-
-  const isCheckBoxButtonNeeded = false;
 
   const fetchedUserSubscriptionsData =
     userSubscribedPlans.length > 0
       ? userSubscribedPlans.map((sub, index) => {
-          const name = `${sub.subscribedUserDetails?.fname?.charAt(0).toUpperCase() + sub.subscribedUserDetails?.fname?.slice(1).toLowerCase()} ${sub.subscribedUserDetails?.lname?.charAt(0).toUpperCase() + sub.subscribedUserDetails?.lname?.slice(1).toLowerCase()}`;
+          const name = `${sub.subscribedUserData?.fname?.charAt(0).toUpperCase() + sub.subscribedUserData?.fname?.slice(1).toLowerCase()} ${sub.subscribedUserData?.lname?.charAt(0).toUpperCase() + sub.subscribedUserData?.lname?.slice(1).toLowerCase()}`;
           const price = `RS ${sub.price.toFixed(2)}`;
           const subPeriod =
             sub.subPeriod.charAt(0).toUpperCase() +
             sub.subPeriod.slice(1).toLowerCase();
+            const isActive = sub.isActive.charAt(0).toUpperCase() + sub.isActive.slice(1);
           return {
             ...sub,
             slno: index + 1,
-            image: sub.subscribedUserDetails.profilePic,
+            image: sub.subscribedUserData.profilePic,
             name: name,
-            email: sub.subscribedUserDetails.email,
+            email: sub.subscribedUserData.email,
             price: price,
             startDate: sub.startDate,
             endDate: sub.endDate,
-            isActive: sub.isActive,
+            isActive: isActive,
             subPeriod: subPeriod,
             durationInWeeks: sub.durationInWeeks,
             sessionsPerWeek: sub.sessionsPerWeek,

@@ -1,6 +1,6 @@
-import React from "react"
-import { Box, Button, Typography, TextField, Grid } from "@mui/material"
-import fitnessCouple2 from "../assets/fitnessCouple2.jpg"
+import React from "react";
+import { Box, Button, Typography, TextField, Grid } from "@mui/material";
+import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
 
 interface OtpFormProps {
   otp: {
@@ -36,7 +36,6 @@ const OtpForm: React.FC<OtpFormProps> = ({
         bgcolor: "grey.100",
       }}
     >
-      <img src={fitnessCouple2} alt="" />
       <Box
         sx={{
           display: "flex",
@@ -50,15 +49,25 @@ const OtpForm: React.FC<OtpFormProps> = ({
         <Box
           sx={{
             display: { xs: "none", md: "flex" },
-            bgcolor: "grey.300",
             width: { xs: "100%", md: "50%" },
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "100vh",
+            minHeight: "100vh", 
+            bgcolor: "black", 
+            overflow: "hidden", 
           }}
         >
-          <Typography variant="h4" color="text.secondary" align="center">
-          </Typography>
+          <Box
+            component="img"
+            src={fitnessCouple2}
+            alt="Fitness Couple"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover", 
+              display: "block",
+            }}
+          />
         </Box>
         <Box
           sx={{
@@ -81,8 +90,10 @@ const OtpForm: React.FC<OtpFormProps> = ({
                 </Typography>
               ) : (
                 <Typography align="center" variant="body2">
-                {otp?.otpCountDown !== undefined ? `${otp.otpCountDown}s` : 'Loading...'}
-              </Typography>              
+                  {otp?.otpCountDown !== undefined
+                    ? `${otp.otpCountDown}s`
+                    : "Loading..."}
+                </Typography>
               )}
 
               <Grid container spacing={2} justifyContent="center" sx={{ mt: 3 }}>
@@ -90,7 +101,9 @@ const OtpForm: React.FC<OtpFormProps> = ({
                   <Grid item key={idx}>
                     <TextField
                       value={digit}
-                      onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleOtpChange(e, idx)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleOtpChange(e, idx)
+                      }
                       inputRef={(reference) => {
                         if (otpBoxRef.current) {
                           otpBoxRef.current[idx] = reference;
@@ -100,14 +113,14 @@ const OtpForm: React.FC<OtpFormProps> = ({
                         width: 50,
                         height: 50,
                         textAlign: "center",
-                        '& .MuiInputBase-input': {
-                          textAlign: 'center',
+                        "& .MuiInputBase-input": {
+                          textAlign: "center",
                         },
                       }}
                       variant="outlined"
                       inputProps={{
                         maxLength: 1,
-                        style: { textAlign: 'center' },
+                        style: { textAlign: "center" },
                       }}
                     />
                   </Grid>
@@ -124,7 +137,7 @@ const OtpForm: React.FC<OtpFormProps> = ({
                     bgcolor: "grey.800",
                   },
                   color: "white",
-                    height:"50px"
+                  height: "50px",
                 }}
                 onClick={isTimerExpired ? (e) => handleResendOtp(e) : undefined}
               >
@@ -135,7 +148,7 @@ const OtpForm: React.FC<OtpFormProps> = ({
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default OtpForm
+export default OtpForm;

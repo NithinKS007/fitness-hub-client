@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { TextField, Box, Button, Typography } from "@mui/material";
-import fitnessCouple2 from "../assets/fitnessCouple2.jpg"
+import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
 
 interface ForgotPasswordProps {
   formik: any;
@@ -33,20 +33,22 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
         <Box
           sx={{
             width: { xs: "100%", md: "50%" },
-            bgcolor: "grey.300",
             display: { xs: "none", md: "flex" },
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "100vh",
-            backgroundColor: "black",
+            minHeight: "100vh", 
+            bgcolor: "black",
+            overflow: "hidden",
           }}
         >
-          <img
+          <Box
+            component="img"
             src={fitnessCouple2}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "75vh",
-              objectFit: "cover",
+            alt="Fitness Couple"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover", 
               display: "block",
             }}
           />
@@ -78,7 +80,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} 
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                 />
 
                 <Button
@@ -91,8 +93,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
                     "&:hover": {
                       bgcolor: "grey.800",
                     },
-                    height: "48px", 
-                    borderRadius: 2, 
+                    height: "48px",
+                    borderRadius: 2,
                   }}
                   disabled={formik.isSubmitting}
                 >

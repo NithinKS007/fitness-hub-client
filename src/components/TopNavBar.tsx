@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   AppBar,
   Box,
@@ -14,7 +14,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { User } from "../redux/auth/authTypes";
 import { useNavigate } from "react-router-dom";
 import AccountDropDown from "./AccountDropDown";
 import useSignOut from "../hooks/useSignOut";
@@ -29,20 +28,13 @@ const navItems = [
 const color = "#61512";
 
 interface TopNavBarProps {
-  user: User | null;
+  authPerson: any;
 }
 
-const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
+const TopNavBar: React.FC<TopNavBarProps> = ({ authPerson }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const handleSignOut = useSignOut();
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 0);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -51,6 +43,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
   const redirectToLogin = () => {
     navigate("/sign-in");
   };
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2, fontWeight: 700 }}>
@@ -75,14 +68,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
     <AppBar
       position="fixed"
       sx={{
-        bgcolor: isScrolled
-          ? "rgba(255, 255, 255, 0.6)"
-          : "rgba(255, 255, 255, 0.9)",
-        backdropFilter: "blur(15px)",
-        transition: "all 0.3s ease-in-out",
-        boxShadow: isScrolled
-          ? "0 4px 6px rgba(0,0,0,0.07)"
-          : "0 2px 4px rgba(0,0,0,0.05)",
+        bgcolor: "white",
       }}
     >
       <Container maxWidth="xl">
@@ -147,7 +133,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ user }) => {
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <AccountDropDown
               signout={handleSignOut}
-              user={user}
+              authPerson={authPerson}
               redirectToLogin={redirectToLogin}
               color={color}
             />

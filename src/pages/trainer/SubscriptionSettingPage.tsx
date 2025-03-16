@@ -1,12 +1,11 @@
-import React from "react";
-import { Box, Button, IconButton } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import TrainerSubscriptionForm from "../../components/SubscriptionSetting";
 import useSubscription from "../../hooks/useSubscription";
 import ReuseTable from "../../components/ReuseTable";
 import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { BiSolidEdit } from "react-icons/bi";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 interface TableColumn {
   label: string;
@@ -34,6 +33,12 @@ const SubscriptionSettingPage: React.FC = () => {
     handleOpen,
   } = useSubscription();
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<
+    string | null
+  >(null);
+  const openMenu = Boolean(anchorEl);
+
   const columns: TableColumn[] = [
     { label: "Sl No", field: "slno" },
     { label: "Subscription Period", field: "subPeriod" },
@@ -41,7 +46,7 @@ const SubscriptionSettingPage: React.FC = () => {
     { label: "Duration in Weeks", field: "durationInWeeks" },
     { label: "Sessions Per Week", field: "sessionsPerWeek" },
     { label: "Total Sessions", field: "totalSessions" },
-    { label: "Action", field: "actions" },
+    { label: "Actions", field: "actions" },
   ];
 
   const sort: SortOption[] = [
@@ -51,6 +56,7 @@ const SubscriptionSettingPage: React.FC = () => {
     { value: "75000 - 100000" },
     { value: "above - 100000" },
   ];
+
   const filter: FilterOption[] = [
     { value: "All" },
     { value: "Active" },
@@ -60,6 +66,19 @@ const SubscriptionSettingPage: React.FC = () => {
     { value: "Yearly" },
     { value: "Half Yearly" },
   ];
+
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    _id: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedSubscriptionId(_id);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+    setSelectedSubscriptionId(null);
+  };
 
   const fetchedTrainerSubscriptionData =
     subscriptions && subscriptions.length > 0
@@ -72,21 +91,47 @@ const SubscriptionSettingPage: React.FC = () => {
             actions: (
               <>
                 <IconButton
-                  onClick={() => deleteSubs(sub?._id as string)}
+                  onClick={(event) =>
+                    handleMenuClick(event, sub?._id as string)
+                  }
                   sx={{
                     color: "gray",
                   }}
                 >
-                  <DeleteIcon />
+                  <MoreVertIcon />
                 </IconButton>
-                <IconButton
-                  onClick={() => editSubscription(sub?._id as string)}
-                  sx={{
-                    color: "gray",
-                  }}
-                >
-                  <BiSolidEdit />
-                </IconButton>
+                <Paper>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={openMenu && selectedSubscriptionId === sub?._id}
+                    onClose={handleCloseMenu}
+                    sx={{
+                      "& .MuiPaper-root": {
+                        boxShadow: "none",
+                        border: 1,
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() => editSubscription(sub?._id as string)}
+                    >
+                      Edit
+                    </MenuItem>
+                    <MenuItem onClick={() => deleteSubs(sub?._id as string)}>
+                      Delete
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        UpdateSubsBlockstatus({
+                          _id: sub._id as string,
+                          isBlocked: !sub.isBlocked,
+                        })
+                      }
+                    >
+                      {sub.isBlocked ? "Unblock" : "Block"}
+                    </MenuItem>
+                  </Menu>
+                </Paper>
               </>
             ),
           };
@@ -125,15 +170,13 @@ const SubscriptionSettingPage: React.FC = () => {
         formik={formik}
         isEditMode={isEditMode}
       />
+
       <div className="flex justify-between">
         <SearchBarTable />
         <Filter sort={sort} filter={filter} />
       </div>
-      <ReuseTable
-        columns={columns}
-        data={fetchedTrainerSubscriptionData}
-        handleUpdateBlockStatus={UpdateSubsBlockstatus}
-      />
+
+      <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
     </>
   );
 };

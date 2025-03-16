@@ -1,7 +1,7 @@
-import { TrainerWithSubscriptionDetails, User } from "../auth/authTypes";
+import { Trainer, TrainerWithSubscriptionDetails} from "../auth/authTypes";
 
 export interface userState {
-  trainersList: User[];
+  trainersList: Trainer[];
   isLoading: boolean;
   error: string | null;
   trainerDetailsWithSubscription: TrainerWithSubscriptionDetails | null

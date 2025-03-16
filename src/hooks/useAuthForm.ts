@@ -14,7 +14,7 @@ import {
 } from "../redux/auth/authThunk";
 import { showSuccessToast, showErrorToast } from "../utils/toast";
 import { AppDispatch } from "../redux/store";
-import { setOtp, setUser } from "../redux/auth/authSlice";
+import { setOtp, setUser ,setAdmin,setTrainer} from "../redux/auth/authSlice";
 
 const useAuthForm = (formState: SignState = "sign in") => {
 
@@ -55,8 +55,20 @@ const useAuthForm = (formState: SignState = "sign in") => {
           const response = await dispatch(
             signinUser({ email, password })
           ).unwrap();
-          localStorage.setItem('accessToken', response.data.accessToken);
-          dispatch(setUser(response.data.userData))
+          localStorage.setItem('accessToken', response.data.accessToken)
+
+          if(response.data.userData.role==="user"){
+            console.log("user data received for login",response.data.userData)
+           dispatch(setUser(response.data.userData))
+          } 
+          if(response.data.userData.role==="trainer"){
+            console.log("trainer data received for login",response.data.userData)
+            dispatch(setTrainer(response.data.userData))
+          }
+          if(response.data.userData.role==="admin"){
+            console.log("admin data received for login",response.data.userData)
+            dispatch(setAdmin(response.data.userData))
+          }
 
           showSuccessToast(
             `${response.message} Welcome back ${response.data.userData.fname}`
