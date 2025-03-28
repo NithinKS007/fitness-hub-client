@@ -3,7 +3,7 @@ import { bookingSlotState } from "./bookingTypes";
 import {
   addBookingSlot,
   fetchAvailableSlots,
-  fetchAvailableOfTrainerForUser,
+  fetchTrainerSlots,
   bookSlot,
   fetchBookingRequests,
   approveRejectAppointmentBooking,
@@ -12,6 +12,8 @@ import {
   getScheduledAppointmentsUser,
   cancelAppointmentScheduleByUser,
   deleteAvailableBookingSlot,
+  getAppointmentVideoCallLogsTrainer,
+  getAppointmentVideoCallLogsUser,
 } from "./bookingThunk";
 
 const initialState: bookingSlotState = {
@@ -21,6 +23,9 @@ const initialState: bookingSlotState = {
   appointMentRequests: [],
   scheduledAppointmentsTrainer:[],
   scheduledAppointmentsUser:[],
+  appointmentVideoCallLogsUser:[],
+  appointmentVideoCallLogsTrainer:[],
+  pagination:{ totalPages: 0, currentPage: 1}
 };
 
 const bookingSlot = createSlice({
@@ -53,7 +58,9 @@ const bookingSlot = createSlice({
       .addCase(fetchAvailableSlots.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.slots = action.payload.data;
+        state.slots = action.payload.data.availableSlotsList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
       })
       .addCase(fetchAvailableSlots.rejected, (state, action) => {
         state.isLoading = false;
@@ -62,15 +69,16 @@ const bookingSlot = createSlice({
             ? action.payload
             : "Failed to fetch available slots";
       })
-      .addCase(fetchAvailableOfTrainerForUser.pending, (state) => {
+      // fetch slots for user for booking
+      .addCase(fetchTrainerSlots.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchAvailableOfTrainerForUser.fulfilled, (state, action) => {
+      .addCase(fetchTrainerSlots.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
         state.slots = action.payload.data;
       })
-      .addCase(fetchAvailableOfTrainerForUser.rejected, (state, action) => {
+      .addCase(fetchTrainerSlots.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"
@@ -101,7 +109,10 @@ const bookingSlot = createSlice({
       .addCase(fetchBookingRequests.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.appointMentRequests = action.payload.data;
+        state.appointMentRequests = action.payload.data.bookingRequestsList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+
       })
       .addCase(fetchBookingRequests.rejected, (state, action) => {
         state.isLoading = false;
@@ -131,14 +142,17 @@ const bookingSlot = createSlice({
             : "Failed to approve or reject the appointment";
       })
 
-      //get scheduled meetings
+      //get scheduled meetings trainer for calling
       .addCase(getScheduledAppointments.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getScheduledAppointments.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.scheduledAppointmentsTrainer = action.payload.data
+        state.scheduledAppointmentsTrainer = action.payload.data.trainerBookingSchedulesList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+
       })
       .addCase(getScheduledAppointments.rejected, (state, action) => {
         state.isLoading = false;
@@ -173,7 +187,10 @@ const bookingSlot = createSlice({
       .addCase(getScheduledAppointmentsUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.scheduledAppointmentsUser = action.payload.data
+        state.scheduledAppointmentsUser = action.payload.data.appointmentList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+
       })
       .addCase(getScheduledAppointmentsUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -219,6 +236,45 @@ const bookingSlot = createSlice({
             : "Failed to delete booking slot";
       })
 
+      //appointment call logs for trainer
+      .addCase(getAppointmentVideoCallLogsTrainer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAppointmentVideoCallLogsTrainer.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.appointmentVideoCallLogsTrainer = action.payload.data.trainerVideoCallLogList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+
+      })
+      .addCase(getAppointmentVideoCallLogsTrainer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get appointment call logs for trainer";
+      })
+
+      //appointment call logs for user
+
+      .addCase(getAppointmentVideoCallLogsUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAppointmentVideoCallLogsUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.appointmentVideoCallLogsUser = action.payload.data.userVideoCallLogList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+      })
+      .addCase(getAppointmentVideoCallLogsUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get appointment call logs for user";
+      })
   },
 });
 

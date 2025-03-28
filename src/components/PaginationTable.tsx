@@ -1,26 +1,29 @@
-import * as React from 'react';
-import TablePagination from '@mui/material/TablePagination';
+import React from "react";
+import { Pagination, Stack } from "@mui/material";
 
-const PaginationTable = () => {
-  const [page, setPage] = React.useState(2);
+interface PaginationTableProps {
+  handlePageChange: (event: React.ChangeEvent<unknown>, newPage: number) => void;
+  page: number;
+  totalPages: number;
+  disabled?: boolean;
+}
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
-  ) => {
-    setPage(newPage);
-  };
-
-  return (
-    <TablePagination
-      component="div"
-      count={100}
-      page={page}
-      onPageChange={handleChangePage}
-      rowsPerPage={10}  
-      rowsPerPageOptions={[]}
+const PaginationTable: React.FC<PaginationTableProps> = ({
+  handlePageChange,
+  page,
+  totalPages,
+  disabled = false,
+}) => (
+  <Stack spacing={2} sx={{ mt: 2 }} direction="row" justifyContent="end">
+    <Pagination
+      count={totalPages}
+      page={page} 
+      onChange={handlePageChange}
+      shape="rounded"
+      size="medium"
+      disabled={disabled}
     />
-  );
-};
+  </Stack>
+);
 
 export default PaginationTable;

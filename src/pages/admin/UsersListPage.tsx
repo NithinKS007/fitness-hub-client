@@ -3,50 +3,40 @@ import ReuseTable from "../../components/ReuseTable";
 import { useDispatch } from "react-redux";
 import { getUsers } from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { User } from "../../redux/auth/authTypes";
-import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
-import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; 
+import { Box, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import TableFilter from "../../components/TableFilter";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import PaginationTable from "../../components/PaginationTable";
+import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import { useModal } from "../../hooks/useModal";
 
 interface TableColumn {
   label: string;
   field: string;
-}
-interface SortOption {
-  value: string;
 }
 
 interface FilterOption {
   value: string;
 }
 
-interface DirectionOption {
-  value: string;
-}
-
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
-  { label: "Image", field: "profilePic" },
-  { label: "First Name", field: "fname" },
-  { label: "Last Name", field: "lname" },
+  { label: "Profile", field: "profilePic" },
+  { label: "Name", field: "name" },
   { label: "Email", field: "email" },
-  { label: "Status", field: "isBlocked" },
-  { label: "Join Date", field: "createdAt" },
-  { label: "Verified", field: "verified" },
-  { label: "Details", field: "details" },
+  { label: "Account Status", field: "isBlocked" },
+  { label: "Date Joined", field: "createdAt" },
+  { label: "Verification status", field: "verified" },
+  { label: "More", field: "details" },
 ];
 
-const sort: SortOption[] = [
-  { value: "First Name" },
-  { value: "Last Name" },
-  { value: "Email" },
-  { value: "Join Date" },
-];
 const filter: FilterOption[] = [
   { value: "All" },
   { value: "Block" },
@@ -54,31 +44,55 @@ const filter: FilterOption[] = [
   { value: "verified" },
   { value: "Not verified" },
 ];
-const direction: DirectionOption[] = [{ value: "A to Z" }, { value: "Z to A" }];
 const UsersListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { users, loading, error } = useSelector((state: any) => state.admin);
+  const { users, isLoading, error } = useSelector(
+    (state: RootState) => state.admin
+  );
 
-  const handleUpdateBlockStatus = useUpdateBlockStatus();
-  const fetchUsers = async () => {
-    await dispatch(getUsers());
-  };
+  const { handleUpdateBlockStatus } = useUpdateBlockStatus();
+  const { totalPages, currentPage } = useSelector(
+    (state: RootState) => state.admin.pagination
+  );
 
-    // State for menu
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(
-      null
-    );
-    const open = Boolean(anchorEl);
+  const {
+    open: confirmationModalOpen,
+    handleOpen: handleConfirmationModalOpen,
+    handleClose: handleConfirmationModalClose,
+  } = useModal();
 
-  const navigate = useNavigate()
+  const {
+    page,
+    handlePageChange,
+    searchTerm,
+    handleSearchChange,
+    selectedFilter,
+    handleFilterChange,
+    getQueryParams,
+  } = useSearchFilter();
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(
+    null
+  );
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const open = Boolean(anchorEl);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUsers();
-  }, [dispatch]);
+    dispatch(getUsers(getQueryParams()));
+  }, [
+    dispatch,
+    getQueryParams().page,
+    getQueryParams().search,
+    getQueryParams().filters,
+  ]);
 
   const handleUserDetails = (_id: string) => {
     navigate(`/admin/user-details/${_id}`);
+    handleClose();
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, _id: string) => {
@@ -91,12 +105,25 @@ const UsersListPage: React.FC = () => {
     setSelectedTrainerId(null);
   };
 
+  const handleBlockAction = (user: User) => {
+    setSelectedUser(user);
+    handleConfirmationModalOpen();
+    handleClose();
+  };
 
-  if (loading) return <ShimmerTableLoader columns={columns} />;
-  if (error) return <div>{error}</div>;
+  const handleConfirmBlockStatus = () => {
+    if (selectedUser) {
+      handleUpdateBlockStatus({
+        _id: selectedUser._id,
+        isBlocked: !selectedUser.isBlocked,
+      });
+      handleConfirmationModalClose();
+      handleClose();
+    }
+  };
 
   const usersData =
-    users.length > 0
+    users?.length > 0
       ? users.map((user: User, index: number) => {
           const dateObj = new Date(user.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
@@ -104,15 +131,14 @@ const UsersListPage: React.FC = () => {
 
           return {
             ...user,
-            slno: index + 1,
+            name: `${user.fname} ${user.lname}`,
+            slno: index + 1 + (currentPage - 1) * 5,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: user.otpVerified || user.googleVerified,
             details: (
               <>
                 <IconButton
-                  onClick={(event) =>
-                    handleClick(event, user?._id as string)
-                  }
+                  onClick={(event) => handleClick(event, user?._id as string)}
                   aria-label="More options"
                 >
                   <MoreVertIcon />
@@ -125,24 +151,18 @@ const UsersListPage: React.FC = () => {
                     sx={{
                       "& .MuiPaper-root": {
                         boxShadow: "none",
-                        border: 1,
+                        border: "1px solid",
+                        borderColor: "grey.400",
+                        borderRadius: 2,
                       },
                     }}
                   >
                     <MenuItem
-                      onClick={() =>
-                        handleUserDetails(user?._id as string)                      }
+                      onClick={() => handleUserDetails(user?._id as string)}
                     >
                       Details
                     </MenuItem>
-                    <MenuItem
-                      onClick={() =>
-                        handleUpdateBlockStatus({
-                          _id: user._id,
-                          isBlocked: !user.isBlocked,
-                        })
-                      }
-                    >
+                    <MenuItem onClick={() => handleBlockAction(user)}>
                       {user.isBlocked ? "Unblock" : "Block"}
                     </MenuItem>
                   </Menu>
@@ -155,13 +175,53 @@ const UsersListPage: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <SearchBarTable />
-        <Filter sort={sort} filter={filter} direction={direction} />
-      </div>
-      <ReuseTable
-        columns={columns}
-        data={usersData}
+      <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
+        <SearchBarTable
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+        />
+        <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
+          <TableFilter
+            filter={filter}
+            selectedFilter={selectedFilter}
+            handleFilterChange={handleFilterChange}
+          />
+        </Box>
+      </Box>
+
+      {isLoading ? (
+        <ShimmerTableLoader columns={columns} />
+      ) : error ? (
+        <Box>{error}</Box>
+      ) : (
+        <>
+          <ReuseTable columns={columns} data={usersData} />
+          {usersData.length > 5 ? (
+            <PaginationTable
+              handlePageChange={handlePageChange}
+              page={currentPage}
+              totalPages={totalPages}
+            />
+          ) : (
+            ""
+          )}
+        </>
+      )}
+      <ConfirmationModalDialog
+        open={confirmationModalOpen}
+        // title={selectedUser?.isBlocked ? "Unblock User" : "Block User"}
+        content={
+          selectedUser &&
+          `Are you sure you want to ${
+            selectedUser.isBlocked ? "unblock" : "block"
+          } ${selectedUser.fname} ${selectedUser.lname} ?`
+        }
+        onConfirm={handleConfirmBlockStatus}
+        onCancel={handleConfirmationModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="success"
+        cancelColor="error"
       />
     </>
   );

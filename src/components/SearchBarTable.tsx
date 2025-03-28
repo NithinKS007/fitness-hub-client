@@ -1,32 +1,45 @@
-import React, { useState } from "react";
 import { Box, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-const SearchBarTable = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+interface SearchBarTableProps {
+  searchTerm: string;
+  handleSearchChange: (newSearchTerm: string) => void;
+  disabled?: boolean;
+}
 
+const SearchBarTable: React.FC<SearchBarTableProps> = ({
+  searchTerm,
+  handleSearchChange,
+  disabled = false,
+}) => {
   return (
-    <Box sx={{ marginBottom: 2, display: "flex", justifyContent: "end" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        width: "30%",
+        padding: "8px 16px",
+      }}
+    >
       <TextField
         fullWidth
+        variant="standard"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(event) => handleSearchChange(event.target.value)}
+        disabled={disabled}
+        placeholder="Search ..."
         sx={{
-          width: "225px",
-          height: "45px",
-          "& .MuiInputAdornment-root": {
-            cursor: "pointer",
-          },
-          "& .MuiInputBase-root": { height: "45px" },
+          maxWidth: 400,
         }}
         slotProps={{
           input: {
-            startAdornment: (
-              <InputAdornment position="start">
+            endAdornment: (
+              <InputAdornment position="end">
                 <SearchIcon />
               </InputAdornment>
-            )
-          }
+            ),
+          },
         }}
       />
     </Box>

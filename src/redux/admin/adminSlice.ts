@@ -16,7 +16,8 @@ const initialState: AdminState = {
   isLoading: false,
   error: null,
   userDetails: {},
-  trainerDetails: {}
+  trainerDetails: {},
+  pagination:{ totalPages: 0, currentPage: 1}
 };
 
 const adminSlice = createSlice({
@@ -31,7 +32,9 @@ const adminSlice = createSlice({
       })
       .addCase(getUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.users = action.payload.data;
+        state.users = action.payload.data.usersList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
         state.error = null;
       })
       .addCase(getUsers.rejected, (state, action) => {
@@ -46,8 +49,12 @@ const adminSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getTrainers.fulfilled, (state, action) => {
+
+        console.log("actions",action.payload.data)
         state.isLoading = false;
-        state.trainers = action.payload.data;
+        state.trainers = action.payload.data.trainersList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
         state.error = null;
       })
       .addCase(getTrainers.rejected, (state, action) => {
@@ -90,7 +97,9 @@ const adminSlice = createSlice({
       })
       .addCase(getApprovalPendingList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.trainers = action.payload.data
+        state.trainers = action.payload.data.trainersList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
         state.error = null
       })
       .addCase(getApprovalPendingList.rejected, (state, action) => {
@@ -107,19 +116,11 @@ const adminSlice = createSlice({
       })
       .addCase(updatedApprovalStatus.fulfilled, (state, action) => {
         state.isLoading = false;
-        const { action: trainerAction } = action.meta.arg;
         const updatedTrainer = action.payload.data;
-
-        if (trainerAction === "rejected") {
           state.trainers = state.trainers.filter(
             (trainer) => trainer._id !== updatedTrainer._id
           );
-        } else {
-          state.trainers = state?.trainers?.map((trainer) =>
-            trainer._id === updatedTrainer._id ? updatedTrainer : trainer
-          );
           state.error = null;
-        }
       })
       .addCase(updatedApprovalStatus.rejected, (state, action) => {
         state.isLoading = false;

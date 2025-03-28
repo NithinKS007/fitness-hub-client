@@ -22,7 +22,8 @@ const initialState: SubscriptionState = {
   subscriptions: [],
   userSubscribedTrainerPlans:[],
   subscribersOfTrainer:[],
-  isSubscribedToTheTrainer:null
+  isSubscribedToTheTrainer:null,
+  pagination:{ totalPages: 0, currentPage: 1}
   
 };
 
@@ -197,7 +198,10 @@ const subscriptionSlice = createSlice({
       .addCase(getUserSubscriptionsData.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.userSubscribedTrainerPlans = action.payload.data
+        state.userSubscribedTrainerPlans = action.payload.data.userSubscriptionsList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+
       })
       .addCase(getUserSubscriptionsData.rejected, (state, action) => {
         state.isLoading = false;
@@ -213,7 +217,9 @@ const subscriptionSlice = createSlice({
       .addCase(getTrainerSubscribedUsers.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.subscribersOfTrainer = action.payload.data
+        state.subscribersOfTrainer = action.payload.data.trainerSubscribers,
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
       })
       .addCase(getTrainerSubscribedUsers.rejected, (state, action) => {
         state.isLoading = false;

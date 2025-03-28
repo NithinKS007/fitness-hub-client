@@ -77,7 +77,6 @@ const Profile: React.FC<ProfileProps> = ({
               background: "white",
             }}
           >
-            {/* Profile Overview Section */}
             <Box sx={{ mb: 3 }}>
               <Typography
                 variant="h6"
@@ -132,8 +131,6 @@ const Profile: React.FC<ProfileProps> = ({
                 )}
               </Box>
             </Box>
-
-            {/* Edit Profile Section */}
             {isEditable && (
               <Box>
                 <Divider sx={{ mb: 2 }} />
@@ -184,8 +181,6 @@ const Profile: React.FC<ProfileProps> = ({
             )}
           </Paper>
         </Box>
-
-        {/* Right Section: Editable Form Fields */}
         <Box sx={{ flex: 1 }}>
           <Paper sx={{ p: 4, borderRadius: 2 }}>
             <form onSubmit={formik.handleSubmit}>
@@ -403,8 +398,6 @@ const Profile: React.FC<ProfileProps> = ({
               )}
             </form>
           </Paper>
-
-          {/* Certifications Section */}
           {formik.values.role === "trainer" && (
             <Paper sx={{ p: 3, borderRadius: 2, mt: 4 }}>
               <Typography variant="h6" sx={{ mb: 2 }}>

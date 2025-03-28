@@ -17,10 +17,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { PhotoCamera } from "@mui/icons-material";
 
 interface ProfileDetailsProps {
-  formik?: any;
-  isEditable?: boolean;
-  handleProfilePicChange?: React.ChangeEventHandler<HTMLInputElement>;
-  changePasswordFormik?: any;
+  formik: any;
+  isEditable: boolean;
+  handleProfilePicChange: React.ChangeEventHandler<HTMLInputElement>;
+  changePasswordFormik: any;
 }
 
 const UserProfile: React.FC<ProfileDetailsProps> = ({
@@ -41,7 +41,6 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
           gap: "24px",
         }}
       >
-        {/* Left Sidebar: Profile Overview and Edit Section */}
         <Box
           sx={{
             flex: { md: "0 0 30%" },
@@ -57,7 +56,6 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               background: "white",
             }}
           >
-            {/* Profile Overview Section */}
             <Box sx={{ mb: 3 }}>
               <Typography
                 variant="h6"
@@ -101,7 +99,6 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               </Box>
             </Box>
 
-            {/* Edit Profile Section */}
             {isEditable && (
               <Box>
                 <Divider sx={{ mb: 2 }} />
@@ -137,8 +134,6 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
             )}
           </Paper>
         </Box>
-
-        {/* Right Section: Detailed Form Fields */}
         <Box sx={{ flex: 1 }}>
           <Paper sx={{ p: 3, borderRadius: 2 }}>
             <Typography variant="h6" gutterBottom>
@@ -296,8 +291,6 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               </Box>
             )}
           </Paper>
-
-          {/* Health Details Section */}
           <Paper sx={{ p: 3, borderRadius: 2, mt: 3 }}>
             <Typography variant="h6" gutterBottom>
               HEALTH DETAILS

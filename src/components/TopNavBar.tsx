@@ -22,10 +22,7 @@ const navItems = [
   { label: "Home", href: "/" },
   { label: "Get a Coach", href: "/find-trainer" },
   { label: "Entroll as a coach", href: "/trainer-entrollment" },
-  { label: "About", href: "/about" },
-  { label: "Contact us", href: "/contact-us" },
 ];
-const color = "#61512";
 
 interface TopNavBarProps {
   authPerson: any;
@@ -69,6 +66,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ authPerson }) => {
       position="fixed"
       sx={{
         bgcolor: "white",
+        boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
       }}
     >
       <Container maxWidth="xl">
@@ -78,6 +76,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ authPerson }) => {
             height: "75px",
             justifyContent: "space-between",
             alignItems: "center",
+          
           }}
         >
           <Box
@@ -135,7 +134,6 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ authPerson }) => {
               signout={handleSignOut}
               authPerson={authPerson}
               redirectToLogin={redirectToLogin}
-              color={color}
             />
           </Box>
         </Toolbar>

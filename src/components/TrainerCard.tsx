@@ -5,7 +5,6 @@ import {
   Button,
   Avatar,
   Box,
-  Grid,
 } from "@mui/material";
 import { ChatBubbleOutline } from "@mui/icons-material";
 
@@ -18,20 +17,21 @@ const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
   return (
     <Card
       sx={{
+        borderRadius: 3,
         width: "100%",
         maxWidth: "100%",
         minHeight: "350px",
-        borderRadius: "10px",
-        boxShadow: 1,
         display: "flex",
         flexDirection: "column",
+        border: "none",
+        boxShadow: "none",
+        cursor: "pointer",
       }}
       onClick={() => handleTrainerDetails(trainer._id)}
     >
       <CardContent sx={{ p: 0 }}>
         <Box
           sx={{
-            px:1,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -41,19 +41,18 @@ const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
           <Avatar
             src={trainer.profilePic || ""}
             sx={{
-              width: "330px",
-              height: "250px",
+              width: "100%",
+              height: { xs: "180px", sm: "220px", md: "250px" },
               borderRadius: "10px",
               mb: 2,
               fontSize: "80px",
               bgcolor: "#e0e0e0",
             }}
-          ></Avatar>
-
+          />
           <Typography
             variant="h6"
             sx={{
-              fontSize: "20px",
+              fontSize: { xs: "16px", sm: "18px", md: "20px" },
               fontWeight: 500,
               color: "#1a1a1a",
             }}
@@ -61,7 +60,7 @@ const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
             {trainer.fname + " " + trainer.lname}
           </Typography>
 
-          <Box sx={{ display: "flex", width: "100%", mt: 1 }}>
+          <Box sx={{ display: "flex", width: "100%", mt: 1, px: 1 }}>
             <Button
               variant="outlined"
               sx={{
@@ -87,7 +86,7 @@ const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
                 borderRadius: "12px",
                 border: "0.5px solid lightgrey",
                 textTransform: "none",
-                fontSize: "16px",
+                fontSize: { xs: "14px", sm: "16px" },
                 ml: 1,
                 bgcolor: "transparent",
                 display: "flex",
@@ -109,36 +108,44 @@ const TrainerGrid: React.FC<TrainerGridProps> = ({
   handleTrainerDetails,
 }) => {
   return (
-    <Grid
-      container
-      spacing={2}
+    <Box
       sx={{
-        justifyContent: { xs: "center", md: "flex-start" },
-        cursor:"pointer",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 2,
+        cursor: "pointer",
+        justifyContent: "flex-start", // Aligns items at the start, making them take full width
+        width: "100%", // Ensures the container takes up full width
       }}
     >
-
       {trainersList && trainersList.length > 0 ? (
-        trainersList?.map((trainer) => (
-          <Grid item key={trainer._id} xs={12} sm={6} md={4} lg={3}>
+        trainersList.map((trainer) => (
+          <Box
+            key={trainer._id}
+            sx={{
+              width: { xs: "100%", sm: "48%", md: "31%", lg: "24%" },
+              display: "flex",
+              justifyContent: "center", // Center each card within its container
+            }}
+          >
             <TrainerCard
               trainer={trainer}
               handleTrainerDetails={handleTrainerDetails}
             />
-          </Grid>
+          </Box>
         ))
       ) : (
-        <Grid item xs={12}>
+        <Box sx={{ width: "100%" }}>
           <Typography
             variant="h6"
             color="textSecondary"
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", textAlign: "center" }}
           >
             No Trainers Found
           </Typography>
-        </Grid>
+        </Box>
       )}
-    </Grid>
+    </Box>
   );
 };
 

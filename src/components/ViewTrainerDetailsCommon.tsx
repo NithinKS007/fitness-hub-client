@@ -4,17 +4,15 @@ import { TrainerWithSubscriptionDetails } from "../redux/auth/authTypes";
 
 interface ViewTrainerDetailsCommonProps {
   trainerDetails: TrainerWithSubscriptionDetails | null;
-  handleShowPlan: () => void;
 }
 
 const ViewTrainerDetailsCommon: React.FC<ViewTrainerDetailsCommonProps> = ({
   trainerDetails,
-  handleShowPlan,
 }) => {
   return (
     <Box
       sx={{
-        mt: { xs: 10, md: 15 },
+        mt: { xs: 2, md: 4 },
         mx: { xs: 2, md: 5, lg: 20 },
         boxShadow: 1,
         borderRadius: 2,
@@ -50,7 +48,7 @@ const ViewTrainerDetailsCommon: React.FC<ViewTrainerDetailsCommonProps> = ({
               mb: { xs: 3, lg: 0 },
             }}
           >
-            <Box sx={{display:"flex",flexDirection:"column"}}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Avatar
                 src={trainerDetails?.profilePic || ""}
                 sx={{
@@ -63,44 +61,16 @@ const ViewTrainerDetailsCommon: React.FC<ViewTrainerDetailsCommonProps> = ({
                 }}
               />
               <Typography
-                sx={{
-                  display: "flex",
-                  justifyContent:"center",
-                  alignItems:"center",
-                  bgcolor: "#11D900",
-                  color: "white",
                 
-                  px: 2,
-                  py: 0.5,
-                  borderRadius: "100px",
-                  fontSize: { xs: 10, md: 12},
-                  fontWeight: 600,
-                  letterSpacing: "0.5px",
-                }}
-              >
-                STANDARD
-              </Typography>
-            </Box>
-            <Box sx={{ mt: { xs: 0, lg: 20 } }}>
-              <Typography
-                variant="h1"
                 sx={{
                   fontWeight: 500,
                   fontSize: { xs: 20, md: 28, lg: 32 },
                   lineHeight: { xs: "28px", md: "36px", lg: "40px" },
                   mb: 0.5,
+                  textAlign: "center",
                 }}
               >
                 {`${trainerDetails?.fname || ""} ${trainerDetails?.lname || ""}`}
-              </Typography>
-              <Typography
-                sx={{
-                  color: "#9E9E9E",
-                  fontSize: { xs: 14, md: 16 },
-                  lineHeight: "24px",
-                }}
-              >
-                Strength and Conditioning
               </Typography>
             </Box>
           </Box>
@@ -126,7 +96,7 @@ const ViewTrainerDetailsCommon: React.FC<ViewTrainerDetailsCommonProps> = ({
                 boxShadow: "none",
                 "&:hover": { bgcolor: "#333", boxShadow: "none" },
               }}
-              onClick={handleShowPlan}
+      
             >
               See Plans
             </Button>

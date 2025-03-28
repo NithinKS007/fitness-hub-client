@@ -17,9 +17,8 @@ const useSlot = () => {
 
     const [anchorAvailableSlotEl, setAnchorAvailableSlotEl] =
       useState<null | HTMLElement>(null);
-    const [selectedAvailableSlotId, setSelectedAvailableSlotId] = useState<
-      string | null
-    >(null);
+    const [selectedAvailableSlotId, setSelectedAvailableSlotId] = 
+    useState< string | null>(null);
   
       const handleAvailableSlotMenuClick = (
         event: React.MouseEvent<HTMLElement>,

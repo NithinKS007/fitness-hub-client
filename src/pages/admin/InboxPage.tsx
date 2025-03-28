@@ -8,81 +8,90 @@ import {
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Trainer } from "../../redux/auth/authTypes";
-import Filter from "../../components/Filter";
-import SearchBarTable from "../../components/SearchBarTable";
 import Button from "@mui/material/Button";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import ShimmerTableLoader from "../../components/ShimmerTable";
+import MailIcon from "@mui/icons-material/Mail";
+import { Box, Typography } from "@mui/material";
+import SearchBarTable from "../../components/SearchBarTable";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import DateFilter from "../../components/DateAndTimeFilter";
+import PaginationTable from "../../components/PaginationTable";
+import { useModal } from "../../hooks/useModal";
+import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
 
 interface TableColumn {
   label: string;
   field: string;
 }
-interface SortOption {
-  value: string;
-}
-
-interface FilterOption {
-  value: string;
-}
-
-interface DirectionOption {
-  value: string;
-}
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
-  { label: "Image", field: "profilePic" },
-  { label: "First Name", field: "fname" },
-  { label: "Last Name", field: "lname" },
+  { label: "Profile", field: "profilePic" },
+  { label: "Name", field: "name" },
   { label: "Email", field: "email" },
-  { label: "Status", field: "isBlocked" },
-  { label: "Join Date", field: "createdAt" },
-  { label: "Verified", field: "verified" },
-  { label: "Approved", field: "isApproved" },
-  { label: "Actions", field: "actions" },
+  { label: "Application Date", field: "createdAt" },
+  { label: "Verification Status", field: "verified" },
+  { label: "More", field: "actions" },
 ];
 
-const sort: SortOption[] = [
-  { value: "First Name" },
-  { value: "Last Name" },
-  { value: "Email" },
-  { value: "Join Date" },
-];
-const filter: FilterOption[] = [
-  { value: "All" },
-  { value: "Block" },
-  { value: "Unblock" },
-  { value: "Approved" },
-  { value: "Not Approved" },
-];
-const direction: DirectionOption[] = [{ value: "A to Z" }, { value: "Z to A" }];
 const InboxPage: React.FC = () => {
+  const [selectedTrainer, setSelectedTrainer] = React.useState<Trainer | null>(null);
+  const [actionType, setActionType] = React.useState<"approved" | "rejected" | null>(null);
+
   const dispatch = useDispatch<AppDispatch>();
   const { trainers, isLoading, error } = useSelector(
     (state: RootState) => state.admin
   );
 
-  const fetchTrainers = async () => {
-    await dispatch(getApprovalPendingList());
-  };
+  const { totalPages, currentPage } = useSelector(
+    (state: RootState) => state.admin.pagination
+  );
+
+  const {
+    handlePageChange,
+    searchTerm,
+    handleSearchChange,
+    getQueryParams,
+    fromDate,
+    toDate,
+    handleFromDateChange,
+    handleToDateChange,
+    handleResetDates,
+  } = useSearchFilter();
 
   useEffect(() => {
-    fetchTrainers();
-  }, [dispatch]);
+    dispatch(getApprovalPendingList(getQueryParams()));
+  }, [
+    dispatch,
+    getQueryParams().page,
+    getQueryParams().search,
+    getQueryParams().fromDate,
+    getQueryParams().toDate,
+  ]);
+  const {
+    open: confirmationModalOpen,
+    handleOpen: handleConfirmationModalOpen,
+    handleClose: handleConfirmationModalClose,
+  } = useModal();
+  
+  const handleTrainerAction = (trainer: Trainer, action: "approved" | "rejected") => {
+    setSelectedTrainer(trainer);
+    setActionType(action);
+    handleConfirmationModalOpen();
+  };
 
-  if (error) return <div>{error}</div>;
-
-  const handleTrainerApproveOrReject = async (_id: string, action: string) => {
-    try {
-      const response = await dispatch(
-        updatedApprovalStatus({ _id, action })
-      ).unwrap();
-      console.log("Response", response);
-      showSuccessToast(`${response.message}`);
-    } catch (error) {
-      console.log(`API Error ${error}`);
-      showErrorToast(`${error}`);
+const handleConfirmAction = async () => {
+    if (selectedTrainer && actionType) {
+      try {
+        const response = await dispatch(
+          updatedApprovalStatus({ _id: selectedTrainer._id, action: actionType })
+        ).unwrap();
+        showSuccessToast(`${response.message}`);
+        handleConfirmationModalClose();
+      } catch (error) {
+        showErrorToast(`${error}`);
+      }
     }
   };
 
@@ -96,35 +105,33 @@ const InboxPage: React.FC = () => {
           console.log("this is the trainers id", trainer._id);
           return {
             ...trainer,
-            slno: index + 1,
+            name: `${trainer.fname} ${trainer.lname}`,
+            slno: index + 1 + (currentPage - 1) * 5,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: trainer.otpVerified || trainer.googleVerified,
-            isApproved: trainer?.isApproved,
             actions: (
               <>
                 <Button
                   size="small"
-                  onClick={() =>
-                    handleTrainerApproveOrReject(
-                      trainer?._id as string,
-                      "approved"
-                    )
-                  }
-                  sx={{ fontSize: "14px", marginRight: "8px" }}
-                  variant="text"
+                  onClick={() => handleTrainerAction(trainer, "approved")}
+                  sx={{
+                    fontSize: "14px",
+                    margin: "4px",
+                  }}
+                  variant="outlined"
                 >
                   Approve
                 </Button>
                 <Button
                   size="small"
-                  onClick={() =>
-                    handleTrainerApproveOrReject(
-                      trainer?._id as string,
-                      "rejected"
-                    )
-                  }
-                  sx={{ fontSize: "14px", color: "red", borderColor: "red" }}
-                  variant="text"
+                  onClick={() => handleTrainerAction(trainer, "rejected")}
+                  sx={{
+                    fontSize: "14px",
+                    margin: "4px",
+                    color: "red",
+                    borderColor: "red",
+                  }}
+                  variant="outlined"
                 >
                   Reject
                 </Button>
@@ -135,20 +142,73 @@ const InboxPage: React.FC = () => {
       : [];
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <SearchBarTable />
-        <Filter sort={sort} filter={filter} direction={direction} />
-      </div>
+      
+        <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
+          <SearchBarTable
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
+          />
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between" }}
+            gap={1}
+          >
+            <DateFilter
+              fromDate={fromDate}
+              toDate={toDate}
+              onFromDateChange={handleFromDateChange}
+              onToDateChange={handleToDateChange}
+              onReset={handleResetDates}
+            />
+          </Box>
+        </Box>
+     
+
       {isLoading ? (
         <ShimmerTableLoader columns={columns} />
       ) : fetchedTrainersData.length > 0 ? (
-        <ReuseTable
-          columns={columns}
-          data={fetchedTrainersData}
-        />
+        <>
+          <ReuseTable columns={columns} data={fetchedTrainersData} />
+          {fetchedTrainersData.length > 5 ?  <PaginationTable
+            handlePageChange={handlePageChange}
+            page={currentPage}
+            totalPages={totalPages}
+          /> :""}
+         
+        </>
       ) : (
-        <div>Your inbox is empty</div>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "85%",
+            textAlign: "center",
+            border: 1,
+            borderColor: "grey.400",
+            borderRadius: 2,
+          }}
+        >
+          <MailIcon sx={{ fontSize: 150, color: "gray" }} />
+          <Typography variant="h6" sx={{ mt: 2, color: "gray" }}>
+            Your inbox is empty
+          </Typography>
+        </Box>
       )}
+      <ConfirmationModalDialog
+        open={confirmationModalOpen}
+        // title={actionType === "approved" ? "Approve Trainer" : "Reject Application"}
+        content={
+          selectedTrainer &&
+          `Are you sure you want to ${actionType} ${selectedTrainer.fname} ${selectedTrainer.lname}'s application?`
+        }
+        onConfirm={handleConfirmAction}
+        onCancel={handleConfirmationModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor={actionType === "approved" ? "success" : "error"}
+        cancelColor="primary"
+      />
     </>
   );
 };

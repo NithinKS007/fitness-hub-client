@@ -10,7 +10,6 @@ import { imageSchema,pdfSchema } from "../utils/validationSchema";
 
 const useUpdateProfileForm = (profileData: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  // const [selectedFiles,setSelectedFiles] = useState<any[]>([])
   const [initialValues, setInitialValues] = useState<any>({
     _id: "",
     fname: "",
@@ -128,7 +127,6 @@ const useUpdateProfileForm = (profileData: any) => {
 
           filesData.push({ fileName: file.name, url: base64String });
         }
-        // setSelectedFiles((prevState) => [...prevState, ...filesData])
         formik.setFieldValue("certifications", [...formik.values.certifications, ...filesData])
         formik.setFieldTouched("certifications", true)
       } catch (error:any) {

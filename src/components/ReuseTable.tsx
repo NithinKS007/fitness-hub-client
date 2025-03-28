@@ -8,10 +8,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Card,
   Avatar,
 } from "@mui/material";
-import PaginationTable from "./PaginationTable";
+
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -30,12 +29,12 @@ interface TableProps {
 const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
   return (
     <>
-      <TableContainer component={Card}>
+      <TableContainer sx={{ border: "1px solid lightgrey " ,borderRadius:2,bgcolor:"white"}}>
         <Table>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableCell key={column.field} sx={{ padding: "8px" }}>
+                <TableCell key={column.field} sx={{ padding: " 8px",fontWeight:"600" }}>
                   {column.label}
                 </TableCell>
               ))}
@@ -46,7 +45,7 @@ const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
             {data.map((row, index) => (
               <TableRow key={index}>
                 {columns.map((column) => (
-                  <TableCell key={column.field} sx={{ padding: "8px" }}>
+                  <TableCell key={column.field} sx={{ padding: " 8px" }}>
                     {column.field === "isBlocked" ? (
                       row.isBlocked ? (
                         <BlockIcon sx={{ color: "#FF3B30" }} />
@@ -61,10 +60,10 @@ const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
                       )
                     ) : column.field === "profilePic" ? (
                       row.profilePic ? (
-                        <Avatar src={row.profilePic} alt="Profile" />
+                        <Avatar src={row.profilePic} sx={{height:"30px",width:"30px"}} alt="Profile" />
                       ) : (
                         <Avatar
-                          sx={{ color: "#616161 ", backgroundColor: "#61512" }}
+                          sx={{ color: "#616161 ", height:"30px",width:"30px", backgroundColor: "#61512" }}
                         />
                       )
                     ) : column.field === "isApproved" ? (
@@ -93,7 +92,7 @@ const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <PaginationTable />
+     
     </>
   );
 };

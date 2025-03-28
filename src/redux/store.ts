@@ -7,6 +7,8 @@ import subscritionReducer from "./subscription/subscriptionSlice"
 import userReducer from "./user/userSlice"
 import contentReducer from "./content/contentSlice"
 import bookingSlotReducer from "./booking/bookingSlice"
+import chatReducer from "./chat/chatSlice"
+import dashboardReducer from "./dashboard/dashboardSlice"
 
 const persistConfig = {
   key: "root",
@@ -23,7 +25,9 @@ const store = configureStore({
     subscription:subscritionReducer,
     user:userReducer,
     content:contentReducer,
-    bookingSlot:bookingSlotReducer
+    bookingSlot:bookingSlotReducer,
+    chat:chatReducer,
+    dashboard:dashboardReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

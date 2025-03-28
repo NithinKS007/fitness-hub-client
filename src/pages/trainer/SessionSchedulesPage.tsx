@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import {
   fetchAvailableSlots,
   fetchBookingRequests,
+  getAppointmentVideoCallLogsTrainer,
   getScheduledAppointments,
 } from "../../redux/booking/bookingThunk";
 import { IconButton, Menu, MenuItem } from "@mui/material";
@@ -15,15 +16,36 @@ import ReuseTable from "../../components/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import DateAndTimeFilter from "../../components/DateAndTimeFilter";
-import SearchBarTable from "../../components/SearchBarTable";
-import ChatIcon from "@mui/icons-material/Chat";
 import VideoChatIcon from "@mui/icons-material/VideoChat";
 import useAppointments from "../../hooks/useAppointments";
+import { socket } from "../../config/socket";
+import ZegoCloudVideoCall from "../../components/VideoCallZego";
+import { formatTime } from "../../utils/conversion";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import SearchBarTable from "../../components/SearchBarTable";
+import TableFilter from "../../components/TableFilter";
+import PaginationTable from "../../components/PaginationTable";
+import { useModal } from "../../hooks/useModal";
+import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
 
 interface TableColumn {
   label: string;
   field: string;
 }
+
+const videoCallLogColumns: TableColumn[] = [
+  { label: "Sl No", field: "slno" },
+  { label: "Profile Picture", field: "profilePic" },
+  { label: "Name", field: "userName" },
+  { label: "Email", field: "userEmail" },
+  { label: "Appointment Date", field: "appointmentDate" },
+  { label: "Appointment Time", field: "appointmentTime" },
+  { label: "Appointment Status", field: "appointmentStatus" },
+  { label: "Call Start Time", field: "callStartTime" },
+  { label: "Call End Time", field: "callEndTime" },
+  { label: "Call Duration", field: "callDuration" },
+  { label: "Call Status", field: "callStatus" },
+];
 
 const availableSlotColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -62,8 +84,65 @@ const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Manage Actions", field: "actions" },
 ];
 
+const filters = [
+  { value: "12:00 AM" },
+  { value: "12:30 AM" },
+  { value: "01:00 AM" },
+  { value: "01:30 AM" },
+  { value: "02:00 AM" },
+  { value: "02:30 AM" },
+  { value: "03:00 AM" },
+  { value: "03:30 AM" },
+  { value: "04:00 AM" },
+  { value: "04:30 AM" },
+  { value: "05:00 AM" },
+  { value: "05:30 AM" },
+  { value: "06:00 AM" },
+  { value: "06:30 AM" },
+  { value: "07:00 AM" },
+  { value: "07:30 AM" },
+  { value: "08:00 AM" },
+  { value: "08:30 AM" },
+  { value: "09:00 AM" },
+  { value: "09:30 AM" },
+  { value: "10:00 AM" },
+  { value: "10:30 AM" },
+  { value: "11:00 AM" },
+  { value: "11:30 AM" },
+  { value: "12:00 PM" },
+  { value: "12:30 PM" },
+  { value: "01:00 PM" },
+  { value: "01:30 PM" },
+  { value: "02:00 PM" },
+  { value: "02:30 PM" },
+  { value: "03:00 PM" },
+  { value: "03:30 PM" },
+  { value: "04:00 PM" },
+  { value: "04:30 PM" },
+  { value: "05:00 PM" },
+  { value: "05:30 PM" },
+  { value: "06:00 PM" },
+  { value: "06:30 PM" },
+  { value: "07:00 PM" },
+  { value: "07:30 PM" },
+  { value: "08:00 PM" },
+  { value: "08:30 PM" },
+  { value: "09:00 PM" },
+  { value: "09:30 PM" },
+  { value: "10:00 PM" },
+  { value: "10:30 PM" },
+  { value: "11:00 PM" },
+  { value: "11:30 PM" },
+];
+
 const SessionSchedulesPage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [callActive, setCallActive] = useState(false);
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedBookingRequest, setSelectedBookingRequest] =
+    useState<any>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
 
   const {
     modalHandleOpen,
@@ -89,10 +168,51 @@ const SessionSchedulesPage: React.FC = () => {
     handleAppointmentApproveOrReject,
   } = useAppointments();
 
+  const { 
+    open: deleteModalOpen,
+    handleOpen: handleDeleteModalOpen,
+    handleClose: handleDeleteModalClose,
+  } = useModal();
+  const {
+    open: approveModalOpen,
+    handleOpen: handleApproveModalOpen,
+    handleClose: handleApproveModalClose,
+  } = useModal();
+
+  const {
+    open: rejectModalOpen,
+    handleOpen: handleRejectModalOpen,
+    handleClose: handleRejectModalClose,
+  } = useModal();
+
+  const {
+    open: cancelModalOpen,
+    handleOpen: handleCancelModalOpen,
+    handleClose: handleCancelModalClose,
+  } = useModal();
+
+  const {
+    handlePageChange,
+    searchTerm,
+    handleSearchChange,
+    selectedFilter,
+    handleFilterChange,
+    getQueryParams,
+
+    fromDate,
+    toDate,
+    handleFromDateChange,
+    handleToDateChange,
+    handleResetDates,
+  } = useSearchFilter();
+
+  const trainer = useSelector((state: RootState) => state.auth.trainer);
+
   const tabItems = [
     { label: "Available Slots" },
     { label: "Booking Requests" },
     { label: "Booking Schedules" },
+    { label: "Appointment Call Logs" },
   ];
 
   const dispatch = useDispatch<AppDispatch>();
@@ -100,22 +220,59 @@ const SessionSchedulesPage: React.FC = () => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
   };
-
+  const handleEndCall = () => {
+    if (roomId) {
+      socket.emit("videoCallEnded", { roomId: roomId });
+    }
+    setCallActive(false);
+    setRoomId(null);
+  };
   useEffect(() => {
     switch (selectedTab) {
       case 0:
-        dispatch(fetchAvailableSlots());
+        dispatch(fetchAvailableSlots(getQueryParams()));
         break;
       case 1:
-        dispatch(fetchBookingRequests());
+        dispatch(fetchBookingRequests(getQueryParams()));
         break;
       case 2:
-        dispatch(getScheduledAppointments());
+        dispatch(getScheduledAppointments(getQueryParams()));
+        break;
+      case 3:
+        dispatch(getAppointmentVideoCallLogsTrainer(getQueryParams()));
         break;
       default:
         break;
     }
-  }, [selectedTab, dispatch]);
+  }, [
+    selectedTab,
+    dispatch,
+    getQueryParams().page,
+    getQueryParams().search,
+    getQueryParams().filters,
+    getQueryParams().fromDate,
+    getQueryParams().toDate,
+  ]);
+
+  const handleVideoCallClick = async (
+    userId: string,
+    appointmentId: string
+  ) => {
+    if (trainer?._id) {
+      const randomNum = Math.floor(Math.random() * 1000000);
+      const newRoomId = `${randomNum}`;
+      setRoomId(newRoomId);
+      setCallActive(true);
+      socket.emit("initiateVideoCall", {
+        callerId: trainer._id,
+        receiverId: userId,
+        roomId: newRoomId,
+        appointmentId: appointmentId,
+      });
+    } else {
+      console.log("Trainer ID not available");
+    }
+  };
 
   const {
     slots,
@@ -123,8 +280,74 @@ const SessionSchedulesPage: React.FC = () => {
     error,
     appointMentRequests,
     scheduledAppointmentsTrainer,
+    appointmentVideoCallLogsTrainer,
   } = useSelector((state: RootState) => state.bookingSlot);
 
+  const { totalPages, currentPage } = useSelector(
+    (state: RootState) => state.bookingSlot.pagination
+  );
+
+  console.log(
+    "appointment call logs for trainer",
+    appointmentVideoCallLogsTrainer
+  );
+
+  const handleDeleteSlot = (slot: any) => {
+    setSelectedSlot(slot);
+    handleDeleteModalOpen();
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedSlot) {
+      deleteAvailableSlot(selectedSlot._id);
+      handleDeleteModalClose();
+      handleAvailableSlotCloseMenu();
+    }
+  };
+  const handleApproveBooking = (booking: any) => {
+    setSelectedBookingRequest(booking);
+    handleApproveModalOpen();
+  };
+
+  const handleConfirmApprove = () => {
+    if (selectedBookingRequest) {
+      handleAppointmentApproveOrReject(
+        selectedBookingRequest._id,
+        selectedBookingRequest.bookingSlotData._id,
+        "approved"
+      );
+      handleApproveModalClose();
+    }
+  };
+
+  const handleRejectBooking = (booking: any) => {
+    setSelectedBookingRequest(booking);
+    handleRejectModalOpen();
+  };
+
+  const handleConfirmReject = () => {
+    if (selectedBookingRequest) {
+      handleAppointmentApproveOrReject(
+        selectedBookingRequest._id,
+        selectedBookingRequest.bookingSlotData._id,
+        "rejected"
+      );
+      handleRejectModalClose();
+    }
+  };
+
+  const handleCancelAppointment = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    handleCancelModalOpen();
+  };
+
+  const handleConfirmCancel = () => {
+    if (selectedAppointment) {
+      handleCancelAppointmentSchedule(selectedAppointment._id);
+      handleCancelModalClose();
+      handleAppointmentSchedulesCloseMenu();
+    }
+  };
   const fetchedscheduledAppointments =
     scheduledAppointmentsTrainer?.length > 0
       ? scheduledAppointmentsTrainer?.map((appointmentData, index: number) => {
@@ -169,14 +392,6 @@ const SessionSchedulesPage: React.FC = () => {
                     justifyContent: "flex-start",
                   }}
                 >
-                  <ChatIcon
-                    sx={{
-                      cursor: "pointer",
-                      marginRight: "10px",
-                      color: "#1976d2",
-                      fontSize: "30px",
-                    }}
-                  />
                   <VideoChatIcon
                     sx={{
                       cursor: "pointer",
@@ -184,6 +399,12 @@ const SessionSchedulesPage: React.FC = () => {
                       color: "#1976d2",
                       fontSize: "30px",
                     }}
+                    onClick={() =>
+                      handleVideoCallClick(
+                        appointmentData.userData._id,
+                        appointmentData._id
+                      )
+                    }
                   />
                   <IconButton
                     onClick={(event) =>
@@ -213,16 +434,14 @@ const SessionSchedulesPage: React.FC = () => {
                     sx={{
                       "& .MuiPaper-root": {
                         boxShadow: "none",
-                        border: 1,
+                        border: "1px solid",
+                        borderColor: "grey.400",
+                        borderRadius: 2,
                       },
                     }}
                   >
                     <MenuItem
-                      onClick={() =>
-                        handleCancelAppointmentSchedule(
-                          appointmentData?._id as string
-                        )
-                      }
+                      onClick={() => handleCancelAppointment(appointmentData)}
                     >
                       Cancel
                     </MenuItem>
@@ -232,6 +451,41 @@ const SessionSchedulesPage: React.FC = () => {
             ),
           };
         })
+      : [];
+
+  const fetchedTrainerVideoCallLogs =
+    appointmentVideoCallLogsTrainer.length > 0
+      ? appointmentVideoCallLogsTrainer.map((log, index) => ({
+          ...log,
+          slno: index + 1,
+          _id: log._id,
+          appointmentDate: new Date(
+            log.appointmentData.appointmentDate
+          ).toLocaleDateString(),
+          appointmentTime: log.appointmentData.appointmentTime,
+          appointmentStatus:
+            log.appointmentData.status.charAt(0).toUpperCase() +
+            log.appointmentData.status.slice(1).toLowerCase(),
+          callDuration: formatTime(log.callDuration),
+          callStartTime: new Date(log.callStartTime).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          }),
+          callEndTime: log.callEndTime
+            ? new Date(log.callEndTime).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })
+            : "",
+          callStatus:
+            log.callStatus.charAt(0).toUpperCase() +
+            log.callStatus.slice(1).toLowerCase(),
+          userName: `${log.userData.fname} ${log.userData.lname}`,
+          userEmail: log.userData.email,
+          profilePic: log.userData.profilePic,
+        }))
       : [];
 
   const fetchedAddedSlots =
@@ -277,7 +531,7 @@ const SessionSchedulesPage: React.FC = () => {
                     },
                   }}
                 >
-                  <MenuItem onClick={() => deleteAvailableSlot(slot._id)}>
+                  <MenuItem onClick={() => handleDeleteSlot(slot)}>
                     Delete
                   </MenuItem>
                 </Menu>
@@ -330,13 +584,7 @@ const SessionSchedulesPage: React.FC = () => {
                 >
                   <Button
                     size="small"
-                    onClick={() =>
-                      handleAppointmentApproveOrReject(
-                        req?._id as string,
-                        req.bookingSlotData._id,
-                        "approved"
-                      )
-                    }
+                    onClick={() => handleApproveBooking(req)}
                     sx={{
                       fontSize: "14px",
                       backgroundColor: "green",
@@ -352,13 +600,7 @@ const SessionSchedulesPage: React.FC = () => {
 
                   <Button
                     size="small"
-                    onClick={() =>
-                      handleAppointmentApproveOrReject(
-                        req?._id as string,
-                        req.bookingSlotData._id,
-                        "rejected"
-                      )
-                    }
+                    onClick={() => handleRejectBooking(req)}
                     sx={{
                       fontSize: "14px",
                       color: "white",
@@ -390,6 +632,7 @@ const SessionSchedulesPage: React.FC = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
+                marginTop: 2,
               }}
             >
               <Button
@@ -404,7 +647,13 @@ const SessionSchedulesPage: React.FC = () => {
               >
                 Add New Slot
               </Button>
-              <DateAndTimeFilter />
+              <DateAndTimeFilter
+                fromDate={fromDate}
+                toDate={toDate}
+                onFromDateChange={handleFromDateChange}
+                onToDateChange={handleToDateChange}
+                onReset={handleResetDates}
+              />
             </Box>
 
             <Box
@@ -415,10 +664,17 @@ const SessionSchedulesPage: React.FC = () => {
             ) : error ? (
               <Box>{error}</Box>
             ) : (
-              <ReuseTable
-                columns={availableSlotColumns}
-                data={fetchedAddedSlots}
-              />
+              <>
+                <ReuseTable
+                  columns={availableSlotColumns}
+                  data={fetchedAddedSlots}
+                />
+                <PaginationTable
+                  handlePageChange={handlePageChange}
+                  page={currentPage}
+                  totalPages={totalPages}
+                />
+              </>
             )}
 
             <SlotModal
@@ -440,12 +696,36 @@ const SessionSchedulesPage: React.FC = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
+                marginTop: 3,
               }}
             >
-              <SearchBarTable />
-              <DateAndTimeFilter />
+              <SearchBarTable
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  gap: 2,
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <TableFilter
+                  selectedFilter={selectedFilter}
+                  filter={filters}
+                  handleFilterChange={handleFilterChange}
+                />
+                <DateAndTimeFilter
+                  fromDate={fromDate}
+                  toDate={toDate}
+                  onFromDateChange={handleFromDateChange}
+                  onToDateChange={handleToDateChange}
+                  onReset={handleResetDates}
+                />
+              </Box>
             </Box>
-
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
             />
@@ -454,10 +734,17 @@ const SessionSchedulesPage: React.FC = () => {
             ) : error ? (
               <Box>{error}</Box>
             ) : (
-              <ReuseTable
-                columns={bookingRequestsColumns}
-                data={fetchedBookingAppointmentRequests}
-              />
+              <>
+                <ReuseTable
+                  columns={bookingRequestsColumns}
+                  data={fetchedBookingAppointmentRequests}
+                />
+                <PaginationTable
+                  handlePageChange={handlePageChange}
+                  page={currentPage}
+                  totalPages={totalPages}
+                />
+              </>
             )}
           </>
         );
@@ -470,10 +757,35 @@ const SessionSchedulesPage: React.FC = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
+                marginTop: 3,
               }}
             >
-              <SearchBarTable />
-              <DateAndTimeFilter />
+              <SearchBarTable
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  gap: 2,
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <TableFilter
+                  filter={filters}
+                  selectedFilter={selectedFilter}
+                  handleFilterChange={handleFilterChange}
+                />
+                <DateAndTimeFilter
+                  fromDate={fromDate}
+                  toDate={toDate}
+                  onFromDateChange={handleFromDateChange}
+                  onToDateChange={handleToDateChange}
+                  onReset={handleResetDates}
+                />
+              </Box>
             </Box>
 
             <Box
@@ -484,10 +796,90 @@ const SessionSchedulesPage: React.FC = () => {
             ) : error ? (
               <Box>{error}</Box>
             ) : (
-              <ReuseTable
-                columns={scheduledAppointmentsColumn}
-                data={fetchedscheduledAppointments}
+              <>
+                <ReuseTable
+                  columns={scheduledAppointmentsColumn}
+                  data={fetchedscheduledAppointments}
+                />
+                <PaginationTable
+                  handlePageChange={handlePageChange}
+                  page={currentPage}
+                  totalPages={totalPages}
+                />
+              </>
+            )}
+            {callActive && roomId && (
+              <Box sx={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}>
+                <ZegoCloudVideoCall
+                  roomId={roomId}
+                  userId={trainer?._id as string}
+                  userName={trainer?.fname as string}
+                  onEndCall={handleEndCall}
+                />
+              </Box>
+            )}
+          </>
+        );
+
+      case 3:
+        return (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                marginTop: 3,
+              }}
+            >
+              <SearchBarTable
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
               />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  gap: 2,
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <TableFilter
+                  selectedFilter={selectedFilter}
+                  filter={filters}
+                  handleFilterChange={handleFilterChange}
+                />
+                <DateAndTimeFilter
+                  fromDate={fromDate}
+                  toDate={toDate}
+                  onFromDateChange={handleFromDateChange}
+                  onToDateChange={handleToDateChange}
+                  onReset={handleResetDates}
+                />
+              </Box>
+            </Box>
+
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+            />
+            {isLoading ? (
+              <ShimmerTableLoader columns={videoCallLogColumns} />
+            ) : error ? (
+              <Box>{error}</Box>
+            ) : (
+              <>
+                <ReuseTable
+                  columns={videoCallLogColumns}
+                  data={fetchedTrainerVideoCallLogs}
+                />
+                <PaginationTable
+                  handlePageChange={handlePageChange}
+                  page={currentPage}
+                  totalPages={totalPages}
+                />
+              </>
             )}
           </>
         );
@@ -503,7 +895,64 @@ const SessionSchedulesPage: React.FC = () => {
         value={selectedTab}
         handleChange={handleTabChange}
       />
-      <Box sx={{ mt: 2 }}>{renderContent()}</Box>
+      {renderContent()}
+      <ConfirmationModalDialog
+        open={deleteModalOpen}
+        // title="Delete Slot"
+        content={
+          selectedSlot &&
+          `Are you sure you want to delete the slot for ${new Date(selectedSlot.date).toLocaleDateString()} at ${selectedSlot.time}?`
+        }
+        onConfirm={handleConfirmDelete}
+        onCancel={handleDeleteModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="error"
+        cancelColor="primary"
+      />
+
+      <ConfirmationModalDialog
+        open={approveModalOpen}
+        // title="Approve Booking"
+        content={
+          selectedBookingRequest &&
+          `Are you sure you want to approve the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
+        }
+        onConfirm={handleConfirmApprove}
+        onCancel={handleApproveModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="success"
+        cancelColor="primary"
+      />
+      <ConfirmationModalDialog
+        open={rejectModalOpen}
+        // title="Reject Booking"
+        content={
+          selectedBookingRequest &&
+          `Are you sure you want to reject the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
+        }
+        onConfirm={handleConfirmReject}
+        onCancel={handleRejectModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="error"
+        cancelColor="primary"
+      />
+      <ConfirmationModalDialog
+        open={cancelModalOpen}
+        // title="Cancel Appointment"
+        content={
+          selectedAppointment &&
+          `Are you sure you want to cancel the appointment with ${selectedAppointment.userData.fname} ${selectedAppointment.userData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`
+        }
+        onConfirm={handleConfirmCancel}
+        onCancel={handleCancelModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="error"
+        cancelColor="primary"
+      />
     </>
   );
 };

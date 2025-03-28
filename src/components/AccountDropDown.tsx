@@ -4,8 +4,6 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
-import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -13,7 +11,6 @@ import Avatar from "@mui/material/Avatar";
 import { useState, useRef } from "react";
 
 interface AccountDropDownProps {
-  color: any;
   authPerson: any;
   redirectToLogin: () => void;
   signout: () => void;
@@ -26,10 +23,9 @@ const userMenuItems = [
     action: "user-subscriptions",
     path: "/user/subscriptions",
   },
-  { label: "Profile", action: "user-profile", path: "/user/profile" },
   { label: "Bookings", action: "user-bookings", path: "/user/bookings" },
   { label: "Chats", action: "user-chats", path: "/user/chats" },
-  { label: "Wallet", action: "user-wallet", path: "/user/wallet" },
+  { label: "Profile", action: "user-profile", path: "/user/profile" },
   { label: "Signout", action: "signout", path: "" },
 ];
 
@@ -38,7 +34,6 @@ const adminMenuItems = [
   { label: "Users", action: "admin-users", path: "/admin/users" },
   { label: "Trainers", action: "admin-trainers", path: "/admin/trainers" },
   { label: "Inbox", action: "admin-inbox", path: "/admin/inbox" },
-  { label: "Settings", action: "admin-settings", path: "/admin/settings" },
   { label: "Signout", action: "signout", path: "" },
 ];
 
@@ -48,16 +43,14 @@ const trainerMenuItems = [
     action: "trainer-dashboard",
     path: "/trainer/dashboard",
   },
-  { label: "Clients", action: "trainer-clients", path: "/trainer/clients" },
+  { label: "Subscribers", action: "trainer-subscribers", path: "/trainer/subscribers" },
   { label: "Chat", action: "trainer-chat", path: "/trainer/chat" },
-  { label: "Sessions", action: "trainer-sessions", path: "/trainer/sessions" },
+  { label: "Appointments", action: "trainer-appointments", path: "/trainer/appointments" },
   { label: "Profile", action: "trainer-profile", path: "/trainer/profile" },
-  { label: "Settings", action: "trainer-settings", path: "/trainer/settings" },
   { label: "Signout", action: "signout", path: "" },
 ];
 
 const AccountDropDown: React.FC<AccountDropDownProps> = ({
-  color,
   authPerson,
   redirectToLogin,
   signout,
@@ -90,9 +83,6 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
       case "user-chats":
         navigate("/user/chats");
         break;
-      case "user-wallet":
-        navigate("/user/wallet");
-        break;
       case "signout":
         signout();
         break;
@@ -108,20 +98,17 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
       case "admin-inbox":
         navigate("/admin/inbox");
         break;
-      case "admin-settings":
-        navigate("/admin/settings");
-        break;
       case "trainer-dashboard":
         navigate("/trainer/dashboard");
         break;
-      case "trainer-clients":
-        navigate("/trainer/clients");
+      case "trainer-subscribers":
+        navigate("/trainer/subscribers");
         break;
       case "trainer-chat":
         navigate("/trainer/chat");
         break;
-      case "trainer-sessions":
-        navigate("/trainer/sessions");
+      case "trainer-appointments":
+        navigate("/trainer/appointments");
         break;
       case "trainer-profile":
         navigate("/trainer/profile");
@@ -144,7 +131,7 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
       {authPerson ? (
         <>
           <IconButton
-            sx={{ color: "#1a1a1a", padding: "8px" }}
+            sx={{ color: "#1a1a1a" }}
             ref={anchorRef}
             onClick={handleToggle}
           >
@@ -152,34 +139,38 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
               <Avatar
                 alt="Profile"
                 src={userData.profilePic}
-                sx={{ width: 35, height: 35, color: color }}
+                sx={{ width: 35, height: 35, color: "#4b5563" }}
               />
             ) : (
-              <Avatar sx={{ width: 35, height: 35, color: color }}>
-                <AccountCircleIcon sx={{ fontSize: 35, color: color }} />
-              </Avatar>
+              <AccountCircleIcon sx={{ fontSize: 35, color: "#4b5563" }} />
             )}
           </IconButton>
           {open && (
-            <Paper
+            <Box
               sx={{
                 position: "absolute",
                 top: "60px",
                 right: "20px",
                 width: "160px",
+                backgroundColor: "white",
+                borderRadius: "4px",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.25)",
+                zIndex: 999,
+    
               }}
             >
-              <MenuList>
+              <Box>
                 {getMenuItems().map((item, index) => (
                   <MenuItem
                     key={index}
                     onClick={() => handleMenuAction(item.action)}
+                    sx={{ padding: "10px 15px", cursor: "pointer",color:"black" }}
                   >
                     {item.label}
                   </MenuItem>
                 ))}
-              </MenuList>
-            </Paper>
+              </Box>
+            </Box>
           )}
         </>
       ) : (

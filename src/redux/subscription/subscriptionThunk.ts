@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { RequestDeleteSubscription, RequestSessionIdForSubscription, Subscription } from "./subscriptionTypes";
+import { RequestDeleteSubscription, RequestSessionIdForSubscription, SubscribersListQueryParams, Subscription, UserSubscriptionsListQueryParams } from "./subscriptionTypes";
 import { updateBlockStatus } from "../admin/adminTypes";
 import { Stripe } from "@stripe/stripe-js";
 
@@ -177,9 +177,9 @@ export const getSubscribedDetails = createAsyncThunk(
 
 export const getUserSubscriptionsData = createAsyncThunk(
   "subscription/getUserSubscriptionsData",
-  async (_, { rejectWithValue }) => {
+  async (params:UserSubscriptionsListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/subscriptions/`);
+      const response = await axiosInstance.get(`user/subscriptions/`,{ params });
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -249,9 +249,9 @@ export const cancelSubscriptionUser = createAsyncThunk(
 
 export const getTrainerSubscribedUsers = createAsyncThunk(
   "subscription/getTrainerSubscribedUsers",
-  async (_, { rejectWithValue }) => {
+  async (params:SubscribersListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/subscribers/`);
+      const response = await axiosInstance.get(`trainer/subscribers/`,{params});
       return response.data;
     } catch (error: any) {
       console.log(error);

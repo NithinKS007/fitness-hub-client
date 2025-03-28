@@ -88,7 +88,7 @@ const TrainerCardShimmer = () => {
 const TrainerGridShimmer: React.FC= () => {
   return (
     <Grid  container spacing={2} sx={{ justifyContent: { xs: "center", md: "flex-start" } }}>
-      {Array.from({ length: 8 }).map((_, index) => (
+      {Array.from({ length: 10 }).map((_, index) => (
         <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
           <TrainerCardShimmer />
         </Grid>

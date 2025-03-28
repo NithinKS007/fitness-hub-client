@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface SubscriptionState {
   subscriptions: Subscription[];
   isLoading: boolean;
@@ -5,6 +7,11 @@ export interface SubscriptionState {
   userSubscribedTrainerPlans:UserSubscribedTrainerPlans[]
   subscribersOfTrainer:subscribersOfTrainer[]
   isSubscribedToTheTrainer:{ [trainerId: string]: { isSubscribed: boolean} } | null
+  pagination: Pagination;
+}
+interface Pagination {
+  currentPage: number;
+  totalPages: number;
 }
 
 export interface Subscription {
@@ -64,3 +71,15 @@ export interface RequestDeleteSubscription {
 export interface RequestSessionIdForSubscription {
   sessionId:string
 }
+
+export interface QueryParams {
+  page: number;
+  limit: number;
+  search: string;
+  filters: string[];
+  fromDate: Dayjs;
+  toDate: Dayjs;
+}
+
+export type SubscribersListQueryParams = Omit<QueryParams, "fromDate" | "toDate">;
+export type UserSubscriptionsListQueryParams = Omit<QueryParams, "fromDate" | "toDate">;

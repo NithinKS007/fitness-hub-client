@@ -28,7 +28,7 @@ const useUpdateBlockStatus = () => {
     }
   };
 
-  return handleUpdateBlockStatus;
+  return { handleUpdateBlockStatus };
 };
 
 export default useUpdateBlockStatus;

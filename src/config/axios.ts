@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
      if(error.response && error.response.data.status===403) {
       
       store.dispatch(clearAuthPerson());
-      localStorage.clear();
+      // localStorage.clear();
       showErrorToast(error.response.data.message);
       window.location.href = '/sign-in';
      }
@@ -57,7 +57,7 @@ axiosInstance.interceptors.response.use(
         console.log("getting inside catch block axios for refreshing")
         console.log('Refresh token failed', err)
         store.dispatch(clearAuthPerson());
-        localStorage.clear();
+        // localStorage.clear();
         window.location.href = '/sign-in';
         showErrorToast("Your session has expired. Please sign-in again.");
       }

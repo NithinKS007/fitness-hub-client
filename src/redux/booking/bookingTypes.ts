@@ -1,10 +1,46 @@
+import { Dayjs } from "dayjs";
+
 export interface bookingSlotState {
   isLoading: boolean;
   error: string | null;
   slots: bookingSlots[];
   appointMentRequests: AppointmentRequests[];
-  scheduledAppointmentsTrainer: ScheduledAppointmentsTrainer[] ;
-  scheduledAppointmentsUser: ScheduledAppointmentsUser[]
+  scheduledAppointmentsTrainer: ScheduledAppointmentsTrainer[];
+  scheduledAppointmentsUser: ScheduledAppointmentsUser[];
+  appointmentVideoCallLogsUser: AppointmentVideoCallLogsUser[];
+  appointmentVideoCallLogsTrainer: AppointmentVideoCallLogsTrainer[];
+  pagination: Pagination;
+}
+
+export interface AppointmentVideoCallLogsUser {
+  _id: string;
+  slotBookedDate: Date;
+  appointmentData: {
+    appointmentDate: Date;
+    appointmentTime: string;
+    status: string;
+  };
+
+  callDuration: number;
+  callStartTime: Date;
+  callEndTime: Date;
+  callStatus: string;
+  trainerData: { fname: string; lname: string; email: string,profilePic:string };
+}
+
+export interface AppointmentVideoCallLogsTrainer {
+  _id: string;
+  slotBookedDate: Date;
+  appointmentData: {
+    appointmentDate: Date;
+    appointmentTime: string;
+    status: string;
+  };
+  callDuration: number;
+  callStartTime: Date;
+  callEndTime: Date;
+  callStatus: string;
+  userData: { fname: string; lname: string; email: string,profilePic:string };
 }
 
 export interface bookingSlots {
@@ -88,7 +124,6 @@ export interface ScheduledAppointmentsUser {
     _id: string;
     createdAt: string;
   };
-
 }
 
 export interface ApproveRejectBooking {
@@ -101,6 +136,29 @@ export interface RequestCancelAppointmentSchedule {
   appointmentId: string;
 }
 
-export interface RequestDeleteBookingSlot{
-  bookingSlotId:string
+export interface RequestDeleteBookingSlot {
+  bookingSlotId: string;
 }
+
+export interface Pagination {
+  currentPage: number;
+  totalPages: number;
+}
+
+export interface QueryParams {
+  page: number;
+  limit: number;
+  search: string;
+  filters: string[];
+  fromDate: Dayjs;
+  toDate: Dayjs;
+}
+
+export type AvailableSlotsQueryParams = Omit<QueryParams, "filters" | "search">;
+export type HandleBookingRequestsQueryParams = QueryParams
+export type ScheduledAppointmentsQueryParams = QueryParams
+export type VideoCallLogsQueryParams = QueryParams
+
+
+
+

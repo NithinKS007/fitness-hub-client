@@ -3,52 +3,43 @@ import ReuseTable from "../../components/ReuseTable";
 import { useDispatch } from "react-redux";
 import { getTrainers } from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { Trainer } from "../../redux/auth/authTypes";
-import Filter from "../../components/Filter";
 import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import { useNavigate } from "react-router-dom";
-import { IconButton, Menu, MenuItem, Paper } from "@mui/material"; 
+import { IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import TableFilter from "../../components/TableFilter";
+import PaginationTable from "../../components/PaginationTable";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import Box from "@mui/material/Box";
+import { useModal } from "../../hooks/useModal";
+import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+
 
 interface TableColumn {
   label: string;
   field: string;
 }
 
-interface SortOption {
-  value: string;
-}
-
 interface FilterOption {
-  value: string;
-}
-
-interface DirectionOption {
   value: string;
 }
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
-  { label: "Image", field: "profilePic" },
-  { label: "First Name", field: "fname" },
-  { label: "Last Name", field: "lname" },
+  { label: "Profile", field: "profilePic" },
+  { label: "Name", field: "name" },
   { label: "Email", field: "email" },
-  { label: "Status", field: "isBlocked" },
-  { label: "Join Date", field: "createdAt" },
-  { label: "Verified", field: "verified" },
-  { label: "Approved", field: "isApproved" },
-  { label: "Details", field: "details" },
+  { label: "Account Status", field: "isBlocked" },
+  { label: "Date Joined", field: "createdAt" },
+  { label: "Verification Status", field: "verified" },
+  { label: "Approval Status", field: "isApproved" },
+  { label: "More", field: "details" },
 ];
 
-const sort: SortOption[] = [
-  { value: "First Name" },
-  { value: "Last Name" },
-  { value: "Email" },
-  { value: "Join Date" },
-];
 const filter: FilterOption[] = [
   { value: "All" },
   { value: "Block" },
@@ -58,55 +49,83 @@ const filter: FilterOption[] = [
   { value: "Approved" },
   { value: "Not Approved" },
 ];
-const direction: DirectionOption[] = [{ value: "A to Z" }, { value: "Z to A" }];
 
 const TrainerListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { trainers, loading, error } = useSelector((state: any) => state.admin);
   const navigate = useNavigate();
-  const handleUpdateBlockStatus = useUpdateBlockStatus();
+  const { handleUpdateBlockStatus } = useUpdateBlockStatus();
+  const { trainers, isLoading, error} = useSelector(
+    (state: RootState) => state.admin
+  );
+
+  const {totalPages, currentPage } = useSelector((state:RootState)=>state.admin.pagination)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(
     null
   );
-  const open = Boolean(anchorEl);
+  const [selectedTrainer, setSelectedTrainer] = useState<Trainer | null>(null);
 
-  const fetchTrainers = async () => {
-    await dispatch(getTrainers());
-  };
+  const isMenuOpen = Boolean(anchorEl);
+
+  const {
+    handlePageChange,
+    searchTerm,
+    handleSearchChange,
+    selectedFilter,
+    handleFilterChange,
+    getQueryParams,
+  } = useSearchFilter();
+  const {
+    open: confirmationModalOpen,
+    handleOpen: handleConfirmationModalOpen,
+    handleClose: handleConfirmationModalClose,
+  } = useModal();
 
   useEffect(() => {
-    fetchTrainers();
-  }, [dispatch]);
+    dispatch(getTrainers(getQueryParams()));
+  }, [dispatch,getQueryParams().page, getQueryParams().search, getQueryParams().filters]);
 
-  const handleTrainerDetails = (_id: string) => {
-    navigate(`/admin/trainer-details/${_id}`);
-    handleClose();
-  };
-
-  const handleTrainerSubscriptions = (_id: string) => {
-    navigate(`/admin/trainer-subscriptions/${_id}`);
-    handleClose();
-  };
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>, _id: string) => {
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    _id: string
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedTrainerId(_id);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedTrainerId(null);
   };
 
-  if (loading) return <ShimmerTableLoader columns={columns} />;
-  if (error) return <div>{error}</div>;
+  const handleTrainerDetails = async(_id: string) => {
+    navigate(`/admin/trainer-details/${_id}`);
+    handleMenuClose();
+  };
 
-  
+  const handleTrainerSubscriptions = (_id: string) => {
+    navigate(`/admin/trainer-subscriptions/${_id}`);
+    handleMenuClose();
+  };
 
+  const handleBlockAction = (trainer: Trainer) => {
+    setSelectedTrainer(trainer);
+    handleConfirmationModalOpen()
+    handleMenuClose()
+  };
+  const handleConfirmBlockStatus = () => {
+    if (selectedTrainer) {
+      handleUpdateBlockStatus({
+        _id: selectedTrainer.userId,
+        isBlocked: !selectedTrainer.isBlocked,
+      });
+      handleConfirmationModalClose();
+      handleMenuClose();
+    }
+  };
   const fetchedTrainersData =
-    trainers.length > 0
+    trainers?.length > 0
       ? trainers.map((trainer: Trainer, index: number) => {
           const dateObj = new Date(trainer.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
@@ -114,14 +133,15 @@ const TrainerListPage: React.FC = () => {
 
           return {
             ...trainer,
-            slno: index + 1,
+            name:`${trainer.fname} ${trainer.lname}`,
+            slno: index + 1 + (currentPage - 1) * 5,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: trainer.otpVerified || trainer.googleVerified,
             isApproved: trainer?.isApproved,
             details: (
               <>
                 <IconButton
-                  onClick={(event) => handleClick(event, trainer?._id as string)}
+                  onClick={(e) => handleMenuClick(e, trainer._id as string)}
                   aria-label="More options"
                 >
                   <MoreVertIcon />
@@ -129,17 +149,21 @@ const TrainerListPage: React.FC = () => {
                 <Paper>
                   <Menu
                     anchorEl={anchorEl}
-                    open={open && selectedTrainerId === trainer?._id}
-                    onClose={handleClose}
+                    open={isMenuOpen && selectedTrainerId === trainer?._id}
+                    onClose={handleMenuClose}
                     sx={{
                       "& .MuiPaper-root": {
                         boxShadow: "none",
-                        border: 1,
+                        border: "1px solid",
+                        borderColor: "grey.400",
+                        borderRadius: 2,
                       },
                     }}
                   >
                     <MenuItem
-                      onClick={() => handleTrainerDetails(trainer?._id as string)}
+                      onClick={() =>
+                        handleTrainerDetails(trainer?._id as string)
+                      }
                     >
                       Details
                     </MenuItem>
@@ -151,12 +175,7 @@ const TrainerListPage: React.FC = () => {
                       Subscriptions
                     </MenuItem>
                     <MenuItem
-                      onClick={() =>
-                        handleUpdateBlockStatus({
-                          _id: trainer.userId,
-                          isBlocked: !trainer.isBlocked,
-                        })
-                      }
+                     onClick={() => handleBlockAction(trainer)}
                     >
                       {trainer.isBlocked ? "Unblock" : "Block"}
                     </MenuItem>
@@ -170,13 +189,49 @@ const TrainerListPage: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <SearchBarTable />
-        <Filter sort={sort} filter={filter} direction={direction} />
-      </div>
-      <ReuseTable
-        columns={columns}
-        data={fetchedTrainersData}
+      <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
+        <SearchBarTable
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+        />
+        <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
+          <TableFilter
+            filter={filter}
+            selectedFilter={selectedFilter}
+            handleFilterChange={handleFilterChange}
+          />
+        </Box>
+      </Box>
+
+      {isLoading ? (
+        <ShimmerTableLoader columns={columns} />
+      ) : error ? (
+        <Box>{error}</Box>
+      ) : (
+        <>
+          <ReuseTable columns={columns} data={fetchedTrainersData} />
+          <PaginationTable
+            handlePageChange={handlePageChange}
+            page={currentPage} 
+            totalPages={totalPages}
+          />
+        </>
+      )}
+      <ConfirmationModalDialog
+        open={confirmationModalOpen}
+        // title={selectedTrainer?.isBlocked ? "Unblock Trainer" : "Block Trainer"}
+        content={
+          selectedTrainer &&
+          `Are you sure you want to ${
+            selectedTrainer.isBlocked ? "unblock" : "block"
+          } ${selectedTrainer.fname} ${selectedTrainer.lname}?`
+        }
+        onConfirm={handleConfirmBlockStatus}
+        onCancel={handleConfirmationModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="success"
+        cancelColor="error"
       />
     </>
   );

@@ -5,8 +5,6 @@ import { getApprovedTrainers } from "../redux/user/userThunk";
 import FilterButton from "../components/FilterIconButton";
 import FilterSidebar from "../components/FilterSideBar";
 import TrainerGrid from "../components/TrainerCard";
-import GetACoachBanner from "../components/Banners.tsx/GetACoachBanner";
-import getACoachBanner from "../assets/getACoachBanner.webp";
 import { Box, Container, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import TrainerGridShimmer from "../components/TrainerCardShimmer";
@@ -47,7 +45,6 @@ const filters = [
   },
 ];
 
-
 const GetTrainer: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<{ [key: string]: any }>({});
@@ -66,6 +63,8 @@ const GetTrainer: React.FC = () => {
   }, [dispatch]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const handleCloseSidebar = () => setIsSidebarOpen(false);
 
   const handleTrainerDetails = (_id: string) => {
     navigate(`/trainer-details/${_id}`);
@@ -95,18 +94,19 @@ const GetTrainer: React.FC = () => {
   const handleResetAll = () => {
     setFilterValues({});
     dispatch(getApprovedTrainers({ searchParams: {} }));
+    handleCloseSidebar();
   };
 
   const handleSearchWithFilterTrainer = () => {
     const searchParams = { ...filterValues };
     dispatch(getApprovedTrainers({ searchParams }));
+    handleCloseSidebar();
   };
 
   if (error) return <div>{error}</div>;
 
   return (
-    <main className="mt-15">
-      <GetACoachBanner getACoachBanner={getACoachBanner} />
+    <>
       <Container maxWidth="xl" sx={{ py: 4 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
           <FilterButton onClick={toggleSidebar} />
@@ -117,43 +117,39 @@ const GetTrainer: React.FC = () => {
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
-            gap: 2,
           }}
         >
           {isSidebarOpen && (
-            <Box sx={{ width: "270px" }}>
-              <FilterSidebar
+            <FilterSidebar
               filters={filters}
-                open={isSidebarOpen}
-                filterValues={filterValues}
-                onSearchChange={handleSearchChange}
-                onCheckboxChange={handleCheckboxChange}
-                onResetAll={handleResetAll}
-                onApply={handleSearchWithFilterTrainer}
-                onToggleFilter={(filterLabel) => {
-                  setOpenFilters((prev) => ({
-                    ...prev,
-                    [filterLabel]: !prev[filterLabel],
-                  }));
-                }}
-                openFilters={openFilters}
-              />
-            </Box>
+              open={isSidebarOpen}
+              filterValues={filterValues}
+              onSearchChange={handleSearchChange}
+              onCheckboxChange={handleCheckboxChange}
+              onResetAll={handleResetAll}
+              onApply={handleSearchWithFilterTrainer}
+              onToggleFilter={(filterLabel) => {
+                setOpenFilters((prev) => ({
+                  ...prev,
+                  [filterLabel]: !prev[filterLabel],
+                }));
+              }}
+              onClose={handleCloseSidebar}
+              openFilters={openFilters}
+            />
           )}
 
-          { isLoading ? (
-             <TrainerGridShimmer/>
+          {isLoading ? (
+            <TrainerGridShimmer />
           ) : (
-            <Box sx={{ flexGrow: 1 }}>
-              <TrainerGrid
-                trainersList={trainersList}
-                handleTrainerDetails={handleTrainerDetails}
-              />
-            </Box>
+            <TrainerGrid
+              trainersList={trainersList}
+              handleTrainerDetails={handleTrainerDetails}
+            />
           )}
         </Box>
       </Container>
-    </main>
+    </>
   );
 };
 

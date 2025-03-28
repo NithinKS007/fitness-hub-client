@@ -1,9 +1,7 @@
-import OnFailure from '../components/OnFailure'
+import OnFailure from "../components/OnFailure";
 
 const OnFailurePage = () => {
-  return (
-   <OnFailure/>
-  )
-}
+  return <OnFailure />;
+};
 
-export default OnFailurePage
+export default OnFailurePage;

@@ -1,40 +1,35 @@
-import React, { useState } from "react";
-import SideNavBar from "../components/SideNavBar/SideNavBar";
-import { Outlet, useLocation } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import Dashboard from "@mui/icons-material/Dashboard";
 import People from "@mui/icons-material/People";
 import Chat from "@mui/icons-material/Chat";
 import Event from "@mui/icons-material/Event";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import useSignOut from "../hooks/useSignOut";
-import { PostAddRounded, SubscriptionsRounded} from "@mui/icons-material";
+import { PostAddRounded, SubscriptionsRounded } from "@mui/icons-material";
+import SideNavBar from "../components/DashBoardSideNavBar";
+import TopNavbar from "../components/DashBoardTopBar";
 
 const TrainerLayout: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const handleSignout = useSignOut()
   const trainerNavItems = [
     {
-      icon: <Dashboard  />,
+      icon: <Dashboard />,
       text: "DASHBOARD",
       path: "/trainer/dashboard",
     },
     {
       icon: <People />,
-      text: "CLIENTS",
-      path: "/trainer/clients",
+      text: "SUBSCRIBERS",
+      path: "/trainer/subscribers",
     },
     {
       icon: <Chat />,
-      text: "CHAT",
+      text: "CHATS",
       path: "/trainer/chat",
     },
     {
       icon: <Event />,
-      text: "SESSIONS",
-      path: "/trainer/session-schedules",
+      text: "APPOINTMENTS",
+      path: "/trainer/appointments",
     },
     {
       icon: <AccountCircle />,
@@ -42,59 +37,28 @@ const TrainerLayout: React.FC = () => {
       path: "/trainer/profile",
     },
     {
-      icon: <SubscriptionsRounded/>,
+      icon: <SubscriptionsRounded />,
       text: "SUBSCRIPTION",
       path: "/trainer/subscriptions",
     },
     {
-      icon: <PostAddRounded/>,
+      icon: <PostAddRounded />,
       text: "ADD CONTENTS",
       path: "/trainer/add-contents",
     },
   ];
 
-  const navItemsFooter = [
-    {
-      icon: <SettingsApplicationsIcon />,
-      text: "Settings",
-      path: "/trainer/settings",
-    },
-    {
-      icon: <ExitToAppIcon />,
-      text: "Signout",
-      path: "/signout",
-    },
-  ];
-  const handleDrawerToggle = () => {
-    setOpen(!open);
-  };
-
-  const theme = useTheme();
-  const location = useLocation();
-
   return (
-    <div style={{ display: "flex", height: "100%" ,}}>
-      <SideNavBar
-        navItems={trainerNavItems}
-        navItemsFooter={navItemsFooter} 
-        open={open}
-        onDrawerToggle={handleDrawerToggle}
-        onLogoutClick={handleSignout}
-        theme={theme}
-        location={location}
-      />
-      <main
-        style={{
-          flexGrow: 1,
-          transition: "margin-left 0.3s ease",
-          paddingLeft:"20px",
-          paddingRight:"20px",
-          paddingTop: "5%",
-        }}
-        className="bg-gray-100 min-h-screen"
-      >
-        <Outlet />
-      </main>
+    <div className="flex flex-col min-h-screen w-full">
+      <TopNavbar />
+      <div className="flex flex-1 w-full">
+        <div className="w-18">
+          <SideNavBar navItems={trainerNavItems} />
+        </div>
+        <div className="flex-1 pl-5 pr-5 pt-20 overflow-auto">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 };

@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   TextField,
-  Grid,
   Button,
   Paper,
   IconButton,
@@ -17,8 +16,7 @@ interface TrainerAuthFormProps {
   formik: any;
 }
 
-const 
-TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
+const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
   open,
   handleClose,
   formik,
@@ -73,8 +71,8 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
           Trainer Enrollment Form
         </Typography>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="First Name"
               variant="outlined"
@@ -86,10 +84,10 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="fname"
               error={formik.touched.fname && Boolean(formik.errors.fname)}
               helperText={formik.touched.fname && formik.errors.fname}
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="Last Name"
               variant="outlined"
@@ -101,10 +99,10 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="lname"
               error={formik.touched.lname && Boolean(formik.errors.lname)}
               helperText={formik.touched.lname && formik.errors.lname}
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="Years of Experience"
               variant="outlined"
@@ -123,10 +121,10 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
                 formik.touched.yearsOfExperience &&
                 formik.errors.yearsOfExperience
               }
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="Phone"
               variant="outlined"
@@ -138,10 +136,10 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="phone"
               error={formik.touched.phone && Boolean(formik.errors.phone)}
               helperText={formik.touched.phone && formik.errors.phone}
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="Email"
               variant="outlined"
@@ -154,10 +152,10 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="email"
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="Date of Birth"
               variant="outlined"
@@ -170,16 +168,15 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               onChange={formik.handleChange}
               name="dateOfBirth"
               error={
-                formik.touched.dateOfBirth &&
-                Boolean(formik.errors.dateOfBirth)
+                formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)
               }
               helperText={
                 formik.touched.dateOfBirth && formik.errors.dateOfBirth
               }
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="Password"
               variant="outlined"
@@ -192,10 +189,10 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="password"
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ flex: "1 1 45%" }}>
             <TextField
               label="Confirm Password"
               variant="outlined"
@@ -210,47 +207,47 @@ TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
                 formik.touched.cPassword && Boolean(formik.errors.cPassword)
               }
               helperText={formik.touched.cPassword && formik.errors.cPassword}
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Box
+          </Box>
+
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 2,
+              mt: 3,
+            }}
+          >
+            <Button
+              variant="contained"
+              onClick={handleClose}
               sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: 2,
-                mt: 3,
+                backgroundColor: "#f1f3f4",
+                color: "#202124",
+                "&:hover": { backgroundColor: "#e8eaed" },
+                textTransform: "none",
+                borderRadius: 2,
               }}
             >
-              <Button
-                variant="contained"
-                onClick={handleClose}
-                sx={{
-                  backgroundColor: "#f1f3f4",
-                  color: "#202124",
-                  "&:hover": { backgroundColor: "#e8eaed" },
-                  textTransform: "none",
-                  borderRadius: 2,
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                onClick={formik.handleSubmit}
-                sx={{
-                  backgroundColor: "#1a73e8",
-                  color: "white",
-                  "&:hover": { backgroundColor: "#1557b0" },
-                  textTransform: "none",
-                  borderRadius: 2,
-                }}
-              >
-                Submit
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={formik.handleSubmit}
+              sx={{
+                backgroundColor: "#1a73e8",
+                color: "white",
+                "&:hover": { backgroundColor: "#1557b0" },
+                textTransform: "none",
+                borderRadius: 2,
+              }}
+            >
+              {formik.isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+          </Box>
+        </Box>
       </Paper>
     </Modal>
   );

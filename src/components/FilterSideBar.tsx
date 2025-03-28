@@ -11,15 +11,14 @@ import {
   TextField,
   FormControlLabel,
   Button,
-  Slide,
+  Drawer,
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import { Add, Remove, Clear } from "@mui/icons-material";
-
+import { Add, Remove, Clear, Close } from "@mui/icons-material";
 
 interface FilterSidebarProps {
-  filters:any[]
+  filters: any[];
   open: boolean;
   filterValues: { [key: string]: any };
   onSearchChange: (value: any, filterLabel: string) => void;
@@ -27,6 +26,7 @@ interface FilterSidebarProps {
   onResetAll: () => void;
   onApply: () => void;
   onToggleFilter: (filterLabel: string) => void;
+  onClose: () => void; 
   openFilters: { [key: string]: boolean };
 }
 
@@ -38,12 +38,28 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   onResetAll,
   onApply,
   onToggleFilter,
+  onClose, 
   openFilters,
-  filters
+  filters,
 }) => {
   return (
-    <Slide direction="right" in={open} mountOnEnter unmountOnExit>
-      <Box sx={{ width: 290, p: 3, bgcolor: "#FAFAFA" }}>
+    <Drawer
+      anchor="left"
+      open={open}
+      onClose={onClose}
+      sx={{
+        "& .MuiDrawer-paper": {
+          width: 290,
+          bgcolor: "#FAFAFA",
+        },
+      }}
+    >
+      <Box sx={{ p: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <IconButton onClick={onClose} size="small">
+            <Close />
+          </IconButton>
+        </Box>
         <List sx={{ padding: 0 }}>
           {filters.map((filter) => (
             <React.Fragment key={filter.label}>
@@ -55,8 +71,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 <Box sx={{ p: 2 }}>
                   {filter.type === "search" && (
                     <TextField
-                      label={filter.label==="Search" ?"": ""}
-                      value={filterValues[filter.label]|| ""}
+                      label={filter.label === "Search" ? "" : ""}
+                      value={filterValues[filter.label] || ""}
                       onChange={(event) => onSearchChange(event.target.value, filter.label)}
                       variant="outlined"
                       fullWidth
@@ -85,7 +101,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   )}
                   {filter.type === "checkbox" && (
                     <Box>
-                      {filter.options?.map((option:any) => (
+                      {filter.options?.map((option: any) => (
                         <FormControlLabel
                           key={option}
                           control={
@@ -102,7 +118,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   )}
                   {filter.type === "autocomplete" && (
                     <Autocomplete
-                    
                       multiple
                       options={filter.options || []}
                       value={filterValues[filter.label] || []}
@@ -117,7 +132,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               <Divider />
             </React.Fragment>
           ))}
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             <Button variant="text" color="primary" onClick={onResetAll}>
               Reset All
             </Button>
@@ -127,7 +142,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </Box>
         </List>
       </Box>
-    </Slide>
+    </Drawer>
   );
 };
 

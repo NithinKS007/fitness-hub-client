@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Box, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import useSubscription from "../../hooks/useSubscription";
 import ReuseTable from "../../components/ReuseTable";
-import Filter from "../../components/Filter";
-import SearchBarTable from "../../components/SearchBarTable";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getTrainerSubscriptionById } from "../../redux/subscription/subscriptionThunk";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import TableFilter from "../../components/TableFilter";
+import TableSort from "../../components/TableSort";
 
 interface TableColumn {
   label: string;
@@ -30,7 +30,9 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
   const { _id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const fetchTrainerSubscriptionData = async () => {
-    await dispatch(getTrainerSubscriptionById(_id!!));
+    if(_id){
+      await dispatch(getTrainerSubscriptionById(_id));
+    }
   };
 
   const trainerSubscriptionData = useSelector(
@@ -83,6 +85,7 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
             slno: index + 1,
             subPeriod:
               sub.subPeriod.charAt(0).toUpperCase() + sub.subPeriod.slice(1),
+              price: `USD : ${sub.price}`,
             details: (
               <>
                 <IconButton
@@ -138,13 +141,12 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
           marginTop: "10px",
         }}
       ></Box>
-      <div className="flex justify-between ml-15 ">
-        <SearchBarTable />
-        <Filter sort={sort} filter={filter} />
+      <div style={{ display: "flex", justifyContent: "end", gap: 4 ,marginBottom:"10px"}}>
+        {/* <TableFilter filter={filter} />
+        <TableSort sort={sort} /> */}
       </div>
-      <div className="ml-15">
-        <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
-      </div>
+      
+      <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
     </>
   );
 };

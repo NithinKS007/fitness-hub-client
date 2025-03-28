@@ -141,7 +141,7 @@ const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
                           variant="h6"
                           sx={{ mt: 1, color: "#1976d2", fontWeight: 600 }}
                         >
-                          ₹{plan.price}
+                          USD :{plan.price}
                         </Typography>
                       </Box>
                     }
@@ -215,7 +215,7 @@ const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
                       Price
                     </Typography>
                     <Typography variant="body1" fontWeight={500}>
-                      ₹{selectedPlan.price}
+                      USD :{selectedPlan.price}
                     </Typography>
                   </Box>
                   <Divider sx={{ my: 2 }} />

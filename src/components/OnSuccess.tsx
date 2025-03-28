@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Paper,
-} from "@mui/material";
+import { Box, Typography, Button, Paper } from "@mui/material";
 import { CheckCircleOutline } from "@mui/icons-material";
 
 interface OnSuccessProps {

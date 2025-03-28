@@ -61,7 +61,6 @@ const SlotBooking: React.FC<SlotBookingProps> = ({ availableSlots }) => {
   };
   const dispatch = useDispatch<AppDispatch>();
   const handleBooking = async () => {
-
     try {
       const response = await dispatch(
         bookSlot({ slotId: selectedSlotId })
@@ -113,7 +112,7 @@ const SlotBooking: React.FC<SlotBookingProps> = ({ availableSlots }) => {
               </option>
             ))
           ) : (
-            <option value="" disabled>
+            <option disabled>
               No available time slots
             </option>
           )}
@@ -128,9 +127,10 @@ const SlotBooking: React.FC<SlotBookingProps> = ({ availableSlots }) => {
         Summary
       </Typography>
       <Typography>
-        <strong>Date :</strong>
+        <strong>Date : </strong>
         {dayjs(selectedSlot?.date).format("ddd, MMM D, YYYY")}
-        <strong> Time :{selectedSlot?.time}</strong>
+        <strong> Time : </strong>
+        {selectedSlot?.time ? selectedSlot?.time :"N/A"}
       </Typography>
       <Button
         variant="contained"
@@ -145,13 +145,14 @@ const SlotBooking: React.FC<SlotBookingProps> = ({ availableSlots }) => {
   );
 
   return (
-    <Container maxWidth="md" sx={{ py: 3 }}>
+    <Container  sx={{ py: 3,  width: { xs: "100%", md: "79%" },}}>
       <Paper elevation={3} sx={{ p: 2, borderRadius: "8px" }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             gap: 3,
+            width: "100%"
           }}
         >
           <Box

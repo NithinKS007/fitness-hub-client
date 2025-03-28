@@ -15,7 +15,7 @@ import TrainerEntrollmentPage from "./pages/trainer/TrainerEntrollmentPage";
 import TrainerListPage from "./pages/admin/TrainerListPage";
 import InboxPage from "./pages/admin/InboxPage";
 import TrainerLayout from "./layouts/TrainerLayout";
-import ClientsListPage from "./pages/trainer/ClientsListPage";
+import SubscribersListPage from "./pages/trainer/SubscribersList";
 import ChatPage from "./pages/trainer/ChatPage";
 import SessionSchedulesPage from "./pages/trainer/SessionSchedulesPage";
 import TrainerProfilePage from "./pages/trainer/ProfilePage";
@@ -31,12 +31,13 @@ import ViewTrainerDetailsUS from "./pages/ViewTrainerDetailsUS";
 import UserSubscriptionsPage from "./pages/user/UserSubscriptionPage";
 import UserBookingsPage from "./pages/user/UserBookingsPage";
 import UserChatsPage from "./pages/user/UserChatsPage";
-import UserWalletPage from "./pages/user/UserWalletPage";
 import SubscriptionSettingPage from "./pages/trainer/SubscriptionSettingPage";
 import AddContentsPage from "./pages/trainer/AddContentsPage";
 import TrainerSubscriptionDetailsPage from "./pages/admin/TrainerSubscriptionDetailsPage";
 import OnFailurePage from "./pages/OnFailurePage";
-import OnSuccessPage from "./pages/OnSuccessPage"
+import OnSuccessPage from "./pages/OnSuccessPage";
+import TrainerVideosGrid from "./pages/TrainerVideosGrid";
+import VideoPlayer from "./pages/VideoPlayer";
 
 const App = () => {
   return (
@@ -65,8 +66,15 @@ const App = () => {
           path="/trainer-details/:_id"
           element={<ViewTrainerDetailsUS />}
         />
+        <Route
+          path="/workout-video/:playListId/:trainerId/:videoId"
+          element={<VideoPlayer />}
+        />
+        <Route
+          path="/video/:playListId/:trainerId/"
+          element={<TrainerVideosGrid />}
+        />
       </Route>
-
       {/*userRoutes*/}
       <Route element={<ProtectedUser />}>
         <Route element={<ULProfile />}>
@@ -78,7 +86,6 @@ const App = () => {
           <Route path="/user/profile" element={<UserProfilePage />} />
           <Route path="/user/bookings" element={<UserBookingsPage />} />
           <Route path="/user/chats" element={<UserChatsPage />} />
-          <Route path="/user/wallet" element={<UserWalletPage />} />
         </Route>
       </Route>
 
@@ -108,10 +115,10 @@ const App = () => {
       <Route element={<ProtectedTrainer />}>
         <Route element={<TrainerLayout />}>
           <Route path="/trainer/dashboard" element={<DBPageTrainer />} />
-          <Route path="/trainer/clients" element={<ClientsListPage />} />
+          <Route path="trainer/subscribers" element={<SubscribersListPage />} />
           <Route path="/trainer/chat" element={<ChatPage />} />
           <Route
-            path="/trainer/session-schedules"
+            path="/trainer/appointments"
             element={<SessionSchedulesPage />}
           />
           <Route path="/trainer/add-contents" element={<AddContentsPage />} />

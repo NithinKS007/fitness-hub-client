@@ -1,5 +1,4 @@
 import {
-  Card,
   Table,
   TableBody,
   TableCell,
@@ -18,39 +17,37 @@ interface ShimmerTableProps {
 }
 
 const ShimmerTableLoader: React.FC<ShimmerTableProps> = ({ columns }) => {
-
-  let rowCount
   return (
-    <Card>
-      <Table>
-        <TableHead>
-          <TableRow>
+    <Table
+      sx={{ border: "1px solid lightgrey ", borderRadius: 2, bgcolor: "white" }}
+    >
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox" sx={{ padding: "8px" }}>
+            <Skeleton variant="rectangular" width={24} height={24} />
+          </TableCell>
+          {columns.map((column) => (
+            <TableCell key={column.field} sx={{ padding: "8px" }}>
+              <Skeleton variant="text" width="60%" />
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {Array.from({ length: 5 }).map((_, rowIndex) => (
+          <TableRow key={rowIndex}>
             <TableCell padding="checkbox" sx={{ padding: "8px" }}>
               <Skeleton variant="rectangular" width={24} height={24} />
             </TableCell>
             {columns.map((column) => (
               <TableCell key={column.field} sx={{ padding: "8px" }}>
-                <Skeleton variant="text" width="60%" />
+                <Skeleton variant="text" width="80%" />
               </TableCell>
             ))}
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {Array.from({ length: rowCount =  5 }).map((_, rowIndex) => (
-            <TableRow key={rowIndex}>
-              <TableCell padding="checkbox" sx={{ padding: "8px" }}>
-                <Skeleton variant="rectangular" width={24} height={24} />
-              </TableCell>
-              {columns.map((column) => (
-                <TableCell key={column.field} sx={{ padding: "8px" }}>
-                  <Skeleton variant="text" width="80%" />
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Card>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 

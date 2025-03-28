@@ -1,12 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosinstance from "../../config/axios";
-import { RequestTrainerDetails, RequestTrainerVerification, RequestUserDetails, updateBlockStatus } from "./adminTypes";
+import { TrainersListQueryParams,UsersListQueryParams,InboxListQueryParams, RequestTrainerDetails, RequestTrainerVerification, RequestUserDetails, updateBlockStatus } from "./adminTypes";
 
 export const getUsers = createAsyncThunk(
   "admin/getUsers",
-  async (_, { rejectWithValue }) => {
+  async (params:UsersListQueryParams, { rejectWithValue }) => {
+
+
     try {
-      const response = await axiosinstance.get(`/admin/users`);
+      const response = await axiosinstance.get(`/admin/users`,{params})
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -19,9 +21,11 @@ export const getUsers = createAsyncThunk(
 );
 export const getTrainers = createAsyncThunk(
   "admin/getTrainers",
-  async (_, { rejectWithValue }) => {
+  async (params:TrainersListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/trainers`);
+
+      console.log("params for searching and filtering",params)
+      const response = await axiosinstance.get(`/admin/trainers`,{params});
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -52,9 +56,9 @@ export const updateUserBlockStatus = createAsyncThunk(
 
 export const getApprovalPendingList = createAsyncThunk(
   "admin/getApprovalPendingList",
-  async (_, { rejectWithValue }) => {
+  async (params:InboxListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/pending-approval/`)
+      const response = await axiosinstance.get(`/admin/pending-approval/`,{params})
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {

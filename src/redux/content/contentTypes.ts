@@ -2,7 +2,9 @@ export interface ContentState {
   isLoading: boolean;
   error: string | null;
   playLists: PlayList[]
-  videos:Video[]
+  videos:Video[],
+  videoData:Video | null,
+  relatedVideosData:Video[],
 }
 
 export interface PlayList {
@@ -10,6 +12,7 @@ export interface PlayList {
   trainerId: string;
   title: string;
   privacy: boolean;
+  videoCount:number
   createdAt: string;
 }
 
@@ -20,8 +23,8 @@ export interface Video{
   description: string;
   thumbnail: string;
   video: string;
-  playLists: string[];
   createdAt:string
+  duration:number
   privacy:boolean
 }
 
@@ -36,4 +39,16 @@ export interface AddVideo {
   duration:number
   video:string,
   playLists: string[];
+}
+
+export interface RequestPlayListsByTrainerId {
+  trainerId:string
+}
+
+export interface RequestVideosListByPlayListId{
+  playListId:string
+}
+
+export interface RequestVideoId{
+  videoId:string
 }

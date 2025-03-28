@@ -1,102 +1,140 @@
-import React from 'react';
-import {
-  Box,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-} from '@mui/material';
+import React, { useEffect} from "react";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchVideosByPlayListId } from "../redux/content/contentThunk";
+import { isSubscribedToTheTrainer } from "../redux/subscription/subscriptionThunk";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
-// Dummy video data (unchanged)
-const videoData = [
-  { id: 1, title: "Strength Basics", duration: "15:32", thumbnail: "https://via.placeholder.com/300x300.png?text=Strength" },
-  { id: 2, title: "Cardio Intro", duration: "20:15", thumbnail: "https://via.placeholder.com/300x300.png?text=Cardio" },
-  { id: 3, title: "Yoga Starter", duration: "18:40", thumbnail: "https://via.placeholder.com/300x300.png?text=Yoga" },
-  { id: 4, title: "HIIT Basics", duration: "22:45", thumbnail: "https://via.placeholder.com/300x300.png?text=HIIT" },
-  { id: 5, title: "Core Strength", duration: "25:10", thumbnail: "https://via.placeholder.com/300x300.png?text=Core" },
-  { id: 6, title: "Leg Day", duration: "28:20", thumbnail: "https://via.placeholder.com/300x300.png?text=Legs" },
-  { id: 7, title: "Arm Workout", duration: "19:55", thumbnail: "https://via.placeholder.com/300x300.png?text=Arms" },
-  { id: 8, title: "Power Lifting", duration: "30:00", thumbnail: "https://via.placeholder.com/300x300.png?text=Power" },
-];
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
-const TrainerVideosGrid = () => {
-  const handleVideoClick = (videoId) => {
-    console.log(`Clicked video ${videoId}`);
-    // Add your navigation logic here
+const formatDuration = (seconds: number) => {
+  const dur = dayjs.duration(seconds, "seconds");
+  return `${Math.floor(dur.asMinutes())}:${dur.seconds().toString().padStart(2, "0")}`;
+};
+
+const formatRelativeTime = (date: Date) => {
+  return dayjs(date).fromNow();
+};
+
+const TrainerVideosGrid: React.FC = () => {
+  const { playListId, trainerId } = useParams();
+  const user = useSelector((state: RootState) => state?.auth?.user);
+  const isLoggedIn = user ? true : false;
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (playListId && trainerId) {
+      dispatch(fetchVideosByPlayListId({ playListId }));
+      dispatch(isSubscribedToTheTrainer(trainerId))
+    
+    }
+  }, [dispatch, playListId, trainerId]);
+
+  const {videos: videosData,isLoading} = useSelector((state: RootState) => state.content);
+
+  let isHeSubscribedToTheTrainer: boolean = false;
+  if (trainerId) {
+    isHeSubscribedToTheTrainer = useSelector(
+      (state: RootState) =>
+        state.subscription.isSubscribedToTheTrainer?.[trainerId].isSubscribed ||
+        false
+    );
+  }
+
+  const navigate = useNavigate();
+
+  const handleVideoClick = (video: any) => {
+    navigate(`/workout-video/${playListId}/${trainerId}/${video._id}/`);
   };
 
+  const shouldRender = () => {
+    if (isLoggedIn && playListId && trainerId && isHeSubscribedToTheTrainer) {
+      return true;
+    }
+    return false;
+  };
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress sx={{ color: "blue" }} />
+      </Box>
+    );
+  }
+
+  console.log("is subs",isHeSubscribedToTheTrainer)
   return (
-    <Box 
-      sx={{ 
-        p: 2, 
-        mx: { xs: 2, sm: 4, md: 10 }, // Responsive margins instead of fixed ml:10, mr:10
-        display: 'flex', 
-        flexWrap: 'wrap', // Allows items to wrap to the next row
-        gap: 2, // Spacing between cards, replacing Grid's spacing
-        justifyContent: 'center', // Center the cards for a clean look
-      }}
-    >
-      {videoData.map((video) => (
-        <Box
-          key={video.id}
-          sx={{
-            flex: { 
-              xs: '1 1 100%', // Full width on extra small screens
-              sm: '1 1 48%',  // Two cards per row on small screens
-              md: '1 1 31%',  // Three cards per row on medium screens
-              lg: '1 1 23%'   // Four cards per row on large screens
-            }, 
-            maxWidth: { xs: '100%', sm: 300, md: 320 }, // Control card width responsively
-          }}
-        >
-          <Card
-            onClick={() => handleVideoClick(video.id)}
-            sx={{ 
-              '&:hover': { cursor: 'pointer' },
-              height: '100%', // Ensure card takes full height of container
-            }}
-          >
-            <Box sx={{ position: 'relative' }}>
-              <CardMedia
-                component="img"
-                image={video.thumbnail}
-                alt={video.title}
-                sx={{ 
-                  height: { xs: 150, sm: 180 }, // Slightly smaller on mobile
-                  objectFit: 'cover',
-                }}
-              />
-              <Typography
-                variant="caption"
-                sx={{
-                  position: 'absolute',
-                  bottom: 8,
-                  right: 8,
-                  bgcolor: 'rgba(0, 0, 0, 0.7)',
-                  color: 'white',
-                  px: 1,
-                  py: 0.5,
-                  borderRadius: 1,
-                }}
-              >
-                {video.duration}
-              </Typography>
-            </Box>
-            <CardContent sx={{ p: 2 }}>
-              <Typography 
-                variant="subtitle1" 
-                noWrap
-                sx={{ 
-                  fontSize: { xs: '0.9rem', sm: '1rem' }, // Responsive title size
-                }}
-              >
-                {video.title}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      ))}
-    </Box>
+    <>
+      {shouldRender() ? (
+        <div className="min-h-screen px-4 py-6 md:px-6">
+          <div className="mb-8 max-w-2xl mx-auto">
+            <input
+              type="text"
+              placeholder="Search videos..."
+              className="w-full px-4 py-3 rounded-full border
+               border-gray-200 shadow-sm focus:outline-none 
+               focus:border-transparent transition-all"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videosData?.length > 0 ? (
+              videosData.map((video) => (
+                <div
+                  key={video._id}
+                  className="w-full cursor-pointer rounded-lg 
+                  overflow-hidden shadow-sm hover:shadow-md 
+                  transition-shadow border border-gray-100"
+                  onClick={() => handleVideoClick(video)}
+                >
+                  <div className="relative">
+                    <img
+                      src={`${video.thumbnail}?t=0`}
+                      alt={video.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    <span
+                      className="absolute bottom-2 right-2 bg-black/70
+                     text-white text-xs px-1.5 py-0.5 rounded"
+                    >
+                      {formatDuration(video.duration)}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-900 line-clamp-2">
+                      {video.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {formatRelativeTime(new Date(video.createdAt))}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="col-span-full text-center text-gray-500 text-lg">
+                No videos available
+              </p>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="text-center py-10">
+          Please subscribe to watch videos
+        </div>
+      )}
+    </>
   );
 };
 

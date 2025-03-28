@@ -3,21 +3,15 @@ import { Box, Button, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import TrainerSubscriptionForm from "../../components/SubscriptionSetting";
 import useSubscription from "../../hooks/useSubscription";
 import ReuseTable from "../../components/ReuseTable";
-import Filter from "../../components/Filter";
-import SearchBarTable from "../../components/SearchBarTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useModal } from "../../hooks/useModal";
+import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
 
 interface TableColumn {
   label: string;
   field: string;
 }
-interface SortOption {
-  value: string;
-}
 
-interface FilterOption {
-  value: string;
-}
 
 const SubscriptionSettingPage: React.FC = () => {
   const {
@@ -36,8 +30,23 @@ const SubscriptionSettingPage: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<
     string | null
-  >(null);
+  >(null)
+  const [selectedSubscriptionForDelete, setSelectedSubscriptionForDelete] = useState<any | null>(null); 
+  const [selectedSubscriptionForBlock, setSelectedSubscriptionForBlock] = useState<any | null>(null); 
+
   const openMenu = Boolean(anchorEl);
+const {
+    open: confirmationDeleteModalOpen,
+    handleOpen: handleConfirmationDeleteModalOpen,
+    handleClose: handleConfirmationDeleteModalClose,
+  } = useModal();
+
+  const {
+    open: confirmationBlockblockModalOpen,
+    handleOpen: handleConfirmationBlockModalOpen,
+    handleClose: handleConfirmationBlockModalClose,
+  } = useModal()
+
 
   const columns: TableColumn[] = [
     { label: "Sl No", field: "slno" },
@@ -49,23 +58,7 @@ const SubscriptionSettingPage: React.FC = () => {
     { label: "Actions", field: "actions" },
   ];
 
-  const sort: SortOption[] = [
-    { value: "10000 - 25000" },
-    { value: "25000 - 50000" },
-    { value: "50000 - 75000" },
-    { value: "75000 - 100000" },
-    { value: "above - 100000" },
-  ];
 
-  const filter: FilterOption[] = [
-    { value: "All" },
-    { value: "Active" },
-    { value: "Inactive" },
-    { value: "Monthly" },
-    { value: "Quarterly" },
-    { value: "Yearly" },
-    { value: "Half Yearly" },
-  ];
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -78,6 +71,37 @@ const SubscriptionSettingPage: React.FC = () => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
     setSelectedSubscriptionId(null);
+  }
+
+  const handleDeleteAction = (sub: any) => {
+    setSelectedSubscriptionForDelete(sub);
+    handleConfirmationDeleteModalOpen();
+    handleCloseMenu();
+  };
+
+  const handleBlockAction = (sub: any) => {
+    setSelectedSubscriptionForBlock(sub);
+    handleConfirmationBlockModalOpen();
+    handleCloseMenu();
+  }
+
+  const handleConfirmDelete = () => {
+    if (selectedSubscriptionForDelete) {
+      deleteSubs(selectedSubscriptionForDelete._id as string);
+      handleConfirmationDeleteModalClose();
+      setSelectedSubscriptionForDelete(null);
+    }
+  };
+
+  const handleConfirmBlock = () => {
+    if (selectedSubscriptionForBlock) {
+      UpdateSubsBlockstatus({
+        _id: selectedSubscriptionForBlock._id as string,
+        isBlocked: !selectedSubscriptionForBlock.isBlocked,
+      });
+      handleConfirmationBlockModalClose();
+      setSelectedSubscriptionForBlock(null);
+    }
   };
 
   const fetchedTrainerSubscriptionData =
@@ -88,6 +112,7 @@ const SubscriptionSettingPage: React.FC = () => {
             slno: index + 1,
             subPeriod:
               sub.subPeriod.charAt(0).toUpperCase() + sub.subPeriod.slice(1),
+              price:`USD : ${sub.price}`,
             actions: (
               <>
                 <IconButton
@@ -108,7 +133,10 @@ const SubscriptionSettingPage: React.FC = () => {
                     sx={{
                       "& .MuiPaper-root": {
                         boxShadow: "none",
-                        border: 1,
+                        border: "1px solid",
+                        width:150,
+                        borderColor: "grey.400",
+                        borderRadius: 2,
                       },
                     }}
                   >
@@ -117,15 +145,11 @@ const SubscriptionSettingPage: React.FC = () => {
                     >
                       Edit
                     </MenuItem>
-                    <MenuItem onClick={() => deleteSubs(sub?._id as string)}>
+                    <MenuItem onClick={() => handleDeleteAction(sub)}>
                       Delete
                     </MenuItem>
                     <MenuItem
-                      onClick={() =>
-                        UpdateSubsBlockstatus({
-                          _id: sub._id as string,
-                          isBlocked: !sub.isBlocked,
-                        })
+                      onClick={() => handleBlockAction(sub)
                       }
                     >
                       {sub.isBlocked ? "Unblock" : "Block"}
@@ -170,13 +194,40 @@ const SubscriptionSettingPage: React.FC = () => {
         formik={formik}
         isEditMode={isEditMode}
       />
-
-      <div className="flex justify-between">
-        <SearchBarTable />
-        <Filter sort={sort} filter={filter} />
-      </div>
-
       <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
+
+      <ConfirmationModalDialog
+        open={confirmationDeleteModalOpen}
+        content={
+          selectedSubscriptionForDelete
+            ? `Are you sure you want to delete the ${selectedSubscriptionForDelete?.subPeriod.charAt(0).toUpperCase() + selectedSubscriptionForDelete.subPeriod.slice(1)} subscription?`
+            : ""
+        }
+        onConfirm={handleConfirmDelete}
+        onCancel={handleConfirmationDeleteModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="success"
+        cancelColor="error"
+      />
+
+      {/* Block/Unblock Confirmation Modal */}
+      <ConfirmationModalDialog
+        open={confirmationBlockblockModalOpen}
+        content={
+          selectedSubscriptionForBlock
+            ? `Are you sure you want to ${
+                selectedSubscriptionForBlock.isBlocked ? "unblock" : "block"
+              } the ${selectedSubscriptionForBlock?.subPeriod.charAt(0).toUpperCase() + selectedSubscriptionForBlock.subPeriod.slice(1)} subscription?`
+            : ""
+        }
+        onConfirm={handleConfirmBlock}
+        onCancel={handleConfirmationBlockModalClose}
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="success"
+        cancelColor="error"
+      />
     </>
   );
 };
