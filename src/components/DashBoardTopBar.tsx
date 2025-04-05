@@ -36,8 +36,7 @@ const TopNavbar: React.FC = () => {
           <div className="mr-10"></div>
         </div>
         <div className="flex items-center space-x-4">
-          {/* <Notifications /> */}
-          <div className="w-10 h-10 rounded-full  flex items-center justify-center">
+          <div className="w-10 h-7 rounded-full  flex items-center justify-center">
             <FaUser className="text-white" />
             <AccountDropDown
               authPerson={getAuthPerson()}

@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { socket } from "../../config/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getUserSubscriptionsData } from "../../redux/subscription/subscriptionThunk";
-import { fetchChatMessages } from "../../redux/chat/chatThunk";
+import { fetchChatMessages, getUserChatList } from "../../redux/chat/chatThunk";
 import { addMessage } from "../../redux/chat/chatSlice";
 import {
   Box,
@@ -31,19 +30,15 @@ const UserChatsPage = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const fetchUserSubscriptionsData = async () => {
-    await dispatch(getUserSubscriptionsData());
-  };
-
   useEffect(() => {
-    fetchUserSubscriptionsData();
+    dispatch(getUserChatList());
   }, [dispatch]);
 
-  const { userSubscribedTrainerPlans, isLoading: subLoading } = useSelector(
-    (state: RootState) => state.subscription
+  const { userChatList } = useSelector(
+    (state: RootState) => state.chat
   );
 
-  const fetchedUserSubscriptionData = userSubscribedTrainerPlans.map(
+  const fetchedUserSubscriptionData = userChatList.map(
     (trainer) => ({
       _id: trainer._id,
       trainerId: trainer.trainerId,
@@ -76,9 +71,10 @@ const UserChatsPage = () => {
 
   const { user } = useSelector((state: RootState) => state.auth);
 
+
   useEffect(() => {
     if (selectedTrainerId && user?._id) {
-      socket.emit("join", user?._id);
+
       dispatch(
         fetchChatMessages({
           senderId: user?._id,
@@ -96,7 +92,7 @@ const UserChatsPage = () => {
       });
 
       return () => {
-        socket.off("receiveMessage");
+        socket.off("receiveMessage")
       };
     }
   }, [dispatch, user?._id, selectedTrainerId]);
@@ -150,7 +146,7 @@ const UserChatsPage = () => {
         flexDirection: "column",
       }}
     >
-      {chatLoading || subLoading ? (
+      {chatLoading ? (
         <Box
           sx={{
             display: "flex",
@@ -312,7 +308,7 @@ const UserChatsPage = () => {
                           borderRadius: 2,
                           bgcolor:
                             message.senderId.toString() === user?._id.toString()
-                              ? "#1d4ed8"
+                              ? "black"
                               : "grey.200",
                           color:
                             message.senderId.toString() === user?._id.toString()
@@ -411,7 +407,7 @@ const UserChatsPage = () => {
                 onClick={handleSendMessage}
                 sx={{
                   borderRadius: 1,
-                  backgroundColor: "#1d4ed8",
+                  backgroundColor: "black",
                   color: "white",
                 }}
                 disabled={!isPlanActive}

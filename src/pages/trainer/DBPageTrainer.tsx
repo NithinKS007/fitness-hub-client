@@ -1,7 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
-import { getTrainerDashBoardData } from "../../redux/dashboard/dashboardThunk";
 import DashBoardBox from "../../components/DashBoardBox";
 import {
   LineChart,
@@ -17,109 +13,65 @@ import {
   Cell,
 } from "recharts";
 
-import {
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from "@mui/material";
+import { Box, List, ListItem, ListItemText } from "@mui/material";
+import { People } from "@mui/icons-material";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import useTrainerDashBoard from "../../hooks/useTrainerDashBoard";
 
-import { Box, CircularProgress, List, ListItem, ListItemText } from "@mui/material";
-
-const DBPageTrainer: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("Today");
-
-  useEffect(() => {
-    dispatch(getTrainerDashBoardData({ period: selectedTimePeriod }));
-  }, [dispatch, selectedTimePeriod]);
-  const handleTimePeriodChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedTimePeriod(event.target.value as string);
-  };
-
+const DBPageTrainer = () => {
   const {
+    selectedTimePeriod,
+    handleTimePeriodChange,
     totalSubscribersCount,
     activeSubscribersCount,
     canceledSubscribersCount,
-  } = useSelector(
-    (state: RootState) =>
-      state.dashboard.trainerDashboard ?? {
-        totalSubscribersCount: 0,
-        activeSubscribersCount: 0,
-        canceledSubscribersCount: 0,
-      }
-  );
-  const chartData = useSelector((state: RootState) =>
-    state.dashboard.trainerDashboard?.chartData
-  );
-
-  const pieChartData = useSelector((state: RootState) =>
-    state.dashboard.trainerDashboard?.pieChartData
-  );
-  
-  console.log("chart data",pieChartData)
-
-  const { isLoading, error } = useSelector(
-    (state: RootState) => state.dashboard
-  );
+    transformedChartData,
+    pieChartFormattedData,
+    isLoading,
+    error,
+    timePeriods,
+  } = useTrainerDashBoard();
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner size={60} thickness={4} />;
   }
 
   if (error) {
     return <> {error}</>;
   }
 
-  const colorMapping: Record<string, string> = {
-    "quarterly": "#8884d8",  
-    "monthly": "#82ca9d",   
-    "halfYearly": "#ff7300",     
-    "yearly": "#d0ed57",   
-  };
-  const allPeriods = ["quarterly", "monthly", "halfYearly", "yearly"];
-  const pieChartFormattedData = allPeriods.map((period) => {
-    const periodData = pieChartData?.find((item) => item._id === period);
+  const dashboardItems = [
+    {
+      content: "Total subscribers",
+      number: totalSubscribersCount,
+      icon: <People className="text-gray-600" />,
+    },
+    {
+      content: "Active subscribers",
+      number: activeSubscribersCount,
+      icon: <People className="text-gray-600" />,
+    },
+    {
+      content: "Canceled subscribers",
+      number: canceledSubscribersCount,
+      icon: <People className="text-gray-600" />,
+    },
+  ];
 
-    return {
-      name: period,
-      value: periodData ? periodData.value : 0,
-      color: colorMapping[period] || "#8884d8",
-    };
-  });
   return (
     <Box sx={{ padding: 2 }}>
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-        <Box sx={{ flex: 1 }}>
-          <DashBoardBox
-            content="Total subscribers"
-            number={totalSubscribersCount}
-          />
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <DashBoardBox
-            content="Active subscribers"
-            number={activeSubscribersCount}
-          />
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <DashBoardBox
-            content="Canceled subscribers"
-            number={canceledSubscribersCount}
-          />
-        </Box>
+        {dashboardItems.map((item, index) => (
+          <Box key={index} sx={{ flex: 1 }}>
+            <DashBoardBox
+              content={item.content}
+              number={item.number}
+              icon={item.icon}
+            />
+          </Box>
+        ))}
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
         <FormControl sx={{ width: 200 }}>
@@ -128,12 +80,12 @@ const DBPageTrainer: React.FC = () => {
             label="Time Period"
             value={selectedTimePeriod}
             onChange={handleTimePeriodChange}
-           
           >
-            <MenuItem value="Today">Today</MenuItem>
-            <MenuItem value="This week">This week</MenuItem>
-            <MenuItem value="This month">This month</MenuItem>
-            <MenuItem value="This year">This year</MenuItem>
+            {timePeriods.map((period) => (
+              <MenuItem key={period} value={period}>
+                {period}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
@@ -141,7 +93,7 @@ const DBPageTrainer: React.FC = () => {
         <Box sx={{ flex: 1.5, height: 300 }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
-              data={chartData}
+              data={transformedChartData}
               margin={{
                 top: 20,
                 right: 30,
@@ -156,21 +108,21 @@ const DBPageTrainer: React.FC = () => {
               <Legend />
               <Line
                 type="monotone"
-                dataKey="total"
+                dataKey="Total"
                 stroke="#8884d8"
                 strokeWidth={2}
                 dot={{ r: 6 }}
               />
               <Line
                 type="monotone"
-                dataKey="active"
+                dataKey="Active"
                 stroke="#82ca9d"
                 strokeWidth={2}
                 dot={{ r: 6 }}
               />
               <Line
                 type="monotone"
-                dataKey="canceled"
+                dataKey="Canceled"
                 stroke="#ff7300"
                 strokeWidth={2}
                 dot={{ r: 6 }}
@@ -181,7 +133,7 @@ const DBPageTrainer: React.FC = () => {
         <Box sx={{ display: "flex", flex: 1 }}>
           <Box sx={{ flex: 1, height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+              <PieChart>
                 <Pie
                   data={pieChartFormattedData}
                   dataKey="value"
@@ -197,7 +149,7 @@ const DBPageTrainer: React.FC = () => {
             </ResponsiveContainer>
           </Box>
           <Box sx={{ flex: 1, overflowY: "auto", paddingLeft: 2 }}>
-          <List sx={{ fontSize: 12 }}>
+            <List sx={{ fontSize: 12 }}>
               {pieChartFormattedData?.map((entry, index) => (
                 <ListItem key={index} sx={{ padding: "4px 0" }}>
                   <ListItemText

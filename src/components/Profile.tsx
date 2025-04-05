@@ -26,7 +26,7 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 interface ProfileProps {
   formik?: any;
-  handleProfilePicChange?: React.ChangeEventHandler<HTMLInputElement>;
+  handleProfilePicChange?: React.ChangeEventHandler<HTMLInputElement>
   handlePdfChange?: React.ChangeEventHandler<HTMLInputElement>;
   isEditable: boolean;
 }
@@ -102,7 +102,7 @@ const Profile: React.FC<ProfileProps> = ({
                     width: 100,
                     height: 100,
                     mx: "auto",
-                    border: "2px solid #1d4ed8",
+                    border: "2px solid black",
                   }}
                 >
                   {!formik.values.profilePic && (
@@ -156,7 +156,7 @@ const Profile: React.FC<ProfileProps> = ({
                     variant="contained"
                     component="label"
                     startIcon={<PhotoCamera />}
-                    sx={{ borderRadius: 1, backgroundColor: "#1d4ed8" }}
+                    sx={{ borderRadius: 1, backgroundColor: "black" }}
                   >
                     Upload Picture
                     <input
@@ -389,7 +389,7 @@ const Profile: React.FC<ProfileProps> = ({
                   <Button
                     type="submit"
                     variant="contained"
-                    style={{ backgroundColor: "#1d4ed8", color: "white" }}
+                    style={{ backgroundColor: "black", color: "white" }}
                     sx={{ height: "48px", borderRadius: 2 }}
                   >
                     Save Changes

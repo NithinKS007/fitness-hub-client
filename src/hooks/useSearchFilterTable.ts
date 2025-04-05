@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 const useSearchFilter = () => {
 
-  const rowsPerPage:number = 10
+  const rowsPerPage:number = 9
 
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");

@@ -5,10 +5,9 @@ import {
   Typography,
   TextField,
   Button,
-  Paper,
   IconButton,
 } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface TrainerAuthFormProps {
   open: boolean;
@@ -22,57 +21,33 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
   formik,
 }) => {
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="trainer-enrollment-modal"
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Paper
-        elevation={3}
+    <Modal open={open} onClose={handleClose}>
+      <Box
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "85%",
-          maxWidth: 600,
-          borderRadius: 3,
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-          p: 4,
-          backgroundColor: "#fff",
+          width: { xs: "90%", sm: 500, md: 700 },
+          maxHeight: "80vh",
+          bgcolor: "white",
+          borderRadius: 2,
+          boxShadow: 24,
+          p: { xs: 2, sm: 3, md: 4 },
+          overflowY: "auto",
         }}
       >
-        <IconButton
-          onClick={handleClose}
-          sx={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            color: "#757575",
-            "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: 500,
-            mb: 3,
-            color: "#202124",
-          }}
-        >
-          Trainer Enrollment Form
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 500 }}>
+            Trainer Enrollment Form
+          </Typography>
+          <IconButton onClick={handleClose} sx={{ p: 0 }}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
 
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="First Name"
               variant="outlined"
@@ -84,10 +59,9 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="fname"
               error={formik.touched.fname && Boolean(formik.errors.fname)}
               helperText={formik.touched.fname && formik.errors.fname}
-      
             />
           </Box>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="Last Name"
               variant="outlined"
@@ -99,10 +73,9 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="lname"
               error={formik.touched.lname && Boolean(formik.errors.lname)}
               helperText={formik.touched.lname && formik.errors.lname}
-      
             />
           </Box>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="Years of Experience"
               variant="outlined"
@@ -121,10 +94,9 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
                 formik.touched.yearsOfExperience &&
                 formik.errors.yearsOfExperience
               }
-      
             />
           </Box>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="Phone"
               variant="outlined"
@@ -136,10 +108,9 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="phone"
               error={formik.touched.phone && Boolean(formik.errors.phone)}
               helperText={formik.touched.phone && formik.errors.phone}
-      
             />
           </Box>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="Email"
               variant="outlined"
@@ -152,10 +123,9 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="email"
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
-      
             />
           </Box>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="Date of Birth"
               variant="outlined"
@@ -173,10 +143,9 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               helperText={
                 formik.touched.dateOfBirth && formik.errors.dateOfBirth
               }
-      
             />
           </Box>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="Password"
               variant="outlined"
@@ -189,10 +158,9 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
               name="password"
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
-      
             />
           </Box>
-          <Box sx={{ flex: "1 1 45%" }}>
+          <Box sx={{ flex: "1 1 45%", mb: 2 }}>
             <TextField
               label="Confirm Password"
               variant="outlined"
@@ -207,48 +175,40 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
                 formik.touched.cPassword && Boolean(formik.errors.cPassword)
               }
               helperText={formik.touched.cPassword && formik.errors.cPassword}
-      
             />
           </Box>
 
           <Box
             sx={{
-              width: "100%",
               display: "flex",
-              justifyContent: "flex-end",
               gap: 2,
-              mt: 3,
+              justifyContent: "flex-end",
+              flexDirection: { xs: "column", sm: "row" },
+              width: "100%",
             }}
           >
             <Button
-              variant="contained"
+              variant="outlined"
               onClick={handleClose}
-              sx={{
-                backgroundColor: "#f1f3f4",
-                color: "#202124",
-                "&:hover": { backgroundColor: "#e8eaed" },
-                textTransform: "none",
-                borderRadius: 2,
-              }}
+              sx={{ width: { xs: "100%", sm: "auto" } }}
             >
               Cancel
             </Button>
             <Button
               variant="contained"
               onClick={formik.handleSubmit}
+              disabled={formik.isSubmitting}
               sx={{
-                backgroundColor: "#1a73e8",
+                width: { xs: "100%", sm: "auto" },
+                backgroundColor: "black",
                 color: "white",
-                "&:hover": { backgroundColor: "#1557b0" },
-                textTransform: "none",
-                borderRadius: 2,
               }}
             >
               {formik.isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </Box>
         </Box>
-      </Paper>
+      </Box>
     </Modal>
   );
 };

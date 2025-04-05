@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Autocomplete,
   Box,
   Checkbox,
   Collapse,
@@ -8,40 +7,38 @@ import {
   List,
   ListItem,
   ListItemText,
-  TextField,
   FormControlLabel,
   Button,
   Drawer,
-  InputAdornment,
   IconButton,
 } from "@mui/material";
-import { Add, Remove, Clear, Close } from "@mui/icons-material";
+import { Add, Remove, Close } from "@mui/icons-material";
 
 interface FilterSidebarProps {
   filters: any[];
   open: boolean;
   filterValues: { [key: string]: any };
-  onSearchChange: (value: any, filterLabel: string) => void;
   onCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>, filterLabel: string) => void;
   onResetAll: () => void;
   onApply: () => void;
   onToggleFilter: (filterLabel: string) => void;
-  onClose: () => void; 
-  openFilters: { [key: string]: boolean };
+  onClose: () => void;
+  openFilters: { [key: string]: any };
 }
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
   open,
   filterValues,
-  onSearchChange,
   onCheckboxChange,
   onResetAll,
   onApply,
   onToggleFilter,
-  onClose, 
+  onClose,
   openFilters,
   filters,
 }) => {
+
+  console.log("on toggle",onToggleFilter)
   return (
     <Drawer
       anchor="left"
@@ -49,7 +46,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       onClose={onClose}
       sx={{
         "& .MuiDrawer-paper": {
-          width: 290,
+          width: 390,
           bgcolor: "#FAFAFA",
         },
       }}
@@ -69,37 +66,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               </ListItem>
               <Collapse in={openFilters[filter.label]} timeout="auto" unmountOnExit>
                 <Box sx={{ p: 2 }}>
-                  {filter.type === "search" && (
-                    <TextField
-                      label={filter.label === "Search" ? "" : ""}
-                      value={filterValues[filter.label] || ""}
-                      onChange={(event) => onSearchChange(event.target.value, filter.label)}
-                      variant="outlined"
-                      fullWidth
-                      sx={{
-                        "& .MuiInputBase-input": {
-                          backgroundColor: "transparent",
-                          "&:focus": { backgroundColor: "transparent" },
-                        },
-                      }}
-                      slotProps={{
-                        input: {
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                size="small"
-                                onClick={() => onSearchChange("", filter.label)}
-                                edge="end"
-                              >
-                                <Clear />
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
-                    />
-                  )}
-                  {filter.type === "checkbox" && (
+                 
                     <Box>
                       {filter.options?.map((option: any) => (
                         <FormControlLabel
@@ -115,18 +82,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         />
                       ))}
                     </Box>
-                  )}
-                  {filter.type === "autocomplete" && (
-                    <Autocomplete
-                      multiple
-                      options={filter.options || []}
-                      value={filterValues[filter.label] || []}
-                      onChange={(_, value) => onSearchChange(value, filter.label)}
-                      renderInput={(params) => (
-                        <TextField {...params} label={filter.label} />
-                      )}
-                    />
-                  )}
+                 
                 </Box>
               </Collapse>
               <Divider />

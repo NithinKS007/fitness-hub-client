@@ -4,6 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -26,6 +27,7 @@ const userMenuItems = [
   { label: "Bookings", action: "user-bookings", path: "/user/bookings" },
   { label: "Chats", action: "user-chats", path: "/user/chats" },
   { label: "Profile", action: "user-profile", path: "/user/profile" },
+  { label: "Workouts", action: "user-workouts", path: "/user/workouts" },
   { label: "Signout", action: "signout", path: "" },
 ];
 
@@ -43,9 +45,17 @@ const trainerMenuItems = [
     action: "trainer-dashboard",
     path: "/trainer/dashboard",
   },
-  { label: "Subscribers", action: "trainer-subscribers", path: "/trainer/subscribers" },
+  {
+    label: "Subscribers",
+    action: "trainer-subscribers",
+    path: "/trainer/subscribers",
+  },
   { label: "Chat", action: "trainer-chat", path: "/trainer/chat" },
-  { label: "Appointments", action: "trainer-appointments", path: "/trainer/appointments" },
+  {
+    label: "Appointments",
+    action: "trainer-appointments",
+    path: "/trainer/appointments",
+  },
   { label: "Profile", action: "trainer-profile", path: "/trainer/profile" },
   { label: "Signout", action: "signout", path: "" },
 ];
@@ -55,15 +65,22 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
   redirectToLogin,
   signout,
 }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
-  const userData = useSelector((state: RootState) => state?.auth?.user);
-  const trainerData = useSelector((state: RootState) => state?.auth?.trainer);
-  const adminData = useSelector((state: RootState) => state?.auth?.admin);
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+  const {
+    user: userData,
+    trainer: trainerData,
+    admin: adminData,
+  } = useSelector((state: RootState) => state?.auth);
+
+  const handleToggle = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const handleMenuAction = (action: string) => {
@@ -82,6 +99,9 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
         break;
       case "user-chats":
         navigate("/user/chats");
+        break;
+      case "user-workouts":
+        navigate("/user/workouts");
         break;
       case "signout":
         signout();
@@ -116,7 +136,7 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
       default:
         break;
     }
-    setOpen(false);
+    handleClose();
   };
 
   const getMenuItems = () => {
@@ -125,6 +145,8 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
     if (adminData?.role === "admin") return adminMenuItems;
     return [];
   };
+
+  const open = Boolean(anchorEl);
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -145,33 +167,39 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
               <AccountCircleIcon sx={{ fontSize: 35, color: "#4b5563" }} />
             )}
           </IconButton>
-          {open && (
-            <Box
-              sx={{
-                position: "absolute",
-                top: "60px",
-                right: "20px",
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            PaperProps={{
+              sx: {
                 width: "160px",
-                backgroundColor: "white",
-                borderRadius: "4px",
+                mt: 1,
                 boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.25)",
-                zIndex: 999,
-    
-              }}
-            >
-              <Box>
-                {getMenuItems().map((item, index) => (
-                  <MenuItem
-                    key={index}
-                    onClick={() => handleMenuAction(item.action)}
-                    sx={{ padding: "10px 15px", cursor: "pointer",color:"black" }}
-                  >
-                    {item.label}
-                  </MenuItem>
-                ))}
-              </Box>
-            </Box>
-          )}
+              },
+            }}
+          >
+            {getMenuItems().map((item, index) => (
+              <MenuItem
+                key={index}
+                onClick={() => handleMenuAction(item.action)}
+                sx={{
+                  padding: "10px 15px",
+                  color: "black",
+                }}
+              >
+                {item.label}
+              </MenuItem>
+            ))}
+          </Menu>
         </>
       ) : (
         <Button

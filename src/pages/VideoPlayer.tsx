@@ -7,10 +7,9 @@ import {
 } from "../redux/content/contentThunk";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { formatRelativeTime, formatDuration } from "../utils/conversion";
+import { getRelativeTime , formatVideoDuration } from "../utils/conversion";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-
 
 const VideoPlayer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -112,16 +111,7 @@ const VideoPlayer: React.FC = () => {
               </h1>
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-gray-600 text-sm">
-                  {formatDuration(videoData?.duration)}
-                </p>
-                <p className="text-gray-600 text-sm">
-                  {videoData?.createdAt
-                    ? new Date(videoData?.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : "Unknown date"}
+                  {formatVideoDuration(videoData?.duration)}
                 </p>
               </div>
               <p className="text-gray-700 text-sm whitespace-pre-wrap">
@@ -149,7 +139,7 @@ const VideoPlayer: React.FC = () => {
                 <div className="flex flex-col justify-center">
                   <p className="text-sm font-medium">{video.title}</p>
                   <p className="text-xs text-gray-600">
-                    • {formatRelativeTime(new Date(video.createdAt))}
+                    • {getRelativeTime (new Date(video.createdAt))}
                   </p>
                 </div>
               </div>

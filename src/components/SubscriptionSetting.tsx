@@ -210,7 +210,7 @@ const TrainerSubscriptionForm: React.FC<SubscriptionFormProps> = ({
             variant="contained"
             onClick={formik.handleSubmit}
             sx={{
-              backgroundColor: "#1d4ed8",
+              backgroundColor: "black",
               color: "white",
               textTransform: "none",
               borderRadius: 2,

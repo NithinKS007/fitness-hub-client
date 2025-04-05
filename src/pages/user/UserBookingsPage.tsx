@@ -14,17 +14,13 @@ import DateAndTimeFilter from "../../components/DateAndTimeFilter";
 import SearchBarTable from "../../components/SearchBarTable";
 import useAppointments from "../../hooks/useAppointments";
 import Tabs from "../../components/Tabs";
-import { formatTime } from "../../utils/conversion";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import { formatTime, getFormattedTimeRange } from "../../utils/conversion";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 import TableFilter from "../../components/TableFilter";
 import PaginationTable from "../../components/PaginationTable";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
-
-interface TableColumn {
-  label: string;
-  field: string;
-}
+import { TableColumn } from "../../types/tableTypes";
 
 const videoCallLogColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -48,8 +44,8 @@ const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Booking Date", field: "appointmentCreatedAt" },
   { label: "Appointment Date", field: "appointmentDate" },
   { label: "Appointment Time", field: "appointmentTime" },
-  { label: "Current Appointment Status", field: "appointmentStatus" },
-  { label: "Actions", field: "actions" },
+  { label: "status", field: "appointmentStatus" },
+  { label: "More", field: "actions" },
 ];
 
 const filters = [
@@ -103,8 +99,19 @@ const filters = [
   { value: "11:30 PM" },
 ];
 
+const tabItems = [{ label: "Bookings" }, { label: "Call logs" }];
 const UserBookingsPage = () => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    pagination: { totalPages, currentPage },
+    isLoading,
+    error,
+    scheduledAppointmentsUser,
+    appointmentVideoCallLogsUser,
+  } = useSelector((state: RootState) => state.bookingSlot);
 
   const {
     anchorAppointmentSchedulesEl,
@@ -114,24 +121,12 @@ const UserBookingsPage = () => {
     handleAppointmentSchedulesCloseMenu,
     handleCancelAppointmentScheduleUser,
   } = useAppointments();
-  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+
   const {
     open: confirmationModalOpen,
     handleOpen: handleConfirmationModalOpen,
     handleClose: handleConfirmationModalClose,
   } = useModal();
-
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setSelectedTab(newValue);
-  };
-
-  const tabItems = [
-    { label: "Bookings" },
-    { label: "Call logs" },
-  ];
 
   const {
     handlePageChange,
@@ -147,10 +142,6 @@ const UserBookingsPage = () => {
     handleToDateChange,
     handleResetDates,
   } = useSearchFilter();
-
-  const { totalPages, currentPage } = useSelector(
-    (state: RootState) => state.bookingSlot.pagination
-  );
 
   useEffect(() => {
     switch (selectedTab) {
@@ -173,15 +164,6 @@ const UserBookingsPage = () => {
     getQueryParams().toDate,
   ]);
 
-  const {
-    isLoading,
-    error,
-    scheduledAppointmentsUser,
-    appointmentVideoCallLogsUser,
-  } = useSelector((state: RootState) => state.bookingSlot);
-
-  console.log("updated ", appointmentVideoCallLogsUser);
-
   const handleCancelAction = (appointment: any) => {
     setSelectedAppointment(appointment);
     handleConfirmationModalOpen();
@@ -195,12 +177,15 @@ const UserBookingsPage = () => {
       handleAppointmentSchedulesCloseMenu();
     }
   };
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+  };
 
   const fetchedUserVideoCallLogs =
     appointmentVideoCallLogsUser.length > 0
       ? appointmentVideoCallLogsUser.map((log, index) => ({
           ...log,
-          slno: index + 1,
+          slno:index + 1 + (currentPage - 1) * 9,
           _id: log._id,
           appointmentDate: new Date(
             log.appointmentData.appointmentDate
@@ -210,18 +195,8 @@ const UserBookingsPage = () => {
             log.appointmentData.status.charAt(0).toUpperCase() +
             log.appointmentData.status.slice(1).toLowerCase(),
           callDuration: formatTime(log.callDuration),
-          callStartTime: new Date(log.callStartTime).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          }),
-          callEndTime: log.callEndTime
-            ? new Date(log.callEndTime).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              })
-            : "",
+          callStartTime: getFormattedTimeRange(log.callStartTime),
+          callEndTime: getFormattedTimeRange(log.callEndTime),
           callStatus:
             log.callStatus.charAt(0).toUpperCase() +
             log.callStatus.slice(1).toLowerCase(),
@@ -246,7 +221,7 @@ const UserBookingsPage = () => {
 
           return {
             ...appointmentData,
-            slno: index + 1,
+            slno: index + 1 + (currentPage - 1) * 9,
             profilePic: appointmentData.trainerData.profilePic,
             name: `${appointmentData.trainerData.fname} ${appointmentData.trainerData.lname}`,
             email: appointmentData.trainerData.email,
@@ -274,11 +249,12 @@ const UserBookingsPage = () => {
                     }
                     aria-label="More options"
                     sx={{
-                      padding: 0,
-                      paddingTop: 0,
+                      minWidth: "0", 
+                      width: "25px", 
+                      height: "20px", 
                     }}
                   >
-                    <MoreVertIcon />
+                    <MoreVertIcon sx={{ fontSize: "20px" }} />
                   </IconButton>
                 </Box>
 
@@ -300,9 +276,7 @@ const UserBookingsPage = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() =>
-                      handleCancelAction(appointmentData)
-                      }
+                      onClick={() => handleCancelAction(appointmentData)}
                     >
                       Cancel
                     </MenuItem>
@@ -325,7 +299,7 @@ const UserBookingsPage = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
-                marginTop: 3,
+                marginTop: 2,
               }}
             >
               <SearchBarTable
@@ -356,7 +330,7 @@ const UserBookingsPage = () => {
               </Box>
             </Box>
             <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
             />
             {isLoading ? (
               <ShimmerTableLoader columns={scheduledAppointmentsColumn} />
@@ -387,7 +361,7 @@ const UserBookingsPage = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
-                marginTop: 3,
+                marginTop: 2,
               }}
             >
               <SearchBarTable
@@ -418,7 +392,7 @@ const UserBookingsPage = () => {
               </Box>
             </Box>
             <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              sx={{ display: "flex", justifyContent: "space-between",mb:1 }}
             />
             {isLoading ? (
               <ShimmerTableLoader columns={videoCallLogColumns} />
@@ -451,10 +425,9 @@ const UserBookingsPage = () => {
         value={selectedTab}
         handleChange={handleTabChange}
       />
-      <Box sx={{ mt: 2 }}>{renderContent()}</Box>
+      {renderContent()}
       <ConfirmationModalDialog
         open={confirmationModalOpen}
-        // title="Cancel Appointment"
         content={
           selectedAppointment &&
           `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`

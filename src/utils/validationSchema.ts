@@ -296,8 +296,8 @@ export const videoCreationSchema = Yup.object().shape({
 
 export const createSlotSchema = Yup.object().shape({
   date: Yup.string()
-    .required('Date is required')
-    .test('is-future-date', 'Date must be today or in the future', (value) => {
+    .required("Date is required")
+    .test("is-future-date", "Date must be today or in the future", (value) => {
       if (!value) return false;
       const selectedDate = new Date(value);
       const today = new Date();
@@ -305,9 +305,30 @@ export const createSlotSchema = Yup.object().shape({
       return selectedDate >= today;
     }),
   time: Yup.string()
-    .required('Time is required')
+    .required("Time is required")
     .matches(
       /^\d{2}:\d{2} (AM|PM)$/,
-      'Time must be in valid format (e.g., 01:30 PM)'
+      "Time must be in valid format (e.g., 01:30 PM)"
     ),
+});
+
+export const workoutValidationSchema = Yup.object({
+  selectedBodyPart: Yup.string().required("Body part is required"),
+  workouts: Yup.array()
+    .of(
+      Yup.object({
+        bodyPart: Yup.string().required("Body part is required"), 
+        exercise: Yup.string().required("Exercise name is required"), 
+        kg: Yup.number()
+          .min(0, "Kg must be positive")
+          .required("Kg is required"),
+        reps: Yup.number()
+          .min(1, "Reps must be at least 1")
+          .required("Reps is required"),
+        time: Yup.number()
+          .min(0, "Time must be positive")
+          .required("Time is required"),
+      })
+    )
+    .min(1, "At least one workout is required"),
 });

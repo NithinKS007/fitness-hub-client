@@ -1,79 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import { Container, Typography, Box, Paper, Button } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { bookingSlots } from "../redux/booking/bookingTypes";
-import dayjs, { Dayjs } from "dayjs";
-import { useDispatch } from "react-redux";
-import { bookSlot } from "../redux/booking/bookingThunk";
-import { AppDispatch } from "../redux/store";
-import { showErrorToast, showSuccessToast } from "../utils/toast";
+import dayjs from "dayjs";
+import useSlotBooking from "../hooks/useSlotBooking";
+import { formatDateTodddMMMDYYYY } from "../utils/conversion";
 
-interface SlotBookingProps {
-  availableSlots: bookingSlots[];
-}
-
-const SlotBooking: React.FC<SlotBookingProps> = ({ availableSlots }) => {
-  const [selectedSlotId, setSelectedSlotId] = useState<string>("");
-
-  const selectedSlot = availableSlots.find(
-    (slot) => slot._id === selectedSlotId
-  );
-  const availableDates = availableSlots.map((slot) =>
-    dayjs(slot.date).format("YYYY-MM-DD")
-  );
-
-  const handleDateChange = (newDate: Dayjs) => {
-    if (!newDate) return;
-    const formattedDate = newDate.format("YYYY-MM-DD");
-    const matchingSlot = availableSlots.find(
-      (slot) => dayjs(slot.date).format("YYYY-MM-DD") === formattedDate
-    );
-    if (matchingSlot) {
-      setSelectedSlotId(matchingSlot._id);
-    }
-  };
-
-  const shouldDisableDate = (date: Dayjs) => {
-    const formattedDate = date.format("YYYY-MM-DD");
-    return !availableDates.includes(formattedDate);
-  };
-
-  const getFilteredTimeSlots = () => {
-    return availableSlots.filter(
-      (slot) =>
-        dayjs(slot.date).format("YYYY-MM-DD") ===
-        dayjs(selectedSlot?.date).format("YYYY-MM-DD")
-    );
-  }
-
-  const handleTimeChange = (newTime: string) => {
-    const matchingSlot = availableSlots.find(
-      (slot) =>
-        slot.time === newTime &&
-        dayjs(slot.date).format("YYYY-MM-DD") ===
-          dayjs(selectedSlot?.date).format("YYYY-MM-DD")
-    );
-    if (matchingSlot) {
-      setSelectedSlotId(matchingSlot._id);
-    }
-  };
-  const dispatch = useDispatch<AppDispatch>();
-  const handleBooking = async () => {
-    try {
-      const response = await dispatch(
-        bookSlot({ slotId: selectedSlotId })
-      ).unwrap();
-      console.log("response for booking slot",response)
-      showSuccessToast(`${response.message}`);
-    } catch (error) {
-      console.log(`API Error ${error}`);
-      showErrorToast(`${error}`);
-    }
-
-  };
-
+const SlotBooking: React.FC = () => {
+  const {
+    selectedSlotId,
+    selectedSlot,
+    handleDateChange,
+    shouldDisableDate,
+    getFilteredTimeSlots,
+    handleTimeChange,
+    handleBooking,
+  } = useSlotBooking()
+ 
   const renderCalendar = () => (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar
@@ -128,7 +72,7 @@ const SlotBooking: React.FC<SlotBookingProps> = ({ availableSlots }) => {
       </Typography>
       <Typography>
         <strong>Date : </strong>
-        {dayjs(selectedSlot?.date).format("ddd, MMM D, YYYY")}
+        {formatDateTodddMMMDYYYY(selectedSlot?.date as Date)}
         <strong> Time : </strong>
         {selectedSlot?.time ? selectedSlot?.time :"N/A"}
       </Typography>

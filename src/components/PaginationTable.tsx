@@ -14,7 +14,7 @@ const PaginationTable: React.FC<PaginationTableProps> = ({
   totalPages,
   disabled = false,
 }) => (
-  <Stack spacing={2} sx={{ mt: 2 }} direction="row" justifyContent="end">
+  <Stack spacing={2} sx={{ mt: 1 }} direction="row" justifyContent="end">
     <Pagination
       count={totalPages}
       page={page} 

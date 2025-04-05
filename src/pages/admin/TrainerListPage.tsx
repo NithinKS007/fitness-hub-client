@@ -13,20 +13,12 @@ import { IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TableFilter from "../../components/TableFilter";
 import PaginationTable from "../../components/PaginationTable";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 import Box from "@mui/material/Box";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import { TableColumn,Filter } from "../../types/tableTypes";
 
-
-interface TableColumn {
-  label: string;
-  field: string;
-}
-
-interface FilterOption {
-  value: string;
-}
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -40,7 +32,7 @@ const columns: TableColumn[] = [
   { label: "More", field: "details" },
 ];
 
-const filter: FilterOption[] = [
+const filter: Filter[] = [
   { value: "All" },
   { value: "Block" },
   { value: "Unblock" },
@@ -82,6 +74,7 @@ const TrainerListPage: React.FC = () => {
     handleClose: handleConfirmationModalClose,
   } = useModal();
 
+  
   useEffect(() => {
     dispatch(getTrainers(getQueryParams()));
   }, [dispatch,getQueryParams().page, getQueryParams().search, getQueryParams().filters]);
@@ -134,7 +127,7 @@ const TrainerListPage: React.FC = () => {
           return {
             ...trainer,
             name:`${trainer.fname} ${trainer.lname}`,
-            slno: index + 1 + (currentPage - 1) * 5,
+            slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: trainer.otpVerified || trainer.googleVerified,
             isApproved: trainer?.isApproved,
@@ -143,8 +136,14 @@ const TrainerListPage: React.FC = () => {
                 <IconButton
                   onClick={(e) => handleMenuClick(e, trainer._id as string)}
                   aria-label="More options"
+                  sx={{
+                    padding: "2px", 
+                    minWidth: "0",  
+                    width: "37px",  
+                    height: "37px",
+                  }}
                 >
-                  <MoreVertIcon />
+                  <MoreVertIcon sx={{ fontSize: "20px" }}/>
                 </IconButton>
                 <Paper>
                   <Menu
@@ -219,7 +218,6 @@ const TrainerListPage: React.FC = () => {
       )}
       <ConfirmationModalDialog
         open={confirmationModalOpen}
-        // title={selectedTrainer?.isBlocked ? "Unblock Trainer" : "Block Trainer"}
         content={
           selectedTrainer &&
           `Are you sure you want to ${

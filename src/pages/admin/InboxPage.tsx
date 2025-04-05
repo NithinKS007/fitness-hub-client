@@ -14,16 +14,12 @@ import ShimmerTableLoader from "../../components/ShimmerTable";
 import MailIcon from "@mui/icons-material/Mail";
 import { Box, Typography } from "@mui/material";
 import SearchBarTable from "../../components/SearchBarTable";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 import DateFilter from "../../components/DateAndTimeFilter";
 import PaginationTable from "../../components/PaginationTable";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
-
-interface TableColumn {
-  label: string;
-  field: string;
-}
+import { TableColumn } from "../../types/tableTypes";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -36,17 +32,19 @@ const columns: TableColumn[] = [
 ];
 
 const InboxPage: React.FC = () => {
-  const [selectedTrainer, setSelectedTrainer] = React.useState<Trainer | null>(null);
-  const [actionType, setActionType] = React.useState<"approved" | "rejected" | null>(null);
-
+  const [selectedTrainer, setSelectedTrainer] = React.useState<Trainer | null>(
+    null
+  );
+  const [actionType, setActionType] = React.useState<
+    "approved" | "rejected" | null
+  >(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { trainers, isLoading, error } = useSelector(
-    (state: RootState) => state.admin
-  );
-
-  const { totalPages, currentPage } = useSelector(
-    (state: RootState) => state.admin.pagination
-  );
+  const {
+    trainers,
+    isLoading,
+    error,
+    pagination: { totalPages, currentPage },
+  } = useSelector((state: RootState) => state.admin);
 
   const {
     handlePageChange,
@@ -74,18 +72,24 @@ const InboxPage: React.FC = () => {
     handleOpen: handleConfirmationModalOpen,
     handleClose: handleConfirmationModalClose,
   } = useModal();
-  
-  const handleTrainerAction = (trainer: Trainer, action: "approved" | "rejected") => {
+
+  const handleTrainerAction = (
+    trainer: Trainer,
+    action: "approved" | "rejected"
+  ) => {
     setSelectedTrainer(trainer);
     setActionType(action);
     handleConfirmationModalOpen();
   };
 
-const handleConfirmAction = async () => {
+  const handleConfirmAction = async () => {
     if (selectedTrainer && actionType) {
       try {
         const response = await dispatch(
-          updatedApprovalStatus({ _id: selectedTrainer._id, action: actionType })
+          updatedApprovalStatus({
+            _id: selectedTrainer._id,
+            action: actionType,
+          })
         ).unwrap();
         showSuccessToast(`${response.message}`);
         handleConfirmationModalClose();
@@ -101,40 +105,47 @@ const handleConfirmAction = async () => {
           const dateObj = new Date(trainer.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
-
-          console.log("this is the trainers id", trainer._id);
           return {
             ...trainer,
             name: `${trainer.fname} ${trainer.lname}`,
-            slno: index + 1 + (currentPage - 1) * 5,
+            slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: trainer.otpVerified || trainer.googleVerified,
             actions: (
               <>
-                <Button
-                  size="small"
-                  onClick={() => handleTrainerAction(trainer, "approved")}
-                  sx={{
-                    fontSize: "14px",
-                    margin: "4px",
-                  }}
-                  variant="outlined"
-                >
-                  Approve
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => handleTrainerAction(trainer, "rejected")}
-                  sx={{
-                    fontSize: "14px",
-                    margin: "4px",
-                    color: "red",
-                    borderColor: "red",
-                  }}
-                  variant="outlined"
-                >
-                  Reject
-                </Button>
+                <Box sx={{ display: "flex", gap: "8px" }}>
+                  <Button
+                    size="small"
+                    onClick={() => handleTrainerAction(trainer, "approved")}
+                    sx={{
+                      fontSize: "14px",
+                      backgroundColor: "green",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "darkgreen",
+                      },
+                    }}
+                    variant="contained"
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => handleTrainerAction(trainer, "rejected")}
+                    sx={{
+                      fontSize: "14px",
+                      color: "white",
+                      borderColor: "red",
+                      backgroundColor: "red",
+                      "&:hover": {
+                        backgroundColor: "darkred",
+                      },
+                    }}
+                    variant="contained"
+                  >
+                    Reject
+                  </Button>
+                </Box>
               </>
             ),
           };
@@ -142,38 +153,32 @@ const handleConfirmAction = async () => {
       : [];
   return (
     <>
-      
-        <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
-          <SearchBarTable
-            searchTerm={searchTerm}
-            handleSearchChange={handleSearchChange}
+      <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
+        <SearchBarTable
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+        />
+        <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
+          <DateFilter
+            fromDate={fromDate}
+            toDate={toDate}
+            onFromDateChange={handleFromDateChange}
+            onToDateChange={handleToDateChange}
+            onReset={handleResetDates}
           />
-          <Box
-            sx={{ display: "flex", justifyContent: "space-between" }}
-            gap={1}
-          >
-            <DateFilter
-              fromDate={fromDate}
-              toDate={toDate}
-              onFromDateChange={handleFromDateChange}
-              onToDateChange={handleToDateChange}
-              onReset={handleResetDates}
-            />
-          </Box>
         </Box>
-     
+      </Box>
 
       {isLoading ? (
         <ShimmerTableLoader columns={columns} />
       ) : fetchedTrainersData.length > 0 ? (
         <>
           <ReuseTable columns={columns} data={fetchedTrainersData} />
-          {fetchedTrainersData.length > 5 ?  <PaginationTable
+          <PaginationTable
             handlePageChange={handlePageChange}
             page={currentPage}
             totalPages={totalPages}
-          /> :""}
-         
+          />
         </>
       ) : (
         <Box
@@ -197,7 +202,6 @@ const handleConfirmAction = async () => {
       )}
       <ConfirmationModalDialog
         open={confirmationModalOpen}
-        // title={actionType === "approved" ? "Approve Trainer" : "Reject Application"}
         content={
           selectedTrainer &&
           `Are you sure you want to ${actionType} ${selectedTrainer.fname} ${selectedTrainer.lname}'s application?`

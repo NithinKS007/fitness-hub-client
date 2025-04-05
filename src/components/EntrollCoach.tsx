@@ -30,8 +30,9 @@ flex items-center justify-center px-6"
             Become a <span className="text-gray-800">Transformative Coach</span>
           </h1>
           <p className="text-gray-600 text-lg md:text-xl">
-            Join our elite team of fitness experts, inspire others to reach their goals, 
-            and grow your coaching career with a supportive community and cutting-edge tools.
+            Join our elite team of fitness experts, inspire others to reach
+            their goals, and grow your coaching career with a supportive
+            community and cutting-edge tools.
           </p>
           <button
             className="bg-black

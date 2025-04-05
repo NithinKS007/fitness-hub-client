@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { Trainer, User } from "../auth/authTypes";
 
 export interface AdminState {

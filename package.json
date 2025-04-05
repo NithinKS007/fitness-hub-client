@@ -36,6 +36,7 @@
     "dotenv": "^16.4.7",
     "emoji-picker-react": "^4.12.2",
     "formik": "^2.4.6",
+    "framer-motion": "^12.6.3",
     "lucide-react": "^0.475.0",
     "mui-one-time-password-input": "^3.0.2",
     "pdf": "^0.1.0",

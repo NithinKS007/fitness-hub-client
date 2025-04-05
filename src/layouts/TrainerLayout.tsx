@@ -55,7 +55,7 @@ const TrainerLayout: React.FC = () => {
         <div className="w-18">
           <SideNavBar navItems={trainerNavItems} />
         </div>
-        <div className="flex-1 pl-5 pr-5 pt-20 overflow-auto">
+        <div className="flex-1 pl-5 pr-5 pt-15 overflow-auto">
           <Outlet />
         </div>
       </div>

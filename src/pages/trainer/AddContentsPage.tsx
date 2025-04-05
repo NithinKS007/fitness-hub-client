@@ -1,5 +1,4 @@
 import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
-import SearchBarTable from "../../components/SearchBarTable";
 import PlayList from "../../components/PlayListModal";
 import useContent from "../../hooks/useTrainerContent";
 import Tabs from "../../components/Tabs";
@@ -14,17 +13,12 @@ import {
 } from "../../redux/content/contentThunk";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import VideoUpload from "../../components/VideoUploadModal";
+import { TableColumn, Filter } from "../../types/tableTypes";
 import TableFilter from "../../components/TableFilter";
+import SearchBarTable from "../../components/SearchBarTable";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
+import DateAndTimeFilter from "../../components/DateAndTimeFilter";
 
-
-interface TableColumn {
-  label: string;
-  field: string;
-}
-
-interface FilterOption {
-  value: string;
-}
 const videoColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Thumbnail", field: "thumbnail" },
@@ -34,7 +28,7 @@ const videoColumns: TableColumn[] = [
   { label: "Date Of Publishing", field: "dateOfPublishing" },
   { label: "Actions", field: "actions" },
 ];
-const videofilter: FilterOption[] = [
+const videofilter: Filter[] = [
   { value: "All" },
   { value: "Active" },
   { value: "Inactive" },
@@ -48,7 +42,7 @@ const playListColumns: TableColumn[] = [
   { label: "Actions", field: "actions" },
 ];
 
-const playListfilter: FilterOption[] = [
+const playListfilter: Filter[] = [
   { value: "All" },
   { value: "Active" },
   { value: "Inactive" },
@@ -153,6 +147,20 @@ const AddContentsPage = () => {
     handleVideoCloseMenu();
   };
 
+  const {
+    handlePageChange,
+    searchTerm,
+    handleSearchChange,
+    selectedFilter,
+    handleFilterChange,
+    getQueryParams,
+    fromDate,
+    toDate,
+    handleFromDateChange,
+    handleToDateChange,
+    handleResetDates,
+  } = useSearchFilter();
+
   const fetchedVideos =
     videos.length > 0
       ? videos.map((v, index) => {
@@ -172,16 +180,21 @@ const AddContentsPage = () => {
               <img
                 src={v.thumbnail}
                 alt={v.title}
-                style={{ width: "100px", height: "auto", borderRadius: "4px" }}
+                style={{ width: "54px", height: "auto", borderRadius: "4px" }}
               />
             ),
             actions: (
               <>
                 <IconButton
                   onClick={(event) => handleVideoMenuClick(event, v._id)}
-                  sx={{ color: "gray" }}
+                  sx={{
+                    padding: "2px", 
+                    minWidth: "0", 
+                    width: "25px", 
+                    height: "25px", 
+                  }}
                 >
-                  <MoreVertIcon />
+                  <MoreVertIcon sx={{ fontSize: "20px" }} />
                 </IconButton>
                 <Menu
                   anchorEl={anchorVideoEl}
@@ -226,9 +239,14 @@ const AddContentsPage = () => {
               <>
                 <IconButton
                   onClick={(event) => handlePlayListMenuClick(event, list._id)}
-                  sx={{ color: "gray" }}
+                  sx={{
+                    padding: "16px", 
+                    minWidth: "0", 
+                    width: "25px",
+                    height: "25px",
+                  }}
                 >
-                  <MoreVertIcon />
+                  <MoreVertIcon sx={{ fontSize: "20px" }} />
                 </IconButton>
                 <Menu
                   anchorEl={anchorPlayListEl}
@@ -260,7 +278,6 @@ const AddContentsPage = () => {
         })
       : [];
 
-
   const fetchedPlayListsIdAndNames =
     playLists?.length > 0
       ? playLists.map((list) => {
@@ -277,27 +294,55 @@ const AddContentsPage = () => {
       case 0:
         return (
           <>
-            <Button
-              variant="contained"
-              onClick={modalVideoHandleOpen}
+            <Box
               sx={{
-                backgroundColor: "#1d4ed8",
-                color: "white",
-                textTransform: "none",
-                borderRadius: 2,
                 display: "flex",
-                ml: "auto",
-                marginBottom: 2,
+                justifyContent: "space-between",
+                marginTop: 1,
+                alignItems: "center",
+                width: "100%",
               }}
             >
-              Upload Video
-            </Button>
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
-            >
-            {/* <SearchBarTable />
-              <TableFilter filter={playListfilter} /> */}
+              <SearchBarTable
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  gap: 2,
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <TableFilter
+                  selectedFilter={selectedFilter}
+                  handleFilterChange={handleFilterChange}
+                  filter={playListfilter}
+                />
+                <DateAndTimeFilter
+                  fromDate={fromDate}
+                  toDate={toDate}
+                  onToDateChange={handleToDateChange}
+                  onFromDateChange={handleFromDateChange}
+                />
+                <Button
+                  variant="contained"
+                  onClick={modalVideoHandleOpen}
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    textTransform: "none",
+                    borderRadius: 2,
+                      minWidth:"150px",
+                  minHeight:"41px"
+                  }}
+                >
+                  Create Video
+                </Button>
               </Box>
+            </Box>
             {isLoading ? (
               <ShimmerTableLoader columns={videoColumns} />
             ) : error ? (
@@ -305,6 +350,7 @@ const AddContentsPage = () => {
             ) : (
               <ReuseTable columns={videoColumns} data={fetchedVideos} />
             )}
+
             <VideoUpload
               formik={videoFormik}
               open={modalVideoOpen}
@@ -316,30 +362,64 @@ const AddContentsPage = () => {
             />
           </>
         );
+
       case 1:
         return (
           <>
-            <Button
-              variant="contained"
-              onClick={modalPlayListHandleOpen}
+            <Box
               sx={{
-                backgroundColor: "#1d4ed8",
-                color: "white",
-                textTransform: "none",
-                borderRadius: 2,
                 display: "flex",
-                ml: "auto",
-                marginBottom: 2,
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                marginTop: 1,
               }}
             >
-              Create Playlist
-            </Button>
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
-            >
-              {/* <SearchBarTable />
-              <TableFilter filter={videofilter} /> */}
+              <SearchBarTable
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  gap: 2,
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+
+              <TableFilter
+                selectedFilter={selectedFilter}
+                handleFilterChange={handleFilterChange}
+                filter={playListfilter}
+              />
+              <DateAndTimeFilter
+                fromDate={fromDate}
+                toDate={toDate}
+                onFromDateChange={handleFromDateChange}
+                onToDateChange={handleToDateChange}
+                onReset={handleResetDates}
+              />
+              <Button
+                variant="contained"
+                onClick={modalPlayListHandleOpen}
+                sx={{
+                  backgroundColor: "black",
+                  color: "white",
+                  textTransform: "none",
+                  borderRadius: 2,
+                  minWidth:"150px",
+                  minHeight:"41px"
+                }}
+              >
+                Create Playlist
+              </Button>
+              </Box>
             </Box>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between" }}
+            />
             {isLoading ? (
               <ShimmerTableLoader columns={playListColumns} />
             ) : error ? (
@@ -367,7 +447,7 @@ const AddContentsPage = () => {
         value={selectedTab}
         handleChange={handleTabChange}
       />
-      <Box sx={{ mt: 2 }}>{renderContent()}</Box>
+      {renderContent()}
     </>
   );
 };

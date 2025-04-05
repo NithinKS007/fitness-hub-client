@@ -6,11 +6,17 @@ import ReuseTable from "../../components/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import { TableColumn } from "../../types/tableTypes";
 
-interface TableColumn {
-  label: string;
-  field: string;
-}
+const columns: TableColumn[] = [
+  { label: "Sl No", field: "slno" },
+  { label: "Subscription Period", field: "subPeriod" },
+  { label: "Price", field: "price" },
+  { label: "Duration in Weeks", field: "durationInWeeks" },
+  { label: "Sessions Per Week", field: "sessionsPerWeek" },
+  { label: "Total Sessions", field: "totalSessions" },
+  { label: "Actions", field: "actions" },
+];
 
 
 const SubscriptionSettingPage: React.FC = () => {
@@ -46,19 +52,6 @@ const {
     handleOpen: handleConfirmationBlockModalOpen,
     handleClose: handleConfirmationBlockModalClose,
   } = useModal()
-
-
-  const columns: TableColumn[] = [
-    { label: "Sl No", field: "slno" },
-    { label: "Subscription Period", field: "subPeriod" },
-    { label: "Price", field: "price" },
-    { label: "Duration in Weeks", field: "durationInWeeks" },
-    { label: "Sessions Per Week", field: "sessionsPerWeek" },
-    { label: "Total Sessions", field: "totalSessions" },
-    { label: "Actions", field: "actions" },
-  ];
-
-
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -177,7 +170,7 @@ const {
           variant="contained"
           onClick={handleOpen}
           sx={{
-            backgroundColor: "#1d4ed8",
+            backgroundColor: "black",
             color: "white",
             textTransform: "none",
             borderRadius: 2,
@@ -210,8 +203,6 @@ const {
         confirmColor="success"
         cancelColor="error"
       />
-
-      {/* Block/Unblock Confirmation Modal */}
       <ConfirmationModalDialog
         open={confirmationBlockblockModalOpen}
         content={

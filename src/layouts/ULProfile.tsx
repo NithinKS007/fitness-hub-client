@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ChatIcon from "@mui/icons-material/Chat";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import SideNavBar from "../components/DashBoardSideNavBar";
@@ -12,7 +11,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import ZegoCloudVideoCall from "../components/VideoCallZego";
 import ConfirmationModalDialog from "../components/ConfirmationModalDialog";
-
+import { FiTrendingUp } from "react-icons/fi";
+import { AccountCircle } from "@mui/icons-material";
 
 const ULProfile: React.FC = () => {
   const user = useSelector((state: RootState) => state?.auth?.user);
@@ -43,17 +43,18 @@ const ULProfile: React.FC = () => {
       path: "/user/chats",
     },
     {
-      icon: <AccountCircleIcon />,
+      icon: <AccountCircle />,
       text: "PROFILE",
       path: "/user/profile",
     },
+    {
+      icon:<FiTrendingUp />, 
+      text: "WORKOUTS",
+      path: "/user/workouts", 
+    }
   ];
 
   useEffect(() => {
-    if (user?._id) {
-      socket.emit('join', user._id);
-    }
-
     socket.on("incomingCall", (data: any) => {
       const { callerId, roomId, appointmentId ,trainerName,appointmentTime,appointmentDate,} = data;
       if (callerId && roomId && appointmentId) {
@@ -111,7 +112,7 @@ const ULProfile: React.FC = () => {
         <div className="w-18">
           <SideNavBar navItems={userNavItems} />
         </div>
-        <div className="flex-1 p-4 pt-20 overflow-auto">
+        <div className="flex-1 pl-2 pr-2 pt-15 overflow-auto">
           <Outlet />
           {callActive && roomId && (
             <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 1000 }}>

@@ -159,11 +159,14 @@ const useSubscription = () => {
     formik.resetForm();
     setIsEditMode(false);
     setEditId(null);
-  };
+  }
 
   const subPeriodsForForm = isEditMode && currentSubPeriod
     ? [...newSubs.filter(sub => sub !== currentSubPeriod)] 
     : newSubs;
+
+
+    
 
   return {
     UpdateSubsBlockstatus,

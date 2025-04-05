@@ -8,17 +8,10 @@ import SearchBarTable from "../../components/SearchBarTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import { Box } from "@mui/material";
 import TableFilter from "../../components/TableFilter";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
+import { TableColumn,Filter } from "../../types/tableTypes";
 
-interface TableColumn {
-  label: string;
-  field: string;
-}
-
-interface FilterOption {
-  value: string;
-}
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Profile", field: "profilePic" },
@@ -27,14 +20,14 @@ const columns: TableColumn[] = [
   { label: "Amount", field: "price" },
   { label: "Start Date", field: "startDate" },
   { label: "Expiry Date", field: "endDate" },
-  { label: "Subscription status", field: "isActive" },
-  { label: "Subscription Period", field: "subPeriod" },
-  { label: "Duration in Weeks", field: "durationInWeeks" },
-  { label: "Sessions Per Week", field: "sessionsPerWeek" },
+  { label: "status", field: "isActive" },
+  { label: "Period", field: "subPeriod" },
+  { label: "Duration (Weeks)", field: "durationInWeeks" },
+  { label: "Sessions/Week", field: "sessionsPerWeek" },
   { label: "Total Sessions", field: "totalSessions" },
 ];
 
-const filter: FilterOption[] = [
+const filter: Filter[] = [
   { value: "Active" },
   { value: "Canceled" },
   { value: "Incomplete" },
@@ -52,16 +45,12 @@ const filter: FilterOption[] = [
 const SubscribersListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const userSubscribedPlans = useSelector(
-    (state: RootState) => state.subscription.subscribersOfTrainer
-  );
-
-  const { isLoading, error } = useSelector(
-    (state: RootState) => state.subscription
-  );
-  const { totalPages, currentPage } = useSelector(
-    (state: RootState) => state.subscription.pagination
-  );
+  const {
+    subscribersOfTrainer: userSubscribedPlans,
+    isLoading,
+    error,
+    pagination: { totalPages, currentPage },
+  } = useSelector((state: RootState) => state.subscription);
 
   const {
     handlePageChange,
@@ -93,7 +82,7 @@ const SubscribersListPage: React.FC = () => {
             sub.isActive.charAt(0).toUpperCase() + sub.isActive.slice(1);
           return {
             ...sub,
-            slno: index + 1,
+            slno: index + 1 + (currentPage - 1) * 9,
             image: sub.subscribedUserData.profilePic,
             name: name,
             email: sub.subscribedUserData.email,
@@ -108,7 +97,7 @@ const SubscribersListPage: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between",mt:5}}>
         <SearchBarTable
           searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}

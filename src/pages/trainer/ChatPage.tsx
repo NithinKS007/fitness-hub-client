@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { socket } from "../../config/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { getTrainerSubscribedUsers } from "../../redux/subscription/subscriptionThunk";
-import { fetchChatMessages } from "../../redux/chat/chatThunk";
+import { fetchChatMessages, getTrainerChatList } from "../../redux/chat/chatThunk";
 import { addMessage } from "../../redux/chat/chatSlice";
 import {
   Box,
@@ -20,11 +19,14 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import Picker from "emoji-picker-react";
+
+
 const ChatPage = () => {
   const [input, setInput] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
@@ -42,30 +44,26 @@ const ChatPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  const fetchSubscribersOfTrainer = async () => {
-    dispatch(getTrainerSubscribedUsers());
-  };
-  const onEmojiClick = (emojiObject) => {
+
+  const onEmojiClick = (emojiObject:any) => {
     setInput((prev) => prev + emojiObject.emoji);
   };
 
   useEffect(() => {
-    fetchSubscribersOfTrainer();
+    dispatch(getTrainerChatList());
   }, [dispatch]);
 
-  const { subscribersOfTrainer, isLoading: subLoading } = useSelector(
-    (state: RootState) => state.subscription
+  const { trainerChatList } = useSelector(
+    (state: RootState) => state.chat
   );
-
-  console.log("subs of trainer", subscribersOfTrainer);
-  const fetchedSubscribers = subscribersOfTrainer.map((user) => ({
+  const fetchedSubscribers = trainerChatList.map((user) => ({
     _id: user._id,
     trainerId: user.trainerId,
     userId: user.userId,
     name: `${user.subscribedUserData.fname} ${user.subscribedUserData.lname}`,
     profilePic: user.subscribedUserData.profilePic,
     planStatus: `${user.isActive}`,
-  }));
+  }))
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +75,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (selectedUserId && trainer?._id) {
-      socket.emit("join", trainer?._id);
+
       dispatch(
         fetchChatMessages({
           senderId: trainer?._id,
@@ -100,6 +98,7 @@ const ChatPage = () => {
     }
   }, [dispatch, trainer?._id, selectedUserId]);
 
+  
   const handleSendMessage = () => {
     if (input && selectedUserId && trainer?._id) {
       const message = {
@@ -144,7 +143,7 @@ const ChatPage = () => {
         flexDirection: "column",
       }}
     >
-      {chatLoading || subLoading ? (
+      {chatLoading ? (
         <Box
           sx={{
             display: "flex",
@@ -306,7 +305,7 @@ const ChatPage = () => {
                           bgcolor:
                             message.senderId.toString() ===
                             trainer?._id.toString()
-                              ? "#1d4ed8"
+                              ? "black"
                               : "grey.200",
                           color:
                             message.senderId.toString() ===
@@ -406,7 +405,7 @@ const ChatPage = () => {
                 onClick={handleSendMessage}
                 sx={{
                   borderRadius: 1,
-                  backgroundColor: "#1d4ed8",
+                  backgroundColor: "black",
                   color: "white",
                 }}
                 disabled={!isPlanActive}

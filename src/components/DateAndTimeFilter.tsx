@@ -84,7 +84,14 @@ const DateFilter: React.FC<DateFilterProps> = ({
         <Button
           variant="outlined"
           size="small"
-          sx={{ minWidth: "auto", padding: "7px" }}
+          sx={{
+            minWidth: "auto",
+            padding: "7px",
+            bgcolor: "white",
+            color: "gray",
+            border: "1px solid",
+            borderColor: "gray.50",
+          }}
           onClick={onReset}
         >
           <RefreshIcon />

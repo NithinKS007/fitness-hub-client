@@ -20,7 +20,6 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 interface ShowSubscriptionPlansPageProps {
   trainerSubscriptions: Subscription[];
   isPurchaseableUser: boolean;
-  isLoggedIn: boolean;
   selectedPlan: Subscription | null;
   isLoading: boolean;
   error: string | null;
@@ -31,7 +30,6 @@ interface ShowSubscriptionPlansPageProps {
 const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
   trainerSubscriptions,
   isPurchaseableUser,
-  isLoggedIn,
   selectedPlan,
   isLoading,
   error,
@@ -53,22 +51,6 @@ const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
       >
         Select a plan that fits your fitness goals and start your journey today
       </Typography>
-
-      {!isLoggedIn && (
-        <Box
-          sx={{
-            mb: 4,
-            textAlign: "center",
-            p: 2,
-            bgcolor: "#ffecec",
-            borderRadius: 1,
-          }}
-        >
-          <Typography variant="body1" color="error">
-            Please log in to purchase a plan
-          </Typography>
-        </Box>
-      )}
 
       <Box
         sx={{

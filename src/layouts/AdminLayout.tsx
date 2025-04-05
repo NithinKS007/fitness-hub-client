@@ -1,4 +1,4 @@
-import React, {} from "react";
+import React from "react";
 import { Outlet} from "react-router-dom";
 import { Dashboard, People, Mail } from "@mui/icons-material";
 import { SiTrainerroad } from "react-icons/si";

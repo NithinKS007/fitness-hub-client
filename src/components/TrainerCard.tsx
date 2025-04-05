@@ -114,8 +114,8 @@ const TrainerGrid: React.FC<TrainerGridProps> = ({
         flexWrap: "wrap",
         gap: 2,
         cursor: "pointer",
-        justifyContent: "flex-start", // Aligns items at the start, making them take full width
-        width: "100%", // Ensures the container takes up full width
+        justifyContent: "flex-start",
+        width: "100%",
       }}
     >
       {trainersList && trainersList.length > 0 ? (
@@ -125,7 +125,7 @@ const TrainerGrid: React.FC<TrainerGridProps> = ({
             sx={{
               width: { xs: "100%", sm: "48%", md: "31%", lg: "24%" },
               display: "flex",
-              justifyContent: "center", // Center each card within its container
+              justifyContent: "center",
             }}
           >
             <TrainerCard
@@ -135,7 +135,7 @@ const TrainerGrid: React.FC<TrainerGridProps> = ({
           </Box>
         ))
       ) : (
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%" ,height:"100vh"}}>
           <Typography
             variant="h6"
             color="textSecondary"

@@ -3,12 +3,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 
 interface ConfirmationModalDialogProps {
   open: boolean;
-  title?: string;
+
   content: string 
   onConfirm: () => void;
   onCancel: () => void;
@@ -34,7 +33,6 @@ interface ConfirmationModalDialogProps {
 
 const ConfirmationModalDialog: React.FC<ConfirmationModalDialogProps> = ({
   open,
-  title,
   content,
   onConfirm,
   onCancel,
@@ -50,7 +48,6 @@ const ConfirmationModalDialog: React.FC<ConfirmationModalDialogProps> = ({
       aria-labelledby="confirmation-dialog-title"
       aria-describedby="confirmation-dialog-description"
     >
-      <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="confirmation-dialog-description">
           {content}

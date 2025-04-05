@@ -6,10 +6,8 @@ import Footer from "../components/Footer";
 import { Outlet, useLocation } from "react-router-dom";
 
 const ULwithNavFooter: React.FC = () => {
-  const user = useSelector((state: RootState) => state?.auth?.user);
-  const trainer = useSelector((state: RootState) => state?.auth?.trainer);
-  const admin = useSelector((state: RootState) => state?.auth?.admin);
-
+  const { user, trainer, admin } = useSelector((state: RootState) => state?.auth);
+  const pagination = useSelector((state:RootState)=>state.user.pagination)
   const location = useLocation();
 
   const getAuthPerson = () => {
@@ -27,7 +25,7 @@ const ULwithNavFooter: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [location]);
+  }, [location,pagination]);
 
   return (
     <div className="bg-white min-h-screen flex flex-col w-full">

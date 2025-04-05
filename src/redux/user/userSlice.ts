@@ -7,7 +7,8 @@ const initialState: userState = {
   error: null,
   trainersList: [],
   trainerDetailsWithSubscription:null,
-  trainerSuggestions:[]
+  trainerSuggestions:[],
+  pagination:{ totalPages: 0, currentPage: 1}
 }
 
 const user = createSlice({
@@ -25,7 +26,9 @@ const user = createSlice({
       .addCase(getApprovedTrainers.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.trainersList = action.payload.data
+        state.trainersList = action.payload.data.trainersList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
       })
       .addCase(getApprovedTrainers.rejected, (state, action) => {
         state.isLoading = false;

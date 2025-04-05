@@ -20,22 +20,18 @@ import VideoChatIcon from "@mui/icons-material/VideoChat";
 import useAppointments from "../../hooks/useAppointments";
 import { socket } from "../../config/socket";
 import ZegoCloudVideoCall from "../../components/VideoCallZego";
-import { formatTime } from "../../utils/conversion";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import { formatTime, getFormattedTimeRange } from "../../utils/conversion";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 import SearchBarTable from "../../components/SearchBarTable";
 import TableFilter from "../../components/TableFilter";
 import PaginationTable from "../../components/PaginationTable";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
-
-interface TableColumn {
-  label: string;
-  field: string;
-}
+import { TableColumn } from "../../types/tableTypes";
 
 const videoCallLogColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
-  { label: "Profile Picture", field: "profilePic" },
+  { label: "Profile", field: "profilePic" },
   { label: "Name", field: "userName" },
   { label: "Email", field: "userEmail" },
   { label: "Appointment Date", field: "appointmentDate" },
@@ -58,7 +54,7 @@ const availableSlotColumns: TableColumn[] = [
 
 const bookingRequestsColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
-  { label: "Profile Picture", field: "profilePic" },
+  { label: "Profile", field: "profilePic" },
   { label: "Name", field: "name" },
   { label: "Email", field: "email" },
   { label: "Phone", field: "phone" },
@@ -66,13 +62,13 @@ const bookingRequestsColumns: TableColumn[] = [
   { label: "Booking Date", field: "appointmentCreatedAt" },
   { label: "Appointment Date", field: "appointmentDate" },
   { label: "Appointment Time", field: "appointmentTime" },
-  { label: "Current Appointment Status", field: "appointmentStatus" },
+  { label: "Current Status", field: "appointmentStatus" },
   { label: "Manage Actions", field: "actions" },
 ];
 
 const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Sl No", field: "slno" },
-  { label: "Profile Picture", field: "profilePic" },
+  { label: "Profile", field: "profilePic" },
   { label: "Name", field: "name" },
   { label: "Email", field: "email" },
   { label: "Phone", field: "phone" },
@@ -80,8 +76,8 @@ const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Booking Date", field: "appointmentCreatedAt" },
   { label: "Appointment Date", field: "appointmentDate" },
   { label: "Appointment Time", field: "appointmentTime" },
-  { label: "Current Appointment Status", field: "appointmentStatus" },
-  { label: "Manage Actions", field: "actions" },
+  { label: "Current Status", field: "appointmentStatus" },
+  { label: "More", field: "actions" },
 ];
 
 const filters = [
@@ -135,14 +131,22 @@ const filters = [
   { value: "11:30 PM" },
 ];
 
+const tabItems = [
+  { label: "Available Slots" },
+  { label: "Booking Requests" },
+  { label: "Booking Schedules" },
+  { label: "Appointment Call Logs" },
+];
+
 const SessionSchedulesPage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [callActive, setCallActive] = useState(false);
   const [roomId, setRoomId] = useState<string | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedBookingRequest, setSelectedBookingRequest] =
     useState<any>(null);
-  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const trainer = useSelector((state: RootState) => state.auth.trainer);
 
   const {
     modalHandleOpen,
@@ -168,7 +172,7 @@ const SessionSchedulesPage: React.FC = () => {
     handleAppointmentApproveOrReject,
   } = useAppointments();
 
-  const { 
+  const {
     open: deleteModalOpen,
     handleOpen: handleDeleteModalOpen,
     handleClose: handleDeleteModalClose,
@@ -205,15 +209,6 @@ const SessionSchedulesPage: React.FC = () => {
     handleToDateChange,
     handleResetDates,
   } = useSearchFilter();
-
-  const trainer = useSelector((state: RootState) => state.auth.trainer);
-
-  const tabItems = [
-    { label: "Available Slots" },
-    { label: "Booking Requests" },
-    { label: "Booking Schedules" },
-    { label: "Appointment Call Logs" },
-  ];
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -287,11 +282,6 @@ const SessionSchedulesPage: React.FC = () => {
     (state: RootState) => state.bookingSlot.pagination
   );
 
-  console.log(
-    "appointment call logs for trainer",
-    appointmentVideoCallLogsTrainer
-  );
-
   const handleDeleteSlot = (slot: any) => {
     setSelectedSlot(slot);
     handleDeleteModalOpen();
@@ -348,6 +338,20 @@ const SessionSchedulesPage: React.FC = () => {
       handleAppointmentSchedulesCloseMenu();
     }
   };
+
+const [anchorBookingRequestEl, setAnchorBookingRequestEl] = useState<null | HTMLElement>(null);
+const [selectedBookingRequestId, setSelectedBookingRequestId] = useState<string | null>(null);
+
+const handleBookingRequestMenuClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
+  setAnchorBookingRequestEl(event.currentTarget);
+  setSelectedBookingRequestId(id);
+};
+
+const handleBookingRequestCloseMenu = () => {
+  setAnchorBookingRequestEl(null);
+  setSelectedBookingRequestId(null);
+};
+
   const fetchedscheduledAppointments =
     scheduledAppointmentsTrainer?.length > 0
       ? scheduledAppointmentsTrainer?.map((appointmentData, index: number) => {
@@ -371,7 +375,7 @@ const SessionSchedulesPage: React.FC = () => {
 
           return {
             ...appointmentData,
-            slno: index + 1,
+            slno:index + 1 + (currentPage - 1) * 9,
             profilePic: appointmentData.userData.profilePic,
             name: `${appointmentData.userData.fname} ${appointmentData.userData.lname}`,
             email: appointmentData.userData.email,
@@ -415,11 +419,12 @@ const SessionSchedulesPage: React.FC = () => {
                     }
                     aria-label="More options"
                     sx={{
-                      padding: 0,
-                      paddingTop: 0,
+                      minWidth: "0",
+                      width: "25px",
+                      height: "25px", 
                     }}
                   >
-                    <MoreVertIcon />
+                    <MoreVertIcon sx={{ fontSize: "20px" }} />
                   </IconButton>
                 </Box>
 
@@ -457,7 +462,7 @@ const SessionSchedulesPage: React.FC = () => {
     appointmentVideoCallLogsTrainer.length > 0
       ? appointmentVideoCallLogsTrainer.map((log, index) => ({
           ...log,
-          slno: index + 1,
+          slno:index + 1 + (currentPage - 1) * 9,
           _id: log._id,
           appointmentDate: new Date(
             log.appointmentData.appointmentDate
@@ -467,18 +472,8 @@ const SessionSchedulesPage: React.FC = () => {
             log.appointmentData.status.charAt(0).toUpperCase() +
             log.appointmentData.status.slice(1).toLowerCase(),
           callDuration: formatTime(log.callDuration),
-          callStartTime: new Date(log.callStartTime).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          }),
-          callEndTime: log.callEndTime
-            ? new Date(log.callEndTime).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              })
-            : "",
+          callStartTime: getFormattedTimeRange(log.callStartTime),
+          callEndTime: getFormattedTimeRange(log.callEndTime),
           callStatus:
             log.callStatus.charAt(0).toUpperCase() +
             log.callStatus.slice(1).toLowerCase(),
@@ -500,7 +495,7 @@ const SessionSchedulesPage: React.FC = () => {
 
           return {
             ...slot,
-            slno: index + 1,
+            slno:index + 1 + (currentPage - 1) * 9,
             time: slot?.time,
             status: slot.status.charAt(0).toUpperCase() + slot.status.slice(1),
             date: formattedSlotDate,
@@ -511,9 +506,13 @@ const SessionSchedulesPage: React.FC = () => {
                   onClick={(event) =>
                     handleAvailableSlotMenuClick(event, slot._id)
                   }
-                  sx={{ color: "gray" }}
+                  sx={{
+                    minWidth: "0", 
+                    width: "25px", 
+                    height: "25px", 
+                  }}
                 >
-                  <MoreVertIcon />
+                  <MoreVertIcon sx={{ fontSize: "20px" }} />
                 </IconButton>
                 <Menu
                   anchorEl={anchorAvailableSlotEl}
@@ -562,7 +561,7 @@ const SessionSchedulesPage: React.FC = () => {
 
           return {
             ...req,
-            slno: index + 1,
+            slno: index + 1 + (currentPage - 1) * 9,
             profilePic: req.userData.profilePic,
             name: `${req.userData.fname} ${req.userData.lname}`,
             email: req.userData.email,
@@ -575,46 +574,39 @@ const SessionSchedulesPage: React.FC = () => {
             appointmentCreatedAt: `${formattedReqDate} ${formattedReqTime} `,
             actions: (
               <>
-                <Box
+                <IconButton
+                  onClick={(event) => handleBookingRequestMenuClick(event, req._id)}
                   sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    gap: "8px",
+                    minWidth: "0",
+                    width: "20px",
+                    height: "20px",
                   }}
                 >
-                  <Button
-                    size="small"
-                    onClick={() => handleApproveBooking(req)}
-                    sx={{
-                      fontSize: "14px",
-                      backgroundColor: "green",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "darkgreen",
-                      },
-                    }}
-                    variant="contained"
-                  >
+                  <MoreVertIcon sx={{ fontSize: "20px" }} />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorBookingRequestEl}
+                  open={
+                    Boolean(anchorBookingRequestEl) &&
+                    selectedBookingRequestId === req._id
+                  }
+                  onClose={handleBookingRequestCloseMenu}
+                  sx={{
+                    "& .MuiPaper-root": {
+                      boxShadow: "none",
+                      border: "1px solid",
+                      borderColor: "grey.400",
+                      borderRadius: 2,
+                    },
+                  }}
+                >
+                  <MenuItem onClick={() => handleApproveBooking(req)}>
                     Approve
-                  </Button>
-
-                  <Button
-                    size="small"
-                    onClick={() => handleRejectBooking(req)}
-                    sx={{
-                      fontSize: "14px",
-                      color: "white",
-                      borderColor: "red",
-                      backgroundColor: "red",
-                      "&:hover": {
-                        backgroundColor: "darkred",
-                      },
-                    }}
-                    variant="contained"
-                  >
+                  </MenuItem>
+                  <MenuItem onClick={() => handleRejectBooking(req)}>
                     Reject
-                  </Button>
-                </Box>
+                  </MenuItem>
+                </Menu>
               </>
             ),
           };
@@ -632,14 +624,14 @@ const SessionSchedulesPage: React.FC = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
-                marginTop: 2,
+                marginTop: 1,
               }}
             >
               <Button
                 variant="contained"
                 onClick={modalHandleOpen}
                 sx={{
-                  backgroundColor: "#1d4ed8",
+                  backgroundColor: "black",
                   color: "white",
                   textTransform: "none",
                   borderRadius: 2,
@@ -696,7 +688,7 @@ const SessionSchedulesPage: React.FC = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
-                marginTop: 3,
+                marginTop: 1,
               }}
             >
               <SearchBarTable
@@ -757,11 +749,10 @@ const SessionSchedulesPage: React.FC = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
-                marginTop: 3,
               }}
             >
               <SearchBarTable
-                searchTerm={searchTerm}
+                searchTerm={searchTerm as string}
                 handleSearchChange={handleSearchChange}
               />
               <Box
@@ -775,12 +766,12 @@ const SessionSchedulesPage: React.FC = () => {
               >
                 <TableFilter
                   filter={filters}
-                  selectedFilter={selectedFilter}
+                  selectedFilter={selectedFilter as string[]}
                   handleFilterChange={handleFilterChange}
                 />
                 <DateAndTimeFilter
-                  fromDate={fromDate}
-                  toDate={toDate}
+                  fromDate={fromDate!!}
+                  toDate={toDate!!}
                   onFromDateChange={handleFromDateChange}
                   onToDateChange={handleToDateChange}
                   onReset={handleResetDates}
@@ -830,11 +821,11 @@ const SessionSchedulesPage: React.FC = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
-                marginTop: 3,
+                marginTop: 1,
               }}
             >
               <SearchBarTable
-                searchTerm={searchTerm}
+                searchTerm={searchTerm as string}
                 handleSearchChange={handleSearchChange}
               />
               <Box
@@ -847,13 +838,13 @@ const SessionSchedulesPage: React.FC = () => {
                 }}
               >
                 <TableFilter
-                  selectedFilter={selectedFilter}
-                  filter={filters}
+                  selectedFilter={selectedFilter!!}
+                  filter={filters!!}
                   handleFilterChange={handleFilterChange}
                 />
                 <DateAndTimeFilter
-                  fromDate={fromDate}
-                  toDate={toDate}
+                  fromDate={fromDate!!}
+                  toDate={toDate!!}
                   onFromDateChange={handleFromDateChange}
                   onToDateChange={handleToDateChange}
                   onReset={handleResetDates}
@@ -862,7 +853,7 @@ const SessionSchedulesPage: React.FC = () => {
             </Box>
 
             <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              sx={{ display: "flex", justifyContent: "space-between" ,mt:1}}
             />
             {isLoading ? (
               <ShimmerTableLoader columns={videoCallLogColumns} />
@@ -891,14 +882,13 @@ const SessionSchedulesPage: React.FC = () => {
   return (
     <>
       <Tabs
-        tabItems={tabItems}
-        value={selectedTab}
+        tabItems={tabItems!!}
+        value={selectedTab!!}
         handleChange={handleTabChange}
       />
       {renderContent()}
       <ConfirmationModalDialog
-        open={deleteModalOpen}
-        // title="Delete Slot"
+        open={deleteModalOpen!!}
         content={
           selectedSlot &&
           `Are you sure you want to delete the slot for ${new Date(selectedSlot.date).toLocaleDateString()} at ${selectedSlot.time}?`
@@ -912,8 +902,7 @@ const SessionSchedulesPage: React.FC = () => {
       />
 
       <ConfirmationModalDialog
-        open={approveModalOpen}
-        // title="Approve Booking"
+        open={approveModalOpen!!}
         content={
           selectedBookingRequest &&
           `Are you sure you want to approve the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
@@ -926,8 +915,7 @@ const SessionSchedulesPage: React.FC = () => {
         cancelColor="primary"
       />
       <ConfirmationModalDialog
-        open={rejectModalOpen}
-        // title="Reject Booking"
+        open={rejectModalOpen!!}
         content={
           selectedBookingRequest &&
           `Are you sure you want to reject the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
@@ -940,8 +928,7 @@ const SessionSchedulesPage: React.FC = () => {
         cancelColor="primary"
       />
       <ConfirmationModalDialog
-        open={cancelModalOpen}
-        // title="Cancel Appointment"
+        open={cancelModalOpen!!}
         content={
           selectedAppointment &&
           `Are you sure you want to cancel the appointment with ${selectedAppointment.userData.fname} ${selectedAppointment.userData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`

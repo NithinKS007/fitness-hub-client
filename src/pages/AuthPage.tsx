@@ -12,9 +12,7 @@ const AuthPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { handleUserAuth } = useAuthForm(signState);
   const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state?.auth?.user)
-  const trainer = useSelector((state: RootState) => state?.auth?.trainer)
-  const admin = useSelector((state: RootState) => state?.auth?.admin)
+  const { user, trainer, admin } = useSelector((state: RootState) => state.auth);
 
   const getAuthPerson = ()=>{
     if(user){

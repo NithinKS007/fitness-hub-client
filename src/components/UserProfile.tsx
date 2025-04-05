@@ -70,7 +70,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                     width: 100,
                     height: 100,
                     mx: "auto",
-                    border: "2px solid #1d4ed8",
+                    border: "2px solid black",
                   }}
                 >
                   {!formik.values.profilePic && (
@@ -113,7 +113,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
                     variant="contained"
                     component="label"
                     startIcon={<PhotoCamera />}
-                    sx={{ borderRadius: 1, backgroundColor: "#1d4ed8" }}
+                    sx={{ borderRadius: 1, backgroundColor: "black" }}
                   >
                     Upload Picture
                     <input
@@ -282,7 +282,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
                 <Button
                   variant="contained"
-                  style={{ backgroundColor: "#1d4ed8" }}
+                  style={{ backgroundColor: "black" }}
                   onClick={() => formik.handleSubmit()}
                   sx={{ height: "48px", borderRadius: 2 }}
                 >
@@ -420,7 +420,7 @@ const UserProfile: React.FC<ProfileDetailsProps> = ({
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
                 <Button
                   variant="contained"
-                  style={{ backgroundColor: "#1d4ed8" }}
+                  style={{ backgroundColor: "black" }}
                   onClick={() => changePasswordFormik?.handleSubmit()}
                   sx={{ height: "48px", borderRadius: 2 }}
                 >

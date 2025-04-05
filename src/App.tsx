@@ -38,6 +38,7 @@ import OnFailurePage from "./pages/OnFailurePage";
 import OnSuccessPage from "./pages/OnSuccessPage";
 import TrainerVideosGrid from "./pages/TrainerVideosGrid";
 import VideoPlayer from "./pages/VideoPlayer";
+import UserWorkoutsPage from "./pages/user/UserWorkoutSettingPage";
 
 const App = () => {
   return (
@@ -86,6 +87,7 @@ const App = () => {
           <Route path="/user/profile" element={<UserProfilePage />} />
           <Route path="/user/bookings" element={<UserBookingsPage />} />
           <Route path="/user/chats" element={<UserChatsPage />} />
+          <Route path="/user/workouts" element={<UserWorkoutsPage/>} />
         </Route>
       </Route>
 

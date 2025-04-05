@@ -148,7 +148,7 @@ const SlotModal: React.FC<SlotModalProps> = ({
             disabled={formik.isSubmitting}
             sx={{
               width: { xs: "100%", sm: "auto" },
-              backgroundColor: "#1d4ed8",
+              backgroundColor: "black",
               color: "white",
             }}
           >

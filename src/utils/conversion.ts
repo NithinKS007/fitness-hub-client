@@ -1,21 +1,50 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
-const formatRelativeTime = (date: Date) => {
+const getRelativeTime  = (date: Date) => {
   return dayjs(date).fromNow();
-};
-const formatDuration = (decimalMinutes: number | undefined): string => {
+}
+
+const formatVideoDuration = (decimalMinutes: number | undefined): string => {
   if (!decimalMinutes) return "0:00";
-  const minutes = Math.floor(decimalMinutes);
-  const seconds = Math.round((decimalMinutes % 1) * 60);
+  const totalSeconds = decimalMinutes * 60;
+  const dur = dayjs.duration(totalSeconds, "seconds");
+  const minutes = Math.floor(dur.asMinutes());
+  const seconds = dur.seconds();
   return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
 };
 
-import duration from 'dayjs/plugin/duration';
+const formatTime = (seconds: any) => {
+  return dayjs.duration(seconds, "seconds").format("HH:mm:ss");
+};
 
-dayjs.extend(duration);
+const formatDateToYYYYMMDD = (date: Date | Dayjs) => {
+  return dayjs(date).format("YYYY-MM-DD");
+};
 
-const formatTime = (seconds:any) => {
-  return dayjs.duration(seconds, 'seconds').format('HH:mm:ss');
+const getFormattedTimeRange = (time: Date) => {
+  return time
+    ? new Date(time).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : "N/A";
 }
 
-export { formatRelativeTime ,formatDuration, formatTime};
+const formatDateTodddMMMDYYYY = (date:Date) =>{
+  return dayjs(date).format("ddd, MMM D, YYYY");
+} 
+
+
+export {
+  getRelativeTime ,
+  formatVideoDuration,
+  formatTime,
+  getFormattedTimeRange,
+  formatDateTodddMMMDYYYY,
+  formatDateToYYYYMMDD
+};

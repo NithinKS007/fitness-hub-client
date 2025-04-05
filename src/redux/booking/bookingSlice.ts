@@ -90,8 +90,11 @@ const bookingSlot = createSlice({
       .addCase(bookSlot.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(bookSlot.fulfilled, (state, action) => {
+      .addCase(bookSlot.fulfilled, (state,action) => {
         state.isLoading = false;
+        state.slots = state.slots.filter((slot) => {
+          return slot._id !== action.payload.data.bookingSlotId;
+        });
         state.error = null;
       })
       .addCase(bookSlot.rejected, (state, action) => {

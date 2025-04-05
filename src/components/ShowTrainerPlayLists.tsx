@@ -2,20 +2,17 @@ import React from "react";
 import { List, ListItem, ListItemText, Avatar, Box } from "@mui/material";
 import PlaylistPlayIcon from "@mui/icons-material/PlaylistPlay";
 import { PlayList } from "../redux/content/contentTypes";
-import { useNavigate } from "react-router-dom";
 
 interface ShowTrainerPlayListProps {
-  playListsData: PlayList[];
+  playListsData: PlayList[]
+  handlePlayListClick: (playListId: string, trainerId: string) => void;
 }
 
 const ShowTrainerPlayLists: React.FC<ShowTrainerPlayListProps> = ({
   playListsData,
+  handlePlayListClick
 }) => {
-  
-  const navigate = useNavigate();
-  const handlePlaylistClick = async (playListId: string, trainerId: string) => {
-    navigate(`/video/${playListId}/${trainerId}`);
-  };
+
 
   return (
     <Box
@@ -32,7 +29,7 @@ const ShowTrainerPlayLists: React.FC<ShowTrainerPlayListProps> = ({
           <ListItem
             key={playlist._id}
             onClick={() =>
-              handlePlaylistClick(playlist._id, playlist.trainerId)
+              handlePlayListClick(playlist._id, playlist.trainerId)
             }
             sx={{
               py: 1,

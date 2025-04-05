@@ -30,7 +30,7 @@ const useUpdateProfileForm = (profileData: any) => {
     weight:"",
     bloodGroup:"",
     medicalConditions:"",
-    otherConcerns:""
+    otherConcerns:"",
   });
 
   useEffect(() => {

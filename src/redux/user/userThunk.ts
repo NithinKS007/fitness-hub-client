@@ -1,15 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
+import { RequestApprovedTrainerListParams } from "./userType";
 
 export const getApprovedTrainers = createAsyncThunk(
   "user/getApprovedTrainers",
-  async ({ searchParams }: { searchParams: any }, { rejectWithValue }) => {
+  async (params:RequestApprovedTrainerListParams, { rejectWithValue }) => {
     try {
-      console.log("params for sending data", searchParams);
-      const formattedParams = { ...searchParams }
-
+      console.log("params for sending data", params);
       const response = await axiosInstance.get("user/trainers", {
-        params: formattedParams,
+        params,
       });
 
       console.log("response", response.data);

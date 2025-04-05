@@ -12,19 +12,11 @@ import { Box, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TableFilter from "../../components/TableFilter";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
 import { useModal } from "../../hooks/useModal";
-
-interface TableColumn {
-  label: string;
-  field: string;
-}
-
-interface FilterOption {
-  value: string;
-}
+import { TableColumn,Filter } from "../../types/tableTypes";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -37,7 +29,7 @@ const columns: TableColumn[] = [
   { label: "More", field: "details" },
 ];
 
-const filter: FilterOption[] = [
+const filter: Filter[] = [
   { value: "All" },
   { value: "Block" },
   { value: "Unblock" },
@@ -62,7 +54,6 @@ const UsersListPage: React.FC = () => {
   } = useModal();
 
   const {
-    page,
     handlePageChange,
     searchTerm,
     handleSearchChange,
@@ -132,7 +123,7 @@ const UsersListPage: React.FC = () => {
           return {
             ...user,
             name: `${user.fname} ${user.lname}`,
-            slno: index + 1 + (currentPage - 1) * 5,
+            slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: user.otpVerified || user.googleVerified,
             details: (
@@ -140,8 +131,14 @@ const UsersListPage: React.FC = () => {
                 <IconButton
                   onClick={(event) => handleClick(event, user?._id as string)}
                   aria-label="More options"
+                  sx={{
+                    padding: "2px", 
+                    minWidth: "0",  
+                    width: "37px",  
+                    height: "37px",
+                  }}
                 >
-                  <MoreVertIcon />
+                  <MoreVertIcon sx={{ fontSize: "20px" }} />
                 </IconButton>
                 <Paper>
                   <Menu
@@ -209,7 +206,6 @@ const UsersListPage: React.FC = () => {
       )}
       <ConfirmationModalDialog
         open={confirmationModalOpen}
-        // title={selectedUser?.isBlocked ? "Unblock User" : "Block User"}
         content={
           selectedUser &&
           `Are you sure you want to ${

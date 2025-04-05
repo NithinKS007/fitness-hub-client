@@ -1,27 +1,13 @@
 import React, { useEffect} from "react";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchVideosByPlayListId } from "../redux/content/contentThunk";
 import { isSubscribedToTheTrainer } from "../redux/subscription/subscriptionThunk";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
-
-const formatDuration = (seconds: number) => {
-  const dur = dayjs.duration(seconds, "seconds");
-  return `${Math.floor(dur.asMinutes())}:${dur.seconds().toString().padStart(2, "0")}`;
-};
-
-const formatRelativeTime = (date: Date) => {
-  return dayjs(date).fromNow();
-};
+import { getRelativeTime ,formatVideoDuration } from "../utils/conversion";
 
 const TrainerVideosGrid: React.FC = () => {
   const { playListId, trainerId } = useParams();
@@ -37,7 +23,8 @@ const TrainerVideosGrid: React.FC = () => {
     }
   }, [dispatch, playListId, trainerId]);
 
-  const {videos: videosData,isLoading} = useSelector((state: RootState) => state.content);
+  const {videos: videosData,isLoading:isVideosLoading} = useSelector((state: RootState) => state.content);
+  const { isLoading: isSubscriptionLoading } = useSelector((state: RootState) => state.subscription);
 
   let isHeSubscribedToTheTrainer: boolean = false;
   if (trainerId) {
@@ -60,7 +47,7 @@ const TrainerVideosGrid: React.FC = () => {
     }
     return false;
   };
-  if (isLoading) {
+  if (isVideosLoading || isSubscriptionLoading) {
     return (
       <Box
         sx={{
@@ -74,8 +61,6 @@ const TrainerVideosGrid: React.FC = () => {
       </Box>
     );
   }
-
-  console.log("is subs",isHeSubscribedToTheTrainer)
   return (
     <>
       {shouldRender() ? (
@@ -109,7 +94,7 @@ const TrainerVideosGrid: React.FC = () => {
                       className="absolute bottom-2 right-2 bg-black/70
                      text-white text-xs px-1.5 py-0.5 rounded"
                     >
-                      {formatDuration(video.duration)}
+                      {formatVideoDuration(video.duration)}
                     </span>
                   </div>
                   <div className="p-4">
@@ -117,7 +102,7 @@ const TrainerVideosGrid: React.FC = () => {
                       {video.title}
                     </h3>
                     <p className="text-sm text-gray-600 mt-1">
-                      {formatRelativeTime(new Date(video.createdAt))}
+                      {getRelativeTime (new Date(video.createdAt))}
                     </p>
                   </div>
                 </div>

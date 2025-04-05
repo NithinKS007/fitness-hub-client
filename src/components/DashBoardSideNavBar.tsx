@@ -16,7 +16,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ navItems }) => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bg-gray-100 w-18 h-screen shadow-md flex flex-col justify-between mt-2">
+    <nav className="fixed bg-white w-18 h-screen shadow-md flex flex-col justify-between mt-2">
       <div className="px-2 py-10">
         <div className="p-3 border-e-gray-700 flex justify-center items-center"></div>
         <ul>
@@ -27,12 +27,11 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ navItems }) => {
                 <li
                   className={`px-4 py-3 flex items-center space-x-3 cursor-pointer mt-2 ${
                     location?.pathname === item?.path
-                      ? "bg-blue-800 text-white rounded-md"
+                      ? "bg-black text-white rounded-md"
                       : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
                   <span className="text-xl">{item?.icon}</span>
-                  {/* <span className="font-medium font-sans">{item?.text}</span> */}
                 </li>
                 </Tooltip>
               </Link>

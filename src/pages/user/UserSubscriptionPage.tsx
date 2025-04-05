@@ -12,19 +12,12 @@ import SearchBarTable from "../../components/SearchBarTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import TableFilter from "../../components/TableFilter";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import { TableColumn,Filter } from "../../types/tableTypes";
 
-interface TableColumn {
-  label: string;
-  field: string;
-}
-
-interface FilterOption {
-  value: string;
-}
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Profile", field: "profilePic" },
@@ -33,15 +26,15 @@ const columns: TableColumn[] = [
   { label: "Amount", field: "price" },
   { label: "Start Date", field: "startDate" },
   { label: "Expiry Date", field: "endDate" },
-  { label: "Subscription status", field: "isActive" },
-  { label: "Subscription Period", field: "subPeriod" },
-  { label: "Duration in Weeks", field: "durationInWeeks" },
-  { label: "Sessions Per Week", field: "sessionsPerWeek" },
+  { label: "status", field: "isActive" },
+  { label: "Period", field: "subPeriod" },
+  { label: "Duration (Weeks)", field: "durationInWeeks" },
+  { label: "Sessions/Week", field: "sessionsPerWeek" },
   { label: "Total Sessions", field: "totalSessions" },
   { label: "More", field: "actions" },
 ];
 
-const filter: FilterOption[] = [
+const filter: Filter[] = [
   { value: "Active" },
   { value: "Canceled" },
   { value: "Incomplete" },
@@ -87,11 +80,7 @@ const UserSubscriptionsPage: React.FC = () => {
     getQueryParams().filters,
   ]);
 
-  const userSubscribedPlans = useSelector(
-    (state: RootState) => state.subscription.userSubscribedTrainerPlans
-  );
-
-  const { isLoading, error } = useSelector(
+  const { isLoading, error,userSubscribedTrainerPlans:userSubscribedPlans,pagination:{totalPages,currentPage} } = useSelector(
     (state: RootState) => state.subscription
   );
 
@@ -110,9 +99,6 @@ const UserSubscriptionsPage: React.FC = () => {
       showErrorToast(`${error}`);
     }
   };
-  const { totalPages, currentPage } = useSelector(
-    (state: RootState) => state.subscription.pagination
-  );
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -148,11 +134,6 @@ const UserSubscriptionsPage: React.FC = () => {
   const fetchedUserSubscriptionsData =
     userSubscribedPlans.length > 0
       ? userSubscribedPlans.map((sub, index) => {
-          console.log(
-            "hello fname",
-            sub.subscribedTrainerData.fname,
-            sub.subscribedTrainerData
-          );
           const name = `${sub.subscribedTrainerData?.fname?.charAt(0).toUpperCase() + sub.subscribedTrainerData?.fname?.slice(1).toLowerCase()} ${sub.subscribedTrainerData?.lname?.charAt(0).toUpperCase() + sub.subscribedTrainerData?.lname?.slice(1).toLowerCase()}`;
           const price = `$${sub.price.toFixed(2)}`;
           const subPeriod =
@@ -165,7 +146,7 @@ const UserSubscriptionsPage: React.FC = () => {
 
           return {
             ...sub,
-            slno: index + 1,
+            slno: index + 1 + (currentPage - 1) * 9,
             name: name,
             email: sub.subscribedTrainerData.email,
             profilePic: sub.subscribedTrainerData.profilePic,
@@ -186,8 +167,14 @@ const UserSubscriptionsPage: React.FC = () => {
                   onClick={(event) =>
                     handleMenuClick(event, sub.stripeSubscriptionId)
                   }
+                  sx={{
+                    padding:"30",
+                    minWidth: "0", 
+                    width: "25px", 
+                    height: "25px", 
+                  }}
                 >
-                  <MoreVertIcon />
+                  <MoreVertIcon sx={{ fontSize: "20px" }}/>
                 </IconButton>
                 <Menu
                   id="simple-menu"
@@ -220,11 +207,9 @@ const UserSubscriptionsPage: React.FC = () => {
         })
       : [];
 
-  console.log("fetched one", fetchedUserSubscriptionsData);
-
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between",mt:5}}>
         <SearchBarTable
           searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
@@ -252,7 +237,6 @@ const UserSubscriptionsPage: React.FC = () => {
       )}
       <ConfirmationModalDialog
         open={confirmationModalOpen}
-        // title="Cancel Subscription"
         content={
           selectedSubscription &&
           `Are you sure you want to cancel your ${selectedSubscription.subPeriod.toLowerCase()} subscription with ${selectedSubscription.subscribedTrainerData.fname} ${selectedSubscription.subscribedTrainerData.lname}?`

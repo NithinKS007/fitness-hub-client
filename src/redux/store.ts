@@ -9,6 +9,7 @@ import contentReducer from "./content/contentSlice"
 import bookingSlotReducer from "./booking/bookingSlice"
 import chatReducer from "./chat/chatSlice"
 import dashboardReducer from "./dashboard/dashboardSlice"
+import workoutReducer from "./workout/workoutSlice"
 
 const persistConfig = {
   key: "root",
@@ -27,7 +28,8 @@ const store = configureStore({
     content:contentReducer,
     bookingSlot:bookingSlotReducer,
     chat:chatReducer,
-    dashboard:dashboardReducer
+    dashboard:dashboardReducer,
+    workout:workoutReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
