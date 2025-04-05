@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState} from "../redux/store"
 import { getAdminDashBoardData } from "../redux/dashboard/dashboardThunk";
+import { SelectChangeEvent } from "@mui/material";
 
 const useAdminDashBoard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,7 +29,7 @@ const useAdminDashBoard = () => {
   }, [dispatch, selectedTimePeriod]);
 
   const handleTimePeriodChange = (
-    event: React.ChangeEvent<{ value: unknown }>
+    event: SelectChangeEvent<string>
   ) => {
     setSelectedTimePeriod(event.target.value as string);
   };

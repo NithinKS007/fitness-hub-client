@@ -6,19 +6,12 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/material";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
 import { Timer, Pending, DirectionsRun } from "@mui/icons-material";
 import DashBoardBox from "../../components/DashBoardBox";
 import useUserDashBoard from "../../hooks/useUserDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import ReusableLineChart from "../../components/LineChart";
+
 
 const DBPageUser = () => {
   const {
@@ -37,11 +30,17 @@ const DBPageUser = () => {
   } = useUserDashBoard();
 
   if (isLoading) {
-    return <LoadingSpinner size={60} thickness={4}/>
+    return <LoadingSpinner size={60} thickness={4} />;
   }
 
   if (error) {
-    return <> {error}</>;
+    return (
+      <Box sx={{ textAlign: "center", padding: 2 }}>
+        <Typography color="error">
+          {typeof error === "string" ? error : "Unable to load your dashboard. Please try again later."}
+        </Typography>
+      </Box>
+    );
   }
 
   const dashboardItems = [
@@ -62,88 +61,67 @@ const DBPageUser = () => {
     },
   ];
 
+  const lines = [{ dataKey: "Total weight", stroke: "#A9A9A9" }];
   return (
     <>
       <Box sx={{ padding: 2 }}>
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-            {dashboardItems.map((item, index) => (
-              <Box key={index} sx={{ flex: 1 }}>
-                <DashBoardBox
-                  content={item.content}
-                  number={item.number}
-                  icon={item.icon}
-                />
-              </Box>
-            ))}
-          </Box>
-          <Box
-            sx={{ display: "flex", justifyContent: "center", mb: 2, gap: 2 }}
-          >
-            <FormControl sx={{ width: 200 }}>
-              <InputLabel>Time Period</InputLabel>
-              <Select
-                label="Time Period"
-                value={selectedTimePeriod}
-                onChange={handleTimePeriodChange}
-              >
-                {timePeriods.map((period) => (
-                  <MenuItem key={period} value={period}>
-                    {period}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl sx={{ width: 200 }}>
-              <InputLabel>Body Part</InputLabel>
-              <Select
-                label="Body Part"
-                value={selectedBodyPart}
-                onChange={handleBodyPartChange}
-              >
-                {bodyParts.map((b) => (
-                  <MenuItem key={b} value={b}>
-                    {b}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box sx={{ p: 4 }}>
-            <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
-              Workout Progress (Completed Workouts)
-            </Typography>
-
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <LineChart
-                width={600}
-                height={300}
-                data={lineChartData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis
-                  label={{
-                    value: "Weight Lifted (kg)",
-                    angle: -90,
-                    position: "insideLeft",
-                    textAnchor: "middle",
-                    style: { textAnchor: "middle" },
-                  }}
-                />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="Total weight"
-                  stroke="#A9A9A9"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+          {dashboardItems.map((item, index) => (
+            <Box key={index} sx={{ flex: 1 }}>
+              <DashBoardBox
+                content={item.content}
+                number={item.number}
+                icon={item.icon}
+              />
             </Box>
+          ))}
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 2, gap: 2 }}>
+          <FormControl sx={{ width: 200 }}>
+            <InputLabel>Time Period</InputLabel>
+            <Select
+              label="Time Period"
+              value={selectedTimePeriod}
+              onChange={handleTimePeriodChange}
+            >
+              {timePeriods.map((period) => (
+                <MenuItem key={period} value={period}>
+                  {period}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{ width: 200 }}>
+            <InputLabel>Body Part</InputLabel>
+            <Select
+              label="Body Part"
+              value={selectedBodyPart}
+              onChange={handleBodyPartChange}
+            >
+              {bodyParts.map((b) => (
+                <MenuItem key={b} value={b}>
+                  {b}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
+          Workout Progress (Completed Workouts)
+        </Typography>
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ flex: 1.5, height: 300 }}>
+            <ReusableLineChart
+              data={lineChartData}
+              xAxisKey={"date"}
+              yAxisValue={"Weight Lifted (kg)"}
+              lines={lines}
+            />
           </Box>
+          
         </Box>
       </Box>
     </>

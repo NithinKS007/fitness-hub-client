@@ -7,7 +7,6 @@ import Button from "@mui/material/Button";
 
 interface ConfirmationModalDialogProps {
   open: boolean;
-
   content: string 
   onConfirm: () => void;
   onCancel: () => void;

@@ -13,19 +13,38 @@ const NotFound: React.FC = () => {
         alignItems: 'center',
       }}
     >
-      <Typography variant="h1" sx={{ fontSize: '4rem', fontWeight: 'bold' }}>
+      <Typography 
+        variant="h1" 
+        sx={{ 
+          fontSize: { 
+            xs: '6rem',    
+            sm: '8rem',   
+            md: '10rem',  
+            lg: '12rem'    
+          }, 
+          fontWeight: 'bold',
+          color: 'black',
+          lineHeight: 1,
+          marginBottom: 2
+        }}
+      >
         404
       </Typography>
-      <Typography sx={{ marginBottom: 2 }}>
+      <Typography 
+        sx={{ 
+          marginBottom: 2,
+          fontSize: '1.5rem'
+        }}
+      >
         Page Not Found
       </Typography>
       <Button
-        variant="contained"
         component={Link}
         to="/"
-        sx={{ textTransform: 'none' }}
+        variant="contained"
+        sx={{ marginTop: 2,bgcolor:"black" }}
       >
-        Go Home
+        Back to Home
       </Button>
     </Box>
   );

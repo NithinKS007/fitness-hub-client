@@ -1,24 +1,11 @@
 import DashBoardBox from "../../components/DashBoardBox";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-
 import { Box, List, ListItem, ListItemText } from "@mui/material";
 import { People } from "@mui/icons-material";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import useTrainerDashBoard from "../../hooks/useTrainerDashBoard";
+import ReusableLineChart from "../../components/LineChart";
+import ReusablePieChart from "../../components/ReuseablePieChart";
 
 const DBPageTrainer = () => {
   const {
@@ -60,6 +47,12 @@ const DBPageTrainer = () => {
     },
   ];
 
+  const lines = [
+    { dataKey: "Total", stroke: "#8884d8" },
+    { dataKey: "Active", stroke: "#82ca9d" },
+    { dataKey: "Canceled", stroke: "#ff7300" },
+  ];
+
   return (
     <Box sx={{ padding: 2 }}>
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
@@ -91,62 +84,21 @@ const DBPageTrainer = () => {
       </Box>
       <Box sx={{ display: "flex", gap: 2 }}>
         <Box sx={{ flex: 1.5, height: 300 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={transformedChartData}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="_id" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="Total"
-                stroke="#8884d8"
-                strokeWidth={2}
-                dot={{ r: 6 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="Active"
-                stroke="#82ca9d"
-                strokeWidth={2}
-                dot={{ r: 6 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="Canceled"
-                stroke="#ff7300"
-                strokeWidth={2}
-                dot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <ReusableLineChart
+            data={transformedChartData}
+            lines={lines}
+            xAxisKey={"_id"}
+          />
         </Box>
         <Box sx={{ display: "flex", flex: 1 }}>
           <Box sx={{ flex: 1, height: 300 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieChartFormattedData}
-                  dataKey="value"
-                  outerRadius="80%"
-                  fill="#8884d8"
-                  labelLine={false}
-                >
-                  {pieChartFormattedData?.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
+            <ReusablePieChart
+              data={pieChartFormattedData}
+              dataKey={"value"}
+              outerRadius={"80%"}
+              fill={"#8884d8"}
+              labelLine={false}
+            />
           </Box>
           <Box sx={{ flex: 1, overflowY: "auto", paddingLeft: 2 }}>
             <List sx={{ fontSize: 12 }}>

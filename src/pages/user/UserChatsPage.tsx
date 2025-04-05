@@ -16,6 +16,7 @@ import {
   TextField,
   Button,
   CircularProgress,
+  Stack,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import Picker from "emoji-picker-react";
@@ -27,27 +28,23 @@ const UserChatsPage = () => {
   );
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
-
+  const [isOnline, setIsOnline] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(getUserChatList());
   }, [dispatch]);
 
-  const { userChatList } = useSelector(
-    (state: RootState) => state.chat
-  );
+  const { userChatList } = useSelector((state: RootState) => state.chat);
 
-  const fetchedUserSubscriptionData = userChatList.map(
-    (trainer) => ({
-      _id: trainer._id,
-      trainerId: trainer.trainerId,
-      userId: trainer.userId,
-      name: `${trainer.subscribedTrainerData.fname} ${trainer.subscribedTrainerData.lname}`,
-      profilePic: trainer.subscribedTrainerData.profilePic,
-      planStatus: `${trainer.isActive}`,
-    })
-  );
+  const fetchedUserSubscriptionData = userChatList.map((trainer) => ({
+    _id: trainer._id,
+    trainerId: trainer.trainerId,
+    userId: trainer.userId,
+    name: `${trainer.subscribedTrainerData.fname} ${trainer.subscribedTrainerData.lname}`,
+    profilePic: trainer.subscribedTrainerData.profilePic,
+    planStatus: `${trainer.isActive}`,
+  }));
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -71,10 +68,8 @@ const UserChatsPage = () => {
 
   const { user } = useSelector((state: RootState) => state.auth);
 
-
   useEffect(() => {
     if (selectedTrainerId && user?._id) {
-
       dispatch(
         fetchChatMessages({
           senderId: user?._id,
@@ -90,9 +85,18 @@ const UserChatsPage = () => {
           })
         );
       });
+      socket.on(
+        "onlineStatusResponse",
+        ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {
+          if (userId === selectedTrainerId) {
+            setIsOnline(isOnline);
+          }
+        }
+      );
 
       return () => {
-        socket.off("receiveMessage")
+        socket.off("receiveMessage");
+        socket.off("onlineStatusResponse");
       };
     }
   }, [dispatch, user?._id, selectedTrainerId]);
@@ -121,6 +125,8 @@ const UserChatsPage = () => {
 
   const handleUserClick = (otherUserId: string) => {
     setSelectedTrainerId(otherUserId);
+    setIsOnline(false);
+    socket.emit("checkOnlineStatus", otherUserId);
   };
 
   const selectedTrainer = fetchedUserSubscriptionData.find(
@@ -130,7 +136,7 @@ const UserChatsPage = () => {
   const isPlanActive = selectedTrainer?.planStatus === "active";
   useEffect(() => {
     if (messagesEndRef.current && !chatLoading) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView();
     }
   }, [messages, selectedTrainerId, chatLoading]);
 
@@ -268,13 +274,34 @@ const UserChatsPage = () => {
               ) : (
                 ""
               )}
-              <Typography variant="h6" color="grey.700">
-                {selectedTrainerId
-                  ? fetchedUserSubscriptionData.find(
-                      (trainer) => trainer.trainerId === selectedTrainerId
-                    )?.name
-                  : ""}
-              </Typography>
+              <Stack alignItems="flex-start">
+                <Typography variant="h6" color="grey.700">
+                  {selectedTrainerId
+                    ? fetchedUserSubscriptionData.find(
+                        (trainer) => trainer.trainerId === selectedTrainerId
+                      )?.name
+                    : ""}
+                </Typography>
+
+                {selectedTrainerId && (
+                   <Stack direction="row" alignItems="center" spacing={0.5}>
+                        <span
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            backgroundColor: isOnline ? "green" : "grey",
+                          }}
+                        ></span>
+                  <Typography
+                    variant="body2"
+                    color={isOnline ? "success.main" : "grey.500"}
+                  >
+                    {isOnline ? "Online" : "Offline"}
+                  </Typography>
+                  </Stack>
+                )}
+              </Stack>
             </Box>
 
             <Box

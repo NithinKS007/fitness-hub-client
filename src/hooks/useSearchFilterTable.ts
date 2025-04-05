@@ -46,7 +46,6 @@ const useSearchFilter = () => {
   }
 
   const handleToDateChange = (newDate: Dayjs | null) => {
-    console.log("to date change",newDate)
     if(newDate){
     setToDate(newDate);
     setPage(1);

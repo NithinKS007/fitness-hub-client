@@ -2,7 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { socket } from "../../config/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { fetchChatMessages, getTrainerChatList } from "../../redux/chat/chatThunk";
+import {
+  fetchChatMessages,
+  getTrainerChatList,
+} from "../../redux/chat/chatThunk";
 import { addMessage } from "../../redux/chat/chatSlice";
 import {
   Box,
@@ -16,17 +19,17 @@ import {
   TextField,
   Button,
   CircularProgress,
+  Stack,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import Picker from "emoji-picker-react";
-
 
 const ChatPage = () => {
   const [input, setInput] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
-
+  const [isOnline, setIsOnline] = useState<boolean>(false);
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
@@ -45,7 +48,7 @@ const ChatPage = () => {
     };
   }, []);
 
-  const onEmojiClick = (emojiObject:any) => {
+  const onEmojiClick = (emojiObject: any) => {
     setInput((prev) => prev + emojiObject.emoji);
   };
 
@@ -53,9 +56,7 @@ const ChatPage = () => {
     dispatch(getTrainerChatList());
   }, [dispatch]);
 
-  const { trainerChatList } = useSelector(
-    (state: RootState) => state.chat
-  );
+  const { trainerChatList } = useSelector((state: RootState) => state.chat);
   const fetchedSubscribers = trainerChatList.map((user) => ({
     _id: user._id,
     trainerId: user.trainerId,
@@ -63,7 +64,7 @@ const ChatPage = () => {
     name: `${user.subscribedUserData.fname} ${user.subscribedUserData.lname}`,
     profilePic: user.subscribedUserData.profilePic,
     planStatus: `${user.isActive}`,
-  }))
+  }));
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +76,6 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (selectedUserId && trainer?._id) {
-
       dispatch(
         fetchChatMessages({
           senderId: trainer?._id,
@@ -91,14 +91,21 @@ const ChatPage = () => {
           })
         );
       });
-
+      socket.on(
+        "onlineStatusResponse",
+        ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {
+          if (userId === selectedUserId) {
+            setIsOnline(isOnline);
+          }
+        }
+      );
       return () => {
+        socket.off("onlineStatusResponse");
         socket.off("receiveMessage");
       };
     }
   }, [dispatch, trainer?._id, selectedUserId]);
 
-  
   const handleSendMessage = () => {
     if (input && selectedUserId && trainer?._id) {
       const message = {
@@ -123,6 +130,8 @@ const ChatPage = () => {
 
   const handleUserClick = (otherUserId: string) => {
     setSelectedUserId(otherUserId);
+    setIsOnline(false);
+    socket.emit("checkOnlineStatus", otherUserId);
   };
   const selectedUser = fetchedSubscribers.find(
     (user) => user.userId === selectedUserId
@@ -130,7 +139,7 @@ const ChatPage = () => {
   const isPlanActive = selectedUser?.planStatus === "active";
   useEffect(() => {
     if (messagesEndRef.current && !chatLoading) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView();
     }
   }, [messages, selectedUserId, chatLoading]);
 
@@ -263,13 +272,34 @@ const ChatPage = () => {
               ) : (
                 ""
               )}
-              <Typography variant="h6" color="grey.700">
-                {selectedUserId
-                  ? fetchedSubscribers.find(
-                      (user) => user.userId === selectedUserId
-                    )?.name
-                  : ""}
-              </Typography>
+              <Stack spacing={0} alignItems="flex-start">
+                <Typography variant="h6" color="grey.700">
+                  {selectedUserId
+                    ? fetchedSubscribers.find(
+                        (user) => user.userId === selectedUserId
+                      )?.name
+                    : ""}
+                </Typography>
+
+                {selectedUserId && (
+                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        backgroundColor: isOnline ? "green" : "grey",
+                      }}
+                    ></span>
+                    <Typography
+                      variant="body2"
+                      color={isOnline ? "success.main" : "grey.500"}
+                    >
+                      {isOnline ? "Online" : "Offline"}
+                    </Typography>
+                  </Stack>
+                )}
+              </Stack>
             </Box>
 
             <Box

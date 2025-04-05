@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Dashboard from "@mui/icons-material/Dashboard";
 import People from "@mui/icons-material/People";
@@ -8,8 +8,14 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { PostAddRounded, SubscriptionsRounded } from "@mui/icons-material";
 import SideNavBar from "../components/DashBoardSideNavBar";
 import TopNavbar from "../components/DashBoardTopBar";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { socket } from "../config/socket";
 
 const TrainerLayout: React.FC = () => {
+
+  const trainer = useSelector((state:RootState)=>state.auth.trainer)
+  
   const trainerNavItems = [
     {
       icon: <Dashboard />,
@@ -48,6 +54,24 @@ const TrainerLayout: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    if (!trainer?._id) {
+      console.log("No trainer ID, skipping socket setup");
+      return;
+    }
+
+    console.log("Registering trainer with socket:", trainer._id);
+    socket.emit("register", trainer._id);
+
+    socket.on("connect", () => {
+      console.log("Socket connected in SessionSchedulesPage:", socket.id);
+      socket.emit("register", trainer._id); 
+    });
+
+    return () => {
+      socket.off("connect");
+    };
+  }, [trainer?._id]);
   return (
     <div className="flex flex-col min-h-screen w-full">
       <TopNavbar />

@@ -34,7 +34,6 @@ const ZegoCloudVideoCall: React.FC<ZegoCloudVideoCallProps> = ({
         userName
       );
       const zp = ZegoUIKitPrebuilt.create(kitToken);
-
       zp.joinRoom({
         container: element,
         scenario: {
@@ -45,6 +44,7 @@ const ZegoCloudVideoCall: React.FC<ZegoCloudVideoCallProps> = ({
         },
       });
     };
+
 
     myMeeting(containerRef.current);
   }, [roomId, userId, userName, onEndCall]);

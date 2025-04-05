@@ -55,11 +55,24 @@ const ULProfile: React.FC = () => {
   ];
 
   useEffect(() => {
+    if (!user?._id) {
+      console.log("No user ID, skipping socket setup");
+      return;
+    }
+    console.log("Registering user with socket:", user._id);
+    socket.emit("register", user._id);
+    socket.on("connect", () => {
+      console.log("Socket connected in ULProfile:", socket.id);
+      socket.emit("register", user._id)
+    });
+
     socket.on("incomingCall", (data: any) => {
-      const { callerId, roomId, appointmentId ,trainerName,appointmentTime,appointmentDate,} = data;
+      console.log("incoming call event triggered",data)
+      const { callerId, roomId, appointmentId ,trainerName,appointmentTime,appointmentDate} = data;
       if (callerId && roomId && appointmentId) {
         setIncomingCallData({trainerName,appointmentTime,appointmentDate, callerId, roomId, appointmentId });
         setCallDialogOpen(true);
+        console.log("Modal should open, callDialogOpen:", true);
       }
     });
 
@@ -70,6 +83,7 @@ const ULProfile: React.FC = () => {
     });
 
     return () => {
+      socket.off("connect");
       socket.off("incomingCall");
       socket.off("callStarted");
       socket.off("callEnded");
@@ -118,8 +132,8 @@ const ULProfile: React.FC = () => {
             <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 1000 }}>
               <ZegoCloudVideoCall
                 roomId={roomId}
-                userId={user?._id as string}
-                userName={`${user?.fname as string} ${user?.lname as string}`}
+                userId={user?._id}
+                userName={`${user?.fname} ${user?.lname}`}
                 onEndCall={handleEndCall}
               />
             </div>
@@ -128,10 +142,9 @@ const ULProfile: React.FC = () => {
       </div>
       <ConfirmationModalDialog
         open={callDialogOpen}
-        title="Incoming Call"
         content={
           incomingCallData &&
-          `Incoming call from ${incomingCallData.trainerName} for appointment at ${incomingCallData.appointmentTime} on ${new Date(incomingCallData.appointmentDate).toLocaleDateString()}. Accept?`
+          `Incoming call from ${incomingCallData?.trainerName} for appointment at ${incomingCallData?.appointmentTime} on ${new Date(incomingCallData.appointmentDate).toLocaleDateString()}. Accept?`
         }
         onConfirm={handleAcceptCall}
         onCancel={handleRejectCall}
@@ -141,6 +154,7 @@ const ULProfile: React.FC = () => {
         cancelColor="error"
       />
     </div>
+    
   );
 };
 

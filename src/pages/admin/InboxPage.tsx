@@ -42,7 +42,6 @@ const InboxPage: React.FC = () => {
   const {
     trainers,
     isLoading,
-    error,
     pagination: { totalPages, currentPage },
   } = useSelector((state: RootState) => state.admin);
 
