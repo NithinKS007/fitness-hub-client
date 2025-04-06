@@ -26,7 +26,7 @@ const adminSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      //fetch users
+      //get users
       .addCase(getUsers.pending, (state) => {
         state.isLoading = true;
       })
@@ -44,7 +44,7 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to fetch users";
       })
-      //fetch trainers
+      //get trainers
       .addCase(getTrainers.pending, (state) => {
         state.isLoading = true;
       })
@@ -64,7 +64,7 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to fetch trainers";
       })
-      //update  block status
+      //update  block status for trainer and user
       .addCase(updateUserBlockStatus.pending, (state) => {
         state.isLoading = true;
       })
@@ -91,7 +91,7 @@ const adminSlice = createSlice({
             : "Failed to update block status";
       })
 
-      //fetch trainer approval list
+      //get trainer approval list
       .addCase(getApprovalPendingList.pending, (state) => {
         state.isLoading = true;
       })
@@ -110,7 +110,7 @@ const adminSlice = createSlice({
             : "Failed to get trainers list for approval";
       })
 
-      //fetch  approve or reject trainer
+      //approve or reject trainer
       .addCase(updatedApprovalStatus.pending, (state) => {
         state.isLoading = true;
       })
@@ -129,7 +129,7 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to update trainer approval status";
       })
-      //fetching user details
+      //get user details
       .addCase(userDetails.pending, (state) => {
         state.isLoading = true;
       })
@@ -145,6 +145,7 @@ const adminSlice = createSlice({
             ? action.payload
             : "Failed to retrieve userDetails";
       })
+      //get trainer details
       .addCase(trainerDetails.pending, (state) => {
         state.isLoading = true;
       })

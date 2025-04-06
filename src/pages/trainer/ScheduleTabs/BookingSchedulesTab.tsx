@@ -19,6 +19,7 @@ import PaginationTable from "../../../components/PaginationTable";
 import { useModal } from "../../../hooks/useModal"
 import ConfirmationModalDialog from "../../../components/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes"
+import { Dayjs } from "dayjs";
 
 
 const scheduledAppointmentsColumn: TableColumn[] = [
@@ -214,16 +215,16 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({ onVideoCallCl
     return (
       <>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 1 }}>
-          <SearchBarTable searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
+          <SearchBarTable searchTerm={searchTerm as string} handleSearchChange={handleSearchChange} />
           <Box sx={{ display: "flex", justifyContent: "end", gap: 2, alignItems: "center" }}>
             <TableFilter
               filter={filters}
-              selectedFilter={selectedFilter}
+              selectedFilter={selectedFilter as string[]}
               handleFilterChange={handleFilterChange}
             />
             <DateAndTimeFilter
-              fromDate={fromDate}
-              toDate={toDate}
+              fromDate={fromDate as Dayjs |null}
+              toDate={toDate as Dayjs | null}
               onFromDateChange={handleFromDateChange}
               onToDateChange={handleToDateChange}
               onReset={handleResetDates}
@@ -245,7 +246,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({ onVideoCallCl
           </>
         )}
         <ConfirmationModalDialog
-          open={cancelModalOpen}
+          open={cancelModalOpen as boolean}
           content={
             selectedAppointment &&
             `Are you sure you want to cancel the appointment with ${selectedAppointment.userData.fname} ${selectedAppointment.userData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`

@@ -56,7 +56,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //handle signup user
+      //signup user
       .addCase(signUpUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -70,7 +70,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to create user";
       })
-      //handle resendOtp
+      //resendOtp
       .addCase(resendOtp.pending, (state) => {
         state.isLoading = true;
       })
@@ -85,7 +85,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to resend otp";
       })
-      //handle verifyOtp
+      //verifyOtp
       .addCase(verifyOtp.pending, (state) => {
         state.isLoading = true;
       })
@@ -101,7 +101,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to verify otp";
       })
-      //handle signin user
+      //signin user
       .addCase(signinUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -116,7 +116,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to signin user";
       })
-      //handle forgotPassword
+      //forgotPassword
       .addCase(forgotPassLink.pending, (state) => {
         state.isLoading = true;
       })
@@ -131,7 +131,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to send link";
       })
-      //handle resetPassword
+      //resetPassword
       .addCase(forgotPassword.pending, (state) => {
         state.isLoading = true;
       })
@@ -146,7 +146,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to reset password ";
       })
-      //handle google authentication
+      //google authentication
       .addCase(googleAuth.pending, (state) => {
         state.isLoading = true;
       })
@@ -161,7 +161,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to verify google user ";
       })
-      //handle trainer entrollment
+      //trainer entrollment
       .addCase(trainerEntroll.pending, (state) => {
         state.isLoading = true;
       })
@@ -176,7 +176,7 @@ const authSlice = createSlice({
             : "Failed to create trainer";
       })
 
-      //handle update user profile
+      //update user profile
       .addCase(updateUserProfile.pending, (state) => {
         state.isLoading = true;
       })
@@ -192,7 +192,7 @@ const authSlice = createSlice({
             : "Failed to update user profile";
       })
 
-      //handle update trainer profile
+      //update trainer profile
       .addCase(updateTrainerProfile.pending, (state) => {
         state.isLoading = true;
       })
@@ -208,7 +208,7 @@ const authSlice = createSlice({
             : "Failed to update trainer profile";
       })
 
-      //handle sign out user
+      //sign out user
       .addCase(signOutUser.pending, (state) => {
         state.isLoading = true;
       })

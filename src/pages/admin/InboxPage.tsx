@@ -20,6 +20,7 @@ import PaginationTable from "../../components/PaginationTable";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
 import { TableColumn } from "../../types/tableTypes";
+import { Dayjs } from "dayjs";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -154,13 +155,13 @@ const InboxPage: React.FC = () => {
     <>
       <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
         <SearchBarTable
-          searchTerm={searchTerm}
+          searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
         <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
           <DateFilter
-            fromDate={fromDate}
-            toDate={toDate}
+            fromDate={fromDate as Dayjs |null}
+            toDate={toDate as Dayjs | null}
             onFromDateChange={handleFromDateChange}
             onToDateChange={handleToDateChange}
             onReset={handleResetDates}
@@ -200,10 +201,10 @@ const InboxPage: React.FC = () => {
         </Box>
       )}
       <ConfirmationModalDialog
-        open={confirmationModalOpen}
+        open={confirmationModalOpen as boolean}
         content={
-          selectedTrainer &&
-          `Are you sure you want to ${actionType} ${selectedTrainer.fname} ${selectedTrainer.lname}'s application?`
+          (selectedTrainer &&
+            `Are you sure you want to ${actionType} ${selectedTrainer.fname} ${selectedTrainer.lname}'s application?`) as string
         }
         onConfirm={handleConfirmAction}
         onCancel={handleConfirmationModalClose}

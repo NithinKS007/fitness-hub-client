@@ -7,22 +7,10 @@ import {
   getTrainerChatList,
 } from "../../redux/chat/chatThunk";
 import { addMessage } from "../../redux/chat/chatSlice";
-import {
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  TextField,
-  Button,
-  CircularProgress,
-  Stack,
-} from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
+import { Box } from "@mui/material";
+import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const ChatPage = () => {
   const [input, setInput] = useState("");
@@ -30,8 +18,29 @@ const ChatPage = () => {
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
   const [isOnline, setIsOnline] = useState<boolean>(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(getTrainerChatList());
+  }, [dispatch]);
+
+  const {
+    trainerChatList,
+    ChatMessages: messages,
+    isLoading: chatLoading,
+  } = useSelector((state: RootState) => state.chat);
+  const { trainer } = useSelector((state: RootState) => state.auth);
+
+  const fetchedSubscribers = trainerChatList.map((user) => ({
+    _id: user._id,
+    contactId: user.userId,
+    name: `${user.subscribedUserData.fname} ${user.subscribedUserData.lname}`,
+    profilePic: user.subscribedUserData.profilePic,
+    planStatus: `${user.isActive}`,
+  }));
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -41,38 +50,9 @@ const ChatPage = () => {
         setShowPicker(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const onEmojiClick = (emojiObject: any) => {
-    setInput((prev) => prev + emojiObject.emoji);
-  };
-
-  useEffect(() => {
-    dispatch(getTrainerChatList());
-  }, [dispatch]);
-
-  const { trainerChatList } = useSelector((state: RootState) => state.chat);
-  const fetchedSubscribers = trainerChatList.map((user) => ({
-    _id: user._id,
-    trainerId: user.trainerId,
-    userId: user.userId,
-    name: `${user.subscribedUserData.fname} ${user.subscribedUserData.lname}`,
-    profilePic: user.subscribedUserData.profilePic,
-    planStatus: `${user.isActive}`,
-  }));
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const { ChatMessages: messages, isLoading: chatLoading } = useSelector(
-    (state: RootState) => state.chat
-  );
-
-  const { trainer } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (selectedUserId && trainer?._id) {
@@ -84,6 +64,7 @@ const ChatPage = () => {
       );
 
       socket.on("receiveMessage", (message: any) => {
+        console.log("Received message:", message);
         dispatch(
           addMessage({
             ...message,
@@ -94,9 +75,7 @@ const ChatPage = () => {
       socket.on(
         "onlineStatusResponse",
         ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {
-          if (userId === selectedUserId) {
-            setIsOnline(isOnline);
-          }
+          if (userId === selectedUserId) setIsOnline(isOnline);
         }
       );
       return () => {
@@ -105,6 +84,12 @@ const ChatPage = () => {
       };
     }
   }, [dispatch, trainer?._id, selectedUserId]);
+
+  useEffect(() => {
+    if (messagesEndRef.current && !chatLoading) {
+      messagesEndRef.current.scrollIntoView();
+    }
+  }, [messages, selectedUserId, chatLoading]);
 
   const handleSendMessage = () => {
     if (input && selectedUserId && trainer?._id) {
@@ -128,323 +113,57 @@ const ChatPage = () => {
     }
   };
 
-  const handleUserClick = (otherUserId: string) => {
-    setSelectedUserId(otherUserId);
+  const handleUserClick = (userId: string) => {
+    setSelectedUserId(userId);
     setIsOnline(false);
-    socket.emit("checkOnlineStatus", otherUserId);
+    socket.emit("checkOnlineStatus", userId);
   };
+
+  const onEmojiClick = (emojiObject: any) => {
+    setInput((prev) => prev + emojiObject.emoji);
+  };
+
   const selectedUser = fetchedSubscribers.find(
-    (user) => user.userId === selectedUserId
+    (user) => user.contactId === selectedUserId
   );
-  const isPlanActive = selectedUser?.planStatus === "active";
-  useEffect(() => {
-    if (messagesEndRef.current && !chatLoading) {
-      messagesEndRef.current.scrollIntoView();
-    }
-  }, [messages, selectedUserId, chatLoading]);
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        maxHeight: "600px",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <Box sx={{ height: "100vh", maxHeight: "600px" }}>
       {chatLoading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flex: 1,
-          }}
-        >
-          <CircularProgress />
-        </Box>
+        <LoadingSpinner/>
       ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            flex: 1,
-            bgcolor: "grey.300",
-            borderRadius: 5,
-            border: 1,
-            borderColor: "grey.300",
-            overflow: "hidden",
-          }}
-        >
-          <Box
-            sx={{
-              width: { xs: "100%", md: "250px" },
-              bgcolor: "white",
-              border: 1,
-              borderColor: "grey.300",
-              overflowY: "auto",
-              scrollbarWidth: "none",
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{ p: 2, fontWeight: "bold", color: "grey.700" }}
-            >
-              Messages
-            </Typography>
-            <List sx={{ p: 0 }}>
-              {fetchedSubscribers.map((contact) => (
-                <ListItem key={contact._id} disablePadding>
-                  <ListItemButton
-                    onClick={() => handleUserClick(contact.userId)}
-                    sx={{
-                      backgroundColor:
-                        selectedUserId === contact.userId
-                          ? "grey.300"
-                          : "inherit",
-                      "&:hover": {
-                        backgroundColor:
-                          selectedUserId === contact.userId
-                            ? "grey.400"
-                            : "grey.200",
-                      },
-                      borderRadius: 1,
-                      mx: 1,
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar src={contact?.profilePic ?? undefined}>
-                        {!contact?.profilePic && contact?.name.charAt(0)}
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={contact.name}
-                      secondary={
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color={
-                            contact.planStatus === "active"
-                              ? "success.main"
-                              : "error.main"
-                          }
-                        >
-                          {contact.planStatus === "active"
-                            ? ""
-                            : "Plan Expired"}
-                        </Typography>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <>
+          <ReusableChat
+            contacts={fetchedSubscribers}
+            messages={messages}
+            selectedId={selectedUserId as string}
+            input={input!! as string}
+            isPlanActive={selectedUser?.planStatus === "active"}
+            isOnline={isOnline as boolean}
+            onContactClick={handleUserClick}
+            onInputChange={setInput}
+            onSendClick={handleSendMessage}
+            onEmojiClick={() => setShowPicker((prev) => !prev)}
+            chatLoading={chatLoading}
+            messagesEndRef={messagesEndRef}
+            currentUserId={trainer?._id || ""}
+          />
+          {showPicker && (
             <Box
+              ref={pickerRef}
               sx={{
-                p: 2,
-                bgcolor: "white",
-                borderBottom: 1,
-                borderColor: "grey.200",
-                display: "flex",
-                alignItems: "center",
+                position: "absolute",
+                bottom: "100px",
+                right: "30px",
+                zIndex: 1000,
               }}
             >
-              {selectedUserId ? (
-                <Avatar
-                  src={
-                    selectedUserId
-                      ? (fetchedSubscribers.find(
-                          (user) => user.userId === selectedUserId
-                        )?.profilePic ?? undefined)
-                      : ""
-                  }
-                  alt="User Image"
-                  sx={{ mr: 2 }}
-                >
-                  {selectedUserId
-                    ? fetchedSubscribers
-                        .find((user) => user.userId === selectedUserId)
-                        ?.name?.charAt(0)
-                    : ""}
-                </Avatar>
-              ) : (
-                ""
-              )}
-              <Stack spacing={0} alignItems="flex-start">
-                <Typography variant="h6" color="grey.700">
-                  {selectedUserId
-                    ? fetchedSubscribers.find(
-                        (user) => user.userId === selectedUserId
-                      )?.name
-                    : ""}
-                </Typography>
-
-                {selectedUserId && (
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <span
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        backgroundColor: isOnline ? "green" : "grey",
-                      }}
-                    ></span>
-                    <Typography
-                      variant="body2"
-                      color={isOnline ? "success.main" : "grey.500"}
-                    >
-                      {isOnline ? "Online" : "Offline"}
-                    </Typography>
-                  </Stack>
-                )}
-              </Stack>
-            </Box>
-
-            <Box
-              sx={{
-                flex: 1,
-                p: 2,
-                overflowY: "auto",
-                bgcolor: "grey.100",
-                scrollbarWidth: "none",
-              }}
-            >
-              {selectedUserId ? (
-                messages.length > 0 ? (
-                  messages.map((message) => (
-                    <Box
-                      ref={messagesEndRef}
-                      key={message._id}
-                      sx={{
-                        display: "flex",
-                        mb: 2,
-                        justifyContent:
-                          message.senderId.toString() ===
-                          trainer?._id.toString()
-                            ? "flex-end"
-                            : "flex-start",
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          maxWidth: "70%",
-                          p: 1,
-                          borderRadius: 2,
-                          bgcolor:
-                            message.senderId.toString() ===
-                            trainer?._id.toString()
-                              ? "black"
-                              : "grey.200",
-                          color:
-                            message.senderId.toString() ===
-                            trainer?._id.toString()
-                              ? "white"
-                              : "black",
-                          boxShadow: 1,
-                        }}
-                      >
-                        <Typography variant="body2">
-                          {message.message}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            display: "block",
-                            textAlign: "right",
-                            color:
-                              message.senderId.toString() ===
-                              trainer?._id.toString()
-                                ? "rgba(255, 255, 255, 0.7)"
-                                : "grey.600",
-                            mt: 0.5,
-                          }}
-                        >
-                          {new Date(message.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))
-                ) : (
-                  <Typography color="grey.500" align="center">
-                    No messages yet
-                  </Typography>
-                )
-              ) : (
-                <Typography color="grey.500" align="center">
-                  Please select a user to chat with
-                </Typography>
-              )}
-            </Box>
-
-            <Box
-              sx={{
-                p: 2,
-                bgcolor: "white",
-                borderTop: 1,
-                borderColor: "grey.200",
-                display: "flex",
-                gap: 1,
-                alignItems: "center",
-              }}
-            >
-              <TextField
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                variant="outlined"
-                size="small"
-                fullWidth
-                sx={{ bgcolor: "white" }}
-                disabled={!isPlanActive}
+              <Picker
+                onEmojiClick={onEmojiClick}
               />
-              <Box sx={{ position: "relative" }}>
-                <Button
-                  variant="outlined"
-                  onClick={() => setShowPicker((prev) => !prev)}
-                  sx={{ minWidth: "40px", p: 0.9 }}
-                  disabled={!isPlanActive}
-                >
-                  😊
-                </Button>
-                {showPicker && (
-                  <Box
-                    ref={pickerRef}
-                    sx={{
-                      position: "absolute",
-                      bottom: "50px",
-                      right: 0,
-                      zIndex: 1000,
-                    }}
-                  >
-                    <Picker
-                      onEmojiClick={onEmojiClick}
-                      disableAutoFocus={true}
-                      pickerStyle={{ width: "300px" }}
-                    />
-                  </Box>
-                )}
-              </Box>
-              <Button
-                variant="contained"
-                endIcon={<SendIcon />}
-                onClick={handleSendMessage}
-                sx={{
-                  borderRadius: 1,
-                  backgroundColor: "black",
-                  color: "white",
-                }}
-                disabled={!isPlanActive}
-              >
-                Send
-              </Button>
             </Box>
-          </Box>
-        </Box>
+          )}
+        </>
       )}
     </Box>
   );

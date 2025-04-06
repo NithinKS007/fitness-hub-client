@@ -37,7 +37,7 @@ const ViewTrainerDetailsUS = () => {
     (state: RootState) => state.content.playLists
   );
   const stripe = useStripe();
-  const isPurchaseableUser = user?.role === "user" && user;
+  const isPurchaseableUser = user?.role === "user" 
   const isUserLoggedIn = user ||trainer || admin
   const { isLoading, error } = useSelector(
     (state: RootState) => state.subscription

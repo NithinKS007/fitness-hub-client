@@ -5,10 +5,9 @@ interface TrainerSpecificationLeftSideProps {
   specializations: string[];
 }
 
-const TrainerSpecificationLeftSide: React.FC<TrainerSpecificationLeftSideProps> = ({
-  certifications,
-  specializations,
-}) => {
+const TrainerSpecificationLeftSide: React.FC<
+  TrainerSpecificationLeftSideProps
+> = ({ certifications, specializations }) => {
   return (
     <Box
       sx={{
@@ -23,13 +22,7 @@ const TrainerSpecificationLeftSide: React.FC<TrainerSpecificationLeftSideProps> 
         marginBottom: { xs: 2, md: 0 },
       }}
     >
-      <Typography variant="body1" color="text.secondary">
-        Rating: 4.5
-      </Typography>
-      <Typography variant="body1" color="text.secondary">
-        No of peoples Coached: 161
-      </Typography>
-      <Box mt={2}>
+      <Box>
         <Typography variant="subtitle1" gutterBottom>
           Interested in
         </Typography>

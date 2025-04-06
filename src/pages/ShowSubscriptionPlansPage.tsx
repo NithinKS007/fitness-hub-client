@@ -283,7 +283,7 @@ const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
 
               <List sx={{ p: 0 }}>
                 {[
-                  "Access to exclusive fitness content from your coach with ability to like and comment",
+                  "Access to exclusive fitness content from your coach",
                   "Book personalized time slots for workout schedule and diet plan discussions",
                   "24/7 chat access to your fitness coach for continuous support",
                   "Live virtual meetings with top fitness experts to address your questions and concerns",

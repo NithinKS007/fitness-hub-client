@@ -53,7 +53,7 @@ export interface QueryParams {
   limit: number;
   search: string;
   filters: string[];
-  fromDate: Dayjs;
+  fromDate: Dayjs 
   toDate: Dayjs;
 }
 

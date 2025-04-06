@@ -16,6 +16,7 @@ import PaginationTable from "../../../components/PaginationTable";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
+import { Dayjs } from "dayjs";
 
 const bookingRequestsColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -260,7 +261,7 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
         }}
       >
         <SearchBarTable
-          searchTerm={searchTerm}
+          searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
         <Box
@@ -272,13 +273,13 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
           }}
         >
           <TableFilter
-            selectedFilter={selectedFilter}
+            selectedFilter={selectedFilter as string[]}
             filter={filters}
             handleFilterChange={handleFilterChange}
           />
           <DateAndTimeFilter
-            fromDate={fromDate}
-            toDate={toDate}
+            fromDate={fromDate as Dayjs | null}
+            toDate={toDate as Dayjs | null}
             onFromDateChange={handleFromDateChange}
             onToDateChange={handleToDateChange}
             onReset={handleResetDates}
@@ -303,7 +304,7 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
         </>
       )}
       <ConfirmationModalDialog
-        open={approveModalOpen}
+        open={approveModalOpen as boolean}
         content={
           selectedBookingRequest &&
           `Are you sure you want to approve the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
@@ -316,7 +317,7 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
         cancelColor="primary"
       />
       <ConfirmationModalDialog
-        open={rejectModalOpen}
+        open={rejectModalOpen as boolean}
         content={
           selectedBookingRequest &&
           `Are you sure you want to reject the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`

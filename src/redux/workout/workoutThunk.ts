@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { WorkoutPayload } from "./workoutType";
+import { GetWorkoutsQuery, WorkoutPayload } from "./workoutType";
 
 export const addUserWorkout = createAsyncThunk(
   "workouts/addUserWorkout",
@@ -21,9 +21,9 @@ export const addUserWorkout = createAsyncThunk(
 
 export const getUserWorkouts = createAsyncThunk(
     "workouts/getUserWorkouts",
-    async (_, { rejectWithValue }) => {
+    async (params:GetWorkoutsQuery, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.get("user/workouts");
+        const response = await axiosInstance.get("user/workouts",{params});
         return response.data;
       } catch (error: any) {
         console.log(error);

@@ -1,4 +1,3 @@
-// ReusableChat.tsx
 import {
   Box,
   Typography,
@@ -18,7 +17,7 @@ interface ChatContact {
   _id: string;
   contactId: string; 
   name: string;
-  profilePic?: string;
+  profilePic: string | null
   planStatus: string;
 }
 
@@ -67,7 +66,7 @@ const ReusableChat = ({
     <Box
       sx={{
         height: "100vh",
-        maxHeight: "600px",
+        maxHeight: "620px",
         display: "flex",
         flexDirection: "column",
       }}

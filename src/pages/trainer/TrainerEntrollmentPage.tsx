@@ -12,7 +12,7 @@ const TrainerEntrollmentPage: React.FC = () => {
         <EntrollCoach
           handleOpen={handleOpen}
           handleClose={handleClose}
-          open={open}
+          open={open as boolean}
           formik={handleTrainerAuth}
         />
     </>

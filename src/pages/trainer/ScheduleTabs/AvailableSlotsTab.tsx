@@ -17,6 +17,7 @@ import PaginationTable from "../../../components/PaginationTable";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
+import { Dayjs } from "dayjs";
 
 const availableSlotColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -160,8 +161,8 @@ const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
           Add New Slot
         </Button>
         <DateAndTimeFilter
-          fromDate={fromDate}
-          toDate={toDate}
+          fromDate={fromDate as Dayjs | null}
+          toDate={toDate as Dayjs | null}
           onFromDateChange={handleFromDateChange}
           onToDateChange={handleToDateChange}
           onReset={handleResetDates}
@@ -182,14 +183,14 @@ const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
         </>
       )}
       <SlotModal
-        open={modalOpen}
+        open={modalOpen as boolean}
         handleClose={modalHandleClose}
         formik={slotFormik}
-        timeOptions={timeOptions}
+        timeOptions={timeOptions!! as string[]}
         handleDateChange={handleDateChange}
       />
       <ConfirmationModalDialog
-        open={deleteModalOpen}
+        open={deleteModalOpen as boolean}
         content={
           selectedSlot &&
           `Are you sure you want to delete the slot for ${new Date(selectedSlot.date).toLocaleDateString()} at ${selectedSlot.time}?`

@@ -51,7 +51,7 @@ const bookingSlot = createSlice({
             : "Failed to add slot";
       })
 
-      //get added slots from trainer side
+      //get added slots trainer
       .addCase(fetchAvailableSlots.pending, (state) => {
         state.isLoading = true;
       })

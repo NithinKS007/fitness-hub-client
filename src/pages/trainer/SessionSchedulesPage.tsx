@@ -68,7 +68,7 @@ const SessionSchedulesPage: React.FC = () => {
 
   return (
     <>
-      <Tabs tabItems={tabItems} value={selectedTab} handleChange={handleTabChange} />
+      <Tabs tabItems={tabItems} value={selectedTab as number} handleChange={handleTabChange} />
       {renderContent()}
       {callActive && roomId && (
         <Box sx={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}>

@@ -38,7 +38,9 @@ const workoutSlice = createSlice({
       })
       .addCase(getUserWorkouts.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.workouts = action.payload.data
+        state.workouts = action.payload.data.workoutList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
         state.error = null;
       })
       .addCase(getUserWorkouts.rejected, (state, action) => {

@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface WorkoutState {
   isLoading: boolean;
   error: string | null;
@@ -59,8 +61,16 @@ interface ISet {
     workouts: IWorkoutItem[];
     createdAt: Date;
     updatedAt: Date;
-    __v: number;
   }
   
+  export interface QueryParams {
+    page: number;
+    limit: number;
+    search: string;
+    filters: string[];
+    fromDate: Dayjs;
+    toDate: Dayjs;
+  }
+  export type GetWorkoutsQuery = QueryParams
 
 

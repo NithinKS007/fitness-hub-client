@@ -171,21 +171,6 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            PaperProps={{
-              sx: {
-                width: "160px",
-                mt: 1,
-                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.25)",
-              },
-            }}
           >
             {getMenuItems().map((item, index) => (
               <MenuItem
@@ -194,6 +179,7 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
                 sx={{
                   padding: "10px 15px",
                   color: "black",
+                  width:"150px"
                 }}
               >
                 {item.label}

@@ -279,7 +279,7 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
         open={confirmationModalOpen as boolean}
         content={
           selectedAppointment &&
-          `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`
+          `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?` 
         }
         onConfirm={handleConfirmCancel}
         onCancel={handleConfirmationModalClose}

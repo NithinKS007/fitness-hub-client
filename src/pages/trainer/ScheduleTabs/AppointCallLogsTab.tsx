@@ -12,6 +12,7 @@ import SearchBarTable from "../../../components/SearchBarTable";
 import TableFilter from "../../../components/TableFilter";
 import PaginationTable from "../../../components/PaginationTable";
 import { TableColumn } from "../../../types/tableTypes";
+import { Dayjs } from "dayjs";
 
 const videoCallLogColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -150,7 +151,7 @@ const AppointmentCallLogsTab: React.FC<AppointmentCallLogsTabProps> = ({
         }}
       >
         <SearchBarTable
-          searchTerm={searchTerm}
+          searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
         <Box
@@ -162,13 +163,13 @@ const AppointmentCallLogsTab: React.FC<AppointmentCallLogsTabProps> = ({
           }}
         >
           <TableFilter
-            selectedFilter={selectedFilter}
+            selectedFilter={selectedFilter as string[]}
             filter={filters}
             handleFilterChange={handleFilterChange}
           />
           <DateAndTimeFilter
-            fromDate={fromDate}
-            toDate={toDate}
+            fromDate={fromDate as Dayjs | null}
+            toDate={toDate as Dayjs | null}
             onFromDateChange={handleFromDateChange}
             onToDateChange={handleToDateChange}
             onReset={handleResetDates}

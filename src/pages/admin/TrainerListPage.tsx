@@ -190,13 +190,13 @@ const TrainerListPage: React.FC = () => {
     <>
       <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
         <SearchBarTable
-          searchTerm={searchTerm}
+          searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
         <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
           <TableFilter
             filter={filter}
-            selectedFilter={selectedFilter}
+            selectedFilter={selectedFilter as string[]}
             handleFilterChange={handleFilterChange}
           />
         </Box>
@@ -217,12 +217,12 @@ const TrainerListPage: React.FC = () => {
         </>
       )}
       <ConfirmationModalDialog
-        open={confirmationModalOpen}
+        open={confirmationModalOpen as boolean}
         content={
-          selectedTrainer &&
+          (selectedTrainer &&
           `Are you sure you want to ${
             selectedTrainer.isBlocked ? "unblock" : "block"
-          } ${selectedTrainer.fname} ${selectedTrainer.lname}?`
+          } ${selectedTrainer.fname} ${selectedTrainer.lname}?`) as string
         }
         onConfirm={handleConfirmBlockStatus}
         onCancel={handleConfirmationModalClose}

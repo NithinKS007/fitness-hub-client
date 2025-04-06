@@ -99,12 +99,12 @@ const SubscribersListPage: React.FC = () => {
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between",mt:5}}>
         <SearchBarTable
-          searchTerm={searchTerm}
+          searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
         <TableFilter
           filter={filter}
-          selectedFilter={selectedFilter}
+          selectedFilter={selectedFilter as string[]}
           handleFilterChange={handleFilterChange}
         />
       </Box>

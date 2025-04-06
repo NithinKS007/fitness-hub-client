@@ -211,12 +211,12 @@ const UserSubscriptionsPage: React.FC = () => {
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between",mt:5}}>
         <SearchBarTable
-          searchTerm={searchTerm}
+          searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
         <TableFilter
           filter={filter}
-          selectedFilter={selectedFilter}
+          selectedFilter={selectedFilter as string[]}
           handleFilterChange={handleFilterChange}
         />
       </Box>
@@ -236,7 +236,7 @@ const UserSubscriptionsPage: React.FC = () => {
         </>
       )}
       <ConfirmationModalDialog
-        open={confirmationModalOpen}
+        open={confirmationModalOpen as boolean}
         content={
           selectedSubscription &&
           `Are you sure you want to cancel your ${selectedSubscription.subPeriod.toLowerCase()} subscription with ${selectedSubscription.subscribedTrainerData.fname} ${selectedSubscription.subscribedTrainerData.lname}?`

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { createPlayList, AddVideo, RequestPlayListsByTrainerId, RequestVideosListByPlayListId, RequestVideoId} from "./contentTypes";
+import { createPlayList, AddVideo, RequestPlayListsByTrainerId, RequestVideosListByPlayListId, RequestVideoId, VideosQueryParams, PlayListQueryParams, UpdateVideoBlockStatus, UpdatePlayListBlockStatus} from "./contentTypes";
 
 export const addPlayList = createAsyncThunk(
     "content/addPlayList",
@@ -22,10 +22,10 @@ export const addPlayList = createAsyncThunk(
 
 export const getPlayListsOfTrainer = createAsyncThunk(
   "content/getPlayListsOfTrainer",
-  async (_, { rejectWithValue }) => {
+  async (params:PlayListQueryParams, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.get(`trainer/playlists/`);
+      const response = await axiosInstance.get(`trainer/playlists/`,{params});
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -57,10 +57,10 @@ export const addVideo = createAsyncThunk(
 
 export const getUploadedVideosOfTrainer = createAsyncThunk(
   "content/getUploadedVideosOfTrainer",
-  async (_, { rejectWithValue }) => {
+  async (params:VideosQueryParams, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.get(`trainer/videos/`);
+      const response = await axiosInstance.get(`trainer/videos/`,{params});
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -147,3 +147,44 @@ export const relatedVideosDataByPayListId = createAsyncThunk(
   }
 );
 
+
+export const updateVideoPrivacyStatus = createAsyncThunk(
+  "content/updateVideoPrivacyStatus",
+  async ({videoId,privacy}:UpdateVideoBlockStatus, { rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.patch(`trainer/videos/${videoId}`,{
+        privacy
+      })
+      return response.data
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to update block status");
+      }
+    }
+  }
+);
+
+
+export const updatePlayListPrivacyStatus = createAsyncThunk(
+  "content/updatePlayListPrivacyStatus",
+  async ({playListId,privacy}:UpdatePlayListBlockStatus, { rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.patch(`trainer/playlist/${playListId}`,{
+        privacy
+      });
+      return response.data
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to update block status");
+      }
+    }
+  }
+);

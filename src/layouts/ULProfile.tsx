@@ -16,10 +16,10 @@ import { AccountCircle } from "@mui/icons-material";
 
 const ULProfile: React.FC = () => {
   const user = useSelector((state: RootState) => state?.auth?.user);
-  const [callActive, setCallActive] = useState(false);
+  const [callActive, setCallActive] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string | null>(null);
-  const [callDialogOpen, setCallDialogOpen] = useState(false);
-  const [incomingCallData, setIncomingCallData] = useState (null);
+  const [callDialogOpen, setCallDialogOpen] = useState<boolean>(false);
+  const [incomingCallData, setIncomingCallData] = useState<any>(null);
 
   const userNavItems = [
     {
@@ -66,10 +66,16 @@ const ULProfile: React.FC = () => {
       socket.emit("register", user._id)
     });
 
-    socket.on("incomingCall", (data: any) => {
+    socket.on("incomingCall", (data:{  
+      callerId: string,
+      roomId: string,
+      appointmentId: string,
+      trainerName: string,
+      appointmentTime: string,
+      appointmentDate: string}) => {
       console.log("incoming call event triggered",data)
       const { callerId, roomId, appointmentId ,trainerName,appointmentTime,appointmentDate} = data;
-      if (callerId && roomId && appointmentId) {
+      if (callerId && roomId && appointmentId && trainerName && appointmentTime && appointmentDate) {
         setIncomingCallData({trainerName,appointmentTime,appointmentDate, callerId, roomId, appointmentId });
         setCallDialogOpen(true);
         console.log("Modal should open, callDialogOpen:", true);
@@ -132,7 +138,7 @@ const ULProfile: React.FC = () => {
             <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 1000 }}>
               <ZegoCloudVideoCall
                 roomId={roomId}
-                userId={user?._id}
+                userId={user?._id as string}
                 userName={`${user?.fname} ${user?.lname}`}
                 onEndCall={handleEndCall}
               />
@@ -141,7 +147,7 @@ const ULProfile: React.FC = () => {
         </div>
       </div>
       <ConfirmationModalDialog
-        open={callDialogOpen}
+        open={callDialogOpen as boolean}
         content={
           incomingCallData &&
           `Incoming call from ${incomingCallData?.trainerName} for appointment at ${incomingCallData?.appointmentTime} on ${new Date(incomingCallData.appointmentDate).toLocaleDateString()}. Accept?`

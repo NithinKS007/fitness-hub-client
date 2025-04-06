@@ -17,11 +17,12 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { PhotoCamera } from "@mui/icons-material";
 
 interface ProfileDetailsProps {
-  formik: any;
+  formik?: any;
   isEditable: boolean;
-  handleProfilePicChange: React.ChangeEventHandler<HTMLInputElement>;
-  changePasswordFormik: any;
+  handleProfilePicChange?: React.ChangeEventHandler<HTMLInputElement>;
+  changePasswordFormik?: any;
 }
+
 
 const UserProfile: React.FC<ProfileDetailsProps> = ({
   isEditable,

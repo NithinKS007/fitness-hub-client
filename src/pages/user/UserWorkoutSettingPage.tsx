@@ -1,18 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Box, IconButton, MenuItem, Menu } from "@mui/material";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import useWorkouts from "../../hooks/useWorkouts";
 import WorkOutModal from "../../components/WorkOutModal";
 import ReuseTable from "../../components/ReuseTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
-import { TableColumn } from "../../types/tableTypes";
+import { Filter, TableColumn } from "../../types/tableTypes";
 import SearchBarTable from "../../components/SearchBarTable";
 import PaginationTable from "../../components/PaginationTable";
-import DateFilter from "../../components/DateAndTimeFilter";
+import DateAndTimeFilter from "../../components/DateAndTimeFilter";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import AccessTimeIcon from '@mui/icons-material/AccessTime'; 
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
+import { getUserWorkouts } from "../../redux/workout/workoutThunk";
+import { useDispatch } from "react-redux";
+import TableFilter from "../../components/TableFilter";
+import { Dayjs } from "dayjs";
 
 const columns: TableColumn[] = [
   { label: "Date", field: "date" },
@@ -25,6 +30,8 @@ const columns: TableColumn[] = [
   { label: "Status", field: "setStatus" },
   { label: "More", field: "actions" },
 ];
+
+const filter: Filter[] = [{ value: "Completed" }, { value: "Pending" }];
 
 const UserWorkoutsPage: React.FC = () => {
   const {
@@ -48,10 +55,37 @@ const UserWorkoutsPage: React.FC = () => {
     anchorEl,
     selectedWorkoutSetId,
   } = useWorkouts();
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    handlePageChange,
+    searchTerm,
+    handleSearchChange,
+    selectedFilter,
+    handleFilterChange,
+    getQueryParams,
+    fromDate,
+    toDate,
+    handleFromDateChange,
+    handleToDateChange,
+    handleResetDates,
+  } = useSearchFilter();
 
-  const { workouts, isLoading, error } = useSelector(
+  useEffect(() => {
+    dispatch(getUserWorkouts(getQueryParams()));
+  }, [
+    dispatch,
+    getQueryParams().page,
+    getQueryParams().search,
+    getQueryParams().filters,
+    getQueryParams().fromDate,
+    getQueryParams().toDate,
+  ]);
+
+  const { workouts, isLoading, error,pagination } = useSelector(
     (state: RootState) => state.workout
   );
+
+  const { totalPages, currentPage } = pagination;
 
   console.log("work", workouts);
 
@@ -86,9 +120,15 @@ const UserWorkoutsPage: React.FC = () => {
                     </>
                   ) : (
                     <>
-                    <AccessTimeIcon sx={{ color: "red", fontSize: "20px", marginRight: "5px" }} />
-                    Pending
-                  </>
+                      <AccessTimeIcon
+                        sx={{
+                          color: "red",
+                          fontSize: "20px",
+                          marginRight: "5px",
+                        }}
+                      />
+                      Pending
+                    </>
                   )}
                 </>
               ),
@@ -162,7 +202,10 @@ const UserWorkoutsPage: React.FC = () => {
           marginTop: 3,
         }}
       >
-        {/* <SearchBarTable /> */}
+        <SearchBarTable
+          searchTerm={searchTerm as string}
+          handleSearchChange={handleSearchChange}
+        />
         <Box
           sx={{
             display: "flex",
@@ -172,7 +215,18 @@ const UserWorkoutsPage: React.FC = () => {
             width: "100%",
           }}
         >
-          {/* <DateFilter /> */}
+          <TableFilter
+            selectedFilter={selectedFilter as string[]}
+            handleFilterChange={handleFilterChange}
+            filter={filter}
+          />
+          <DateAndTimeFilter
+            fromDate={fromDate as Dayjs | null}
+            toDate={toDate as Dayjs | null}
+            onFromDateChange={handleFromDateChange}
+            onToDateChange={handleToDateChange}
+            onReset={handleResetDates}
+          />
           <Box
             sx={{
               display: "flex",
@@ -203,12 +257,15 @@ const UserWorkoutsPage: React.FC = () => {
       ) : (
         <>
           <ReuseTable columns={columns} data={fetchedWorkoutData} />
-
-          {/* <PaginationTable /> */}
+          <PaginationTable
+            handlePageChange={handlePageChange}
+            page={currentPage}
+            totalPages={totalPages}
+          />
         </>
       )}
       <WorkOutModal
-        open={open}
+        open={open as boolean}
         selectedDate={selectedDate}
         workoutData={workoutData}
         formik={formik}

@@ -181,16 +181,16 @@ const {
       </Box>
 
       <TrainerSubscriptionForm
-        open={open}
+        open={open as boolean}
         onClose={handleClose}
         subPeriods={subPeriods}
         formik={formik}
-        isEditMode={isEditMode}
+        isEditMode={isEditMode!! as boolean}
       />
       <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
 
       <ConfirmationModalDialog
-        open={confirmationDeleteModalOpen}
+        open={confirmationDeleteModalOpen as boolean}
         content={
           selectedSubscriptionForDelete
             ? `Are you sure you want to delete the ${selectedSubscriptionForDelete?.subPeriod.charAt(0).toUpperCase() + selectedSubscriptionForDelete.subPeriod.slice(1)} subscription?`
@@ -204,7 +204,7 @@ const {
         cancelColor="error"
       />
       <ConfirmationModalDialog
-        open={confirmationBlockblockModalOpen}
+        open={confirmationBlockblockModalOpen as boolean}
         content={
           selectedSubscriptionForBlock
             ? `Are you sure you want to ${

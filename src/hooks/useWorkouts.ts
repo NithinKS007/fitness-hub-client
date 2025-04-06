@@ -150,9 +150,7 @@ const useWorkouts = () => {
   const isExerciseDisabled = (bodyPart: string, exercise: string) =>
     formik.values.workouts.some((w) => w.bodyPart === bodyPart && w.exercise === exercise);
 
-  useEffect(() => {
-    dispatch(getUserWorkouts());
-  }, [dispatch])
+
 
    const handleDelete = async (setId: string) => {
       try {

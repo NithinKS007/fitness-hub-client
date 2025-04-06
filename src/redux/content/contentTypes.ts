@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface ContentState {
   isLoading: boolean;
   error: string | null;
@@ -5,6 +7,11 @@ export interface ContentState {
   videos:Video[],
   videoData:Video | null,
   relatedVideosData:Video[],
+  pagination: Pagination;
+}
+export interface Pagination {
+  currentPage: number;
+  totalPages: number;
 }
 
 export interface PlayList {
@@ -49,6 +56,29 @@ export interface RequestVideosListByPlayListId{
   playListId:string
 }
 
+export interface UpdateVideoBlockStatus{
+  videoId:string
+  privacy:boolean
+}
+
+export interface UpdatePlayListBlockStatus{
+  playListId:string
+  privacy:boolean
+}
+
 export interface RequestVideoId{
   videoId:string
 }
+
+
+export interface QueryParams {
+  page: number;
+  limit: number;
+  search: string;
+  filters: string[];
+  fromDate: Dayjs;
+  toDate: Dayjs;
+}
+
+export type VideosQueryParams = QueryParams
+export type PlayListQueryParams = QueryParams
