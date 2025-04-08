@@ -17,12 +17,10 @@ export interface ChatState {
 export interface TrainerChatList {
   createdAt: string;
   durationInWeeks: number;
-  endDate: string;
-  isActive: string;
   price: number;
   sessionsPerWeek: number;
-  startDate: string;
   stripePriceId: string;
+  stripeSubscriptionStatus:string
   stripeSubscriptionId: string;
   subPeriod: string;
   cancelAtPeriodEnd: boolean;
@@ -49,15 +47,12 @@ export interface TrainerChatList {
 export interface UserChatList {
   createdAt: string;  
   durationInWeeks: number; 
-  endDate: string;  
-  isActive: string; 
   price: number;  
   sessionsPerWeek: number; 
-  startDate: string; 
   stripePriceId: string;  
+  stripeSubscriptionStatus:string
   stripeSubscriptionId: string;  
   subPeriod: string; 
-  cancelAtPeriodEnd:boolean
   subscribedTrainerData:{
     email: string;
     fname: string;

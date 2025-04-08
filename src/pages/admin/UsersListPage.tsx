@@ -132,10 +132,10 @@ const UsersListPage: React.FC = () => {
                   onClick={(event) => handleClick(event, user?._id as string)}
                   aria-label="More options"
                   sx={{
-                    padding: "2px", 
+                    padding: "16px", 
                     minWidth: "0",  
-                    width: "37px",  
-                    height: "37px",
+                    width: "25px",  
+                    height: "25px",
                   }}
                 >
                   <MoreVertIcon sx={{ fontSize: "20px" }} />

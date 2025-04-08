@@ -31,17 +31,17 @@ const DBPageTrainer = () => {
 
   const dashboardItems = [
     {
-      content: "Total subscribers",
+      content: "Total subscriptions",
       number: totalSubscribersCount,
       icon: <People className="text-gray-600" />,
     },
     {
-      content: "Active subscribers",
+      content: "Active subscriptions",
       number: activeSubscribersCount,
       icon: <People className="text-gray-600" />,
     },
     {
-      content: "Canceled subscribers",
+      content: "Canceled subscrptions",
       number: canceledSubscribersCount,
       icon: <People className="text-gray-600" />,
     },

@@ -3,14 +3,15 @@ import { Dayjs } from "dayjs";
 export interface WorkoutState {
   isLoading: boolean;
   error: string | null;
-  workouts:WorkoutArray []
+  workouts: WorkoutsData[];
   pagination: Pagination;
-
 }
+
 interface Pagination {
-    currentPage: number;
-    totalPages: number;
-  }
+  currentPage: number;
+  totalPages: number;
+}
+
 interface ExerciseSet {
   kg: number;
   reps: number;
@@ -28,49 +29,28 @@ interface Workout {
   };
 }
 
-export interface WorkoutPayload {
+export interface AddnewWorkout {
   date: Date;
   workouts: Workout;
 }
 
+export interface WorkoutsData {
+  _id: string;
+  bodyPart: string;
+  date: string;
+  exerciseName: string;
+  isCompleted: boolean;
+  kg: number;
+  reps: number;
+  time: number;
+}
 
-interface ISet {
-    _id: string;
-    isCompleted:boolean
-    kg: number;
-    reps: number;
-    time: number;
-  }
-  
-  interface IExercise {
-    _id: string;
-    name: string;
-    sets: ISet[];
-  }
-  
-  interface IWorkoutItem {
-    _id: string;
-    bodyPart: string;
-    exercises: IExercise[];
-  }
-  
-  export interface WorkoutArray {
-    _id: string;
-    userId: string;
-    date: Date;
-    workouts: IWorkoutItem[];
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  
-  export interface QueryParams {
-    page: number;
-    limit: number;
-    search: string;
-    filters: string[];
-    fromDate: Dayjs;
-    toDate: Dayjs;
-  }
-  export type GetWorkoutsQuery = QueryParams
-
-
+export interface QueryParams {
+  page: number;
+  limit: number;
+  search: string;
+  filters: string[];
+  fromDate: Dayjs;
+  toDate: Dayjs;
+}
+export type GetworkoutsQuery = QueryParams;

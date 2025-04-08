@@ -24,6 +24,7 @@ const playListColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Title", field: "title" },
   { label: "Date Of Publishing", field: "dateOfPublishing" },
+  { label: "Publicly Accessible", field: "isBlocked" },
   { label: "No of videos", field: "videoCount" },
   { label: "Actions", field: "actions" },
 ];
@@ -140,8 +141,9 @@ const PlaylistSection = () => {
 
           return {
             ...list,
-            slno: index + 1,
+            slno: index + 1 + (currentPage - 1) * 9,
             title: list.title,
+            isBlocked:list.privacy,
             videoCount: list?.videoCount ? list.videoCount : 0,
             dateOfPublishing: `${formattedDate} ${formattedTime}`,
             actions: (

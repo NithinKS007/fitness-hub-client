@@ -14,8 +14,8 @@ import DateAndTimeFilter from "../../../components/DateAndTimeFilter";
 import useSearchFilter from "../../../hooks/useSearchFilterTable";
 import {
   getUploadedVideosOfTrainer,
-  getPlayListsOfTrainer,
   updateVideoPrivacyStatus,
+  fetchFullPlayListOfTrainer,
 } from "../../../redux/content/contentThunk";
 import { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
@@ -57,6 +57,8 @@ const VideoSection = () => {
     modalVideoOpen,
     handleVideoChange,
     handleThumbnailChange,
+    isEditMode, 
+    handleEditVideo,
   } = useContent();
 
   const {
@@ -92,10 +94,14 @@ const VideoSection = () => {
   const handleVideoCloseMenu = () => {
     setAnchorVideoEl(null);
     setSelectedVideoId(null);
+    
   };
 
   const editVideo = (id: string) => {
-    console.log("Edit Video", id);
+    const videoToEdit = videos.find((v) => v._id === id);
+    if (videoToEdit) {
+      handleEditVideo(videoToEdit)
+    }
     handleVideoCloseMenu();
   };
   const handleBlockAction = (video: Video) => {
@@ -124,7 +130,7 @@ const VideoSection = () => {
 
   useEffect(() => {
     dispatch(getUploadedVideosOfTrainer(getQueryParams()));
-    dispatch(getPlayListsOfTrainer(getQueryParams()));
+    dispatch(fetchFullPlayListOfTrainer());
   }, [
     dispatch,
     getQueryParams().page,
@@ -143,7 +149,7 @@ const VideoSection = () => {
 
           return {
             ...v,
-            slno: index + 1,
+            slno: index + 1 + (currentPage - 1) * 9,
             title: v.title,
             privacy: v.privacy,
             description: v.description,
@@ -271,7 +277,7 @@ const VideoSection = () => {
         formik={videoFormik}
         open={modalVideoOpen as boolean}
         onClose={modalVideoHandleClose}
-        isEditMode={false}
+        isEditMode={isEditMode as boolean}
         playLists={fetchedPlayListsIdAndNames}
         handleVideoChange={handleVideoChange}
         handleThumbnailChange={handleThumbnailChange}

@@ -7,10 +7,31 @@ import { updateUserProfile,updateTrainerProfile } from "../redux/auth/authThunk"
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { setTrainer, setUser } from "../redux/auth/authSlice";
 import { imageSchema,pdfSchema } from "../utils/validationSchema";
-
+interface InitialValues {
+  _id: string;
+  fname: string;
+  lname: string;
+  email: string;
+  dateOfBirth: string;
+  phone: string;
+  profilePic: string;
+  role: string;
+  aboutMe: string;
+  yearsOfExperience: string;
+  certifications: string[];
+  specializations: string[];
+  userId: string;
+  gender: string;
+  age: string;
+  height: string;
+  weight: string;
+  bloodGroup: string;
+  medicalConditions: string;
+  otherConcerns: string;
+}
 const useUpdateProfileForm = (profileData: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [initialValues, setInitialValues] = useState<any>({
+  const [initialValues , setInitialValues] = useState<InitialValues>({
     _id: "",
     fname: "",
     lname: "",
@@ -31,7 +52,7 @@ const useUpdateProfileForm = (profileData: any) => {
     bloodGroup:"",
     medicalConditions:"",
     otherConcerns:"",
-  });
+  }) as InitialValues
 
   useEffect(() => {
     if (profileData) {

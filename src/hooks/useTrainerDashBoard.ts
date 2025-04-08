@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { getTrainerDashBoardData } from "../redux/dashboard/dashboardThunk";
+import { SelectChangeEvent } from "@mui/material/Select";
+
 
 const useTrainerDashBoard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,8 +26,10 @@ const useTrainerDashBoard = () => {
   }, [dispatch, selectedTimePeriod]);
 
   const handleTimePeriodChange = (
-    event: React.ChangeEvent<{ value: unknown }>
+    event: SelectChangeEvent<string>
   ) => {
+
+    console.log(event.target.value,"i am target")
     setSelectedTimePeriod(event.target.value as string);
   };
 

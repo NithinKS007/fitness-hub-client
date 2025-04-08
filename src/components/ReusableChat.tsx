@@ -115,6 +115,8 @@ const ReusableChat = ({
                     },
                     borderRadius: 1,
                     mx: 1,
+                    height: 64,
+                    transition: "background-color 0.3s ease"
                   }}
                 >
                   <ListItemAvatar>
@@ -181,7 +183,7 @@ const ReusableChat = ({
                         variant="body2"
                         color={isOnline ? "success.main" : "grey.500"}
                       >
-                        {isOnline ? "Online" : "Offline"}
+                        {isOnline ? "online" : "offline"}
                       </Typography>
                     </Stack>
                   )}

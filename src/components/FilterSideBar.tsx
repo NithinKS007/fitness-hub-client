@@ -17,13 +17,13 @@ import { Add, Remove, Close } from "@mui/icons-material";
 interface FilterSidebarProps {
   filters: any[];
   open: boolean;
-  filterValues: { [key: string]: any };
+  filterValues: any
   onCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>, filterLabel: string) => void;
   onResetAll: () => void;
   onApply: () => void;
   onToggleFilter: (filterLabel: string) => void;
   onClose: () => void;
-  openFilters: { [key: string]: any };
+  openFilters: any
 }
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({

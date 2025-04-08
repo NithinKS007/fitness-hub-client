@@ -14,7 +14,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
-import { getUserWorkouts } from "../../redux/workout/workoutThunk";
+import { getWorkouts } from "../../redux/workout/workoutThunk";
 import { useDispatch } from "react-redux";
 import TableFilter from "../../components/TableFilter";
 import { Dayjs } from "dayjs";
@@ -71,7 +71,7 @@ const UserWorkoutsPage: React.FC = () => {
   } = useSearchFilter();
 
   useEffect(() => {
-    dispatch(getUserWorkouts(getQueryParams()));
+    dispatch(getWorkouts(getQueryParams()));
   }, [
     dispatch,
     getQueryParams().page,
@@ -81,115 +81,117 @@ const UserWorkoutsPage: React.FC = () => {
     getQueryParams().toDate,
   ]);
 
-  const { workouts, isLoading, error,pagination } = useSelector(
+  const { workouts, isLoading, error, pagination } = useSelector(
     (state: RootState) => state.workout
   );
 
   const { totalPages, currentPage } = pagination;
-
-  console.log("work", workouts);
-
-  const mapWorkoutData = (workouts: any) => {
-    return workouts.flatMap((workout: any) => {
+  const mapWorkoutData = (workouts: any[]) => {
+    if (workouts.length === 0) return [];
+    const groupedWorkouts = workouts.reduce((acc, workout) => {
       const formattedDate = new Date(workout.date).toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
         year: "numeric",
+        month: "long",
+        day: "numeric",
       });
+      const key = `${formattedDate}-${workout.exerciseName}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(workout);
+      return acc;
+    }, {});
 
-      return workout.workouts.flatMap((workoutItem: any) =>
-        workoutItem.exercises.flatMap((exercise: any) =>
-          exercise.sets.map((set: any, setIndex: number) => {
-            return {
-              date: formattedDate,
-              bodyPart: workoutItem.bodyPart,
-              exerciseName: exercise.name,
-              setNumber: `Set ${setIndex + 1}`,
-              setStatus: (
-                <>
-                  {set.isCompleted ? (
-                    <>
-                      <CheckCircleIcon
-                        sx={{
-                          color: "green",
-                          fontSize: "20px",
-                          marginRight: "5px",
-                        }}
-                      />
-                      Completed
-                    </>
-                  ) : (
-                    <>
-                      <AccessTimeIcon
-                        sx={{
-                          color: "red",
-                          fontSize: "20px",
-                          marginRight: "5px",
-                        }}
-                      />
-                      Pending
-                    </>
-                  )}
-                </>
-              ),
-              kg: set.kg,
-              reps: set.reps,
-              time: set.time,
-              actions: (
-                <>
-                  <IconButton
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
-                    onClick={(event) =>
-                      handleMenuClick(event, set._id.toString())
-                    }
-                    sx={{
-                      padding: "2px",
-                      minWidth: "0",
-                      width: "25px",
-                      height: "25px",
-                    }}
-                  >
-                    <MoreVertIcon sx={{ fontSize: "20px" }} />
-                  </IconButton>
-                  <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    sx={{
-                      "& .MuiPaper-root": {
-                        boxShadow: "none",
-                        border: "1px solid",
-                        borderColor: "grey.400",
-                        borderRadius: 2,
-                      },
-                    }}
-                    open={
-                      Boolean(anchorEl) &&
-                      selectedWorkoutSetId === set._id.toString()
-                    }
-                    onClose={handleMenuClose}
-                  >
-                    <MenuItem onClick={() => handleDelete(set._id.toString())}>
-                      Delete
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleComplete(set._id.toString())}
-                      disabled={set.isCompleted}
-                    >
-                      Mark Complete
-                    </MenuItem>
-                  </Menu>
-                </>
-              ),
-            };
-          })
-        )
-      );
-    });
+    return Object.values(groupedWorkouts).flatMap((group: any) =>
+      group.map((workout: any, index: number) => ({
+        date: new Date(workout.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        bodyPart: workout.bodyPart,
+        exerciseName: workout.exerciseName,
+        setNumber: `Set ${index + 1}`,
+        setStatus: (
+          <>
+            {workout.isCompleted ? (
+              <>
+                <CheckCircleIcon
+                  sx={{
+                    color: "green",
+                    fontSize: "20px",
+                    marginRight: "5px",
+                  }}
+                />
+                Completed
+              </>
+            ) : (
+              <>
+                <AccessTimeIcon
+                  sx={{
+                    color: "red",
+                    fontSize: "20px",
+                    marginRight: "5px",
+                  }}
+                />
+                Pending
+              </>
+            )}
+          </>
+        ),
+        kg: workout.kg,
+        reps: workout.reps,
+        time: workout.time,
+        actions: (
+          <>
+            <IconButton
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={(event) =>
+                handleMenuClick(event, workout._id.toString())
+              }
+              sx={{
+                padding: "2px",
+                minWidth: "0",
+                width: "25px",
+                height: "25px",
+              }}
+            >
+              <MoreVertIcon sx={{ fontSize: "20px" }} />
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              sx={{
+                "& .MuiPaper-root": {
+                  boxShadow: "none",
+                  border: "1px solid",
+                  borderColor: "grey.400",
+                  borderRadius: 2,
+                },
+              }}
+              open={
+                Boolean(anchorEl) &&
+                selectedWorkoutSetId === workout._id.toString()
+              }
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={() => handleDelete(workout._id.toString())}>
+                Delete
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleComplete(workout._id.toString())}
+                disabled={workout.isCompleted}
+              >
+                Mark Complete
+              </MenuItem>
+            </Menu>
+          </>
+        ),
+      }))
+    );
   };
-
-  const fetchedWorkoutData = mapWorkoutData(workouts);
 
   return (
     <>
@@ -256,7 +258,7 @@ const UserWorkoutsPage: React.FC = () => {
         <Box>{error}</Box>
       ) : (
         <>
-          <ReuseTable columns={columns} data={fetchedWorkoutData} />
+          <ReuseTable columns={columns} data={mapWorkoutData(workouts)} />
           <PaginationTable
             handlePageChange={handlePageChange}
             page={currentPage}

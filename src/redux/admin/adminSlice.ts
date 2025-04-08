@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { AdminState } from "./adminTypes";
 import {
   getApprovalPendingList,
+  getRevenueData,
   getTrainers,
   getUsers,
   trainerDetails,
@@ -17,6 +18,7 @@ const initialState: AdminState = {
   error: null,
   userDetails: {},
   trainerDetails: {},
+  revenueData:[],
   pagination:{ totalPages: 0, currentPage: 1}
 };
 
@@ -160,7 +162,26 @@ const adminSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to retrieve trainerDetails";
-      });
+      })
+
+      //get revenue history
+      .addCase(getRevenueData.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getRevenueData.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.revenueData = action.payload.data.revenueData
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.error = null;
+      })
+      .addCase(getRevenueData.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to retrieve revenueData";
+      })
 
   },
 });

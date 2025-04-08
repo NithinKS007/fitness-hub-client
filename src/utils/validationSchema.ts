@@ -259,6 +259,24 @@ export const createPlayListSchema = Yup.object({
     .max(100, "Title can't be more than 100 characters"),
 });
 
+export const videoFileSchema = Yup.mixed()
+  .required("Video is required")
+  .test("fileType", "Unsupported video format", (value) => {
+    return value && ["video/mp4", "video/webm", "video/ogg"].includes((value as File).type);
+  });
+
+export const thumbnailFileSchema = Yup.mixed()
+  .required("Thumbnail is required")
+  .test("fileSize", "Thumbnail file is too large", (value) => {
+    return value && (value as File).size <= 20 * 1024 * 1024;
+  })
+  .test("fileType", "Unsupported image format", (value) => {
+    return (
+      value &&
+      ["image/jpeg", "image/png", "image/gif", "image/webp"].includes((value as File).type)
+    );
+  });
+
 export const videoCreationSchema = Yup.object().shape({
   title: Yup.string()
     .min(3, "Title must be at least 3 characters")
@@ -267,31 +285,13 @@ export const videoCreationSchema = Yup.object().shape({
   description: Yup.string()
     .max(500, "Description must not exceed 500 characters")
     .required("Description is required"),
-  video: Yup.mixed()
-    .required("Video file is required")
-    .test("fileType", "Unsupported video format", (value) => {
-      return (
-        value &&
-        ["video/mp4", "video/webm", "video/ogg"].includes((value as File).type)
-      );
-    }),
-  thumbnail: Yup.mixed()
-    .required("Thumbnail image is required")
-    .test("fileSize", "Thumbnail file is too large", (value) => {
-      return value && (value as File).size <= 20 * 1024 * 1024;
-    })
-    .test("fileType", "Unsupported image format", (value) => {
-      return (
-        value &&
-        ["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
-          (value as File).type
-        )
-      );
-    }),
   playLists: Yup.array()
     .of(Yup.string())
     .min(1, "One playlist is required")
     .required("Playlists are required"),
+    duration: Yup.number()
+    .min(0, "Duration cannot be negative")
+    .required("Duration is required"),
 });
 
 export const createSlotSchema = Yup.object().shape({

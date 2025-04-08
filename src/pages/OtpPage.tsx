@@ -33,17 +33,19 @@ const OtpPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const otpString = otpData.join("");
-    if (otpString.length === numberOfDigits) {
-      await handleVerifyOtp(otpString, event);
-      setOtpData(new Array(6).fill(""));
+    if(otpData){
+      const otpString = otpData.join("");
+      if (otpString.length === numberOfDigits) {
+        await handleVerifyOtp(otpString, event);
+        setOtpData(new Array(6).fill(""));
+      }
     }
   };
 
   return (
     <OtpForm
-      otpData={otpData}
-      isTimerExpired={isTimerExpired}
+      otpData={otpData!! as string[]}
+      isTimerExpired={isTimerExpired as boolean}
       handleResendOtp={handleResendOtp}
       handleVerifyOtp={handleVerifyOtp}
       otp={otp}

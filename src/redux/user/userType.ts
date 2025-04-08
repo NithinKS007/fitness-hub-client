@@ -9,12 +9,14 @@ export interface userState {
   pagination: Pagination;
 }
 
-export interface RequestApprovedTrainerListParams {
+export interface ListApprovedTrainersQuery {
   Search?: string;
   Specialization?: string[];
   Experience?: string[];
   Gender?: string[];
-  Sort?:string
+  sort?:string
+  page: number;
+  limit: number;
 }
 interface Pagination {
   currentPage: number;

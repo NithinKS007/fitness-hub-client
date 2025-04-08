@@ -72,7 +72,7 @@ export const useSearchFilterListing = () => {
   useEffect(() => {
     dispatch(getApprovedTrainers({
       Search: debouncedSearchTerm,
-      page,
+      page:page as number,
       limit: rowsPerPage,
       sort: sortValue,
     }));

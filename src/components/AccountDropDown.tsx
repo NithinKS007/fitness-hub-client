@@ -36,6 +36,7 @@ const adminMenuItems = [
   { label: "Users", action: "admin-users", path: "/admin/users" },
   { label: "Trainers", action: "admin-trainers", path: "/admin/trainers" },
   { label: "Inbox", action: "admin-inbox", path: "/admin/inbox" },
+  { label: "Commission", action: "admin-commission", path: "/admin/commission" },
   { label: "Signout", action: "signout", path: "" },
 ];
 
@@ -179,7 +180,7 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
                 sx={{
                   padding: "10px 15px",
                   color: "black",
-                  width:"150px"
+                  width:"180px"
                 }}
               >
                 {item.label}

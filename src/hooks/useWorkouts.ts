@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import dayjs, { Dayjs } from "dayjs";
 import { workoutValidationSchema } from "../utils/validationSchema";
@@ -6,7 +6,7 @@ import { useModal } from "./useModal";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
-import { addUserWorkout, deleteWorkoutSet, getUserWorkouts, markSetAsCompleted } from "../redux/workout/workoutThunk";
+import { addWorkout, deleteSet,markCompleted } from "../redux/workout/workoutThunk";
 
 interface WorkoutItem {
   bodyPart: string;
@@ -113,7 +113,7 @@ const useWorkouts = () => {
 
       console.log("Sending to backend:", workoutPayload);
       try {
-        const response = await dispatch(addUserWorkout(workoutPayload)).unwrap();
+        const response = await dispatch(addWorkout(workoutPayload)).unwrap();
         console.log("response for adding workout", response);
         showSuccessToast(response.message);
         handleClose();
@@ -154,7 +154,7 @@ const useWorkouts = () => {
 
    const handleDelete = async (setId: string) => {
       try {
-        const response = await dispatch(deleteWorkoutSet(setId)).unwrap();
+        const response = await dispatch(deleteSet(setId)).unwrap();
   
         console.log("response received for deleteting set", response);
         showSuccessToast(response.message);

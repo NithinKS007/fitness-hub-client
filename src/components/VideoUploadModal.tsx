@@ -100,7 +100,7 @@ const VideoUpload = ({
             startIcon={<VideoCameraBackIcon />}
             sx={{ width: { xs: "100%", sm: "auto" } }}
           >
-            Upload Video
+            {isEditMode ? "Change Video" : "Upload Video"}
             <input
               type="file"
               hidden
@@ -124,7 +124,7 @@ const VideoUpload = ({
             component="label"
             sx={{ width: { xs: "100%", sm: "auto" } }}
           >
-            Upload Thumbnail
+            {isEditMode ? "Change Thumbnail" : "Upload Thumbnail"}
             <input
               type="file"
               hidden

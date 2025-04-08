@@ -16,7 +16,7 @@ import PaginationTable from "../components/PaginationTable";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import ReuseSort from "../components/Sort";
-
+import Error from "../components/Error";
 
 const GetTrainer: React.FC = () => {
   const {
@@ -41,14 +41,14 @@ const GetTrainer: React.FC = () => {
 
     handleSortChange,
     sortValue,
-    sortOptions
+    sortOptions,
   } = useSearchFilterListing();
 
   const { totalPages, currentPage } = useSelector(
     (state: RootState) => state.user.pagination
   );
 
-  if (error) return <div>{error}</div>;
+  if (error) return <Error message={error} />;
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -80,7 +80,11 @@ const GetTrainer: React.FC = () => {
           }}
         />
         <Box sx={{ display: "flex", gap: 2 }}>
-          <ReuseSort onChange={handleSortChange} sortValue={sortValue} sortOption={sortOptions} />
+          <ReuseSort
+            onChange={handleSortChange}
+            sortValue={sortValue as string}
+            sortOption={sortOptions}
+          />
           <FilterButton onClick={toggleSidebar} />
         </Box>
       </Box>

@@ -188,3 +188,56 @@ export const updatePlayListPrivacyStatus = createAsyncThunk(
     }
   }
 );
+
+export const editVideo = createAsyncThunk(
+  "content/editVideo",
+  async (videoData: {_id: string;title: string;description: string;
+    video: string;thumbnail: string;playLists: string[];duration: number;},{ rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(`trainer/videos/${videoData._id}`, videoData);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to update video");
+      }
+    }
+  }
+);
+
+export const editPlayList = createAsyncThunk(
+  "content/editPlayList",
+  async (playListData: {playListId: string;title: string},{ rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(`trainer/playlist/${playListData.playListId}`,playListData);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to update playlist");
+      }
+    }
+  }
+);
+
+export const fetchFullPlayListOfTrainer = createAsyncThunk(
+  "content/fetchFullPlayListOfTrainer",
+  async (_, { rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.get(`trainer/playlist-all/`);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to get full playlist of trainer");
+      }
+    }
+  }
+);

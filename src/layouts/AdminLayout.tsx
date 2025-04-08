@@ -4,6 +4,7 @@ import { Dashboard, People, Mail } from "@mui/icons-material";
 import { SiTrainerroad } from "react-icons/si";
 import SideNavBar from "../components/DashBoardSideNavBar";
 import TopNavbar from "../components/DashBoardTopBar";
+import { FaMoneyBillWave } from "react-icons/fa";
 
 const AdminLayout: React.FC = () => {
   const adminNavItems = [
@@ -15,6 +16,7 @@ const AdminLayout: React.FC = () => {
       path: "/admin/trainers",
     },
     { icon: <Mail />, text: "INBOX", path: "/admin/inbox" },
+    { icon: <FaMoneyBillWave size={24} />, text: "COMMISSION", path: "/admin/commission" }
   ];
 
   return (

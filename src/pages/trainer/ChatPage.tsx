@@ -38,7 +38,7 @@ const ChatPage = () => {
     contactId: user.userId,
     name: `${user.subscribedUserData.fname} ${user.subscribedUserData.lname}`,
     profilePic: user.subscribedUserData.profilePic,
-    planStatus: `${user.isActive}`,
+    planStatus: `${user.stripeSubscriptionStatus}`,
   }));
 
   useEffect(() => {

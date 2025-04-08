@@ -9,6 +9,37 @@ export interface AdminState {
   userDetails: User | {};
   trainerDetails: Trainer | {};
   pagination: Pagination;
+  revenueData:AdminRevenueHistory[]
+}
+
+interface AdminRevenueHistory {
+  amountPaid:number
+  commission:number
+  createdAt:Date
+  platformRevenue:number
+  trainerRevenue:number
+  subscriptionId:string
+  userId:string
+  trainerId:string
+  userSubscriptionPlanId:string
+  subscriptionProvidedBy:{
+    email:string
+    fname:string
+    lname:string
+    phone:string
+    profilePic:string
+  }
+  subscriptionTakenBy:{
+    email:string
+    fname:string
+    lname:string
+    phone:string
+    profilePic:string
+  }
+  subscriptionPlanData:{
+    stripeSubscriptionStatus:string
+    subPeriod:string
+  }
 }
 
 interface Pagination {
@@ -60,3 +91,4 @@ export interface QueryParams {
 export type UsersListQueryParams = Omit<QueryParams, "fromDate" | "toDate">;
 export type TrainersListQueryParams = Omit<QueryParams, "fromDate" | "toDate">;
 export type InboxListQueryParams = Omit<QueryParams, "filters" | "">;
+export type RevenueDataQueryParams = QueryParams

@@ -33,7 +33,7 @@ const UserChatsPage = () => {
     contactId: trainer.trainerId, 
     name: `${trainer.subscribedTrainerData.fname} ${trainer.subscribedTrainerData.lname}`,
     profilePic: trainer.subscribedTrainerData.profilePic,
-    planStatus: `${trainer.isActive}`,
+    planStatus: `${trainer.stripeSubscriptionStatus}`,
   }));
 
   useEffect(() => {

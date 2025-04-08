@@ -2,8 +2,14 @@ import React from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import { useModal } from "../hooks/useModal";
+import useAuthForm from "../hooks/useAuthForm";
+import TrainerAuthForm from "../components/TrainerAuthForm";
 
 const HomePage: React.FC = () => {
+  const { handleOpen, handleClose, open } = useModal();
+  const { handleTrainerAuth } = useAuthForm();
+
   const steps = [
     {
       title: "Create an Account",
@@ -66,13 +72,27 @@ const HomePage: React.FC = () => {
               Join a community of fitness enthusiasts, get expert guidance, and
               track your journey to a healthier you.
             </p>
-            <button
-              className="bg-black
-             text-white font-semibold py-3 px-8 rounded-full
-              transition duration-300 shadow-lg hover:shadow-xl"
-            >
-              Get Started
-            </button>
+            <div className="flex flex-row items-center justify-center space-x-4">
+  <button
+    className="bg-black text-white font-semibold py-5 px-4 rounded-md transition duration-300 shadow-md hover:shadow-lg text-sm w-32"
+  >
+    Get Started
+  </button>
+
+  <button
+    className="bg-black text-white font-semibold py-2.5 px-4 rounded-md transition duration-300 shadow-md hover:shadow-lg cursor-pointer text-sm w-32"
+    onClick={handleOpen}
+  >
+    ENROLL AS A COACH
+  </button>
+
+  <TrainerAuthForm
+    handleClose={handleClose}
+    open={open as boolean}
+    formik={handleTrainerAuth}
+  />
+</div>
+
           </div>
         </div>
       </section>

@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { GetWorkoutsQuery, WorkoutPayload } from "./workoutType";
+import { GetworkoutsQuery, AddnewWorkout } from "./workoutType";
 
-export const addUserWorkout = createAsyncThunk(
-  "workouts/addUserWorkout",
-  async (workouts:WorkoutPayload, { rejectWithValue }) => {
+export const addWorkout = createAsyncThunk(
+  "workouts/addWorkout",
+  async (workouts:AddnewWorkout, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("user/add-workout",workouts);
       return response.data;
@@ -19,9 +19,9 @@ export const addUserWorkout = createAsyncThunk(
   }
 );
 
-export const getUserWorkouts = createAsyncThunk(
-    "workouts/getUserWorkouts",
-    async (params:GetWorkoutsQuery, { rejectWithValue }) => {
+export const getWorkouts = createAsyncThunk(
+    "workouts/getWorkouts",
+    async (params:GetworkoutsQuery, { rejectWithValue }) => {
       try {
         const response = await axiosInstance.get("user/workouts",{params});
         return response.data;
@@ -36,8 +36,8 @@ export const getUserWorkouts = createAsyncThunk(
     }
   );
 
-  export const deleteWorkoutSet = createAsyncThunk(
-    "workouts/deleteWorkoutSet",
+  export const deleteSet = createAsyncThunk(
+    "workouts/deleteSet",
     async (setId:string, { rejectWithValue }) => {
       try {
         const response = await axiosInstance.delete(`user/delete-workout-set/${setId}`);
@@ -54,8 +54,8 @@ export const getUserWorkouts = createAsyncThunk(
   );
   
 
-  export const markSetAsCompleted = createAsyncThunk(
-    "workouts/markSetAsCompleted",
+  export const markCompleted = createAsyncThunk(
+    "workouts/markCompleted",
     async (setId:string, { rejectWithValue }) => {
       try {
         const response = await axiosInstance.patch(`user/complete-workout-set/${setId}`);

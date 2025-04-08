@@ -23,7 +23,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ navItems }) => {
           {navItems && navItems.length > 0 ? (
             navItems.map((item, index) => (
               <Link key={index} to={item?.path}>
-                <Tooltip title={item?.text} placement="right">
+                <Tooltip title={item?.text} placement="right" >
                 <li
                   className={`px-4 py-3 flex items-center space-x-3 cursor-pointer mt-2 ${
                     location?.pathname === item?.path

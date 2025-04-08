@@ -21,7 +21,6 @@ import useSignOut from "../hooks/useSignOut";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Get a Coach", href: "/find-trainer" },
-  { label: "Entroll as a coach", href: "/trainer-entrollment" },
 ];
 
 interface TopNavBarProps {

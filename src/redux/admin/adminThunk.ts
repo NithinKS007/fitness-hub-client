@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosinstance from "../../config/axios";
-import { TrainersListQueryParams,UsersListQueryParams,InboxListQueryParams, RequestTrainerDetails, RequestTrainerVerification, RequestUserDetails, updateBlockStatus } from "./adminTypes";
+import { TrainersListQueryParams,UsersListQueryParams,InboxListQueryParams, RequestTrainerDetails, RequestTrainerVerification, RequestUserDetails, updateBlockStatus, RevenueDataQueryParams } from "./adminTypes";
 
 export const getUsers = createAsyncThunk(
   "admin/getUsers",
@@ -119,3 +119,20 @@ export const trainerDetails = createAsyncThunk(
     }
   }
 );
+
+export const getRevenueData = createAsyncThunk(
+  "admin/getRevenueData",
+  async (params:RevenueDataQueryParams, { rejectWithValue }) => {
+    try {
+      const response = await axiosinstance.get(`/admin/revenue/`,{params});
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to retrieve revenue data");
+      }
+    }
+  }
+);
+

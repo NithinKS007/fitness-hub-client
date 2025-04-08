@@ -3,6 +3,7 @@ import { ContentState } from "./contentTypes";
 import {
   addPlayList,
   addVideo,
+  fetchFullPlayListOfTrainer,
   fetchVideoDataById,
   fetchVideosByPlayListId,
   getPlayListsAvailableByTrainerId,
@@ -213,14 +214,30 @@ const content = createSlice({
         state.error = null;
         state.error = null;
       })
-
       .addCase(updatePlayListPrivacyStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
             : "Failed to update block status";
-      });
+      })
+      
+      //get full playlist
+      .addCase(fetchFullPlayListOfTrainer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchFullPlayListOfTrainer.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.playLists = action.payload.data
+      })
+      .addCase(fetchFullPlayListOfTrainer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get full playlists of trainer";
+      })
   },
 });
 

@@ -11,7 +11,6 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import HomePage from "./pages/HomePage";
 import AdminLayouts from "./layouts/AdminLayout";
 import UsersListPage from "./pages/admin/UsersListPage";
-import TrainerEntrollmentPage from "./pages/trainer/TrainerEntrollmentPage";
 import TrainerListPage from "./pages/admin/TrainerListPage";
 import InboxPage from "./pages/admin/InboxPage";
 import TrainerLayout from "./layouts/TrainerLayout";
@@ -39,6 +38,7 @@ import OnSuccessPage from "./pages/OnSuccessPage";
 import TrainerVideosGrid from "./pages/TrainerVideosGrid";
 import VideoPlayer from "./pages/VideoPlayer";
 import UserWorkoutsPage from "./pages/user/UserWorkoutSettingPage";
+import CommissionHistory from "./pages/admin/CommissionHistory";
 
 const App = () => {
   return (
@@ -54,10 +54,6 @@ const App = () => {
       <Route element={<ULwithNavFooter />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/find-trainer" element={<GetTrainer />} />
-        <Route
-          path="/trainer-entrollment"
-          element={<TrainerEntrollmentPage />}
-        />
 
         <Route element={<ProtectedUser />}>
           <Route path="/subscription-success" element={<OnSuccessPage />} />
@@ -98,6 +94,7 @@ const App = () => {
           <Route path="/admin/users" element={<UsersListPage />} />
           <Route path="/admin/trainers" element={<TrainerListPage />} />
           <Route path="/admin/inbox" element={<InboxPage />} />
+          <Route path="/admin/commission" element={<CommissionHistory />} />
           <Route
             path="/admin/trainer-details/:_id"
             element={<TrainerDetailsPage />}
