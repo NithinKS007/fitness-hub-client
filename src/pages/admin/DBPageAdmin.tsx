@@ -1,4 +1,4 @@
-import DashBoardBox from "../../components/DashBoardBox";
+import DashBoardBox from "../../components/dashboard/DashBoardBox";
 import { Box, Typography } from "@mui/material";
 import {
   People,
@@ -11,8 +11,8 @@ import {
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import useAdminDashBoard from "../../hooks/useAdminDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import ReusableLineChart from "../../components/LineChart";
-import ProgressBar from "../../components/ProgressBar";
+import ReusableLineChart from "../../components/dashboard/LineChart";
+import ProgressBar from "../../components/dashboard/ProgressBar";
 import CommissionHistory from "./CommissionHistory";
 
 const DBPageAdmin = () => {

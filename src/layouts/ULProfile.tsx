@@ -10,7 +10,7 @@ import { socket } from "../config/socket";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import ZegoCloudVideoCall from "../components/VideoCallZego";
-import ConfirmationModalDialog from "../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../components/modals/ConfirmationModalDialog";
 import { FiTrendingUp } from "react-icons/fi";
 import { AccountCircle } from "@mui/icons-material";
 

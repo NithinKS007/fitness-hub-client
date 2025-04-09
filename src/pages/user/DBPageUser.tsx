@@ -7,10 +7,10 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/material";
 import { Timer, Pending, DirectionsRun } from "@mui/icons-material";
-import DashBoardBox from "../../components/DashBoardBox";
+import DashBoardBox from "../../components/dashboard/DashBoardBox";
 import useUserDashBoard from "../../hooks/useUserDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import ReusableLineChart from "../../components/LineChart";
+import ReusableLineChart from "../../components/dashboard/LineChart";
 
 
 const DBPageUser = () => {

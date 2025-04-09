@@ -19,11 +19,7 @@ interface AccountDropDownProps {
 
 const userMenuItems = [
   { label: "Dashboard", action: "user-dashboard", path: "/user/dashboard" },
-  {
-    label: "Subscriptions",
-    action: "user-subscriptions",
-    path: "/user/subscriptions",
-  },
+  { label: "Subscriptions", action: "user-subscriptions", path: "/user/subscriptions" },
   { label: "Bookings", action: "user-bookings", path: "/user/bookings" },
   { label: "Chats", action: "user-chats", path: "/user/chats" },
   { label: "Profile", action: "user-profile", path: "/user/profile" },
@@ -41,25 +37,48 @@ const adminMenuItems = [
 ];
 
 const trainerMenuItems = [
-  {
-    label: "Dashboard",
-    action: "trainer-dashboard",
-    path: "/trainer/dashboard",
-  },
-  {
-    label: "Subscribers",
-    action: "trainer-subscribers",
-    path: "/trainer/subscribers",
-  },
+  { label: "Dashboard", action: "trainer-dashboard", path: "/trainer/dashboard" },
+  { label: "Subscribers", action: "trainer-subscribers", path: "/trainer/subscribers" },
   { label: "Chat", action: "trainer-chat", path: "/trainer/chat" },
-  {
-    label: "Appointments",
-    action: "trainer-appointments",
-    path: "/trainer/appointments",
-  },
+  { label: "Appointments", action: "trainer-appointments", path: "/trainer/appointments" },
   { label: "Profile", action: "trainer-profile", path: "/trainer/profile" },
   { label: "Signout", action: "signout", path: "" },
 ];
+
+const styles = {
+  container: {
+    display: "flex",
+    alignItems: "center",
+    gap: 2,
+  },
+  iconButton: {
+    color: "#1a1a1a",
+  },
+  avatar: {
+    width: 35,
+    height: 35,
+    color: "#4b5563",
+  },
+  accountIcon: {
+    fontSize: 35,
+    color: "#4b5563",
+  },
+  menuItem: {
+    padding: "10px 15px",
+    color: "black",
+    width: "180px",
+  },
+  button: {
+    bgcolor: "#1a1a1a",
+    color: "white",
+    textTransform: "none",
+    borderRadius: "8px",
+    padding: "8px 24px",
+    "&:hover": {
+      bgcolor: "#333333",
+    },
+  },
+};
 
 const AccountDropDown: React.FC<AccountDropDownProps> = ({
   authPerson,
@@ -86,56 +105,23 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
 
   const handleMenuAction = (action: string) => {
     switch (action) {
-      case "user-profile":
-        navigate("/user/profile");
-        break;
-      case "user-dashboard":
-        navigate("/user/dashboard");
-        break;
-      case "user-subscriptions":
-        navigate("/user/subscriptions");
-        break;
-      case "user-bookings":
-        navigate("/user/bookings");
-        break;
-      case "user-chats":
-        navigate("/user/chats");
-        break;
-      case "user-workouts":
-        navigate("/user/workouts");
-        break;
-      case "signout":
-        signout();
-        break;
-      case "admin-dashboard":
-        navigate("/admin/dashboard");
-        break;
-      case "admin-users":
-        navigate("/admin/users");
-        break;
-      case "admin-trainers":
-        navigate("/admin/trainers");
-        break;
-      case "admin-inbox":
-        navigate("/admin/inbox");
-        break;
-      case "trainer-dashboard":
-        navigate("/trainer/dashboard");
-        break;
-      case "trainer-subscribers":
-        navigate("/trainer/subscribers");
-        break;
-      case "trainer-chat":
-        navigate("/trainer/chat");
-        break;
-      case "trainer-appointments":
-        navigate("/trainer/appointments");
-        break;
-      case "trainer-profile":
-        navigate("/trainer/profile");
-        break;
-      default:
-        break;
+      case "user-profile": navigate("/user/profile"); break;
+      case "user-dashboard": navigate("/user/dashboard"); break;
+      case "user-subscriptions": navigate("/user/subscriptions"); break;
+      case "user-bookings": navigate("/user/bookings"); break;
+      case "user-chats": navigate("/user/chats"); break;
+      case "user-workouts": navigate("/user/workouts"); break;
+      case "signout": signout(); break;
+      case "admin-dashboard": navigate("/admin/dashboard"); break;
+      case "admin-users": navigate("/admin/users"); break;
+      case "admin-trainers": navigate("/admin/trainers"); break;
+      case "admin-inbox": navigate("/admin/inbox"); break;
+      case "trainer-dashboard": navigate("/trainer/dashboard"); break;
+      case "trainer-subscribers": navigate("/trainer/subscribers"); break;
+      case "trainer-chat": navigate("/trainer/chat"); break;
+      case "trainer-appointments": navigate("/trainer/appointments"); break;
+      case "trainer-profile": navigate("/trainer/profile"); break;
+      default: break;
     }
     handleClose();
   };
@@ -150,38 +136,22 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
   const open = Boolean(anchorEl);
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+    <Box sx={styles.container}>
       {authPerson ? (
         <>
-          <IconButton
-            sx={{ color: "#1a1a1a" }}
-            ref={anchorRef}
-            onClick={handleToggle}
-          >
+          <IconButton sx={styles.iconButton} ref={anchorRef} onClick={handleToggle}>
             {userData?.profilePic ? (
-              <Avatar
-                alt="Profile"
-                src={userData.profilePic}
-                sx={{ width: 35, height: 35, color: "#4b5563" }}
-              />
+              <Avatar alt="Profile" src={userData.profilePic} sx={styles.avatar} />
             ) : (
-              <AccountCircleIcon sx={{ fontSize: 35, color: "#4b5563" }} />
+              <AccountCircleIcon sx={styles.accountIcon} />
             )}
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
+          <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
             {getMenuItems().map((item, index) => (
               <MenuItem
                 key={index}
                 onClick={() => handleMenuAction(item.action)}
-                sx={{
-                  padding: "10px 15px",
-                  color: "black",
-                  width:"180px"
-                }}
+                sx={styles.menuItem}
               >
                 {item.label}
               </MenuItem>
@@ -191,13 +161,7 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
       ) : (
         <Button
           variant="contained"
-          sx={{
-            bgcolor: "#1a1a1a",
-            color: "white",
-            textTransform: "none",
-            borderRadius: "8px",
-            padding: "8px 24px",
-          }}
+          sx={styles.button}
           onClick={redirectToLogin}
         >
           GET STARTED

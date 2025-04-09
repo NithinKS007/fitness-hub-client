@@ -15,7 +15,7 @@ import TableFilter from "../../components/TableFilter";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
 import { useModal } from "../../hooks/useModal";
-import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn,Filter } from "../../types/tableTypes";
 
 const columns: TableColumn[] = [

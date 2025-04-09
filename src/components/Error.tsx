@@ -5,20 +5,25 @@ interface ErrorProps {
   message?: string;
 }
 
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+  },
+  errorText: {
+    color: "error.main",
+  },
+};
+
 const Error: React.FC<ErrorProps> = ({
   message = "Oops, something went wrong",
 }) => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Typography color="error">{message}</Typography>
+    <Box sx={styles.container}>
+      <Typography sx={styles.errorText}>{message}</Typography>
     </Box>
   );
 };

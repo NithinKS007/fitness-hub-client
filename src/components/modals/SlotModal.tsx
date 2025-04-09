@@ -21,6 +21,85 @@ interface SlotModalProps {
   handleDateChange: (date: string) => void;
 }
 
+const modalBoxStyles = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: { xs: "90%", sm: 500, md: 650 },
+  maxHeight: "80vh",
+  bgcolor: "white",
+  borderRadius: 2,
+  boxShadow: 24,
+  p: { xs: 2, sm: 3, md: 4 },
+  overflowY: "auto",
+};
+
+const headerBoxStyles = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  mb: 3,
+};
+
+const typographyStyles = {
+  display: "flex",
+  alignItems: "center",
+  font: "message-box",
+};
+
+const closeButtonStyles = {
+  p: 0,
+};
+
+const textFieldStyles = {
+  mb: 2,
+};
+
+const selectBoxStyles = {
+  mb: 2,
+};
+
+const menuPropsStyles = {
+  PaperProps: {
+    sx: {
+      boxShadow: "none",
+      border: "1px solid",
+      borderColor: "grey.400",
+      borderRadius: 2,
+      maxHeight: "200px",
+      marginTop: 1,
+    },
+  },
+};
+
+const menuItemStyles = {
+  height: "36px",
+};
+
+const helperTextStyles = {
+  m: 0,
+  ml: "14px",
+  mt: "3px",
+};
+
+const buttonContainerStyles = {
+  display: "flex",
+  gap: 2,
+  justifyContent: "flex-end",
+  flexDirection: { xs: "column", sm: "row" },
+};
+
+const cancelButtonStyles = {
+  width: { xs: "100%", sm: "auto" },
+};
+
+const submitButtonStyles = {
+  width: { xs: "100%", sm: "auto" },
+  backgroundColor: "black",
+  color: "white",
+};
+
 const SlotModal: React.FC<SlotModalProps> = ({
   open,
   handleClose,
@@ -30,36 +109,13 @@ const SlotModal: React.FC<SlotModalProps> = ({
 }) => {
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: { xs: "90%", sm: 500, md: 650 },
-          maxHeight: "80vh",
-          bgcolor: "white",
-          borderRadius: 2,
-          boxShadow: 24,
-          p: { xs: 2, sm: 3, md: 4 },
-          overflowY: "auto",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 3,
-          }}
-        >
-          <Typography
-            sx={{ display: "flex", alignItems: "center", font: "message-box" }}
-          >
+      <Box sx={modalBoxStyles}>
+        <Box sx={headerBoxStyles}>
+          <Typography sx={typographyStyles}>
             <AddCircleIcon fontSize="small" style={{ marginRight: "8px" }} />
             ADD NEW BOOKING SLOT
           </Typography>
-          <IconButton onClick={handleClose} sx={{ p: 0 }}>
+          <IconButton onClick={handleClose} sx={closeButtonStyles}>
             <Close />
           </IconButton>
         </Box>
@@ -79,12 +135,12 @@ const SlotModal: React.FC<SlotModalProps> = ({
               },
             },
           }}
-          sx={{ mb: 2 }}
+          sx={textFieldStyles}
           error={formik.touched.date && Boolean(formik.errors.date)}
           helperText={formik.touched.date && formik.errors.date}
         />
 
-        <Box sx={{ mb: 2 }}>
+        <Box sx={selectBoxStyles}>
           <Select
             name="time"
             value={formik.values.time}
@@ -92,53 +148,31 @@ const SlotModal: React.FC<SlotModalProps> = ({
             onBlur={formik.handleBlur}
             fullWidth
             displayEmpty
-            MenuProps={{
-              PaperProps: {
-                sx: {
-                  boxShadow: "none",
-                  border: "1px solid",
-                  borderColor: "grey.400",
-                  borderRadius: 2,
-                  maxHeight: "200px",
-                  marginTop: 1,
-                },
-              },
-            }}
+            MenuProps={menuPropsStyles}
             error={formik.touched.time && Boolean(formik.errors.time)}
           >
-            <MenuItem value="" sx={{ height: "36px" }}>
+            <MenuItem value="" sx={menuItemStyles}>
               Select Time
             </MenuItem>
             {timeOptions.map((time) => (
-              <MenuItem key={time} value={time} sx={{ height: "36px" }}>
+              <MenuItem key={time} value={time} sx={menuItemStyles}>
                 {time}
               </MenuItem>
             ))}
           </Select>
           <FormHelperText
             error={formik.touched.time && Boolean(formik.errors.time)}
-            sx={{
-              m: 0,
-              ml: "14px",
-              mt: "3px",
-            }}
+            sx={helperTextStyles}
           >
             {formik.touched.time && formik.errors.time}
           </FormHelperText>
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            justifyContent: "flex-end",
-            flexDirection: { xs: "column", sm: "row" },
-          }}
-        >
+        <Box sx={buttonContainerStyles}>
           <Button
             variant="outlined"
             onClick={handleClose}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
+            sx={cancelButtonStyles}
           >
             Cancel
           </Button>
@@ -146,11 +180,7 @@ const SlotModal: React.FC<SlotModalProps> = ({
             variant="contained"
             onClick={formik.handleSubmit}
             disabled={formik.isSubmitting}
-            sx={{
-              width: { xs: "100%", sm: "auto" },
-              backgroundColor: "black",
-              color: "white",
-            }}
+            sx={submitButtonStyles}
           >
             Add Slot
           </Button>

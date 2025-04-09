@@ -4,7 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { useModal } from "../hooks/useModal";
 import useAuthForm from "../hooks/useAuthForm";
-import TrainerAuthForm from "../components/TrainerAuthForm";
+import TrainerAuthForm from "../components/modals/TrainerAuthModal";
 
 const HomePage: React.FC = () => {
   const { handleOpen, handleClose, open } = useModal();

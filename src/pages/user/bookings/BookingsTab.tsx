@@ -14,7 +14,7 @@ import useSearchFilter from "../../../hooks/useSearchFilterTable";
 import TableFilter from "../../../components/TableFilter";
 import PaginationTable from "../../../components/PaginationTable";
 import { useModal } from "../../../hooks/useModal";
-import ConfirmationModalDialog from "../../../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
 

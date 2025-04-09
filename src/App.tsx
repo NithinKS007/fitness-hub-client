@@ -1,9 +1,9 @@
 import AuthPage from "./pages/AuthPage";
 import OtpPage from "./pages/OtpPage";
 import { Route, Routes } from "react-router-dom";
-import ProtectedUser from "./components/ProtectedUser";
-import ProtectedAdmin from "./components/ProtectedAdmin";
-import ProtectedTrainer from "./components/ProtectedTrainer";
+import ProtectedUser from "./components/protected/ProtectedUser"
+import ProtectedAdmin from "./components/protected/ProtectedAdmin";
+import ProtectedTrainer from "./components/protected/ProtectedTrainer";
 import DBPageAdmin from "./pages/admin/DBPageAdmin";
 import DBPageTrainer from "./pages/trainer/DBPageTrainer";
 import ForgotPassPage from "./pages/ForgotPassPage";

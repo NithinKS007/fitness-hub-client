@@ -24,6 +24,94 @@ interface AuthFormProps {
   handleGoogleAuthSuccess: (res: any) => void;
 }
 
+const styles = {
+  root: {
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    overflow: "hidden",
+  },
+  container: {
+    width: "100%",
+    display: "flex",
+    flexDirection: { xs: "column", md: "row" },
+    bgcolor: "background.paper",
+    borderRadius: 2,
+    boxShadow: 3,
+  },
+  imageContainer: {
+    width: { xs: "100%", md: "50%" },
+    display: { xs: "none", md: "flex" },
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "100vh",
+    bgcolor: "black",
+    overflow: "hidden",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    display: "block",
+  },
+  formContainer: {
+    width: { xs: "100%", md: "50%" },
+    p: 4,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  formBox: {
+    width: "100%",
+    maxWidth: "550px",
+    textAlign: "center",
+  },
+  formFields: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+  },
+  nameFieldsContainer: {
+    display: "flex",
+    gap: 2,
+  },
+  textField: {
+    "& .MuiOutlinedInput-root": { borderRadius: 2 },
+  },
+  rememberMeContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  forgotPasswordLink: {
+    color: "blue",
+    textDecoration: "none",
+  },
+  submitButton: {
+    mt: 2,
+    bgcolor: "black",
+    "&:hover": { bgcolor: "grey.800" },
+    height: "48px",
+    borderRadius: 2,
+  },
+  toggleSignBox: {
+    mt: 2,
+    textAlign: "center",
+  },
+  toggleSignText: {
+    variant: "body2",
+    color: "text.secondary",
+  },
+  toggleSignLink: {
+    ml: 1,
+    color: "primary.main",
+    fontWeight: "medium",
+    cursor: "pointer",
+  },
+};
+
 const AuthForm: React.FC<AuthFormProps> = ({
   signState,
   setSignState,
@@ -33,59 +121,18 @@ const AuthForm: React.FC<AuthFormProps> = ({
   handleGoogleAuthSuccess,
 }) => {
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          bgcolor: "background.paper",
-          borderRadius: 2,
-          boxShadow: 3,
-        }}
-      >
-        <Box
-          sx={{
-            width: { xs: "100%", md: "50%" },
-            display: { xs: "none", md: "flex" },
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh", 
-            bgcolor: "black",
-            overflow: "hidden",
-          }}
-        >
+    <Box sx={styles.root}>
+      <Box sx={styles.container}>
+        <Box sx={styles.imageContainer}>
           <Box
             component="img"
             src={fitnessCouple2}
             alt="Fitness Couple"
-            sx={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover", 
-              display: "block",
-            }}
+            sx={styles.image}
           />
         </Box>
-        <Box
-          sx={{
-            width: { xs: "100%", md: "50%" },
-            p: 4,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "100%", maxWidth: "550px", textAlign: "center" }}>
+        <Box sx={styles.formContainer}>
+          <Box sx={styles.formBox}>
             <Typography variant="h5" gutterBottom>
               {signState === "sign in"
                 ? "Sign in to your account"
@@ -93,9 +140,9 @@ const AuthForm: React.FC<AuthFormProps> = ({
             </Typography>
 
             <form onSubmit={formik.handleSubmit}>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Box sx={styles.formFields}>
                 {signState === "sign up" && (
-                  <Box sx={{ display: "flex", gap: 2 }}>
+                  <Box sx={styles.nameFieldsContainer}>
                     <TextField
                       fullWidth
                       name="fname"
@@ -108,7 +155,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                         formik.touched.fname && Boolean(formik.errors.fname)
                       }
                       helperText={formik.touched.fname && formik.errors.fname}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                      sx={styles.textField}
                     />
                     <TextField
                       fullWidth
@@ -122,7 +169,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                         formik.touched.lname && Boolean(formik.errors.lname)
                       }
                       helperText={formik.touched.lname && formik.errors.lname}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                      sx={styles.textField}
                     />
                   </Box>
                 )}
@@ -138,7 +185,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                  sx={styles.textField}
                 />
 
                 <TextField
@@ -166,7 +213,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                  sx={styles.textField}
                 />
 
                 {signState === "sign up" && (
@@ -198,25 +245,19 @@ const AuthForm: React.FC<AuthFormProps> = ({
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+                    sx={styles.textField}
                   />
                 )}
 
                 {signState === "sign in" && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
+                  <Box sx={styles.rememberMeContainer}>
                     <FormControlLabel
                       control={<Checkbox />}
                       label="Remember Me"
                     />
                     <Link
                       to="/forgot-password"
-                      style={{ color: "blue", textDecoration: "none" }}
+                      style={styles.forgotPasswordLink}
                     >
                       Forgot Password?
                     </Link>
@@ -229,15 +270,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   type="submit"
                   variant="contained"
                   fullWidth
-                  sx={{
-                    mt: 2,
-                    bgcolor: "black",
-                    "&:hover": {
-                      bgcolor: "grey.800",
-                    },
-                    height: "48px",
-                    borderRadius: 2,
-                  }}
+                  sx={styles.submitButton}
                 >
                   {formik.isSubmitting
                     ? signState === "sign in"
@@ -250,8 +283,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
               </Box>
             </form>
 
-            <Box sx={{ mt: 2, textAlign: "center" }}>
-              <Typography variant="body2" color="text.secondary">
+            <Box sx={styles.toggleSignBox}>
+              <Typography sx={styles.toggleSignText}>
                 {signState === "sign up"
                   ? "Already have an account?"
                   : "Don't have an account?"}
@@ -262,12 +295,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       signState === "sign up" ? "sign in" : "sign up"
                     )
                   }
-                  sx={{
-                    ml: 1,
-                    color: "primary.main",
-                    fontWeight: "medium",
-                    cursor: "pointer",
-                  }}
+                  sx={styles.toggleSignLink}
                 >
                   {signState === "sign up" ? "Sign In" : "Sign Up"}
                 </Box>

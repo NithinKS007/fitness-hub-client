@@ -6,7 +6,7 @@ interface TabItem {
 }
 
 interface NavigationTabsProps {
-  value: number
+  value: number;
   handleChange: (event: React.SyntheticEvent, newValue: number) => void;
   tabItems: TabItem[];
 }
@@ -18,25 +18,11 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({
 }) => {
   return (
     <>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        role="navigation"
-      >
+      <Tabs value={value} onChange={handleChange} role="navigation">
         {tabItems.map((item, index) => (
-          <Tab
-          key={index}
-          label={item.label}
-          sx={{
-            backgroundColor: value === index ? "rgba(0, 123, 255, 0.1)" : "transparent",
-            color: value === index ? "blue" : "inherit",
-            "&:hover": {
-              backgroundColor: value === index ? "rgba(0, 123, 255, 0.2)" : "rgba(0, 0, 0, 0.04)",
-            },
-          }}
-        />
-      ))}
-    </Tabs>
+          <Tab key={index} label={item.label} />
+        ))}
+      </Tabs>
     </>
   );
 };

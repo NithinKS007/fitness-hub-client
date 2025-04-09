@@ -14,7 +14,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TableFilter from "../../components/TableFilter";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
-import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { useModal } from "../../hooks/useModal";
 import { TableColumn,Filter } from "../../types/tableTypes";
 

@@ -7,10 +7,7 @@ import { useNavigate } from "react-router-dom";
 import useSignOut from "../hooks/useSignOut";
 
 const TopNavbar: React.FC = () => {
-  const user = useSelector((state: RootState) => state?.auth?.user);
-  const trainer = useSelector((state: RootState) => state?.auth?.trainer);
-  const admin = useSelector((state: RootState) => state?.auth?.admin);
-
+  const { user, trainer, admin } = useSelector((state: RootState) => state.auth);
   const getAuthPerson = () => {
     if (user) {
       return user;

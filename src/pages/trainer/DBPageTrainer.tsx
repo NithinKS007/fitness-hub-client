@@ -1,11 +1,11 @@
-import DashBoardBox from "../../components/DashBoardBox";
+import DashBoardBox from "../../components/dashboard/DashBoardBox";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { Box, List, ListItem, ListItemText } from "@mui/material";
 import { People } from "@mui/icons-material";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import useTrainerDashBoard from "../../hooks/useTrainerDashBoard";
-import ReusableLineChart from "../../components/LineChart";
-import ReusablePieChart from "../../components/ReuseablePieChart";
+import ReusableLineChart from "../../components/dashboard/LineChart";
+import ReusablePieChart from "../../components/dashboard/ReuseablePieChart";
 
 const DBPageTrainer = () => {
   const {

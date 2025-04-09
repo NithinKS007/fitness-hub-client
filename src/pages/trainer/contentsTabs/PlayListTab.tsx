@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useContent from "../../../hooks/useTrainerContent";
-import PlayListModal from "../../../components/PlayListModal";
+import PlayListModal from "../../../components/modals/PlayListModal";
 import ReuseTable from "../../../components/ReuseTable";
 import ShimmerTableLoader from "../../../components/ShimmerTable";
 import { useSelector } from "react-redux";
@@ -18,7 +18,7 @@ import { getPlayListsOfTrainer, updatePlayListPrivacyStatus } from "../../../red
 import PaginationTable from "../../../components/PaginationTable";
 import { PlayList } from "../../../redux/content/contentTypes";
 import { useModal } from "../../../hooks/useModal";
-import ConfirmationModalDialog from "../../../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 
 const playListColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },

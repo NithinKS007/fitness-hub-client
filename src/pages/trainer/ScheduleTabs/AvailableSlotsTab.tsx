@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Button} from "@mui/material";
-import SlotModal from "../../../components/SlotModal";
+import SlotModal from "../../../components/modals/SlotModal";
 import useSlot from "../../../hooks/useSlot";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
@@ -15,7 +15,7 @@ import DateAndTimeFilter from "../../../components/DateAndTimeFilter";
 import useSearchFilter from "../../../hooks/useSearchFilterTable";
 import PaginationTable from "../../../components/PaginationTable";
 import { useModal } from "../../../hooks/useModal";
-import ConfirmationModalDialog from "../../../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
 

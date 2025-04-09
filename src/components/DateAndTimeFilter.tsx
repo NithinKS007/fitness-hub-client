@@ -20,6 +20,32 @@ interface DateFilterProps {
   onToDateChange: (date: Dayjs | null) => void;
   onReset: () => void;
 }
+
+const styles = {
+  container: {
+    display: "flex",
+    gap: 2,
+    alignItems: "center",
+  },
+  datePicker: {
+    width: "12rem",
+  },
+  calendarIcon: {
+    fontSize: "large",
+  },
+  resetButton: {
+    minWidth: "auto",
+    padding: "7px",
+    bgcolor: "white",
+    color: "gray",
+    border: "1px solid",
+    borderColor: "gray.50",
+    "&:hover": {
+      bgcolor: "gray.100",
+    },
+  },
+};
+
 const DateFilter: React.FC<DateFilterProps> = ({
   fromDate,
   toDate,
@@ -29,7 +55,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
 }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+      <Box sx={styles.container}>
         <FormControl size="small">
           <MobileDatePicker
             label="From Date"
@@ -43,11 +69,11 @@ const DateFilter: React.FC<DateFilterProps> = ({
               textField: {
                 size: "small",
                 variant: "outlined",
-                sx: { width: "12rem" },
+                sx: styles.datePicker,
                 InputProps: {
                   endAdornment: (
                     <InputAdornment position="end">
-                      <CalendarTodayIcon sx={{ fontSize: "large" }} />
+                      <CalendarTodayIcon sx={styles.calendarIcon} />
                     </InputAdornment>
                   ),
                 },
@@ -69,11 +95,11 @@ const DateFilter: React.FC<DateFilterProps> = ({
               textField: {
                 size: "small",
                 variant: "outlined",
-                sx: { width: "12rem" },
+                sx: styles.datePicker,
                 InputProps: {
                   endAdornment: (
                     <InputAdornment position="end">
-                      <CalendarTodayIcon sx={{ fontSize: "large" }} />
+                      <CalendarTodayIcon sx={styles.calendarIcon} />
                     </InputAdornment>
                   ),
                 },
@@ -81,17 +107,11 @@ const DateFilter: React.FC<DateFilterProps> = ({
             }}
           />
         </FormControl>
+
         <Button
           variant="outlined"
           size="small"
-          sx={{
-            minWidth: "auto",
-            padding: "7px",
-            bgcolor: "white",
-            color: "gray",
-            border: "1px solid",
-            borderColor: "gray.50",
-          }}
+          sx={styles.resetButton}
           onClick={onReset}
         >
           <RefreshIcon />

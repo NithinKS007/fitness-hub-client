@@ -33,6 +33,109 @@ interface WorkOutModalProps {
   handleBodyPartChange: (event: any) => void;
 }
 
+const modalBoxStyles = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: { xs: "90%", sm: 500, md: 1000 },
+  maxHeight: "80vh",
+  bgcolor: "white",
+  borderRadius: 2,
+  boxShadow: 24,
+  p: { xs: 2, sm: 3, md: 4 },
+  overflowY: "auto",
+};
+
+const headerBoxStyles = {
+  display: "flex",
+  justifyContent: "space-between",
+  mb: 2,
+};
+
+const closeButtonStyles = {
+  p: 1,
+};
+
+const formContainerStyles = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 2,
+};
+
+const selectStyles = {
+  mb: 1,
+};
+
+const exerciseContainerStyles = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 1,
+  mt: 1,
+};
+
+const workoutListStyles = {
+  mt: 3,
+  mb: 2,
+};
+
+const noWorkoutsStyles = {
+  mt: 1,
+};
+
+const workoutRowStyles = {
+  display: "flex",
+  alignItems: "flex-start",
+  mb: 2,
+  gap: 1,
+};
+
+const exerciseTextStyles = {
+  flex: 1,
+  mt: 1.5,
+};
+
+const kgFieldStyles = {
+  minWidth: 100,
+};
+
+const repsFieldStyles = {
+  minWidth: 100,
+};
+
+const timeFieldStyles = {
+  minWidth: 120,
+};
+
+const addButtonStyles = {
+  mt: 1,
+};
+
+const deleteButtonStyles = {
+  mt: 1,
+};
+
+const buttonContainerStyles = {
+  display: "flex",
+  gap: 2,
+  justifyContent: "flex-end",
+  flexDirection: { xs: "column", sm: "row" },
+};
+
+const cancelButtonStyles = {
+  width: { xs: "100%", sm: "auto" },
+};
+
+const saveButtonStyles = {
+  width: { xs: "100%", sm: "auto" },
+  backgroundColor: "black",
+  color: "white",
+};
+
+const calendarIconStyles = {
+  fontSize: "large",
+};
+
 const WorkOutModal: React.FC<WorkOutModalProps> = ({
   open,
   selectedDate,
@@ -48,30 +151,16 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
 }) => {
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: { xs: "90%", sm: 500, md: 1000 },
-          maxHeight: "80vh",
-          bgcolor: "white",
-          borderRadius: 2,
-          boxShadow: 24,
-          p: { xs: 2, sm: 3, md: 4 },
-          overflowY: "auto",
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+      <Box sx={modalBoxStyles}>
+        <Box sx={headerBoxStyles}>
           <Typography variant="h6">Add Workout</Typography>
-          <IconButton onClick={handleClose} sx={{ p: 1 }}>
+          <IconButton onClick={handleClose} sx={closeButtonStyles}>
             <CloseIcon />
           </IconButton>
         </Box>
 
         <form onSubmit={formik.handleSubmit}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box sx={formContainerStyles}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <FormControl fullWidth>
                 <MobileDatePicker
@@ -87,7 +176,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       InputProps: {
                         endAdornment: (
                           <InputAdornment position="end">
-                            <CalendarTodayIcon sx={{ fontSize: "large" }} />
+                            <CalendarTodayIcon sx={calendarIconStyles} />
                           </InputAdornment>
                         ),
                       },
@@ -106,7 +195,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                 displayEmpty
                 fullWidth
                 size="medium"
-                sx={{ mb: 1 }}
+                sx={selectStyles}
                 renderValue={(selected) =>
                   selected ? selected : "Select a Body Part"
                 }
@@ -129,7 +218,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                 )}
 
               {formik.values.selectedBodyPart && (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+                <Box sx={exerciseContainerStyles}>
                   {workoutData
                     .find(
                       (item) => item.bodyPart === formik.values.selectedBodyPart
@@ -155,26 +244,18 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
             </Box>
           </Box>
 
-          <Box sx={{ mt: 3, mb: 2 }}>
+          <Box sx={workoutListStyles}>
             {formik.values.workouts.length === 0 ? (
-              <Typography color="text.secondary" sx={{ mt: 1 }}>
+              <Typography color="text.secondary" sx={noWorkoutsStyles}>
                 No workouts added yet.
               </Typography>
             ) : (
               formik.values.workouts.map((workout: any, index: number) => (
-                <Box
-                  key={index}
-                  sx={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    mb: 2,
-                    gap: 1,
-                  }}
-                >
-                  <Typography sx={{ flex: 1, mt: 1.5 }}>
+                <Box key={index} sx={workoutRowStyles}>
+                  <Typography sx={exerciseTextStyles}>
                     {workout.exercise}
                   </Typography>
-                  <Box sx={{ minWidth: 100 }}>
+                  <Box sx={kgFieldStyles}>
                     <TextField
                       label="Kg"
                       type="number"
@@ -200,7 +281,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       }
                     />
                   </Box>
-                  <Box sx={{ minWidth: 100 }}>
+                  <Box sx={repsFieldStyles}>
                     <TextField
                       label="Reps"
                       type="number"
@@ -226,7 +307,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       }
                     />
                   </Box>
-                  <Box sx={{ minWidth: 120 }}>
+                  <Box sx={timeFieldStyles}>
                     <TextField
                       label="Time (min)"
                       type="number"
@@ -254,14 +335,14 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                   </Box>
                   <IconButton
                     onClick={() => addNewRow(index)}
-                    sx={{ mt: 1 }}
+                    sx={addButtonStyles}
                     color="primary"
                   >
                     <AddIcon />
                   </IconButton>
                   <IconButton
                     color="error"
-                    sx={{ mt: 1 }}
+                    sx={deleteButtonStyles}
                     onClick={() => removeWorkout(index)}
                     aria-label="remove workout"
                   >
@@ -279,29 +360,18 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
               )}
           </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              justifyContent: "flex-end",
-              flexDirection: { xs: "column", sm: "row" },
-            }}
-          >
+          <Box sx={buttonContainerStyles}>
             <Button
               variant="outlined"
               onClick={handleClose}
-              sx={{ width: { xs: "100%", sm: "auto" } }}
+              sx={cancelButtonStyles}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               variant="contained"
-              sx={{
-                width: { xs: "100%", sm: "auto" },
-                backgroundColor: "black",
-                color: "white",
-              }}
+              sx={saveButtonStyles}
             >
               Save
             </Button>

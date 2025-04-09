@@ -24,6 +24,87 @@ interface VideoUploadProps {
   handleThumbnailChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+const modalBoxStyles = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: { xs: "90%", sm: 500, md: 700 },
+  maxHeight: "80vh",
+  bgcolor: "white",
+  borderRadius: 2,
+  boxShadow: 24,
+  p: { xs: 2, sm: 3, md: 4 },
+  overflowY: "auto",
+};
+
+const headerBoxStyles = {
+  display: "flex",
+  justifyContent: "space-between",
+  mb: 1,
+};
+
+const closeButtonStyles = {
+  p: 0,
+};
+
+const textFieldStyles = {
+  mb: 2,
+};
+
+const uploadBoxStyles = {
+  mb: 2,
+};
+
+const uploadButtonStyles = {
+  width: { xs: "100%", sm: "auto" },
+};
+
+const fileNameStyles = {
+  mt: 1,
+  wordBreak: "break-word",
+};
+
+const errorTextStyles = {
+  mt: 1,
+};
+
+const formControlStyles = {
+  mb: 2,
+};
+
+const noPlaylistsStyles = {
+  mt: 1,
+};
+
+const menuPropsStyles = {
+  PaperProps: {
+    sx: {
+      boxShadow: "none",
+      border: "1px solid",
+      borderColor: "grey.400",
+      borderRadius: 2,
+    },
+  },
+};
+
+const buttonContainerStyles = {
+  display: "flex",
+  gap: 2,
+  justifyContent: "flex-end",
+  flexDirection: { xs: "column", sm: "row" },
+};
+
+const cancelButtonStyles = {
+  width: { xs: "100%", sm: "auto" },
+};
+
+const submitButtonStyles = {
+  width: { xs: "100%", sm: "auto" },
+  backgroundColor: "black",
+  color: "white",
+};
+
 const VideoUpload = ({
   open,
   onClose,
@@ -35,22 +116,8 @@ const VideoUpload = ({
 }: VideoUploadProps) => {
   return (
     <Modal open={open} onClose={onClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: { xs: "90%", sm: 500, md: 700 },
-          maxHeight: "80vh",
-          bgcolor: "white",
-          borderRadius: 2,
-          boxShadow: 24,
-          p: { xs: 2, sm: 3, md: 4 },
-          overflowY: "auto",
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+      <Box sx={modalBoxStyles}>
+        <Box sx={headerBoxStyles}>
           <Typography variant="h6">
             {isEditMode ? "Edit Video Content" : "Upload Video Content"}
           </Typography>
@@ -59,7 +126,7 @@ const VideoUpload = ({
               onClose();
               formik.resetForm();
             }}
-            sx={{ p: 0 }}
+            sx={closeButtonStyles}
           >
             <CloseIcon />
           </IconButton>
@@ -72,7 +139,7 @@ const VideoUpload = ({
           value={formik.values.title}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          sx={{ mb: 2 }}
+          sx={textFieldStyles}
           error={formik.touched.title && Boolean(formik.errors.title)}
           helperText={formik.touched.title && formik.errors.title}
         />
@@ -86,19 +153,19 @@ const VideoUpload = ({
           onBlur={formik.handleBlur}
           multiline
           rows={2}
-          sx={{ mb: 2 }}
+          sx={textFieldStyles}
           error={
             formik.touched.description && Boolean(formik.errors.description)
           }
           helperText={formik.touched.description && formik.errors.description}
         />
 
-        <Box sx={{ mb: 2 }}>
+        <Box sx={uploadBoxStyles}>
           <Button
             variant="outlined"
             component="label"
             startIcon={<VideoCameraBackIcon />}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
+            sx={uploadButtonStyles}
           >
             {isEditMode ? "Change Video" : "Upload Video"}
             <input
@@ -108,21 +175,21 @@ const VideoUpload = ({
               onChange={handleVideoChange}
             />
           </Button>
-          <Typography sx={{ mt: 1, wordBreak: "break-word" }}>
+          <Typography sx={fileNameStyles}>
             {formik.values.video?.name || ""}
           </Typography>
           {formik.touched.video && formik.errors.video && (
-            <Typography color="error" sx={{ mt: 1 }}>
+            <Typography color="error" sx={errorTextStyles}>
               {formik.errors.video}
             </Typography>
           )}
         </Box>
 
-        <Box sx={{ mb: 2 }}>
+        <Box sx={uploadBoxStyles}>
           <Button
             variant="outlined"
             component="label"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
+            sx={uploadButtonStyles}
           >
             {isEditMode ? "Change Thumbnail" : "Upload Thumbnail"}
             <input
@@ -132,17 +199,17 @@ const VideoUpload = ({
               onChange={handleThumbnailChange}
             />
           </Button>
-          <Typography sx={{ mt: 1, wordBreak: "break-word" }}>
+          <Typography sx={fileNameStyles}>
             {formik.values.thumbnail?.name || ""}
           </Typography>
           {formik.touched.thumbnail && formik.errors.thumbnail && (
-            <Typography color="error" sx={{ mt: 1 }}>
+            <Typography color="error" sx={errorTextStyles}>
               {formik.errors.thumbnail}
             </Typography>
           )}
         </Box>
 
-        <FormControl fullWidth sx={{ mb: 2 }}>
+        <FormControl fullWidth sx={formControlStyles}>
           {playLists.length > 0 ? (
             <Select
               labelId="playlist-select-label"
@@ -159,16 +226,7 @@ const VideoUpload = ({
                   .map((pl) => pl?.title)
                   .join(", ")
               }
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    boxShadow: "none",
-                    border: "1px solid",
-                    borderColor: "grey.400",
-                    borderRadius: 2,
-                  },
-                },
-              }}
+              MenuProps={menuPropsStyles}
             >
               {playLists.map((pl) => (
                 <MenuItem key={pl._id} value={pl._id}>
@@ -180,32 +238,25 @@ const VideoUpload = ({
               ))}
             </Select>
           ) : (
-            <Typography color="text.secondary" sx={{ mt: 1 }}>
+            <Typography color="text.secondary" sx={noPlaylistsStyles}>
               No Playlists Available
             </Typography>
           )}
           {formik.touched.playLists && formik.errors.playLists && (
-            <Typography color="error" sx={{ mt: 1 }}>
+            <Typography color="error" sx={errorTextStyles}>
               {formik.errors.playLists}
             </Typography>
           )}
         </FormControl>
 
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            justifyContent: "flex-end",
-            flexDirection: { xs: "column", sm: "row" },
-          }}
-        >
+        <Box sx={buttonContainerStyles}>
           <Button
             variant="outlined"
             onClick={() => {
               onClose();
               formik.resetForm();
             }}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
+            sx={cancelButtonStyles}
           >
             Cancel
           </Button>
@@ -213,14 +264,7 @@ const VideoUpload = ({
             variant="contained"
             onClick={formik.handleSubmit}
             disabled={formik.isSubmitting}
-            sx={{
-              width: {
-                xs: "100%",
-                sm: "auto",
-                backgroundColor: "black",
-                color: "white",
-              },
-            }}
+            sx={submitButtonStyles}
           >
             {isEditMode ? "Update" : "Upload"}
           </Button>

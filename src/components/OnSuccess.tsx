@@ -2,13 +2,7 @@ import React from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 import { CheckCircleOutline } from "@mui/icons-material";
 
-interface OnSuccessProps {
-  isLoading: boolean;
-  error: string | null;
-}
-
-const OnSuccess: React.FC<OnSuccessProps> = ({ isLoading, error }) => {
-  console.log("loading", isLoading, error);
+const OnSuccess: React.FC = () => {
   return (
     <Box
       sx={{

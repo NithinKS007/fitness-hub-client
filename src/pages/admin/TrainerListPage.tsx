@@ -16,7 +16,7 @@ import PaginationTable from "../../components/PaginationTable";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import Box from "@mui/material/Box";
 import { useModal } from "../../hooks/useModal";
-import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn,Filter } from "../../types/tableTypes";
 
 

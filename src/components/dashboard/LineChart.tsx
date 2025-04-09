@@ -23,7 +23,6 @@ const ReusableLineChart: React.FC<ReusableLineChartProps> = ({
   yAxisValue,
 }) => {
 
-  console.log("data",data)
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart

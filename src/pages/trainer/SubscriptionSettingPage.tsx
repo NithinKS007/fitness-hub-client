@@ -5,7 +5,7 @@ import useSubscription from "../../hooks/useSubscription";
 import ReuseTable from "../../components/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useModal } from "../../hooks/useModal";
-import ConfirmationModalDialog from "../../components/ConfirmationModalDialog";
+import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../types/tableTypes";
 
 const columns: TableColumn[] = [

@@ -3,7 +3,7 @@ import { Button, Box, IconButton, MenuItem, Menu } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import useWorkouts from "../../hooks/useWorkouts";
-import WorkOutModal from "../../components/WorkOutModal";
+import WorkOutModal from "../../components/modals/WorkOutModal";
 import ReuseTable from "../../components/ReuseTable";
 import ShimmerTableLoader from "../../components/ShimmerTable";
 import { Filter, TableColumn } from "../../types/tableTypes";
