@@ -18,6 +18,7 @@ import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
+import { bookingSlots } from "../../../redux/booking/bookingTypes";
 
 const availableSlotColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -38,7 +39,7 @@ const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
     (state: RootState) => state.bookingSlot
   );
   const { totalPages, currentPage } = pagination;
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+    const [selectedSlot, setSelectedSlot] = useState<bookingSlots | null>(null);
 
   const {
     modalHandleOpen,
@@ -192,8 +193,8 @@ const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
       <ConfirmationModalDialog
         open={deleteModalOpen as boolean}
         content={
-          selectedSlot &&
-          `Are you sure you want to delete the slot for ${new Date(selectedSlot.date).toLocaleDateString()} at ${selectedSlot.time}?`
+          selectedSlot ?
+          `Are you sure you want to delete the slot for ${new Date(selectedSlot.date).toLocaleDateString()} at ${selectedSlot.time}?`:""
         }
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteModalClose}

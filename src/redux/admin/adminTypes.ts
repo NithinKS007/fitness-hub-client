@@ -1,5 +1,5 @@
-import { Dayjs } from "dayjs";
 import { Trainer, User } from "../auth/authTypes";
+import { QueryParams } from "../reduxCommonTypes/tableTypes";
 
 export interface AdminState {
   users: User[];
@@ -79,14 +79,6 @@ export interface RequestTrainers {
   search: string;
 }
 
-export interface QueryParams {
-  page: number;
-  limit: number;
-  search: string;
-  filters: string[];
-  fromDate: Dayjs 
-  toDate: Dayjs;
-}
 
 export type UsersListQueryParams = Omit<QueryParams, "fromDate" | "toDate">;
 export type TrainersListQueryParams = Omit<QueryParams, "fromDate" | "toDate">;

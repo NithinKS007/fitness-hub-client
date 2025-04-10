@@ -1,4 +1,4 @@
-import { Dayjs } from "dayjs";
+import { QueryParams } from "../reduxCommonTypes/tableTypes";
 
 export interface bookingSlotState {
   isLoading: boolean;
@@ -145,14 +145,6 @@ export interface Pagination {
   totalPages: number;
 }
 
-export interface QueryParams {
-  page: number;
-  limit: number;
-  search: string;
-  filters: string[];
-  fromDate: Dayjs;
-  toDate: Dayjs;
-}
 
 export type AvailableSlotsQueryParams = Omit<QueryParams, "filters" | "search">;
 export type HandleBookingRequestsQueryParams = QueryParams

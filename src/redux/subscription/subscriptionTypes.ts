@@ -1,4 +1,4 @@
-import { Dayjs } from "dayjs";
+import { QueryParams } from "../reduxCommonTypes/tableTypes";
 
 export interface SubscriptionState {
   subscriptions: Subscription[];
@@ -70,15 +70,6 @@ export interface RequestDeleteSubscription {
 
 export interface RequestSessionIdForSubscription {
   sessionId:string
-}
-
-export interface QueryParams {
-  page: number;
-  limit: number;
-  search: string;
-  filters: string[];
-  fromDate: Dayjs;
-  toDate: Dayjs;
 }
 
 export type SubscribersListQueryParams = Omit<QueryParams, "fromDate" | "toDate">;

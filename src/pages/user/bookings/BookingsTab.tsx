@@ -17,6 +17,7 @@ import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
+import { ScheduledAppointmentsUser } from "../../../redux/booking/bookingTypes";
 
 const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -90,7 +91,7 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
   const { scheduledAppointmentsUser, isLoading, error, pagination } =
     useSelector((state: RootState) => state.bookingSlot);
   const { totalPages, currentPage } = pagination;
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<ScheduledAppointmentsUser | null>(null);
 
   const {
     anchorAppointmentSchedulesEl,
@@ -278,8 +279,8 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
       <ConfirmationModalDialog
         open={confirmationModalOpen as boolean}
         content={
-          selectedAppointment &&
-          `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?` 
+          selectedAppointment ?
+          `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?` :""
         }
         onConfirm={handleConfirmCancel}
         onCancel={handleConfirmationModalClose}

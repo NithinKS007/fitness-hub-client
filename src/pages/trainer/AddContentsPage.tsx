@@ -10,6 +10,7 @@ const AddContentsPage = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
+    console.log("event",event)
   };
 
   return (

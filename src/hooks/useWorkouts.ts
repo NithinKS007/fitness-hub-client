@@ -125,7 +125,7 @@ const useWorkouts = () => {
     },
   });
 
-  const addWorkout = (bodyPart: string, exercise: string) => {
+  const handleAddWorkout = (bodyPart: string, exercise: string) => {
     if (workoutData.some((item) => item.bodyPart === bodyPart && item.exercises.includes(exercise))) {
       formik.setFieldValue("workouts", [
         ...formik.values.workouts,
@@ -166,7 +166,7 @@ const useWorkouts = () => {
   
     const handleComplete = async (setId: string) => {
       try {
-        const response = await dispatch(markSetAsCompleted(setId)).unwrap();
+        const response = await dispatch(markCompleted(setId)).unwrap();
         console.log("response received for mark as completed set", response);
         showSuccessToast(response.message);
       } catch (err) {
@@ -199,7 +199,7 @@ const useWorkouts = () => {
       handleClose();
       formik.resetForm();
     },
-    addWorkout,
+    addWorkout:handleAddWorkout,
     removeWorkout,
     addNewRow,
     handleDateChange: (newValue: Dayjs | null) => setSelectedDate(newValue),

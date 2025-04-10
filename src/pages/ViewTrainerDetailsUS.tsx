@@ -71,6 +71,7 @@ const ViewTrainerDetailsUS = () => {
   );
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log("event",event)
     setActiveTab(newValue);
   };
 

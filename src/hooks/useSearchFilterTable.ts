@@ -25,6 +25,7 @@ const useSearchFilter = () => {
     event: React.ChangeEvent<unknown>,
     newPage: number
   ) => {
+    console.log("event",event)
     setPage(newPage);
   };
 

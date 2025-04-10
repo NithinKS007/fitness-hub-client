@@ -13,12 +13,12 @@ import {
   IconButton,
 } from "@mui/material";
 import { Add, Remove, Close } from "@mui/icons-material";
-
+import { FilterValues} from "../hooks/useSearchFilterListing";
 interface FilterSidebarProps {
   filters: any[];
   open: boolean;
   filterValues: any;
-  onCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>, filterLabel: string) => void;
+  onCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>, filterLabel:keyof FilterValues) => void;
   onResetAll: () => void;
   onApply: () => void;
   onToggleFilter: (filterLabel: string) => void;

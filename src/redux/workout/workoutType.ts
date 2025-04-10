@@ -1,5 +1,4 @@
-import { Dayjs } from "dayjs";
-
+import { QueryParams } from "../reduxCommonTypes/tableTypes";
 export interface WorkoutState {
   isLoading: boolean;
   error: string | null;
@@ -45,12 +44,4 @@ export interface WorkoutsData {
   time: number;
 }
 
-export interface QueryParams {
-  page: number;
-  limit: number;
-  search: string;
-  filters: string[];
-  fromDate: Dayjs;
-  toDate: Dayjs;
-}
 export type GetworkoutsQuery = QueryParams;

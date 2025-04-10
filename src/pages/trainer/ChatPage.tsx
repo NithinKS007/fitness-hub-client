@@ -144,7 +144,6 @@ const ChatPage = () => {
             onInputChange={setInput}
             onSendClick={handleSendMessage}
             onEmojiClick={() => setShowPicker((prev) => !prev)}
-            chatLoading={chatLoading}
             messagesEndRef={messagesEndRef}
             currentUserId={trainer?._id || ""}
           />

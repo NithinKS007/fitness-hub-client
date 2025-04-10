@@ -1,7 +1,7 @@
 import AuthPage from "./pages/AuthPage";
 import OtpPage from "./pages/OtpPage";
 import { Route, Routes } from "react-router-dom";
-import ProtectedUser from "./components/protected/ProtectedUser"
+import ProtectedUser from "./components/protected/ProtectedUser";
 import ProtectedAdmin from "./components/protected/ProtectedAdmin";
 import ProtectedTrainer from "./components/protected/ProtectedTrainer";
 import DBPageAdmin from "./pages/admin/DBPageAdmin";
@@ -50,15 +50,16 @@ const App = () => {
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
       <Route path="*" element={<PageNotFound />} />
+      
+      <Route element={<ProtectedUser />}>
+        <Route path="/subscription-success" element={<OnSuccessPage />} />
+        <Route path="/subscription-failed" element={<OnFailurePage />} />
+      </Route>
 
       <Route element={<ULwithNavFooter />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/find-trainer" element={<GetTrainer />} />
 
-        <Route element={<ProtectedUser />}>
-          <Route path="/subscription-success" element={<OnSuccessPage />} />
-          <Route path="/subscription-failed" element={<OnFailurePage />} />
-        </Route>
         <Route
           path="/trainer-details/:_id"
           element={<ViewTrainerDetailsUS />}
@@ -83,7 +84,7 @@ const App = () => {
           <Route path="/user/profile" element={<UserProfilePage />} />
           <Route path="/user/bookings" element={<UserBookingsPage />} />
           <Route path="/user/chats" element={<UserChatsPage />} />
-          <Route path="/user/workouts" element={<UserWorkoutsPage/>} />
+          <Route path="/user/workouts" element={<UserWorkoutsPage />} />
         </Route>
       </Route>
 

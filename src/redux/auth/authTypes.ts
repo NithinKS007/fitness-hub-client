@@ -7,7 +7,7 @@ export interface User {
   fname: string;
   lname: string;
   email: string;
-  password: string;
+  password?: string;
   role?: Role;
   isBlocked?: boolean;
   otpVerified?: boolean;
@@ -44,7 +44,7 @@ export interface Trainer {
   fname: string;
   lname: string;
   email: string;
-  password: string;
+  password?: string;
   role?: Role;
   isBlocked?: boolean;
   otpVerified?: boolean;
@@ -62,7 +62,7 @@ export interface Trainer {
   userId:string
   yearsOfExperience?: string;
   specializations?: string[];
-  certifications?: { fileName: string; url: string }[];
+  certifications?: { fileName: string; url: string }[] 
   isApproved?: boolean;
   aboutMe?: string;
 }

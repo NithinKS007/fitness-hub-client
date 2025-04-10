@@ -139,7 +139,6 @@ const UserChatsPage = () => {
             onInputChange={setInput}
             onSendClick={handleSendMessage}
             onEmojiClick={() => setShowPicker((prev) => !prev)}
-            chatLoading={chatLoading}
             messagesEndRef={messagesEndRef}
             currentUserId={user?._id || ""}
           />

@@ -97,7 +97,7 @@ const PlaylistSection = () => {
     handlePlayListCloseMenu();
   };
 
-  const handleBlockAction = (playlist: Playlist) => {
+  const handleBlockAction = (playlist: PlayList) => {
     setSelectedPlaylist(playlist);
     handleConfirmationModalOpen();
     handlePlayListCloseMenu();

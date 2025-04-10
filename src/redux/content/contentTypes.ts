@@ -1,4 +1,4 @@
-import { Dayjs } from "dayjs";
+import { QueryParams } from "../reduxCommonTypes/tableTypes";
 
 export interface ContentState {
   isLoading: boolean;
@@ -71,15 +71,6 @@ export interface RequestVideoId{
   videoId:string
 }
 
-
-export interface QueryParams {
-  page: number;
-  limit: number;
-  search: string;
-  filters: string[];
-  fromDate: Dayjs;
-  toDate: Dayjs;
-}
 
 export type VideosQueryParams = QueryParams
 export type PlayListQueryParams = QueryParams

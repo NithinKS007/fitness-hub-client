@@ -4,8 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../redux/store";
 import { getApprovedTrainers } from "../redux/user/userThunk";
 import { Sort } from "../types/tableTypes";
+export interface FilterValues {
+  Specialization?: string[];
+  Experience?: string[];
+  Gender?: string[];
+  
+}
 
-const filters = [
+export interface Filter {
+  label: string;
+  options: string[];
+}
+
+const filters:Filter[] = [
   {
     label: "Specialization",
     options: [
@@ -38,10 +49,6 @@ const filters = [
 const sortOptions: Sort[] = [{ value: "aA - zz" }, { value: "zz - aa" }];
 
 export const useSearchFilterListing = () => {
-  interface FilterValues {
-    [key: string]: string[];
-  }
-
   const rowsPerPage: number = 12;
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [page, setPage] = useState<number>(1);
@@ -49,7 +56,7 @@ export const useSearchFilterListing = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filterValues, setFilterValues] = useState<FilterValues>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [openFilters, setOpenFilters] = useState({})
+  const [openFilters, setOpenFilters] = useState<{ [key: string]: boolean }>({})
   const [sortValue,setSortValue] = useState<string>("")
 
 
@@ -66,8 +73,10 @@ export const useSearchFilterListing = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-      setFilterValues((prev) => ({ ...prev, Search: searchTerm }));
+      if(searchTerm){
+        setDebouncedSearchTerm(searchTerm);
+        setFilterValues((prev) => ({ ...prev, Search:searchTerm }));
+      }
     }, 700); 
 
     return () => clearTimeout(timer);
@@ -86,6 +95,7 @@ export const useSearchFilterListing = () => {
     event: React.ChangeEvent<unknown>,
     newPage: number
   ) => {
+    console.log("event",event)
     setPage(newPage);
   };
 
@@ -102,14 +112,14 @@ export const useSearchFilterListing = () => {
   };
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    filterLabel: string
+    filterLabel: keyof FilterValues
   ) => {
     const { value, checked } = event.target;
     setFilterValues((prev) => {
-      const currentValues = prev[filterLabel] || [];
+      const currentValues = prev[filterLabel] || [] ;
       const updatedValues = checked
         ? [...currentValues, value]
-        : currentValues.filter((item: string) => item !== value);
+        : currentValues?.filter((item: string) => item !== value);
       return { ...prev, [filterLabel]: updatedValues };
     });
   };
