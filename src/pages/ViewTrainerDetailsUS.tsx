@@ -228,8 +228,7 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
-          boxShadow: 1,
-          borderRadius: 2,
+        
         }}
       >
         Subscription Plan Currently Unavailable
@@ -261,8 +260,7 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
-          boxShadow: 1,
-          borderRadius: 2,
+        
         }}
       >
         <p>Video Playlist Currently Unavailable</p>
@@ -303,8 +301,7 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
-          boxShadow: 1,
-          borderRadius: 2,
+         
         }}
       >
         <p>Please subscribe to book slots with a trainer</p>

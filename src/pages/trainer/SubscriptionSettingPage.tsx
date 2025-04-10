@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, IconButton, Menu, MenuItem, Paper } from "@mui/material";
-import TrainerSubscriptionForm from "../../components/SubscriptionSetting";
+import TrainerSubscriptionForm from "../../components/modals/SubscriptionSetting";
 import useSubscription from "../../hooks/useSubscription";
 import ReuseTable from "../../components/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";

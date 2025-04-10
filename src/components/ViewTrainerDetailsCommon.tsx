@@ -15,7 +15,8 @@ const styles = {
     overflow: "hidden",
   },
   gradientBox: {
-    background: "linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.9))",
+    background: "linear-gradient(to bottom, #1f2937, #111827)"
+,
     height: { xs: 120, md: 180, lg: 195 },
     width: "100%",
     borderTopLeftRadius: 5,
@@ -63,7 +64,7 @@ const styles = {
     mt: { xs: 2, lg: 0 },
   },
   seePlansButton: {
-    bgcolor: "black",
+    bgcolor: "#1f2937",
     color: "white",
     px: { xs: 2, md: 4 },
     height: 44,
@@ -72,7 +73,8 @@ const styles = {
     fontSize: { xs: 14, md: 16 },
     fontWeight: 500,
     boxShadow: "none",
-    "&:hover": { bgcolor: "#333", boxShadow: "none" },
+    "&:hover": {backgroundColor: "#374151" },
+    transition: "background-color 0.3s",
   },
   chatButton: {
     color: "black",

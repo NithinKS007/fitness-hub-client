@@ -61,7 +61,7 @@ const styles = {
     fontWeight: 600,
     color: "#1a1a1a",
     textAlign: "center",
-    fontFamily: "'Poppins', sans-serif", // Ensure this font is imported
+    fontFamily: "'Poppins', sans-serif",
   },
   subtitleTypography: {
     fontSize: { xs: "12px", sm: "14px" },
@@ -82,17 +82,17 @@ const styles = {
     height: "48px",
     borderRadius: "12px",
     border: "1px solid #e0e0e0",
-    color: "#000000", // Black color
+    color: "#000000",
     "&:hover": {
-      border: "1px solid #000000", // Black border on hover
-      bgcolor: "rgba(0, 0, 0, 0.05)", // Light gray background on hover
+      border: "1px solid #000000",
+      bgcolor: "rgba(0, 0, 0, 0.05)",
     },
   },
   plansButton: {
     flex: 1,
     height: "48px",
-    color: "#ffffff", // White text for contrast
-    backgroundColor: "#000000", // Black background
+    backgroundColor: "#1f2937",
+    color: "white",
     borderRadius: "12px",
     border: "none",
     textTransform: "none",
@@ -101,9 +101,8 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    "&:hover": {
-      backgroundColor: "#333333", // Darker gray on hover
-    },
+    "&:hover": { backgroundColor: "#374151" },
+    transition: "background-color 0.3s",
   },
   gridContainer: {
     display: "flex",

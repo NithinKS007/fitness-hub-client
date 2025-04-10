@@ -27,7 +27,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ navItems }) => {
                 <li
                   className={`px-4 py-3 flex items-center space-x-3 cursor-pointer mt-2 ${
                     location?.pathname === item?.path
-                      ? "bg-black text-white rounded-md"
+                      ? "bg-[#1f2937] text-white rounded-md"
                       : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >

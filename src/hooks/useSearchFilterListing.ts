@@ -38,12 +38,16 @@ const filters = [
 const sortOptions: Sort[] = [{ value: "aA - zz" }, { value: "zz - aa" }];
 
 export const useSearchFilterListing = () => {
+  interface FilterValues {
+    [key: string]: string[];
+  }
+
   const rowsPerPage: number = 12;
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [page, setPage] = useState<number>(1);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filterValues, setFilterValues] = useState({});
+  const [filterValues, setFilterValues] = useState<FilterValues>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openFilters, setOpenFilters] = useState({})
   const [sortValue,setSortValue] = useState<string>("")

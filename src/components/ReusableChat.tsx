@@ -223,7 +223,7 @@ const ReusableChat = ({
                         borderRadius: 2,
                         bgcolor:
                           message.senderId.toString() === currentUserId
-                            ? "black"
+                            ? "#1f2937"
                             : "grey.200",
                         color:
                           message.senderId.toString() === currentUserId

@@ -18,6 +18,59 @@ import { useSelector } from "react-redux";
 import ReuseSort from "../components/Sort";
 import Error from "../components/Error";
 
+const styles = {
+  container: { py: 4 },
+  headerBox: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    mb: 3,
+  },
+  searchContainer: {
+    display: "flex",
+    justifyContent: "center",
+    padding: "0 16px",
+  },
+  textField: {
+    flexGrow: 1,
+    maxWidth: 500,
+    backgroundColor: "#fff",
+    borderRadius: "25px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#e0e0e0",
+      },
+      "&:hover fieldset": {
+        borderColor: "#14b8a6",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#14b8a6",
+      },
+      borderRadius: "25px",
+    },
+    "& .MuiInputBase-input": {
+      padding: "12px 20px",
+      fontSize: "16px",
+      color: "#333",
+    },
+  },
+  searchIcon: { color: "#14b8a6" },
+  sortFilterBox: { display: "flex", gap: 2 },
+  divider: { my: 3 },
+  mainContent: { display: "flex", flexDirection: { xs: "column", md: "row" } },
+  trainerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    gap: 2,
+  },
+  paginationContainer: {
+    display: "flex",
+    justifyContent: "center",
+  },
+};
+
 const GetTrainer: React.FC = () => {
   const {
     filters,
@@ -35,10 +88,8 @@ const GetTrainer: React.FC = () => {
     handleResetAll,
     handleSearchWithFilterTrainer,
     setOpenFilters,
-
     handlePageChange,
     searchTerm,
-
     handleSortChange,
     sortValue,
     sortOptions,
@@ -51,35 +102,27 @@ const GetTrainer: React.FC = () => {
   if (error) return <Error message={error} />;
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <TextField
-          value={searchTerm}
-          onChange={(event) => handleSearchChange(event.target.value)}
-          variant="standard"
-          placeholder="Search...."
-          sx={{
-            flexGrow: 1,
-            maxWidth: 400,
-          }}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-        <Box sx={{ display: "flex", gap: 2 }}>
+    <Container maxWidth="xl" sx={styles.container}>
+      <Box sx={styles.headerBox}>
+        <Box sx={styles.searchContainer}>
+          <TextField
+            value={searchTerm}
+            onChange={(event) => handleSearchChange(event.target.value)}
+            variant="outlined"
+            placeholder="Search..."
+            sx={styles.textField}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon sx={styles.searchIcon} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        </Box>
+        <Box sx={styles.sortFilterBox}>
           <ReuseSort
             onChange={handleSortChange}
             sortValue={sortValue as string}
@@ -88,8 +131,8 @@ const GetTrainer: React.FC = () => {
           <FilterButton onClick={toggleSidebar} />
         </Box>
       </Box>
-      <Divider sx={{ my: 3 }} />
-      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
+      <Divider sx={styles.divider} />
+      <Box sx={styles.mainContent}>
         {isSidebarOpen && (
           <FilterSidebar
             filters={filters}
@@ -112,24 +155,12 @@ const GetTrainer: React.FC = () => {
           <TrainerGridShimmer />
         ) : (
           <>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                gap: 2,
-              }}
-            >
+            <Box sx={styles.trainerContainer}>
               <TrainerGrid
                 trainersList={trainersList}
                 handleTrainerDetails={handleTrainerDetails}
               />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
+              <Box sx={styles.paginationContainer}>
                 <PaginationTable
                   handlePageChange={handlePageChange}
                   page={currentPage}

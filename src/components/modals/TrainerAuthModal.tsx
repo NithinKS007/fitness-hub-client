@@ -98,11 +98,10 @@ const cancelButtonStyles = {
 
 const submitButtonStyles = {
   width: { xs: "100%", sm: "auto" },
-  backgroundColor: "black",
+  backgroundColor: "#1f2937",
   color: "white",
-  "&:hover": {
-    backgroundColor: "#333333",
-  },
+  "&:hover": {backgroundColor: "#374151" },
+      transition: "background-color 0.3s",
 };
 
 const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
