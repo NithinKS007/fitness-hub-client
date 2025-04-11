@@ -95,7 +95,6 @@ const CommissionHistory = () => {
                     `${item.subscriptionTakenBy?.email}\n` +
                     `${item.subscriptionTakenBy?.phone}\n`,
     applicationDate: new Date(item.createdAt).toLocaleString(), 
-    userSubscriptionPlanId: item.userSubscriptionPlanId,
   }));
   
 
