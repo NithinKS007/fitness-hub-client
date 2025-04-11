@@ -2,9 +2,9 @@ import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
 
 interface GoogleAuthProps {
-  handleGoogleAuthSuccess: (res: any) => void; 
+  handleGoogleAuthSuccess: (res: any) => void;
 }
-const GoogleAuth: React.FC<GoogleAuthProps> = ({ handleGoogleAuthSuccess}) => {
+const GoogleAuth: React.FC<GoogleAuthProps> = ({ handleGoogleAuthSuccess }) => {
   return (
     <>
       <div className="flex items-center mb-4">
@@ -13,9 +13,7 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ handleGoogleAuthSuccess}) => {
         <hr className="flex-grow border-t border-gray-300" />
       </div>
       <div className="mt-4">
-        <GoogleLogin
-         onSuccess={handleGoogleAuthSuccess}
-        />
+        <GoogleLogin onSuccess={handleGoogleAuthSuccess} />
       </div>
     </>
   );
