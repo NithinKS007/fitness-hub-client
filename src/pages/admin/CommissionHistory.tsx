@@ -33,7 +33,6 @@ const filter: Filter[] = [
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Subscription Taken Date", field: "applicationDate" },
-  { label: "Subscription Plan ID", field: "userSubscriptionPlanId" },
   { label: "Amount Paid", field: "amountPaid" },
   { label: "Commission", field: "commission" },
   { label: "Platform Revenue", field: "platformRevenue" },
