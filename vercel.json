@@ -1,8 +1,14 @@
 {
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/"
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    },
+    {
+        "source": "/api/:path*",
+        "destination": "https://www.ftservices.life"
       }
-    ]
-  }
+  ]
+}
+
+
