@@ -5,81 +5,9 @@ import { AppDispatch, RootState } from "../redux/store";
 import { getSubscribedDetails } from "../redux/subscription/subscriptionThunk";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Error from "../components/Error";
-import { Box, Typography, Button, Paper, Fade, keyframes } from "@mui/material";
+import { Box, Typography, Button, Paper } from "@mui/material";
 import { CheckCircleOutline } from "@mui/icons-material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-const pulse = keyframes`
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.85;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-`;
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#14b8a6", 
-      dark: "#0d9488",
-    },
-    secondary: {
-      main: "#ffffff", 
-    },
-    background: {
-      default: "linear-gradient(135deg, #e6fffa 0%, #99f6e4 100%)", 
-    },
-    text: {
-      primary: "#111827", 
-      secondary: "#4b5563",
-    },
-  },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h5: {
-      fontWeight: 700,
-      letterSpacing: "-0.02em",
-    },
-    body1: {
-      fontWeight: 400,
-      lineHeight: 1.6,
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: "none",
-          borderRadius: "9999px", 
-          padding: "12px 24px",
-          fontSize: "1rem",
-          fontWeight: 600,
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          transition: "background-color 0.3s, transform 0.2s",
-          "&:hover": {
-            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
-            transform: "translateY(-2px)",
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: "12px", 
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-        },
-      },
-    },
-  },
-});
+import { motion } from "framer-motion";
 
 const styles = {
   container: {
@@ -87,43 +15,85 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: theme.palette.background.default,
-    padding: { xs: 2, sm: 4 },
+    background: "linear-gradient(135deg, #111827 0%, #1f2937 100%)",
+    padding: { xs: "16px", sm: "32px" },
   },
   paper: {
-    p: { xs: 3, sm: 4 },
-    maxWidth: 480,
+    padding: { xs: "24px", sm: "32px" },
+    maxWidth: "480px",
     width: "100%",
     textAlign: "center",
-    bgcolor: "secondary.main",
+    backgroundColor: "#1f2937",
+    borderRadius: "12px",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
   },
   contentBox: {
     display: "flex",
     flexDirection: "column",
-    gap: 2.5,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "20px",
   },
   icon: {
-    fontSize: { xs: 48, sm: 64 },
-    color: "primary.main",
-    mx: "auto",
-    animation: `${pulse} 1.8s ease-in-out infinite`,
+    fontSize: { xs: "48px", sm: "64px" },
+    color: "#14b8a6",
   },
   heading: {
-    color: "text.primary",
+    color: "#ffffff",
     fontSize: { xs: "28px", sm: "32px" },
+    fontWeight: 700,
+    letterSpacing: "-0.02em",
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
   },
   bodyText: {
-    color: "text.secondary",
+    color: "#d1d5db",
     maxWidth: "400px",
-    mx: "auto",
+    margin: "0 auto",
+    fontSize: "16px",
+    lineHeight: 1.6,
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
   },
   button: {
-    mt: 2,
-    bgcolor: "primary.main",
-    color: "secondary.main",
+    marginTop: "16px",
+    backgroundColor: "#14b8a6",
+    color: "#ffffff",
     width: { xs: "100%", sm: "200px" },
+    padding: "12px 24px",
+    borderRadius: "9999px",
+    textTransform: "none",
+    fontSize: "16px",
+    fontWeight: 600,
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
     "&:hover": {
-      bgcolor: "primary.dark",
+      backgroundColor: "#0d9488",
+      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
+      transform: "translateY(-2px)",
+    },
+    transition: "background-color 0.3s, transform 0.2s, box-shadow 0.3s",
+  },
+};
+
+const iconVariants = {
+  initial: { scale: 0 },
+  animate: {
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
+      duration: 0.5,
+    },
+  },
+};
+
+const cardVariants = {
+  initial: { opacity: 0, y: 50 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
     },
   },
 };
@@ -149,7 +119,12 @@ const OnSuccessPage: React.FC = () => {
   if (isLoading)
     return (
       <Box
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
       >
         <LoadingSpinner />;
       </Box>
@@ -157,32 +132,35 @@ const OnSuccessPage: React.FC = () => {
   if (error) return <Error message={error} />;
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={styles.container}>
-        <Fade in timeout={600}>
-          <Paper elevation={1} sx={styles.paper}>
-            <Box sx={styles.contentBox}>
+    <Box sx={styles.container}>
+      <motion.div variants={cardVariants} initial="initial" animate="animate">
+        <Paper elevation={0} sx={styles.paper}>
+          <Box sx={styles.contentBox}>
+            <motion.div
+              variants={iconVariants}
+              initial="initial"
+              animate="animate"
+            >
               <CheckCircleOutline sx={styles.icon} aria-hidden="true" />
-              <Typography variant="h5" component="h1" sx={styles.heading}>
-                Subscription Success!
-              </Typography>
-              <Typography variant="body1" sx={styles.bodyText}>
-                Your payment was processed successfully. Welcome to our fitness
-                community—let’s start your journey!
-              </Typography>
-              <Button
-                variant="contained"
-                sx={styles.button}
-                onClick={() => (window.location.href = "/find-trainer")}
-                aria-label="Start Training"
-              >
-                Start Training
-              </Button>
-            </Box>
-          </Paper>
-        </Fade>
-      </Box>
-    </ThemeProvider>
+            </motion.div>
+            <Typography component="h1" sx={styles.heading}>
+              Subscription Success!
+            </Typography>
+            <Typography sx={styles.bodyText}>
+              Your payment was processed successfully. Welcome to our fitness
+              community—let’s crush your goals!
+            </Typography>
+            <Button
+              sx={styles.button}
+              onClick={() => (window.location.href = "/find-trainer")}
+              aria-label="Start Training"
+            >
+              Start Training
+            </Button>
+          </Box>
+        </Paper>
+      </motion.div>
+    </Box>
   );
 };
 
