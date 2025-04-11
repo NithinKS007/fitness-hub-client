@@ -20,34 +20,45 @@ import ShowTrainerPlayLists from "../components/ShowTrainerPlayLists";
 import SlotBooking from "./SlotBooking";
 import { fetchTrainerSlots } from "../redux/booking/bookingThunk";
 import { getPlayListsAvailableByTrainerId } from "../redux/content/contentThunk";
+import LoadingSpinner from "../components/LoadingSpinner";
+
+const tabItems = [
+  { label: "About Me" },
+  { label: "Show Plans" },
+  { label: "Video Playlist" },
+  { label: "Book a slot" },
+];
 
 const ViewTrainerDetailsUS = () => {
+  const stripe = useStripe();
   const [activeTab, setActiveTab] = useState<number>(0);
   const [selectedPlan, setSelectedPlan] = useState<Subscription | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { _id } = useParams<{ _id: string }>();
-  const { user, trainer, admin } = useSelector(
-    (state: RootState) => state.auth
-  );
-  const trainerDetails = useSelector(
-    (state: RootState) => state.user.trainerDetailsWithSubscription
-  );
-  const playListsData = useSelector(
-    (state: RootState) => state.content.playLists
-  );
-  const stripe = useStripe();
-  const isPurchaseableUser = user?.role === "user" 
-  const isUserLoggedIn = user ||trainer || admin
+  const {
+    user,
+    trainer,
+    admin,
+    isLoading: authPersonLoading,
+  } = useSelector((state: RootState) => state.auth);
+  const {
+    trainerDetailsWithSubscription: trainerDetails,
+    isLoading: isTrainerDataLoading,
+  } = useSelector((state: RootState) => state.user);
+  const { playLists: playListsData, isLoading: isPlayListLoading } =
+    useSelector((state: RootState) => state.content);
+
+  const isPurchaseableUser = user?.role === "user";
+  const isUserLoggedIn = user || trainer || admin;
   const { isLoading, error } = useSelector(
     (state: RootState) => state.subscription
   );
-  const tabItems = [
-    { label: "About Me" },
-    { label: "Show Plans"},
-    { label: "Video Playlist" },
-    { label: "Book a slot" },
-  ] 
+  const isHeSubscribedToTheTrainer = useSelector(
+    (state: RootState) =>
+      state.subscription.isSubscribedToTheTrainer?.[_id as string]
+        ?.isSubscribed ?? false
+  );
 
   useEffect(() => {
     if (_id) {
@@ -64,14 +75,8 @@ const ViewTrainerDetailsUS = () => {
     }
   }, [dispatch, _id, user, activeTab]);
 
-  const isHeSubscribedToTheTrainer = useSelector(
-    (state: RootState) =>
-      state.subscription.isSubscribedToTheTrainer?.[_id as string]
-        ?.isSubscribed ?? false
-  );
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log("event",event)
+    console.log("event", event);
     setActiveTab(newValue);
   };
 
@@ -126,6 +131,9 @@ const ViewTrainerDetailsUS = () => {
   };
 
   const renderAboutMeTab = () => {
+    if (isTrainerDataLoading) {
+      return <LoadingSpinner />;
+    }
     return (
       <Box
         sx={{
@@ -160,6 +168,21 @@ const ViewTrainerDetailsUS = () => {
   };
 
   const renderSubscriptionPlansTab = () => {
+    if (isTrainerDataLoading || isLoading) {
+      return (
+        <Box
+          sx={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            maxHeight: "450px",
+          }}
+        >
+          <LoadingSpinner />;
+        </Box>
+      );
+    }
     return trainerDetails &&
       trainerDetails?.subscriptionDetails?.length > 0 &&
       isPurchaseableUser &&
@@ -211,7 +234,8 @@ const ViewTrainerDetailsUS = () => {
       </Box>
     ) : trainerDetails &&
       trainerDetails?.subscriptionDetails?.length > 0 &&
-      !isPurchaseableUser && isUserLoggedIn?.role==="user"  ? (
+      !isPurchaseableUser &&
+      isUserLoggedIn?.role === "user" ? (
       <Box
         sx={{
           padding: "16px",
@@ -229,7 +253,6 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
-        
         }}
       >
         Subscription Plan Currently Unavailable
@@ -238,12 +261,18 @@ const ViewTrainerDetailsUS = () => {
   };
 
   const renderPlayListsTab = () => {
-    return isHeSubscribedToTheTrainer && isPurchaseableUser && isUserLoggedIn?.role==="user"? (
+    if (isPlayListLoading) {
+      return <LoadingSpinner />;
+    }
+
+    return isHeSubscribedToTheTrainer &&
+      isPurchaseableUser &&
+      isUserLoggedIn?.role === "user" ? (
       <ShowTrainerPlayLists
         playListsData={fetchedPlayListsData}
         handlePlayListClick={handlePlayListClick}
       />
-    ) : !isUserLoggedIn? (
+    ) : !isUserLoggedIn ? (
       <Box
         sx={{
           padding: "16px",
@@ -261,7 +290,6 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
-        
         }}
       >
         <p>Video Playlist Currently Unavailable</p>
@@ -270,7 +298,25 @@ const ViewTrainerDetailsUS = () => {
   };
 
   const renderSlotBookingTab = () => {
-    return isHeSubscribedToTheTrainer && isPurchaseableUser && isUserLoggedIn?.role==="user" ? (
+    if (isTrainerDataLoading) {
+      return (
+        <Box
+          sx={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            maxHeight: "450px",
+          }}
+        >
+          <LoadingSpinner />
+        </Box>
+      );
+    }
+
+    return isHeSubscribedToTheTrainer &&
+      isPurchaseableUser &&
+      isUserLoggedIn?.role === "user" ? (
       <SlotBooking />
     ) : !isUserLoggedIn ? (
       <Box
@@ -302,14 +348,26 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
-         
         }}
       >
         <p>Please subscribe to book slots with a trainer</p>
       </Box>
     );
   };
-
+  if (authPersonLoading || isTrainerDataLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <LoadingSpinner />;
+      </Box>
+    );
+  }
   return (
     <>
       <Box sx={{ minHeight: "600px", marginBottom: "20px", width: "100%" }}>

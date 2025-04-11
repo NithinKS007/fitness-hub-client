@@ -131,6 +131,8 @@ export const purchaseSubscription = createAsyncThunk(
     { subscriptionId, stripe }: { subscriptionId: string ,stripe: Stripe },
     { rejectWithValue }
   ) => {
+
+    console.log("stripe passing",stripe)
     try {
       const response = await axiosInstance.post(
         `user/checkout-subscription-session/`,
