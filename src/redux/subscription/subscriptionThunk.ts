@@ -156,8 +156,10 @@ export const purchaseSubscription = createAsyncThunk(
 
 export const getSubscribedDetails = createAsyncThunk(
   "subscription/getSubscribedDetails",
-  async (sessionId: RequestSessionIdForSubscription, { rejectWithValue }) => {
+  async ({sessionId}: RequestSessionIdForSubscription, { rejectWithValue }) => {
     try {
+
+      console.log("sessionid",sessionId)
       const response = await axiosInstance.get(
         `user/verify-subscriptions/${sessionId}`
       );
