@@ -5,7 +5,7 @@ import {
   addVideo,
   fetchFullPlayListOfTrainer,
   fetchVideoDataById,
-  fetchVideosByPlayListId,
+  fetchVideosByTrainerUser,
   getPlayListsAvailableByTrainerId,
   getPlayListsOfTrainer,
   getUploadedVideosOfTrainer,
@@ -85,6 +85,7 @@ const content = createSlice({
             ? action.payload
             : "Failed to create video";
       })
+      
       // get videos uploaded by the trainer
       .addCase(getUploadedVideosOfTrainer.pending, (state) => {
         state.isLoading = true;
@@ -122,24 +123,6 @@ const content = createSlice({
             ? action.payload
             : "Failed to get playlists";
       })
-
-      .addCase(fetchVideosByPlayListId.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchVideosByPlayListId.fulfilled, (state, action) => {
-        console.log("action payload received", action.payload.data);
-        state.isLoading = false;
-        state.error = null;
-        state.videos = action.payload.data.map((video: any) => video.videoData);
-      })
-      .addCase(fetchVideosByPlayListId.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error =
-          typeof action.payload === "string"
-            ? action.payload
-            : "Failed to get videos";
-      })
-
       //get video data
       .addCase(fetchVideoDataById.pending, (state) => {
         state.isLoading = true;
@@ -238,6 +221,27 @@ const content = createSlice({
             ? action.payload
             : "Failed to get full playlists of trainer";
       })
+
+      .addCase(fetchVideosByTrainerUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchVideosByTrainerUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.videos = action.payload.data.videoList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
+      })
+      .addCase(fetchVideosByTrainerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to get trainer videos list";
+      })
+      
   },
 });
 

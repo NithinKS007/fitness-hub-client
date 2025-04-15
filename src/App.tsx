@@ -35,7 +35,7 @@ import AddContentsPage from "./pages/trainer/AddContentsPage";
 import TrainerSubscriptionDetailsPage from "./pages/admin/TrainerSubscriptionDetailsPage";
 import OnFailurePage from "./pages/OnFailurePage";
 import OnSuccessPage from "./pages/OnSuccessPage";
-import TrainerVideosGrid from "./pages/TrainerVideosGrid";
+import TrainerVideosGrid from "./pages/user/TrainerVideosGrid";
 import VideoPlayer from "./pages/VideoPlayer";
 import UserWorkoutsPage from "./pages/user/UserWorkoutSettingPage";
 import CommissionHistory from "./pages/admin/CommissionHistory";
@@ -50,7 +50,7 @@ const App = () => {
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
       <Route path="*" element={<PageNotFound />} />
-      
+
       <Route element={<ProtectedUser />}>
         <Route path="/subscription-success" element={<OnSuccessPage />} />
         <Route path="/subscription-failed" element={<OnFailurePage />} />
@@ -63,14 +63,6 @@ const App = () => {
         <Route
           path="/trainer-details/:_id"
           element={<ViewTrainerDetailsUS />}
-        />
-        <Route
-          path="/workout-video/:playListId/:trainerId/:videoId"
-          element={<VideoPlayer />}
-        />
-        <Route
-          path="/video/:playListId/:trainerId/"
-          element={<TrainerVideosGrid />}
         />
       </Route>
       {/*userRoutes*/}
@@ -85,6 +77,8 @@ const App = () => {
           <Route path="/user/bookings" element={<UserBookingsPage />} />
           <Route path="/user/chats" element={<UserChatsPage />} />
           <Route path="/user/workouts" element={<UserWorkoutsPage />} />
+          <Route path="/user/trainer-videos/:trainerId/" element={<TrainerVideosGrid />} />
+          <Route path="/user/trainer-videos/:videoId" element={<VideoPlayer />} />
         </Route>
       </Route>
 

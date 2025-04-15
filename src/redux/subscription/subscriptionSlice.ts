@@ -13,6 +13,7 @@ import {
   purchaseSubscription,
   updateSubscription,
   updateSubscriptionBlockStatus,
+  getUserTrainersList,
 } from "./subscriptionThunk";
 
 
@@ -22,6 +23,7 @@ const initialState: SubscriptionState = {
   subscriptions: [],
   userSubscribedTrainerPlans:[],
   subscribersOfTrainer:[],
+  userTrainersList:[],
   isSubscribedToTheTrainer:null,
   pagination:{ totalPages: 0, currentPage: 1}
   
@@ -167,8 +169,6 @@ const subscriptionSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getSubscribedDetails.fulfilled, (state,action) => {
-
-        console.log("paylooad data coming",action.payload)
         state.isLoading = false;
         state.error = null;
         state.userSubscribedTrainerPlans = [
@@ -277,6 +277,27 @@ const subscriptionSlice = createSlice({
             ? action.payload
             : "Error in checking user subscription status";
       })
+
+      // user trainers list
+      .addCase(getUserTrainersList.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserTrainersList.fulfilled, (state, action) => {
+        const trainersList = action.payload.data.userTrainersList
+        state.isLoading = false;
+        state.error = null;
+        state.userTrainersList = trainersList
+        state.pagination.currentPage = action.payload.data.paginationData.currentPage
+        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+      })
+      .addCase(getUserTrainersList.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Error to get user trainers list";
+      })
+
     
   },
 });

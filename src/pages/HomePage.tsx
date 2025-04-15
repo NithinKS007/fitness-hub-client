@@ -31,28 +31,28 @@ const HomePage = () => {
 
   const programs = [
     {
-      title: "Cardio Strength",
-      description: "Boost endurance and power with dynamic workouts.",
+      title: "Cardio & Strength",
+      description: "Improve stamina, heart health, and full-body strength.",
       image:
         "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
     },
     {
-      title: "Fat Loss",
-      description: "Shed pounds with targeted exercises and diet plans.",
+      title: "Fat Loss Focus",
+      description: "Burn fat efficiently with guided workouts and tips.",
       image:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+        "https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
     },
     {
-      title: "Muscle Gain",
-      description: "Build strength and mass with expert guidance.",
+      title: "Muscle Building",
+      description: "Gain lean muscle through expert strength training.",
       image:
         "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
     },
     {
-      title: "Nutrition",
-      description: "Fuel your body with personalized meal plans.",
+      title: "Muscle Building",
+      description: "Enhance strength and muscle mass with targeted training.",
       image:
-        "https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+        "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
     },
   ];
 
@@ -128,7 +128,7 @@ const HomePage = () => {
       boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
       width: "192px",
       textTransform: "none",
-      "&:hover": { backgroundColor: "#374151"  },
+      "&:hover": { backgroundColor: "#374151" },
       transition: "background-color 0.3s",
     },
     programsSection: {

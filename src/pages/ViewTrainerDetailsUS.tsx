@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import NavigationTabs from "../components/Tabs";
 import { useEffect, useState } from "react";
 import ViewTrainerDetailsCommon from "../components/ViewTrainerDetailsCommon";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getTrainerDetailsWithSubscription } from "../redux/user/userThunk";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
@@ -16,16 +16,13 @@ import {
 import { showErrorToast } from "../utils/toast";
 import { useStripe } from "@stripe/react-stripe-js";
 import { Subscription } from "../redux/subscription/subscriptionTypes";
-import ShowTrainerPlayLists from "../components/ShowTrainerPlayLists";
 import SlotBooking from "./SlotBooking";
 import { fetchTrainerSlots } from "../redux/booking/bookingThunk";
-import { getPlayListsAvailableByTrainerId } from "../redux/content/contentThunk";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const tabItems = [
   { label: "About Me" },
   { label: "Show Plans" },
-  { label: "Video Playlist" },
   { label: "Book a slot" },
 ];
 
@@ -34,7 +31,6 @@ const ViewTrainerDetailsUS = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [selectedPlan, setSelectedPlan] = useState<Subscription | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
   const { _id } = useParams<{ _id: string }>();
   const {
     user,
@@ -46,11 +42,10 @@ const ViewTrainerDetailsUS = () => {
     trainerDetailsWithSubscription: trainerDetails,
     isLoading: isTrainerDataLoading,
   } = useSelector((state: RootState) => state.user);
-  const { playLists: playListsData, isLoading: isPlayListLoading } =
-    useSelector((state: RootState) => state.content);
 
   const isPurchaseableUser = user?.role === "user";
   const isUserLoggedIn = user || trainer || admin;
+
   const { isLoading, error } = useSelector(
     (state: RootState) => state.subscription
   );
@@ -67,9 +62,6 @@ const ViewTrainerDetailsUS = () => {
         dispatch(isSubscribedToTheTrainer(_id));
       }
       if (activeTab === 2) {
-        dispatch(getPlayListsAvailableByTrainerId({ trainerId: _id }));
-      }
-      if (activeTab === 3) {
         dispatch(fetchTrainerSlots({ trainerId: _id }));
       }
     }
@@ -101,20 +93,6 @@ const ViewTrainerDetailsUS = () => {
     }
   };
 
-  const fetchedPlayListsData =
-    playListsData && playListsData.length > 0
-      ? playListsData.map((list) => {
-          return {
-            ...list,
-            title: list.title,
-            videoCount: list?.videoCount ? list.videoCount : 0,
-          };
-        })
-      : [];
-
-  const handlePlayListClick = async (playListId: string, trainerId: string) => {
-    navigate(`/video/${playListId}/${trainerId}`);
-  };
   const renderTabContent = () => {
     switch (activeTab) {
       case 0:
@@ -122,8 +100,6 @@ const ViewTrainerDetailsUS = () => {
       case 1:
         return renderSubscriptionPlansTab();
       case 2:
-        return renderPlayListsTab();
-      case 3:
         return renderSlotBookingTab();
       default:
         return null;
@@ -260,45 +236,8 @@ const ViewTrainerDetailsUS = () => {
     );
   };
 
-  const renderPlayListsTab = () => {
-    if (isPlayListLoading) {
-      return <LoadingSpinner />;
-    }
-
-    return isHeSubscribedToTheTrainer &&
-      isPurchaseableUser &&
-      isUserLoggedIn?.role === "user" ? (
-      <ShowTrainerPlayLists
-        playListsData={fetchedPlayListsData}
-        handlePlayListClick={handlePlayListClick}
-      />
-    ) : !isUserLoggedIn ? (
-      <Box
-        sx={{
-          padding: "16px",
-          width: { xs: "100%", md: "80%" },
-          margin: "0 auto",
-          boxShadow: 1,
-          borderRadius: 2,
-        }}
-      >
-        <p>Please log in to watch vidoes </p>
-      </Box>
-    ) : (
-      <Box
-        sx={{
-          padding: "16px",
-          width: { xs: "100%", md: "80%" },
-          margin: "0 auto",
-        }}
-      >
-        <p>Video Playlist Currently Unavailable</p>
-      </Box>
-    );
-  };
-
   const renderSlotBookingTab = () => {
-    if (isTrainerDataLoading) {
+    if (isTrainerDataLoading||isLoading) {
       return (
         <Box
           sx={{
@@ -354,6 +293,9 @@ const ViewTrainerDetailsUS = () => {
       </Box>
     );
   };
+
+
+
   if (authPersonLoading || isTrainerDataLoading) {
     return (
       <Box

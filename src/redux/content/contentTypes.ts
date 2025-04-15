@@ -74,3 +74,6 @@ export interface RequestVideoId{
 
 export type VideosQueryParams = QueryParams
 export type PlayListQueryParams = QueryParams
+export type VideosQueryParamsUser = VideosQueryParams & {
+  trainerId: string;
+};

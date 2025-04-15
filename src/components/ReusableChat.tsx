@@ -302,7 +302,7 @@ const ReusableChat = ({
               onClick={onSendClick}
               sx={{
                 borderRadius: 1,
-                backgroundColor: "black",
+                backgroundColor: "#1f2937",
                 color: "white",
               }}
               disabled={!isPlanActive}

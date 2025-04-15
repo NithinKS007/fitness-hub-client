@@ -1,31 +1,44 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { createPlayList, AddVideo, RequestPlayListsByTrainerId, RequestVideosListByPlayListId, RequestVideoId, VideosQueryParams, PlayListQueryParams, UpdateVideoBlockStatus, UpdatePlayListBlockStatus} from "./contentTypes";
+import { createPlayList, AddVideo, RequestPlayListsByTrainerId, RequestVideosListByPlayListId, RequestVideoId, VideosQueryParams, PlayListQueryParams, UpdateVideoBlockStatus, UpdatePlayListBlockStatus, VideosQueryParamsUser} from "./contentTypes";
 
-export const addPlayList = createAsyncThunk(
-    "content/addPlayList",
-    async (title:createPlayList, { rejectWithValue }) => {
-      try {
-        const response = await axiosInstance.post(`trainer/create-playlist/`,title);
-        return response.data;
-      } catch (error: any) {
-        console.log(error);
-        if (error.response && error.response.data.message) {
-          return rejectWithValue(error.response.data.message);
-        } else {
-          return rejectWithValue("Failed to create playlist");
-        }
+
+export const fetchVideosByTrainerUser = createAsyncThunk(
+  "content/fetchVideosByTrainerUser",
+  async (videosQueryParams:VideosQueryParamsUser, { rejectWithValue }) => {
+
+    try {
+      const { trainerId, ...queryParams } = videosQueryParams;
+      const response = await axiosInstance.get(`user/videos/${trainerId}`,{params:queryParams});
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to get videos user");
       }
     }
+  }
 );
 
 
-export const getPlayListsOfTrainer = createAsyncThunk(
-  "content/getPlayListsOfTrainer",
-  async (params:PlayListQueryParams, { rejectWithValue }) => {
+
+
+
+
+
+
+
+
+
+//this playlist is for the purpose of filtering in the user side while viewing the videos
+export const getPlayListsAvailableByTrainerId = createAsyncThunk(
+  "content/getPlayListsAvailableByTrainerId",
+  async ({trainerId}:RequestPlayListsByTrainerId, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.get(`trainer/playlists/`,{params});
+      const response = await axiosInstance.get(`user/video-playlist/${trainerId}`);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -33,6 +46,25 @@ export const getPlayListsOfTrainer = createAsyncThunk(
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue("Failed to get playlists of trainer");
+      }
+    }
+  }
+);
+
+
+export const getUploadedVideosOfTrainer = createAsyncThunk(
+  "content/getUploadedVideosOfTrainer",
+  async (params:VideosQueryParams, { rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.get(`trainer/videos/`,{params});
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to get videos of trainer");
       }
     }
   }
@@ -55,61 +87,41 @@ export const addVideo = createAsyncThunk(
   }
 );
 
-export const getUploadedVideosOfTrainer = createAsyncThunk(
-  "content/getUploadedVideosOfTrainer",
-  async (params:VideosQueryParams, { rejectWithValue }) => {
-
+export const addPlayList = createAsyncThunk(
+  "content/addPlayList",
+  async (title:createPlayList, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/videos/`,{params});
+      const response = await axiosInstance.post(`trainer/create-playlist/`,title);
       return response.data;
     } catch (error: any) {
       console.log(error);
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
-        return rejectWithValue("Failed to get videos of trainer");
+        return rejectWithValue("Failed to create playlist");
       }
     }
   }
 );
 
 
-export const getPlayListsAvailableByTrainerId = createAsyncThunk(
-  "content/getPlayListsAvailableByTrainerId",
-  async ({trainerId}:RequestPlayListsByTrainerId, { rejectWithValue }) => {
+export const getPlayListsOfTrainer = createAsyncThunk(
+"content/getPlayListsOfTrainer",
+async (params:PlayListQueryParams, { rejectWithValue }) => {
 
-    try {
-      const response = await axiosInstance.get(`user/video-playlist/${trainerId}`);
-      return response.data;
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
-      } else {
-        return rejectWithValue("Failed to get playlists of trainer");
-      }
+  try {
+    const response = await axiosInstance.get(`trainer/playlists/`,{params});
+    return response.data;
+  } catch (error: any) {
+    console.log(error);
+    if (error.response && error.response.data.message) {
+      return rejectWithValue(error.response.data.message);
+    } else {
+      return rejectWithValue("Failed to get playlists of trainer");
     }
   }
+}
 );
-
-export const fetchVideosByPlayListId = createAsyncThunk(
-  "content/fetchVideosByPlayListId",
-  async ({playListId}:RequestVideosListByPlayListId, { rejectWithValue }) => {
-
-    try {
-      const response = await axiosInstance.get(`user/videos/${playListId}`);
-      return response.data
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
-      } else {
-        return rejectWithValue("Failed to get videos of the trainer");
-      }
-    }
-  }
-);
-
 
 export const fetchVideoDataById = createAsyncThunk(
   "content/fetchVideoDataById",

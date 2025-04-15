@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Box, IconButton, MenuItem, Menu } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
@@ -18,6 +18,7 @@ import { getWorkouts } from "../../redux/workout/workoutThunk";
 import { useDispatch } from "react-redux";
 import TableFilter from "../../components/TableFilter";
 import { Dayjs } from "dayjs";
+import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 
 const columns: TableColumn[] = [
   { label: "Date", field: "date" },
@@ -34,6 +35,12 @@ const columns: TableColumn[] = [
 const filter: Filter[] = [{ value: "Completed" }, { value: "Pending" }];
 
 const UserWorkoutsPage: React.FC = () => {
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openCompleteModal, setOpenCompleteModal] = useState(false);
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(
+    null
+  );
+
   const {
     open,
     selectedDate,
@@ -80,8 +87,23 @@ const UserWorkoutsPage: React.FC = () => {
     getQueryParams().fromDate,
     getQueryParams().toDate,
   ]);
+  const handleConfirmDelete = () => {
+    if (selectedWorkoutId) {
+      handleDelete(selectedWorkoutId);
+      setOpenDeleteModal(false);
+      setSelectedWorkoutId(null);
+    }
+  };
 
-  const { workouts, isLoading, error, pagination } = useSelector(
+  const handleConfirmComplete = () => {
+    if (selectedWorkoutId) {
+      handleComplete(selectedWorkoutId);
+      setOpenCompleteModal(false);
+      setSelectedWorkoutId(null);
+    }
+  };
+
+  const { workouts, isLoading, pagination } = useSelector(
     (state: RootState) => state.workout
   );
 
@@ -177,11 +199,19 @@ const UserWorkoutsPage: React.FC = () => {
               }
               onClose={handleMenuClose}
             >
-              <MenuItem onClick={() => handleDelete(workout._id.toString())}>
+              <MenuItem
+                onClick={() => {
+                  setSelectedWorkoutId(workout._id.toString());
+                  setOpenDeleteModal(true);
+                }}
+              >
                 Delete
               </MenuItem>
               <MenuItem
-                onClick={() => handleComplete(workout._id.toString())}
+                onClick={() => {
+                  setSelectedWorkoutId(workout._id.toString());
+                  setOpenCompleteModal(true);
+                }}
                 disabled={workout.isCompleted}
               >
                 Mark Complete
@@ -254,8 +284,6 @@ const UserWorkoutsPage: React.FC = () => {
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }} />
       {isLoading ? (
         <ShimmerTableLoader columns={columns} />
-      ) : error ? (
-        <Box>{error}</Box>
       ) : (
         <>
           <ReuseTable columns={columns} data={mapWorkoutData(workouts)} />
@@ -278,6 +306,33 @@ const UserWorkoutsPage: React.FC = () => {
         handleDateChange={handleDateChange}
         isExerciseDisabled={isExerciseDisabled}
         handleBodyPartChange={handleBodyPartChange}
+      />
+      <ConfirmationModalDialog
+        open={openDeleteModal}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setOpenDeleteModal(false);
+          setSelectedWorkoutId(null);
+        }}
+        content="Are you sure you want to delete this workout?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmColor="error"
+        cancelColor="primary"
+      />
+
+      <ConfirmationModalDialog
+        open={openCompleteModal}
+        onConfirm={handleConfirmComplete}
+        onCancel={() => {
+          setOpenCompleteModal(false);
+          setSelectedWorkoutId(null);
+        }}
+        content="Mark this workout as complete? NB: You cannot mark future workouts as completed."
+        confirmText="Yes"
+        cancelText="No"
+        confirmColor="success"
+        cancelColor="primary"
       />
     </>
   );

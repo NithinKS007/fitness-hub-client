@@ -58,14 +58,17 @@ const UserChatsPage = () => {
         })
       );
 
-      socket.on("receiveMessage", (message: any) => {
+      socket.on("receiveMessage", (message: {createdAt:Date,message:string,senderId:string,_id:string}) => {
         console.log("Received message:", message);
-        dispatch(
-          addMessage({
-            ...message,
-            createdAt: new Date(message.createdAt),
-          })
-        );
+        if (message.senderId === selectedTrainerId) {
+          dispatch(
+            addMessage({
+              ...message,
+              createdAt: new Date(message.createdAt).toISOString(),
+            })
+          );
+        }
+       
       });
       socket.on(
         "onlineStatusResponse",
@@ -92,7 +95,7 @@ const UserChatsPage = () => {
         senderId: user._id,
         receiverId: selectedTrainerId,
         message: input,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       };
       socket.emit("sendMessage", message);
       dispatch(
@@ -101,7 +104,7 @@ const UserChatsPage = () => {
           senderId: user?._id,
           receiverId: selectedTrainerId,
           message: input,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
         })
       );
       setInput("");

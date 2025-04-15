@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { RequestDeleteSubscription, RequestSessionIdForSubscription, SubscribersListQueryParams, Subscription, UserSubscriptionsListQueryParams } from "./subscriptionTypes";
+import { UserTrainersListQueryParams, RequestDeleteSubscription, RequestSessionIdForSubscription, SubscribersListQueryParams, Subscription, UserSubscriptionsListQueryParams } from "./subscriptionTypes";
 import { updateBlockStatus } from "../admin/adminTypes";
 import { Stripe } from "@stripe/stripe-js";
 
@@ -263,6 +263,23 @@ export const getTrainerSubscribedUsers = createAsyncThunk(
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue("Failed to get subscribers of trainer");
+      }
+    }
+  }
+);
+
+export const getUserTrainersList = createAsyncThunk(
+  "subscription/getUserTrainersList",
+  async (params:UserTrainersListQueryParams, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`user/my-trainers/`,{params});
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to get my trainers list");
       }
     }
   }
