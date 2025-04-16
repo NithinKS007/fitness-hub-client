@@ -6,7 +6,10 @@ import {
   fetchChatMessages,
   getTrainerChatList,
 } from "../../redux/chat/chatThunk";
-import { addMessage } from "../../redux/chat/chatSlice";
+import {
+  addMessage,
+  updateMessageReadStatus,
+} from "../../redux/chat/chatSlice";
 import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
@@ -65,17 +68,26 @@ const ChatPage = () => {
           receiverId: selectedUserId,
         })
       );
-
+      socket.emit("setActiveChat", {
+        userId: trainer._id,
+        partnerId: selectedUserId,
+      });
       socket.on(
         "receiveMessage",
         (message: {
           createdAt: Date;
           message: string;
           senderId: string;
+          receiverId: string;
           _id: string;
         }) => {
           console.log("Received message:", message);
-          if (message.senderId === selectedUserId) {
+          if (
+            (message.senderId === trainer._id &&
+              message.receiverId === selectedUserId) ||
+            (message.senderId === selectedUserId &&
+              message.receiverId === trainer._id)
+          ) {
             dispatch(
               addMessage({
                 ...message,
@@ -102,9 +114,19 @@ const ChatPage = () => {
           setTyping(null);
         }
       });
+      socket.on("messageRead", ({ messageIds }: { messageIds: string[] }) => {
+        console.log("Received messageRead for the mark as read it will be as arrays:", messageIds);
+        if (messageIds && messageIds.length > 0) {
+          messageIds?.forEach((messageId) =>
+            dispatch(updateMessageReadStatus({ messageId }))
+          );
+        }
+      });
       return () => {
+        socket.emit("closeChat", trainer._id);
         socket.off("onlineStatusResponse");
         socket.off("receiveMessage");
+        socket.off("messageRead");
         socket.off("typing");
         socket.off("stopTyping");
       };
@@ -113,8 +135,8 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (typing && typingIndicatorRef.current && !chatLoading) {
-      typingIndicatorRef.current.scrollIntoView({ behavior: "smooth" });
-    } else if (messagesEndRef.current && !chatLoading &&!typing) {
+      typingIndicatorRef.current.scrollIntoView();
+    } else if (messagesEndRef.current && !chatLoading && !typing) {
       messagesEndRef.current.scrollIntoView();
     }
   }, [messages, selectedUserId, chatLoading, typing]);
@@ -128,15 +150,15 @@ const ChatPage = () => {
         createdAt: new Date().toISOString(),
       };
       socket.emit("sendMessage", message);
-      dispatch(
-        addMessage({
-          _id: Date.now(),
-          senderId: trainer?._id,
-          receiverId: selectedUserId,
-          message: input,
-          createdAt: new Date().toISOString(),
-        })
-      );
+      // dispatch(
+      //   addMessage({
+      //     _id: Date.now(),
+      //     senderId: trainer?._id,
+      //     receiverId: selectedUserId,
+      //     message: input,
+      //     createdAt: new Date().toISOString(),
+      //   })
+      // );
       setInput("");
       socket.emit("stopTyping", {
         senderId: trainer._id,
@@ -160,18 +182,17 @@ const ChatPage = () => {
     (user) => user.contactId === selectedUserId
   );
 
-
   const handleTyping = () => {
     if (selectedUser && trainer?._id) {
       socket.emit("typing", {
         senderId: trainer._id,
         receiverId: selectedUserId,
       });
-  
+
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-  
+
       typingTimeoutRef.current = window.setTimeout(() => {
         socket.emit("stopTyping", {
           senderId: trainer._id,
@@ -180,7 +201,6 @@ const ChatPage = () => {
       }, 2000);
     }
   };
-  
 
   return (
     <Box sx={{ height: "100vh", maxHeight: "600px" }}>

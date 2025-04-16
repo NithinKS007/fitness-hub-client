@@ -17,12 +17,10 @@ import {
 } from "@mui/material";
 import { getRelativeTime, formatVideoDuration } from "../../utils/conversion";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
-import SearchBarTable from "../../components/SearchBarTable";
-import TableFilter from "../../components/TableFilter";
-import DateAndTimeFilter from "../../components/DateAndTimeFilter";
-import { Dayjs } from "dayjs";
 import PaginationTable from "../../components/PaginationTable";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import SearchVideoGrid from "../../components/SearchVideoGrid";
+import VideoFilter from "../../components/videoGridFilter";
 
 const styles = {
   loaderBox: {
@@ -35,12 +33,12 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "flex-start",
-    gap: "9px",  
+    gap: "17px",
     margin: "0",
-    width: "100%", 
+    width: "100%",
   },
   cardContainer: {
-    width: "32.90%",
+    width: "24%",
     cursor: "pointer",
     backgroundColor: "#fff",
     "&:hover": {
@@ -103,16 +101,13 @@ const TrainerVideosGrid: React.FC = () => {
     selectedFilter,
     handleFilterChange,
     getQueryParams,
-    fromDate,
-    toDate,
-    handleFromDateChange,
-    handleToDateChange,
-    handleResetDates,
   } = useSearchFilter();
 
   useEffect(() => {
     if (trainerId) {
-      dispatch(fetchVideosByTrainerUser({ trainerId, ...getQueryParams() }));
+      const queryParams = getQueryParams();
+      queryParams.limit = 12;
+      dispatch(fetchVideosByTrainerUser({ trainerId, ...queryParams }));
       dispatch(getPlayListsAvailableByTrainerId({ trainerId }));
       dispatch(isSubscribedToTheTrainer(trainerId));
     }
@@ -122,8 +117,6 @@ const TrainerVideosGrid: React.FC = () => {
     getQueryParams().page,
     getQueryParams().search,
     getQueryParams().filters,
-    getQueryParams().fromDate,
-    getQueryParams().toDate,
   ]);
 
   const {
@@ -170,7 +163,7 @@ const TrainerVideosGrid: React.FC = () => {
           px: 2,
         }}
       >
-        <SearchBarTable
+        <SearchVideoGrid
           searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
@@ -183,24 +176,14 @@ const TrainerVideosGrid: React.FC = () => {
             width: "100%",
           }}
         >
-          <TableFilter
+          <VideoFilter
             selectedFilter={selectedFilter as string[]}
             filter={fetchedPlayListsData}
             handleFilterChange={handleFilterChange}
           />
-          <DateAndTimeFilter
-            fromDate={fromDate as Dayjs | null}
-            toDate={toDate as Dayjs | null}
-            onFromDateChange={handleFromDateChange}
-            onToDateChange={handleToDateChange}
-            onReset={handleResetDates}
-          />
         </Box>
       </Box>
-      <Container
-        maxWidth={false}
-        sx={{ py: 5, px: 0 }} 
-      >
+      <Container maxWidth={false} sx={{ py: 5, px: 0 }}>
         {isHeSubscribedToTheTrainer ? (
           videosData && videosData.length > 0 ? (
             <Box sx={styles.videoWrapper}>
@@ -223,9 +206,7 @@ const TrainerVideosGrid: React.FC = () => {
                     </Box>
                   </Box>
                   <CardContent sx={{ padding: "8px 8px" }}>
-                    <Typography sx={styles.title}>
-                      {video.title}
-                    </Typography>
+                    <Typography sx={styles.title}>{video.title}</Typography>
                     <Typography sx={styles.metadata}>
                       {getRelativeTime(new Date(video.createdAt))}
                     </Typography>
@@ -250,7 +231,14 @@ const TrainerVideosGrid: React.FC = () => {
           </Box>
         )}
       </Container>
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
         <PaginationTable
           handlePageChange={handlePageChange}
           page={currentPage}

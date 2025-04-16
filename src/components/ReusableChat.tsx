@@ -15,17 +15,18 @@ import SendIcon from "@mui/icons-material/Send";
 
 interface ChatContact {
   _id: string;
-  contactId: string; 
+  contactId: string;
   name: string;
-  profilePic: string | null
+  profilePic: string | null;
   planStatus: string;
 }
 
 interface ChatMessage {
-  _id:string;
+  _id: string;
   senderId: string;
   receiverId: string;
   message: string;
+  isRead: boolean;
   createdAt: Date;
 }
 
@@ -42,7 +43,7 @@ interface ReusableChatProps {
   onEmojiClick: () => void;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   currentUserId: string;
-  onTyping: () => void; 
+  onTyping: () => void;
   typing: string | null;
   typingIndicatorRef: React.RefObject<HTMLDivElement>;
 }
@@ -68,7 +69,7 @@ const ReusableChat = ({
     (contact) => contact.contactId === selectedId
   );
 
-  console.log("typing",typing)
+  console.log("typing", typing);
   return (
     <Box
       sx={{
@@ -123,7 +124,7 @@ const ReusableChat = ({
                     borderRadius: 1,
                     mx: 1,
                     height: 64,
-                    transition: "background-color 0.3s ease"
+                    transition: "background-color 0.3s ease",
                   }}
                 >
                   <ListItemAvatar>
@@ -211,65 +212,73 @@ const ReusableChat = ({
             {selectedId ? (
               messages.length > 0 ? (
                 <>
-                {messages.map((message) => (
-                  <Box
-                    // ref={messagesEndRef}
-                    key={message._id}
-                    sx={{
-                      display: "flex",
-                      mb: 2,
-                      justifyContent:
-                        message.senderId.toString() === currentUserId
-                          ? "flex-end"
-                          : "flex-start",
-                    }}
-                  >
+                  {messages.map((message) => (
                     <Box
+                      key={message._id}
                       sx={{
-                        maxWidth: "70%",
-                        p: 1,
-                        borderRadius: 2,
-                        bgcolor:
+                        display: "flex",
+                        mb: 2,
+                        justifyContent:
                           message.senderId.toString() === currentUserId
-                            ? "#1f2937"
-                            : "grey.200",
-                        color:
-                          message.senderId.toString() === currentUserId
-                            ? "white"
-                            : "black",
-                        boxShadow: 1,
+                            ? "flex-end"
+                            : "flex-start",
                       }}
                     >
-                      <Typography variant="body2">{message.message}</Typography>
-                      <Typography
-                        variant="caption"
+                      <Box
                         sx={{
-                          display: "block",
-                          textAlign: "right",
+                          maxWidth: "70%",
+                          p: 1,
+                          borderRadius: 2,
+                          bgcolor:
+                            message.senderId.toString() === currentUserId
+                              ? "#1f2937"
+                              : "grey.200",
                           color:
                             message.senderId.toString() === currentUserId
-                              ? "rgba(255, 255, 255, 0.7)"
-                              : "grey.600",
-                          mt: 0.5,
+                              ? "white"
+                              : "black",
+                          boxShadow: 1,
                         }}
                       >
-                        {new Date(message.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </Typography>
+                        <Typography variant="body2">
+                          {message.message}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            display: "block",
+                            textAlign: "right",
+                            color:
+                              message.senderId.toString() === currentUserId
+                                ? "rgba(255, 255, 255, 0.7)"
+                                : "grey.600",
+                            mt: 0.5,
+                          }}
+                        >
+                          {new Date(message.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          {message.senderId.toString() === currentUserId ? (
+                            <span style={{ marginLeft: "3px" }}>
+                              {message?.isRead ? "✔✔" : "✔"}
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                ))}
-                <div ref={messagesEndRef} />
-                 {typing && (
+                  ))}
+                  <div ref={messagesEndRef} />
+                  {typing && (
                     <Box
                       sx={{
                         display: "flex",
                         justifyContent: "flex-start",
                         mb: 2,
                       }}
-                      ref={typingIndicatorRef}// Scroll to typing or last message
+                      ref={typingIndicatorRef}
                     >
                       <Box
                         sx={{
@@ -311,7 +320,10 @@ const ReusableChat = ({
           >
             <TextField
               value={input}
-              onChange={(e) =>{onInputChange(e.target.value);onTyping()}}
+              onChange={(e) => {
+                onInputChange(e.target.value);
+                onTyping();
+              }}
               placeholder="Type your message..."
               variant="outlined"
               size="small"

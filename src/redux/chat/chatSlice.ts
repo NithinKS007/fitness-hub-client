@@ -17,6 +17,15 @@ const chat = createSlice({
     addMessage(state, action) {
       state.ChatMessages.push(action.payload);
     },
+    updateMessageReadStatus:(state,action) =>{
+      const messageId = action.payload.messageId
+
+      console.log("message id received",messageId)
+      const message = state.ChatMessages.find(msg => msg._id === messageId);
+      if (message) {
+        message.isRead = true;
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -74,5 +83,5 @@ const chat = createSlice({
   },
 });
 
-export const { addMessage } = chat.actions;
+export const { addMessage ,updateMessageReadStatus} = chat.actions;
 export default chat.reducer;

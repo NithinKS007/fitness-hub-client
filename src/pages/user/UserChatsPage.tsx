@@ -3,7 +3,7 @@ import { socket } from "../../config/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchChatMessages, getUserChatList } from "../../redux/chat/chatThunk";
-import { addMessage } from "../../redux/chat/chatSlice";
+import { addMessage,updateMessageReadStatus } from "../../redux/chat/chatSlice";
 import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
@@ -64,17 +64,23 @@ const UserChatsPage = () => {
           receiverId: selectedTrainerId,
         })
       );
-
+      socket.emit("setActiveChat", { userId: user._id, partnerId: selectedTrainerId })
+      // socket.on("messageRead", ({ messageId }: { messageId: string }) => {
+      //   dispatch(updateMessageReadStatus({ messageId }));
+      // });
       socket.on(
         "receiveMessage",
         (message: {
           createdAt: Date;
           message: string;
           senderId: string;
+          receiverId: string;
+          isRead: boolean;
           _id: string;
         }) => {
           console.log("Received message:", message);
-          if (message.senderId === selectedTrainerId) {
+          if ((message.senderId === user._id && message.receiverId === selectedTrainerId) ||
+          (message.senderId === selectedTrainerId && message.receiverId === user._id)) {
             dispatch(
               addMessage({
                 ...message,
@@ -101,9 +107,20 @@ const UserChatsPage = () => {
         if (senderId === selectedTrainerId) {
           setTyping(null);
         }
+      })
+      socket.on("messageRead", ({ messageIds }: { messageIds: string[] }) => {
+        console.log("Received messageRead:", messageIds);
+        if(messageIds && messageIds.length > 0){
+          messageIds?.forEach((messageId) =>
+            dispatch(updateMessageReadStatus({ messageId }))
+          );
+        }
       });
+
       return () => {
+        socket.emit("closeChat", user._id);
         socket.off("receiveMessage");
+        socket.off("messageRead");
         socket.off("onlineStatusResponse");
         socket.off("typing");
         socket.off("stopTyping");
@@ -113,7 +130,7 @@ const UserChatsPage = () => {
 
   useEffect(() => {
    if (typing && typingIndicatorRef.current && !chatLoading) {
-    typingIndicatorRef.current.scrollIntoView({ behavior: "smooth" });
+    typingIndicatorRef.current.scrollIntoView();
     } else if (messagesEndRef.current && !chatLoading && !typing) {
       messagesEndRef.current.scrollIntoView();
     }
@@ -128,15 +145,15 @@ const UserChatsPage = () => {
         createdAt: new Date().toISOString(),
       };
       socket.emit("sendMessage", message);
-      dispatch(
-        addMessage({
-          _id: Date.now(),
-          senderId: user?._id,
-          receiverId: selectedTrainerId,
-          message: input,
-          createdAt: new Date().toISOString(),
-        })
-      );
+      // dispatch(
+      //   addMessage({
+      //     _id: Date.now(),
+      //     senderId: user?._id,
+      //     receiverId: selectedTrainerId,
+      //     message: input,
+      //     createdAt: new Date().toISOString(),
+      //   })
+      // );
       setInput("");
       socket.emit("stopTyping", {
         senderId: user._id,
