@@ -42,6 +42,9 @@ interface ReusableChatProps {
   onEmojiClick: () => void;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   currentUserId: string;
+  onTyping: () => void; 
+  typing: string | null;
+  typingIndicatorRef: React.RefObject<HTMLDivElement>;
 }
 
 const ReusableChat = ({
@@ -57,11 +60,15 @@ const ReusableChat = ({
   onEmojiClick,
   messagesEndRef,
   currentUserId,
+  onTyping,
+  typing,
+  typingIndicatorRef,
 }: ReusableChatProps) => {
   const selectedContact = contacts.find(
     (contact) => contact.contactId === selectedId
   );
 
+  console.log("typing",typing)
   return (
     <Box
       sx={{
@@ -203,9 +210,10 @@ const ReusableChat = ({
           >
             {selectedId ? (
               messages.length > 0 ? (
-                messages.map((message) => (
+                <>
+                {messages.map((message) => (
                   <Box
-                    ref={messagesEndRef}
+                    // ref={messagesEndRef}
                     key={message._id}
                     sx={{
                       display: "flex",
@@ -252,7 +260,32 @@ const ReusableChat = ({
                       </Typography>
                     </Box>
                   </Box>
-                ))
+                ))}
+                <div ref={messagesEndRef} />
+                 {typing && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        mb: 2,
+                      }}
+                      ref={typingIndicatorRef}// Scroll to typing or last message
+                    >
+                      <Box
+                        sx={{
+                          maxWidth: "70%",
+                          p: 1,
+                          borderRadius: 2,
+                          bgcolor: "grey.200",
+                          color: "grey.600",
+                          boxShadow: 1,
+                        }}
+                      >
+                        <Typography variant="body2">Typing...</Typography>
+                      </Box>
+                    </Box>
+                  )}
+                </>
               ) : (
                 <Typography color="grey.500" align="center">
                   No messages yet
@@ -278,7 +311,7 @@ const ReusableChat = ({
           >
             <TextField
               value={input}
-              onChange={(e) => onInputChange(e.target.value)}
+              onChange={(e) =>{onInputChange(e.target.value);onTyping()}}
               placeholder="Type your message..."
               variant="outlined"
               size="small"

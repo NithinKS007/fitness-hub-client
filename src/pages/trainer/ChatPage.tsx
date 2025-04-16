@@ -19,6 +19,9 @@ const ChatPage = () => {
   const pickerRef = useRef<HTMLDivElement>(null);
   const [isOnline, setIsOnline] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [typing, setTyping] = useState<string | null>(null);
+  const typingIndicatorRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -63,35 +66,58 @@ const ChatPage = () => {
         })
       );
 
-      socket.on("receiveMessage", (message: {createdAt:Date,message:string,senderId:string,_id:string}) => {
-        console.log("Received message:", message);
-        if (message.senderId === selectedUserId) {
-          dispatch(
-            addMessage({
-              ...message,
-              createdAt: new Date(message.createdAt).toISOString(),
-            })
-          );
+      socket.on(
+        "receiveMessage",
+        (message: {
+          createdAt: Date;
+          message: string;
+          senderId: string;
+          _id: string;
+        }) => {
+          console.log("Received message:", message);
+          if (message.senderId === selectedUserId) {
+            dispatch(
+              addMessage({
+                ...message,
+                createdAt: new Date(message.createdAt).toISOString(),
+              })
+            );
+          }
         }
-      });
+      );
       socket.on(
         "onlineStatusResponse",
         ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {
           if (userId === selectedUserId) setIsOnline(isOnline);
         }
       );
+      socket.on("typing", ({ senderId }: { senderId: string }) => {
+        if (senderId === selectedUserId) {
+          setTyping(senderId);
+        }
+      });
+
+      socket.on("stopTyping", ({ senderId }: { senderId: string }) => {
+        if (senderId === selectedUserId) {
+          setTyping(null);
+        }
+      });
       return () => {
         socket.off("onlineStatusResponse");
         socket.off("receiveMessage");
+        socket.off("typing");
+        socket.off("stopTyping");
       };
     }
   }, [dispatch, trainer?._id, selectedUserId]);
 
   useEffect(() => {
-    if (messagesEndRef.current && !chatLoading) {
+    if (typing && typingIndicatorRef.current && !chatLoading) {
+      typingIndicatorRef.current.scrollIntoView({ behavior: "smooth" });
+    } else if (messagesEndRef.current && !chatLoading &&!typing) {
       messagesEndRef.current.scrollIntoView();
     }
-  }, [messages, selectedUserId, chatLoading]);
+  }, [messages, selectedUserId, chatLoading, typing]);
 
   const handleSendMessage = () => {
     if (input && selectedUserId && trainer?._id) {
@@ -112,12 +138,17 @@ const ChatPage = () => {
         })
       );
       setInput("");
+      socket.emit("stopTyping", {
+        senderId: trainer._id,
+        receiverId: selectedUserId,
+      });
     }
   };
 
   const handleUserClick = (userId: string) => {
     setSelectedUserId(userId);
     setIsOnline(false);
+    setTyping(null);
     socket.emit("checkOnlineStatus", userId);
   };
 
@@ -129,10 +160,32 @@ const ChatPage = () => {
     (user) => user.contactId === selectedUserId
   );
 
+
+  const handleTyping = () => {
+    if (selectedUser && trainer?._id) {
+      socket.emit("typing", {
+        senderId: trainer._id,
+        receiverId: selectedUserId,
+      });
+  
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+  
+      typingTimeoutRef.current = window.setTimeout(() => {
+        socket.emit("stopTyping", {
+          senderId: trainer._id,
+          receiverId: selectedUserId,
+        });
+      }, 2000);
+    }
+  };
+  
+
   return (
     <Box sx={{ height: "100vh", maxHeight: "600px" }}>
       {chatLoading ? (
-        <LoadingSpinner/>
+        <LoadingSpinner />
       ) : (
         <>
           <ReusableChat
@@ -148,6 +201,9 @@ const ChatPage = () => {
             onEmojiClick={() => setShowPicker((prev) => !prev)}
             messagesEndRef={messagesEndRef}
             currentUserId={trainer?._id || ""}
+            typing={typing}
+            onTyping={handleTyping}
+            typingIndicatorRef={typingIndicatorRef}
           />
           {showPicker && (
             <Box
@@ -159,9 +215,7 @@ const ChatPage = () => {
                 zIndex: 1000,
               }}
             >
-              <Picker
-                onEmojiClick={onEmojiClick}
-              />
+              <Picker onEmojiClick={onEmojiClick} />
             </Box>
           )}
         </>
