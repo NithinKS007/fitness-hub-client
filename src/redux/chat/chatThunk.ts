@@ -52,21 +52,4 @@ export const getUserChatList = createAsyncThunk(
   }
 );
 
-// export const markMessageAsRead = createAsyncThunk(
-//   "chat/markMessageAsRead",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.get(`chat/user`);
-//       return response.data;
-//     } catch (error: any) {
-//       console.log(error);
-//       if (error.response && error.response.data.message) {
-//         return rejectWithValue(error.response.data.message);
-//       } else {
-//         return rejectWithValue("Failed to get user chat list");
-//       }
-//     }
-//   }
-// );
-
 

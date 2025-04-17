@@ -10,6 +10,7 @@ import {
   TextField,
   Button,
   Stack,
+  Badge,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
@@ -17,6 +18,8 @@ interface ChatContact {
   _id: string;
   contactId: string;
   name: string;
+  lastMessage: string;
+  unReadCount: number;
   profilePic: string | null;
   planStatus: string;
 }
@@ -68,8 +71,6 @@ const ReusableChat = ({
   const selectedContact = contacts.find(
     (contact) => contact.contactId === selectedId
   );
-
-  console.log("typing", typing);
   return (
     <Box
       sx={{
@@ -135,17 +136,31 @@ const ReusableChat = ({
                   <ListItemText
                     primary={contact.name}
                     secondary={
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color={
-                          contact.planStatus === "active"
-                            ? "success.main"
-                            : "error.main"
-                        }
-                      >
-                        {contact.planStatus === "active" ? "" : "Plan Expired"}
-                      </Typography>
+                      <>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            maxWidth: "150px",
+                            display: "inline",
+                          }}
+                          component="span"
+                        >
+                          {contact.lastMessage && contact.lastMessage.length > 5
+                            ? `${contact.lastMessage.slice(0, 23)}...`
+                            : contact.lastMessage || "No messages yet"}
+                        </Typography>
+                        {contact.unReadCount ? (
+                          <Badge
+                            badgeContent={contact.unReadCount}
+                            color="primary"
+                            sx={{ ml: 1 }}
+                          />
+                        ) : null}
+                      </>
                     }
                   />
                 </ListItemButton>
@@ -240,9 +255,16 @@ const ReusableChat = ({
                           boxShadow: 1,
                         }}
                       >
-                        <Typography variant="body2">
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}
+                        >
                           {message.message}
                         </Typography>
+
                         <Typography
                           variant="caption"
                           sx={{

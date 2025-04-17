@@ -3,7 +3,11 @@ import { socket } from "../../config/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchChatMessages, getUserChatList } from "../../redux/chat/chatThunk";
-import { addMessage,updateMessageReadStatus } from "../../redux/chat/chatSlice";
+import {
+  addMessage,
+  updateMessageReadStatus,
+  updateUserLastMessage,
+} from "../../redux/chat/chatSlice";
 import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
@@ -19,9 +23,9 @@ const UserChatsPage = () => {
   const [isOnline, setIsOnline] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [typing, setTyping] = useState<string | null>(null);
-  const typingIndicatorRef = useRef<HTMLDivElement>(null)
+  const typingIndicatorRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<number | null>(null);
-  
+
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -38,6 +42,8 @@ const UserChatsPage = () => {
   const fetchedUserSubscriptionData = userChatList.map((trainer) => ({
     _id: trainer._id,
     contactId: trainer.trainerId,
+    lastMessage: trainer.lastMessage,
+    unReadCount: trainer.unreadCount,
     name: `${trainer.subscribedTrainerData.fname} ${trainer.subscribedTrainerData.lname}`,
     profilePic: trainer.subscribedTrainerData.profilePic,
     planStatus: `${trainer.stripeSubscriptionStatus}`,
@@ -64,10 +70,10 @@ const UserChatsPage = () => {
           receiverId: selectedTrainerId,
         })
       );
-      socket.emit("setActiveChat", { userId: user._id, partnerId: selectedTrainerId })
-      // socket.on("messageRead", ({ messageId }: { messageId: string }) => {
-      //   dispatch(updateMessageReadStatus({ messageId }));
-      // });
+      socket.emit("setActiveChat", {
+        userId: user._id,
+        partnerId: selectedTrainerId,
+      });
       socket.on(
         "receiveMessage",
         (message: {
@@ -79,14 +85,25 @@ const UserChatsPage = () => {
           _id: string;
         }) => {
           console.log("Received message:", message);
-          if ((message.senderId === user._id && message.receiverId === selectedTrainerId) ||
-          (message.senderId === selectedTrainerId && message.receiverId === user._id)) {
+          dispatch(
+            updateUserLastMessage({
+              ...message,
+              createdAt: new Date(message.createdAt).toISOString(),
+            })
+          );
+          if (
+            (message.senderId === user._id &&
+              message.receiverId === selectedTrainerId) ||
+            (message.senderId === selectedTrainerId &&
+              message.receiverId === user._id)
+          ) {
             dispatch(
               addMessage({
                 ...message,
                 createdAt: new Date(message.createdAt).toISOString(),
               })
             );
+           
           }
         }
       );
@@ -107,10 +124,10 @@ const UserChatsPage = () => {
         if (senderId === selectedTrainerId) {
           setTyping(null);
         }
-      })
+      });
       socket.on("messageRead", ({ messageIds }: { messageIds: string[] }) => {
         console.log("Received messageRead:", messageIds);
-        if(messageIds && messageIds.length > 0){
+        if (messageIds && messageIds.length > 0) {
           messageIds?.forEach((messageId) =>
             dispatch(updateMessageReadStatus({ messageId }))
           );
@@ -129,12 +146,12 @@ const UserChatsPage = () => {
   }, [dispatch, user?._id, selectedTrainerId]);
 
   useEffect(() => {
-   if (typing && typingIndicatorRef.current && !chatLoading) {
-    typingIndicatorRef.current.scrollIntoView();
+    if (typing && typingIndicatorRef.current && !chatLoading) {
+      typingIndicatorRef.current.scrollIntoView();
     } else if (messagesEndRef.current && !chatLoading && !typing) {
       messagesEndRef.current.scrollIntoView();
     }
-  }, [messages, selectedTrainerId, chatLoading,typing]);
+  }, [messages, selectedTrainerId, chatLoading, typing]);
 
   const handleSendMessage = () => {
     if (input && selectedTrainerId && user?._id) {
@@ -145,15 +162,6 @@ const UserChatsPage = () => {
         createdAt: new Date().toISOString(),
       };
       socket.emit("sendMessage", message);
-      // dispatch(
-      //   addMessage({
-      //     _id: Date.now(),
-      //     senderId: user?._id,
-      //     receiverId: selectedTrainerId,
-      //     message: input,
-      //     createdAt: new Date().toISOString(),
-      //   })
-      // );
       setInput("");
       socket.emit("stopTyping", {
         senderId: user._id,
@@ -186,7 +194,7 @@ const UserChatsPage = () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-  
+
       typingTimeoutRef.current = window.setTimeout(() => {
         socket.emit("stopTyping", {
           senderId: user._id,

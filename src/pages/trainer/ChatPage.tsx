@@ -9,6 +9,7 @@ import {
 import {
   addMessage,
   updateMessageReadStatus,
+  updateTrainerLastMessage,
 } from "../../redux/chat/chatSlice";
 import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
@@ -42,6 +43,8 @@ const ChatPage = () => {
   const fetchedSubscribers = trainerChatList.map((user) => ({
     _id: user._id,
     contactId: user.userId,
+    lastMessage: user.lastMessage,
+    unReadCount: user.unreadCount,
     name: `${user.subscribedUserData.fname} ${user.subscribedUserData.lname}`,
     profilePic: user.subscribedUserData.profilePic,
     planStatus: `${user.stripeSubscriptionStatus}`,
@@ -82,6 +85,12 @@ const ChatPage = () => {
           _id: string;
         }) => {
           console.log("Received message:", message);
+          dispatch(
+            updateTrainerLastMessage({
+              ...message,
+              createdAt: new Date(message.createdAt).toISOString(),
+            })
+          );
           if (
             (message.senderId === trainer._id &&
               message.receiverId === selectedUserId) ||
@@ -94,6 +103,7 @@ const ChatPage = () => {
                 createdAt: new Date(message.createdAt).toISOString(),
               })
             );
+            
           }
         }
       );
@@ -115,7 +125,10 @@ const ChatPage = () => {
         }
       });
       socket.on("messageRead", ({ messageIds }: { messageIds: string[] }) => {
-        console.log("Received messageRead for the mark as read it will be as arrays:", messageIds);
+        console.log(
+          "Received messageRead for the mark as read it will be as arrays:",
+          messageIds
+        );
         if (messageIds && messageIds.length > 0) {
           messageIds?.forEach((messageId) =>
             dispatch(updateMessageReadStatus({ messageId }))
@@ -150,15 +163,6 @@ const ChatPage = () => {
         createdAt: new Date().toISOString(),
       };
       socket.emit("sendMessage", message);
-      // dispatch(
-      //   addMessage({
-      //     _id: Date.now(),
-      //     senderId: trainer?._id,
-      //     receiverId: selectedUserId,
-      //     message: input,
-      //     createdAt: new Date().toISOString(),
-      //   })
-      // );
       setInput("");
       socket.emit("stopTyping", {
         senderId: trainer._id,
