@@ -18,13 +18,13 @@ const styles = {
     overflow: "hidden",
   },
   loadingContainer: {
-    height: "90vh",
+    height: "100vh",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   errorContainer: {
-    height: "90vh",
+    height: "100vh",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -39,7 +39,7 @@ const styles = {
     bgcolor: "grey.200",
   },
 };
-const VideoPlayer: React.FC = () => {
+const TrainerVideo: React.FC = () => {
   const { videoId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { videoData, isLoading, error } = useSelector(
@@ -88,4 +88,4 @@ const VideoPlayer: React.FC = () => {
   );
 };
 
-export default VideoPlayer;
+export default TrainerVideo;

@@ -14,6 +14,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import SearchVideoGrid from "../../components/SearchVideoGrid";
 import VideoFilter from "../../components/VideoGridFilter";
 import VideoGrid from "../../components/VideoGrid";
+import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
 
 const styles = {
   loaderBox: {
@@ -93,12 +94,8 @@ const TrainerVideosGrid: React.FC = () => {
   const { isLoading: isSubscriptionLoading } = useSelector(
     (state: RootState) => state.subscription
   );
-
-  const isHeSubscribedToTheTrainer = useSelector((state: RootState) =>
-    trainerId
-      ? (state.subscription.isSubscribedToTheTrainer?.[trainerId]
-          ?.isSubscribed ?? false)
-      : false
+  const isHeSubscribedToTheTrainer = useIsUserSubscribedToTrainer(
+    trainerId as string
   );
 
   const handleVideoClick = (videoId: string) => {
@@ -108,13 +105,9 @@ const TrainerVideosGrid: React.FC = () => {
   const fetchedPlayListsData =
     playListsData.length > 0
       ? playListsData.map((p) => {
-          return { value: p.title };
+          return { value: p.title, playListId: p._id };
         })
       : [];
-
-  if (isLoading || isSubscriptionLoading) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <>
@@ -131,34 +124,57 @@ const TrainerVideosGrid: React.FC = () => {
           />
         </Box>
       </Box>
-      <Container maxWidth={false}>
-        {isHeSubscribedToTheTrainer ? (
-          videosData && videosData.length > 0 ? (
-            <VideoGrid videos={videosData} onVideoClick={handleVideoClick} />
-          ) : (
-            <Typography
-              variant="h6"
-              color="text.secondary"
-              sx={styles.noVideosText}
-            >
-              No videos available
-            </Typography>
-          )
-        ) : (
-          <Box sx={styles.noVideosText}>
-            <Typography variant="h6" color="text.secondary">
-              Please subscribe to watch videos
-            </Typography>
-          </Box>
-        )}
-      </Container>
-      <Box sx={styles.paginationContainer}>
-        <PaginationTable
-          handlePageChange={handlePageChange}
-          page={currentPage}
-          totalPages={totalPages}
-        />
-      </Box>
+
+      {isLoading || isSubscriptionLoading ? (
+        <Box
+          sx={{
+            height: "70vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <LoadingSpinner />
+        </Box>
+      ) : (
+        <>
+          <Container maxWidth={false}>
+            {isHeSubscribedToTheTrainer ? (
+              videosData && videosData.length > 0 ? (
+                <VideoGrid
+                  videos={videosData}
+                  onVideoClick={handleVideoClick}
+                />
+              ) : (
+                <Typography
+                  variant="h6"
+                  color="text.secondary"
+                  sx={styles.noVideosText}
+                >
+                  No videos available
+                </Typography>
+              )
+            ) : (
+              <Box sx={styles.noVideosText}>
+                <Typography variant="h6" color="text.secondary">
+                  Please subscribe to watch videos
+                </Typography>
+              </Box>
+            )}
+          </Container>
+          {isHeSubscribedToTheTrainer &&
+            videosData &&
+            videosData.length > 0 && (
+              <Box sx={styles.paginationContainer}>
+                <PaginationTable
+                  handlePageChange={handlePageChange}
+                  page={currentPage}
+                  totalPages={totalPages}
+                />
+              </Box>
+            )}
+        </>
+      )}
     </>
   );
 };

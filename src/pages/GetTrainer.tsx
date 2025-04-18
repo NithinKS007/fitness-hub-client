@@ -34,26 +34,7 @@ const styles = {
   textField: {
     flexGrow: 1,
     maxWidth: 500,
-    backgroundColor: "#fff",
-    borderRadius: "25px",
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "#e0e0e0",
-      },
-      "&:hover fieldset": {
-        borderColor: "#14b8a6",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "#14b8a6",
-      },
-      borderRadius: "25px",
-    },
-    "& .MuiInputBase-input": {
-      padding: "12px 20px",
-      fontSize: "16px",
-      color: "#333",
-    },
   },
   searchIcon: { color: "#14b8a6" },
   sortFilterBox: { display: "flex", gap: 2 },

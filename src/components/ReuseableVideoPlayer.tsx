@@ -33,20 +33,20 @@ const ReuseableVideoPlayer: React.FC<VideoPlayerProps> = ({
       flex: { xs: 1, md: 6 },
       display: "flex",
       flexDirection: "column",
-      maxHeight: { xs: "50vh", md: "90vh" },
+      maxHeight: { xs: "50vh", md: "100vh" },
       overflow: "hidden",
     },
     video: {
       width: "100%",
       height: "100%",
-      maxHeight: { xs: "50vh", md: "90vh" },
+      maxHeight: { xs: "50vh", md: "100vh" },
       objectFit: "contain",
     },
     detailsContainer: {
       flex: { xs: 1, md: 2 },
       overflowY: "auto",
       p: 1,
-      maxHeight: { xs: "auto", md: "90vh" },
+      maxHeight: { xs: "auto", md: "100vh" },
     },
   };
 

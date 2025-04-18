@@ -32,7 +32,7 @@ const modalBoxStyles = {
 };
 
 const imageContainerStyles = {
-  flex: "1 1 50%", 
+  flex: "1 1 50%",
   display: { xs: "none", sm: "block" },
   pr: 2,
 };
@@ -45,7 +45,7 @@ const imageStyles = {
 };
 
 const formSectionStyles = {
-  flex: "1 1 50%", 
+  flex: "1 1 50%",
   display: "flex",
   flexDirection: "column",
 };
@@ -77,7 +77,7 @@ const rowStyles = {
 };
 
 const textFieldBoxStyles = {
-  flex: 1, 
+  flex: 1,
 };
 
 const singleFieldBoxStyles = {
@@ -100,8 +100,8 @@ const submitButtonStyles = {
   width: { xs: "100%", sm: "auto" },
   backgroundColor: "#1f2937",
   color: "white",
-  "&:hover": {backgroundColor: "#374151" },
-      transition: "background-color 0.3s",
+  "&:hover": { backgroundColor: "#374151" },
+  transition: "background-color 0.3s",
 };
 
 const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({

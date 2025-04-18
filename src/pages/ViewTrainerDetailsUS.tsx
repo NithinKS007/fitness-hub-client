@@ -19,6 +19,7 @@ import { Subscription } from "../redux/subscription/subscriptionTypes";
 import SlotBooking from "./SlotBooking";
 import { fetchTrainerSlots } from "../redux/booking/bookingThunk";
 import LoadingSpinner from "../components/LoadingSpinner";
+import useIsUserSubscribedToTrainer from "../hooks/useIsUserSubscribedToTrainer";
 
 const tabItems = [
   { label: "About Me" },
@@ -31,7 +32,7 @@ const ViewTrainerDetailsUS = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [selectedPlan, setSelectedPlan] = useState<Subscription | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { _id } = useParams<{ _id: string }>();
+  const { trainerId } = useParams<{ trainerId: string }>();
   const {
     user,
     trainer,
@@ -49,23 +50,20 @@ const ViewTrainerDetailsUS = () => {
   const { isLoading, error } = useSelector(
     (state: RootState) => state.subscription
   );
-  const isHeSubscribedToTheTrainer = useSelector(
-    (state: RootState) =>
-      state.subscription.isSubscribedToTheTrainer?.[_id as string]
-        ?.isSubscribed ?? false
-  );
+
+  const isHeSubscribedToTheTrainer = useIsUserSubscribedToTrainer(trainerId as string)
 
   useEffect(() => {
-    if (_id) {
-      dispatch(getTrainerDetailsWithSubscription(_id));
+    if (trainerId) {
+      dispatch(getTrainerDetailsWithSubscription(trainerId));
       if (user && user.role === "user") {
-        dispatch(isSubscribedToTheTrainer(_id));
+        dispatch(isSubscribedToTheTrainer(trainerId));
       }
       if (activeTab === 2) {
-        dispatch(fetchTrainerSlots({ trainerId: _id }));
+        dispatch(fetchTrainerSlots({ trainerId: trainerId }));
       }
     }
-  }, [dispatch, _id, user, activeTab]);
+  }, [dispatch, trainerId, user, activeTab]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     console.log("event", event);
@@ -229,6 +227,8 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
+          boxShadow: 1,
+          borderRadius: 2,
         }}
       >
         Subscription Plan Currently Unavailable
@@ -287,6 +287,8 @@ const ViewTrainerDetailsUS = () => {
           padding: "16px",
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
+          boxShadow: 1,
+          borderRadius: 2,
         }}
       >
         <p>Please subscribe to book slots with a trainer</p>

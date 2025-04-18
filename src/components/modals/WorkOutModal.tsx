@@ -368,11 +368,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={saveButtonStyles}
-            >
+            <Button type="submit" variant="contained" sx={saveButtonStyles}>
               Save
             </Button>
           </Box>

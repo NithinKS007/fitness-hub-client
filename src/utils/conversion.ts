@@ -8,12 +8,13 @@ const getRelativeTime  = (date: Date) => {
   return dayjs(date).fromNow();
 }
 
-const formatVideoDuration = (decimalMinutes: number | undefined): string => {
-  if (!decimalMinutes) return "0:00";
-  const totalSeconds = decimalMinutes * 60;
-  const dur = dayjs.duration(totalSeconds, "seconds");
+const formatVideoDuration = (decimalSeconds: number | undefined): string => {
+  if (!decimalSeconds || isNaN(decimalSeconds) || decimalSeconds < 0) {
+    return "0:00";
+  }
+  const dur = dayjs.duration(Math.round(decimalSeconds), "seconds");
   const minutes = Math.floor(dur.asMinutes());
-  const seconds = dur.seconds();
+  const seconds = Math.floor(dur.seconds());
   return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
 };
 
@@ -39,6 +40,11 @@ const formatDateTodddMMMDYYYY = (date:Date) =>{
   return dayjs(date).format("ddd, MMM D, YYYY");
 } 
 
+const formatCurrency = (amount: number,maxLength:number) => {
+  const fixed = amount.toFixed(2);
+  return `USD : ${fixed.padStart(maxLength, " ")}`;
+};
+
 
 export {
   getRelativeTime ,
@@ -46,5 +52,6 @@ export {
   formatTime,
   getFormattedTimeRange,
   formatDateTodddMMMDYYYY,
-  formatDateToYYYYMMDD
+  formatDateToYYYYMMDD,
+  formatCurrency
 };

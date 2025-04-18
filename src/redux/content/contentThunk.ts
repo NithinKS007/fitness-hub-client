@@ -8,6 +8,8 @@ export const fetchVideosByTrainerUser = createAsyncThunk(
   async (videosQueryParams:VideosQueryParamsUser, { rejectWithValue }) => {
 
     try {
+
+      console.log("params",videosQueryParams)
       const { trainerId, ...queryParams } = videosQueryParams;
       const response = await axiosInstance.get(`user/videos/${trainerId}`,{params:queryParams});
       return response.data;

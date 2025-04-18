@@ -6,6 +6,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
 import useSlotBooking from "../hooks/useSlotBooking";
 import { formatDateTodddMMMDYYYY } from "../utils/conversion";
+import { Select, MenuItem } from "@mui/material";
 
 const containerStyles = {
   py: 3,
@@ -47,6 +48,31 @@ const bookButtonStyles = {
   mt: 10,
   width: "100%",
 };
+const messageBox = {
+  width: "100%",
+  padding: { xs: "0.75rem", sm: "1rem" },
+  border: "1px solid #d1d5db",
+  borderRadius: "0.5rem",
+  textAlign: "center",
+  color: "#4b5563",
+  backgroundColor: "#f9fafb",
+  fontFamily: "sans-serif",
+  fontSize: { xs: "0.875rem", sm: "1rem" },
+};
+const wrapper = {
+  width: "100%",
+  fontFamily: "sans-serif",
+};
+const selectBox = {
+  width: "100%",
+  padding: { xs: "0.5rem 0.75rem", sm: "0.75rem 1rem" },
+  borderRadius: "0.5rem",
+  border: "1px solid #d1d5db",
+  fontSize: { xs: "0.875rem", sm: "1rem" },
+  backgroundColor: "#f3f4f6",
+  color: "#1f2937",
+  cursor: "pointer",
+};
 
 const SlotBooking: React.FC = () => {
   const {
@@ -71,42 +97,29 @@ const SlotBooking: React.FC = () => {
 
   const renderTimeSelector = () => {
     const filteredSlots = getFilteredTimeSlots();
+
     if (!selectedSlot) {
-      return (
-        <div
-          className="w-full p-4 border
-         border-gray-300 rounded-lg 
-         text-center text-gray-700
-         bg-gray-50"
-        >
-          Please Select a Slot
-        </div>
-      );
+      return <Box sx={messageBox}>Please Select a Slot</Box>;
     }
 
     return (
-      <div className="relative w-full font-sans">
-        <select
+      <Box sx={wrapper}>
+        <Select
           value={selectedSlot?.time || ""}
           onChange={(e) => handleTimeChange(e.target.value)}
-          className="w-full py-3 px-4 
-          rounded-lg border
-           border-gray-300 
-           text-base bg-gray-100
-            text-gray-800 cursor-pointer 
-            appearance-none"
+          sx={selectBox}
         >
           {filteredSlots.length > 0 ? (
             filteredSlots.map((slot) => (
-              <option key={slot._id} value={slot.time}>
+              <MenuItem key={slot._id} value={slot.time}>
                 {slot.time}
-              </option>
+              </MenuItem>
             ))
           ) : (
-            <option disabled>No available time slots</option>
+            <MenuItem disabled>No available time slots</MenuItem>
           )}
-        </select>
-      </div>
+        </Select>
+      </Box>
     );
   };
 

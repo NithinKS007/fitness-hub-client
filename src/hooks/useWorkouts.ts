@@ -111,7 +111,6 @@ const useWorkouts = () => {
         }
       };
 
-      console.log("Sending to backend:", workoutPayload);
       try {
         const response = await dispatch(addWorkout(workoutPayload)).unwrap();
         console.log("response for adding workout", response);

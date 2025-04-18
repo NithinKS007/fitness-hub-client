@@ -11,9 +11,11 @@ import DateAndTimeFilter from "../../components/DateAndTimeFilter";
 import PaginationTable from "../../components/PaginationTable";
 import { Filter, TableColumn } from "../../types/tableTypes";
 import { Dayjs } from "dayjs";
-import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import TableFilter from "../../components/TableFilter";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CommissionDetailsModal from "../../components/modals/CommissionDetailsModal";
+import { formatCurrency } from "../../utils/conversion";
 
 const filter: Filter[] = [
   { value: "Active" },
@@ -42,11 +44,35 @@ const columns: TableColumn[] = [
   { label: "More", field: "actions" },
 ];
 
+interface ModalData {
+  providedBy: { label: string; value: string }[];
+  takenBy: { label: string; value: string }[];
+  financial: { label: string; value: string }[];
+}
+
+interface SubscriptionItem {
+  amountPaid: number;
+  commission: number;
+  platformRevenue: number;
+  trainerRevenue: number;
+  subscriptionProvidedBy: {
+    fname: string;
+    lname: string;
+    email: string;
+    phone: string;
+  };
+  subscriptionTakenBy: {
+    fname: string;
+    lname: string;
+    email: string;
+    phone: string;
+  };
+}
+
 const CommissionHistory = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const openMenu = Boolean(anchorEl);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalData, setModalData] = useState<ModalData | null>(null);
 
   const {
     handlePageChange,
@@ -78,6 +104,81 @@ const CommissionHistory = () => {
   );
 
   const { currentPage, totalPages } = pagination;
+
+  const handleOpenModal = (item: SubscriptionItem) => {
+    const values = [
+      item.amountPaid,
+      item.commission,
+      item.platformRevenue,
+      item.trainerRevenue,
+    ];
+    const maxLength = Math.max(...values.map((val) => val.toString().length));
+
+    const preparedData: ModalData = {
+      providedBy: [
+        {
+          label: "Name",
+          value:
+            `${item.subscriptionProvidedBy?.fname || ""} ${
+              item.subscriptionProvidedBy?.lname || ""
+            }`.trim() || "-",
+        },
+        {
+          label: "Email",
+          value: item.subscriptionProvidedBy?.email || "-",
+        },
+        {
+          label: "Phone",
+          value: item.subscriptionProvidedBy?.phone || "-",
+        },
+      ],
+      takenBy: [
+        {
+          label: "Name",
+          value:
+            `${item.subscriptionTakenBy?.fname || ""} ${
+              item.subscriptionTakenBy?.lname || ""
+            }`.trim() || "-",
+        },
+        {
+          label: "Email",
+          value: item.subscriptionTakenBy?.email || "-",
+        },
+        {
+          label: "Phone",
+          value: item.subscriptionTakenBy?.phone || "-",
+        },
+      ],
+
+      financial: [
+        {
+          label: "Amount Paid",
+          value: formatCurrency(item.amountPaid, maxLength),
+        },
+        {
+          label: "Commission",
+          value: formatCurrency(item.commission, maxLength),
+        },
+        {
+          label: "Platform",
+          value: formatCurrency(item.platformRevenue, maxLength),
+        },
+        {
+          label: "Trainer",
+          value: formatCurrency(item.trainerRevenue, maxLength),
+        },
+      ],
+    };
+
+    setModalData(preparedData);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setModalData(null);
+  };
+
   const transformedData = revenueData.map((item, index) => ({
     slno: index + 1,
     amountPaid: item.amountPaid,
@@ -89,209 +190,12 @@ const CommissionHistory = () => {
     subscriptionPeriod: item.subscriptionPlanData?.subPeriod || "-",
     applicationDate: new Date(item.createdAt).toLocaleDateString("en-GB"),
     actions: (
-      <>
-        <IconButton
-          onClick={(event) => {
-            setAnchorEl(event.currentTarget);
-            setSelectedItem(item);
-          }}
-          sx={{ padding: "8px", minWidth: "0", width: "24px", height: "35px" }}
-        >
-          <MoreVertIcon sx={{ fontSize: "18px" }} />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={openMenu && selectedItem === item}
-          onClose={() => {
-            setAnchorEl(null);
-            setSelectedItem(null);
-          }}
-          sx={{
-            "& .MuiPaper-root": {
-              boxShadow: "none",
-              border: "1px solid",
-              borderColor: "grey.400",
-              borderRadius: 2,
-            },
-          }}
-        >
-          <MenuItem
-            sx={{
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 3,
-                width: "100%",
-                maxWidth: "600px",
-                padding: 3,
-                backgroundColor: "#f9fafb",
-                borderRadius: 2,
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-                fontFamily: "'Roboto', sans-serif",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1.5,
-                  borderBottom: "1px solid #e5e7eb",
-                  paddingBottom: 2,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 600,
-                    color: "#1f2937",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  Provided By
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                    "& > div": {
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                    },
-                  }}
-                >
-                  <Box>
-                    <Typography
-                      sx={{
-                        minWidth: "150px",
-                        fontWeight: 500,
-                        color: "#4b5563",
-                      }}
-                    >
-                      Name:
-                    </Typography>
-                    <Typography sx={{ color: "#111827" }}>
-                      {`${item.subscriptionProvidedBy?.fname || ""} ${
-                        item.subscriptionProvidedBy?.lname || ""
-                      }`.trim() || "-"}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        minWidth: "150px",
-                        fontWeight: 500,
-                        color: "#4b5563",
-                      }}
-                    >
-                      Email:
-                    </Typography>
-                    <Typography sx={{ color: "#111827" }}>
-                      {item.subscriptionProvidedBy?.email || "-"}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        minWidth: "150px",
-                        fontWeight: 500,
-                        color: "#4b5563",
-                      }}
-                    >
-                      Phone:
-                    </Typography>
-                    <Typography sx={{ color: "#111827" }}>
-                      {item.subscriptionProvidedBy?.phone || "-"}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1.5,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 600,
-                    color: "#1f2937",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  Taken By
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                    "& > div": {
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                    },
-                  }}
-                >
-                  <Box>
-                    <Typography
-                      sx={{
-                        minWidth: "150px",
-                        fontWeight: 500,
-                        color: "#4b5563",
-                      }}
-                    >
-                      Name:
-                    </Typography>
-                    <Typography sx={{ color: "#111827" }}>
-                      {`${item.subscriptionTakenBy?.fname || ""} ${
-                        item.subscriptionTakenBy?.lname || ""
-                      }`.trim() || "-"}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        minWidth: "150px",
-                        fontWeight: 500,
-                        color: "#4b5563",
-                      }}
-                    >
-                      Email:
-                    </Typography>
-                    <Typography sx={{ color: "#111827" }}>
-                      {item.subscriptionTakenBy?.email || "-"}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        minWidth: "150px",
-                        fontWeight: 500,
-                        color: "#4b5563",
-                      }}
-                    >
-                      Phone:
-                    </Typography>
-                    <Typography sx={{ color: "#111827" }}>
-                      {item.subscriptionTakenBy?.phone || "-"}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </MenuItem>
-        </Menu>
-      </>
+      <IconButton
+        onClick={() => handleOpenModal(item)}
+        sx={{ padding: "8px", minWidth: "0", width: "24px", height: "35px" }}
+      >
+        <MoreVertIcon sx={{ fontSize: "18px" }} />
+      </IconButton>
     ),
   }));
 
@@ -302,8 +206,8 @@ const CommissionHistory = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          marginTop: 1,
           width: "100%",
-          marginTop: 0,
         }}
       >
         <SearchBarTable
@@ -348,6 +252,11 @@ const CommissionHistory = () => {
           />
         </>
       )}
+      <CommissionDetailsModal
+        open={openModal}
+        onClose={handleCloseModal}
+        modalData={modalData}
+      />
     </>
   );
 };

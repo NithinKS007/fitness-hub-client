@@ -119,7 +119,6 @@ const chat = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //get messages
       .addCase(fetchChatMessages.pending, (state) => {
         state.isLoading = true;
       })

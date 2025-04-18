@@ -186,11 +186,7 @@ const VideoUpload = ({
         </Box>
 
         <Box sx={uploadBoxStyles}>
-          <Button
-            variant="outlined"
-            component="label"
-            sx={uploadButtonStyles}
-          >
+          <Button variant="outlined" component="label" sx={uploadButtonStyles}>
             {isEditMode ? "Change Thumbnail" : "Upload Thumbnail"}
             <input
               type="file"

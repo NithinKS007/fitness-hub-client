@@ -46,9 +46,13 @@ const styles = {
     width: "100%",
   },
 };
+interface FilterItem {
+  playListId: string;
+  value: string;
+}
 
 interface VideoFilterProps {
-  filter: { value: string }[];
+  filter: FilterItem[];
   selectedFilter: string[];
   handleFilterChange: (value: string[]) => void;
 }
@@ -68,7 +72,12 @@ const VideoFilter: React.FC<VideoFilterProps> = ({
         onChange={(e) => handleFilterChange(e.target.value as string[])}
         input={<OutlinedInput label="Filter by" sx={styles.selectInput} />}
         renderValue={(selected) =>
-          selected.length > 0 ? selected.join(", ") : "Select filters"
+          selected.length > 0
+          ? selected
+              .map((id) => filter.find((item) => item.playListId === id)?.value)
+              .filter(Boolean)
+              .join(", ")
+          : "Select filters"
         }
         MenuProps={{ PaperProps: { sx: styles.menu } }}
       >
@@ -80,8 +89,8 @@ const VideoFilter: React.FC<VideoFilterProps> = ({
           </MenuItem>
         ) : (
           filter.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              <Checkbox checked={selectedFilter.includes(option.value)} />
+            <MenuItem key={option.playListId} value={option.playListId}>
+              <Checkbox checked={selectedFilter.includes(option.playListId)} />
               <ListItemText primary={option.value} sx={styles.label} />
             </MenuItem>
           ))
