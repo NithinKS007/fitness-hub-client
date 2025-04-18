@@ -7,8 +7,8 @@ const styles = {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: "30%",
-    padding: "8px 9px",
+    width: "35%",
+    padding: "8px 20px",
   },
   searchInput: {
     maxWidth: 900,
@@ -29,32 +29,32 @@ interface SearchVideoGridProps {
 }
 
 const SearchVideoGrid: React.FC<SearchVideoGridProps> = ({
-    searchTerm,
-    handleSearchChange,
-    disabled = false,
-  }) => {
-    return (
-      <Box sx={styles.searchContainer}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          value={searchTerm}
-          onChange={(event) => handleSearchChange(event.target.value)}
-          placeholder="Search Videos..."
-          disabled={disabled}
-          sx={styles.searchInput}
-          InputProps={{
+  searchTerm,
+  handleSearchChange,
+  disabled = false,
+}) => {
+  return (
+    <Box sx={styles.searchContainer}>
+      <TextField
+        fullWidth
+        variant="outlined"
+        value={searchTerm}
+        onChange={(event) => handleSearchChange(event.target.value)}
+        placeholder="Search Videos..."
+        disabled={disabled}
+        sx={styles.searchInput}
+        slotProps={{
+          input: {
             endAdornment: (
               <InputAdornment position="end">
                 <SearchIcon />
               </InputAdornment>
             ),
-            style: styles.searchInputText,
-          }}
-        />
-      </Box>
-    );
-  };
-  
+          },
+        }}
+      />
+    </Box>
+  );
+};
 
 export default SearchVideoGrid;

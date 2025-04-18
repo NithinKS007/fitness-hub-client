@@ -36,7 +36,7 @@ import TrainerSubscriptionDetailsPage from "./pages/admin/TrainerSubscriptionDet
 import OnFailurePage from "./pages/OnFailurePage";
 import OnSuccessPage from "./pages/OnSuccessPage";
 import TrainerVideosGrid from "./pages/user/TrainerVideosGrid";
-import VideoPlayer from "./pages/VideoPlayer";
+import VideoPlayer from "./pages/user/VideoPlayer"
 import UserWorkoutsPage from "./pages/user/UserWorkoutSettingPage";
 import CommissionHistory from "./pages/admin/CommissionHistory";
 
@@ -78,7 +78,7 @@ const App = () => {
           <Route path="/user/chats" element={<UserChatsPage />} />
           <Route path="/user/workouts" element={<UserWorkoutsPage />} />
           <Route path="/user/trainer-videos/:trainerId/" element={<TrainerVideosGrid />} />
-          <Route path="/user/trainer-videos/:videoId" element={<VideoPlayer />} />
+          <Route path="/user/trainer/video/:videoId" element={<VideoPlayer />} />
         </Route>
       </Route>
 

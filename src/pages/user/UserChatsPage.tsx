@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { fetchChatMessages, getUserChatList } from "../../redux/chat/chatThunk";
 import {
   addMessage,
+  sortUserChatList,
   updateMessageReadStatus,
   updateUserLastMessage,
 } from "../../redux/chat/chatSlice";
@@ -63,6 +64,51 @@ const UserChatsPage = () => {
   }, []);
 
   useEffect(() => {
+    socket.on(
+      "receiveMessage",
+      (message: {
+        createdAt: Date;
+        updatedAt:Date
+        message: string;
+        senderId: string;
+        receiverId: string;
+        isRead: boolean;
+        _id: string;
+      }) => {
+        console.log("Received message:", message);
+        dispatch(
+          updateUserLastMessage({
+            ...message,
+            createdAt: new Date(message.createdAt).toISOString(),
+            updatedAt: new Date(message.updatedAt).toISOString(),
+          })
+        );
+        dispatch(
+          sortUserChatList({
+            ...message,
+            createdAt: new Date(message.createdAt).toISOString(),
+            updatedAt: new Date(message.updatedAt).toISOString(),
+          })
+        );
+        if (
+          user?._id &&
+          selectedTrainerId &&
+          ((message.senderId === user._id &&
+            message.receiverId === selectedTrainerId) ||
+            (message.senderId === selectedTrainerId &&
+              message.receiverId === user._id))
+        ) {
+          dispatch(
+            addMessage({
+              ...message,
+              createdAt: new Date(message.createdAt).toISOString(),
+              updatedAt: new Date(message.updatedAt).toISOString(),
+            })
+          );
+        }
+      }
+    );
+
     if (selectedTrainerId && user?._id) {
       dispatch(
         fetchChatMessages({
@@ -74,39 +120,7 @@ const UserChatsPage = () => {
         userId: user._id,
         partnerId: selectedTrainerId,
       });
-      socket.on(
-        "receiveMessage",
-        (message: {
-          createdAt: Date;
-          message: string;
-          senderId: string;
-          receiverId: string;
-          isRead: boolean;
-          _id: string;
-        }) => {
-          console.log("Received message:", message);
-          dispatch(
-            updateUserLastMessage({
-              ...message,
-              createdAt: new Date(message.createdAt).toISOString(),
-            })
-          );
-          if (
-            (message.senderId === user._id &&
-              message.receiverId === selectedTrainerId) ||
-            (message.senderId === selectedTrainerId &&
-              message.receiverId === user._id)
-          ) {
-            dispatch(
-              addMessage({
-                ...message,
-                createdAt: new Date(message.createdAt).toISOString(),
-              })
-            );
-           
-          }
-        }
-      );
+
       socket.on(
         "onlineStatusResponse",
         ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {

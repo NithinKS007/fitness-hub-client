@@ -70,14 +70,17 @@ const MyTrainersTab: React.FC<MyTrainersTabProp> = ({ isActive }) => {
             isActive: isActive,
             watchVideos: (
               <Button
-                variant="contained"
-                color="primary"
-                startIcon={<PlayCircleOutlineIcon />}
-                disabled={!isSubscriptionActive}
-                onClick={() => handleShowTrainerVideos(sub.trainerId)}
-              >
-                Watch Videos
-              </Button>
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<PlayCircleOutlineIcon />}
+              disabled={!isSubscriptionActive}
+              onClick={() => handleShowTrainerVideos(sub.trainerId)}
+              sx={{ px: 1.5, py: 0.5, fontSize: "0.75rem", minWidth: "auto" }}
+            >
+              Watch
+            </Button>
+            
             ),
           };
         })

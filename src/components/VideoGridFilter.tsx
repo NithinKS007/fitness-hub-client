@@ -40,6 +40,11 @@ const styles = {
     fontSize: "14px",
     color: "#606060",
   },
+  formControl: {
+    minWidth: 200,
+    maxWidth: 300,
+    width: "100%",
+  },
 };
 
 interface VideoFilterProps {
@@ -54,7 +59,7 @@ const VideoFilter: React.FC<VideoFilterProps> = ({
   handleFilterChange,
 }) => {
   return (
-    <FormControl sx={{ width: 225 }}>
+    <FormControl sx={styles.formControl}>
       <InputLabel sx={styles.label}>Filter by</InputLabel>
       <Select
         multiple

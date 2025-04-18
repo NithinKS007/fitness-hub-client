@@ -9,7 +9,6 @@ import {
   getPlayListsAvailableByTrainerId,
   getPlayListsOfTrainer,
   getUploadedVideosOfTrainer,
-  relatedVideosDataByPayListId,
   updatePlayListPrivacyStatus,
   updateVideoPrivacyStatus,
 } from "./contentThunk";
@@ -20,7 +19,6 @@ const initialState: ContentState = {
   playLists: [],
   videos: [],
   videoData: null,
-  relatedVideosData: [],
   pagination: { totalPages: 0, currentPage: 1 },
 };
 
@@ -139,24 +137,6 @@ const content = createSlice({
             ? action.payload
             : "Failed to get video data";
       })
-      .addCase(relatedVideosDataByPayListId.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(relatedVideosDataByPayListId.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        state.relatedVideosData = action.payload.data.map(
-          (video: any) => video.videoData
-        );
-      })
-      .addCase(relatedVideosDataByPayListId.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error =
-          typeof action.payload === "string"
-            ? action.payload
-            : "Failed to get related video data";
-      })
-
       .addCase(updateVideoPrivacyStatus.pending, (state) => {
         state.isLoading = true;
       })

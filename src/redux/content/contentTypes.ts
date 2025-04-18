@@ -6,7 +6,6 @@ export interface ContentState {
   playLists: PlayList[]
   videos:Video[],
   videoData:Video | null,
-  relatedVideosData:Video[],
   pagination: Pagination;
 }
 export interface Pagination {
@@ -51,10 +50,6 @@ export interface AddVideo {
 
 export interface RequestPlayListsByTrainerId {
   trainerId:string
-}
-
-export interface RequestVideosListByPlayListId{
-  playListId:string
 }
 
 export interface UpdateVideoBlockStatus{

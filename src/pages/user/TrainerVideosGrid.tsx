@@ -7,20 +7,13 @@ import {
   fetchVideosByTrainerUser,
   getPlayListsAvailableByTrainerId,
 } from "../../redux/content/contentThunk";
-import {
-  Box,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Container,
-} from "@mui/material";
-import { getRelativeTime, formatVideoDuration } from "../../utils/conversion";
+import { Box, Typography, Container } from "@mui/material";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import SearchVideoGrid from "../../components/SearchVideoGrid";
-import VideoFilter from "../../components/videoGridFilter";
+import VideoFilter from "../../components/VideoGridFilter";
+import VideoGrid from "../../components/VideoGrid";
 
 const styles = {
   loaderBox: {
@@ -29,64 +22,35 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
   },
-  videoWrapper: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "flex-start",
-    gap: "17px",
-    margin: "0",
-    width: "100%",
-  },
-  cardContainer: {
-    width: "24%",
-    cursor: "pointer",
-    backgroundColor: "#fff",
-    "&:hover": {
-      transform: "scale(1.02)",
-      transition: "transform 0.2s ease-in-out",
-    },
-  },
-  thumbnailWrapper: {
-    position: "relative",
-    width: "100%",
-    paddingTop: "56.25%",
-  },
-  thumbnail: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  durationOverlay: {
-    position: "absolute",
-    bottom: "6px",
-    right: "4px",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    color: "#fff",
-    fontSize: "12px",
-    fontWeight: "500",
-    padding: "2px 4px",
-    borderRadius: "2px",
-  },
-  title: {
-    fontSize: "14px",
-    fontWeight: "500",
-    lineHeight: "1.4",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-    color: "#030303",
-  },
-  metadata: {
-    fontSize: "12px",
-    color: "#606060",
-  },
   noVideosText: {
     textAlign: "center",
     padding: "40px 0",
+    fontSize: {
+      xs: "14px",
+      sm: "16px",
+    },
+    color: "#888",
+  },
+  searchFilterContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginRight: "22px",
+    marginTop: 2,
+  },
+  filterWrapper: {
+    display: "flex",
+    justifyContent: "end",
+    gap: 2,
+    alignItems: "center",
+    width: "100%",
+    marginLeft: "auto",
+  },
+  paginationContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    mb: 2,
   },
 };
 
@@ -138,7 +102,7 @@ const TrainerVideosGrid: React.FC = () => {
   );
 
   const handleVideoClick = (videoId: string) => {
-    navigate(`/user/trainer-videos/${videoId}/`);
+    navigate(`/user/trainer/video/${videoId}`);
   };
 
   const fetchedPlayListsData =
@@ -154,28 +118,12 @@ const TrainerVideosGrid: React.FC = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 2,
-          px: 2,
-        }}
-      >
+      <Box sx={styles.searchFilterContainer}>
         <SearchVideoGrid
           searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
         />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "end",
-            gap: 2,
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
+        <Box sx={styles.filterWrapper}>
           <VideoFilter
             selectedFilter={selectedFilter as string[]}
             filter={fetchedPlayListsData}
@@ -183,37 +131,10 @@ const TrainerVideosGrid: React.FC = () => {
           />
         </Box>
       </Box>
-      <Container maxWidth={false} sx={{ py: 5, px: 0 }}>
+      <Container maxWidth={false}>
         {isHeSubscribedToTheTrainer ? (
           videosData && videosData.length > 0 ? (
-            <Box sx={styles.videoWrapper}>
-              {videosData.map((video) => (
-                <Card
-                  key={video._id}
-                  sx={styles.cardContainer}
-                  onClick={() => handleVideoClick(video._id)}
-                  elevation={0}
-                >
-                  <Box sx={styles.thumbnailWrapper}>
-                    <CardMedia
-                      component="img"
-                      image={`${video.thumbnail}?t=0`}
-                      alt={video.title}
-                      sx={styles.thumbnail}
-                    />
-                    <Box sx={styles.durationOverlay}>
-                      {formatVideoDuration(video.duration)}
-                    </Box>
-                  </Box>
-                  <CardContent sx={{ padding: "8px 8px" }}>
-                    <Typography sx={styles.title}>{video.title}</Typography>
-                    <Typography sx={styles.metadata}>
-                      {getRelativeTime(new Date(video.createdAt))}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
+            <VideoGrid videos={videosData} onVideoClick={handleVideoClick} />
           ) : (
             <Typography
               variant="h6"
@@ -231,14 +152,7 @@ const TrainerVideosGrid: React.FC = () => {
           </Box>
         )}
       </Container>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
+      <Box sx={styles.paginationContainer}>
         <PaginationTable
           handlePageChange={handlePageChange}
           page={currentPage}

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { createPlayList, AddVideo, RequestPlayListsByTrainerId, RequestVideosListByPlayListId, RequestVideoId, VideosQueryParams, PlayListQueryParams, UpdateVideoBlockStatus, UpdatePlayListBlockStatus, VideosQueryParamsUser} from "./contentTypes";
+import { createPlayList, AddVideo, RequestPlayListsByTrainerId, RequestVideoId, VideosQueryParams, PlayListQueryParams, UpdateVideoBlockStatus, UpdatePlayListBlockStatus, VideosQueryParamsUser} from "./contentTypes";
 
 
 export const fetchVideosByTrainerUser = createAsyncThunk(
@@ -140,25 +140,6 @@ export const fetchVideoDataById = createAsyncThunk(
     }
   }
 );
-
-export const relatedVideosDataByPayListId = createAsyncThunk(
-  "content/relatedVideosDataByPayListId",
-  async ({playListId}:RequestVideosListByPlayListId, { rejectWithValue }) => {
-
-    try {
-      const response = await axiosInstance.get(`user/related-videos/${playListId}`);
-      return response.data
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
-      } else {
-        return rejectWithValue("Failed to get related videos of trainer");
-      }
-    }
-  }
-);
-
 
 export const updateVideoPrivacyStatus = createAsyncThunk(
   "content/updateVideoPrivacyStatus",
