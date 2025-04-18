@@ -10,13 +10,31 @@ import {
   addMessage,
   sortTrainerChatList,
   updateMessageReadStatus,
+  updateTrainerChatListUnReadCount,
   updateTrainerLastMessage,
 } from "../../redux/chat/chatSlice";
 import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
 import LoadingSpinner from "../../components/LoadingSpinner";
+export interface Ichat {
+  _id: string;
+  senderId: string;
+  receiverId: string;
+  message: string;
+  isRead: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
+interface UnreadCountPayload {
+  _id: string;
+  userId: string;
+  trainerId: string;
+  lastMessage: Ichat;
+  unreadCount: number;
+  stripeSubscriptionStatus: string;
+}
 const ChatPage = () => {
   const [input, setInput] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -109,6 +127,14 @@ const ChatPage = () => {
         }
       }
     );
+
+    socket.on(
+      "unreadCountUpdated",
+      (countUpdatedDocument: UnreadCountPayload) => {
+        dispatch(updateTrainerChatListUnReadCount({ countUpdatedDocument }));
+      }
+    );
+
     if (selectedUserId && trainer?._id) {
       dispatch(
         fetchChatMessages({
@@ -149,11 +175,13 @@ const ChatPage = () => {
           );
         }
       });
+
       return () => {
         socket.emit("closeChat", trainer._id);
         socket.off("onlineStatusResponse");
         socket.off("receiveMessage");
         socket.off("messageRead");
+        socket.off("unreadCountUpdated");
         socket.off("typing");
         socket.off("stopTyping");
       };

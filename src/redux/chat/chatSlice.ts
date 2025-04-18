@@ -30,7 +30,7 @@ const chat = createSlice({
     },
     updateUserLastMessage: (state, action) => {
       const message = action.payload;
-      const userChatListLastMessageToBeUpdated = state.userChatList.find(
+      const chatToUpdate  = state.userChatList.find(
         (trainer) =>
           (trainer.userId === message.senderId &&
             trainer.trainerId === message.receiverId) ||
@@ -38,13 +38,12 @@ const chat = createSlice({
             trainer.trainerId === message.senderId)
       );
 
-      if (userChatListLastMessageToBeUpdated) {
-        userChatListLastMessageToBeUpdated.lastMessage = message.message;
+      if (chatToUpdate) {
+        chatToUpdate.lastMessage = message
       }
     },
     sortUserChatList: (state, action) => {
       const message = action.payload;
-      console.log("for sorting the user chat", message);
       const chat = state.userChatList.findIndex(
         (trainer) =>
           (trainer.userId === message.senderId &&
@@ -54,27 +53,15 @@ const chat = createSlice({
       );
 
       if (chat !== -1) {
-        console.log("sorting", chat);
-        console.log(
-          "before sorting",
-          state.userChatList.map((item) => ({
-            trainerId: item.trainerId,
-            updatedAt: item.updatedAt,
-            lastMessage: item.lastMessage,
-          }))
-        );
         state.userChatList[chat].updatedAt = message.updatedAt;
         state.userChatList = [...state.userChatList].sort(
           (a, b) =>
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
-        console.log("after sorting", state.userChatList);
       }
     },
     sortTrainerChatList: (state, action) => {
       const message = action.payload;
-
-      console.log("console.log for sorting message", message);
       const chat = state.trainerChatList.findIndex(
         (user) =>
           (user.userId === message.senderId &&
@@ -83,26 +70,50 @@ const chat = createSlice({
             user.trainerId === message.senderId)
       );
       if (chat !== -1) {
-        console.log("before sorting", [...state.trainerChatList]);
         state.trainerChatList[chat].updatedAt = message.updatedAt;
         state.trainerChatList = [...state.trainerChatList].sort(
           (a, b) =>
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
-        console.log("after sorting", state.trainerChatList);
       }
     },
     updateTrainerLastMessage: (state, action) => {
       const message = action.payload;
-      const trainerChatListLastMessageToBeUpdated = state.trainerChatList.find(
+      const chatToUpdate = state.trainerChatList.find(
         (user) =>
           (user.userId === message.senderId &&
             user.trainerId === message.receiverId) ||
           (user.userId === message.receiverId &&
             user.trainerId === message.senderId)
       );
-      if (trainerChatListLastMessageToBeUpdated) {
-        trainerChatListLastMessageToBeUpdated.lastMessage = message.message;
+      if (chatToUpdate) {
+        chatToUpdate.lastMessage = message
+      }
+    },
+    updateTrainerChatListUnReadCount:(state,action) =>{
+      const { countUpdatedDocument } = action.payload
+
+        const contactToUpdateCount = state.trainerChatList.find(
+            (list) =>
+              list._id === countUpdatedDocument._id 
+             
+          );
+       const stateCountToUpdate = state.trainerChatList.find((ch)=>ch._id===contactToUpdateCount?._id)
+       if(stateCountToUpdate && typeof countUpdatedDocument.unreadCount === "number"){
+         stateCountToUpdate.unreadCount = countUpdatedDocument.unreadCount
+       }
+       
+    },
+    updateUserChatListUnReadCount:(state,action) =>{
+      const { countUpdatedDocument }  = action.payload
+      const contactToUpdateCount = state.userChatList.find(
+        (list) =>
+          list._id === countUpdatedDocument._id 
+      );
+      const stateCountToUpdate = state.userChatList.find((ch)=>ch._id===contactToUpdateCount?._id)
+
+      if(stateCountToUpdate && typeof countUpdatedDocument.unreadCount === "number"){
+        stateCountToUpdate.unreadCount = countUpdatedDocument.unreadCount
       }
     },
   },
@@ -166,5 +177,8 @@ export const {
   updateTrainerLastMessage,
   sortTrainerChatList,
   sortUserChatList,
+  updateTrainerChatListUnReadCount,
+  updateUserChatListUnReadCount
+
 } = chat.actions;
 export default chat.reducer;

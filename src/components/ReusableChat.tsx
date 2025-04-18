@@ -18,7 +18,7 @@ interface ChatContact {
   _id: string;
   contactId: string;
   name: string;
-  lastMessage: string;
+  lastMessage: ChatMessage | null;
   unReadCount: number;
   profilePic: string | null;
   planStatus: string;
@@ -135,44 +135,49 @@ const ReusableChat = ({
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                     primary={contact.name}
-                     secondary={
-                       <Typography
-                         component="span"
-                         variant="body2"
-                         color="text.secondary"
-                         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-                       >
-                         <span
-                           style={{
-                             overflow: "hidden",
-                             textOverflow: "ellipsis",
-                             whiteSpace: "nowrap",
-                             maxWidth: "180px",
-                             display: "inline-block",
-                           }}
-                         >
-                           {contact.lastMessage && contact.lastMessage.length > 25
-                             ? `${contact.lastMessage.slice(0, 25)}...`
-                             : contact.lastMessage || "No messages yet"}
-                         </span>
-                   
-                         {contact.unReadCount > 0 && (
-                           <Badge
-                             badgeContent={contact.unReadCount}
-                             color="primary"
-                             sx={{
-                               ml: 1,
-                               ".MuiBadge-badge": {
-                                 fontSize: "0.7rem",
-                                 height: 18,
-                                 minWidth: 18,
-                               },
-                             }}
-                           />
-                         )}
-                       </Typography>
-                     }
+                    primary={contact.name}
+                    secondary={
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <span
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            maxWidth: "180px",
+                            display: "inline-block",
+                          }}
+                        >
+                          {contact.lastMessage?.message &&
+                          contact.lastMessage.message.length > 20
+                            ? `${contact.lastMessage.message.slice(0, 15)}...`
+                            : contact?.lastMessage?.message || "No messages yet"}
+                        </span>
+
+                        {contact.unReadCount > 0 &&contact.lastMessage?.receiverId!==contact.contactId &&  (
+                          <Badge
+                            badgeContent={contact.unReadCount}
+                            color="primary"
+                            sx={{
+                              ml: 1,
+                              ".MuiBadge-badge": {
+                                fontSize: "0.7rem",
+                                height: 18,
+                                minWidth: 18,
+                              },
+                            }}
+                          />
+                        )}
+                      </Typography>
+                    }
                   />
                 </ListItemButton>
               </ListItem>
@@ -214,7 +219,7 @@ const ReusableChat = ({
                         }}
                       ></span>
                       <Typography
-                      component="div"
+                        component="div"
                         variant="body2"
                         color={isOnline ? "success.main" : "grey.500"}
                       >
@@ -326,13 +331,15 @@ const ReusableChat = ({
                           boxShadow: 1,
                         }}
                       >
-                        <Typography component="div" variant="body2">Typing...</Typography>
+                        <Typography component="div" variant="body2">
+                          Typing...
+                        </Typography>
                       </Box>
                     </Box>
                   )}
                 </>
               ) : (
-                <Typography  component="div" color="grey.500" align="center">
+                <Typography component="div" color="grey.500" align="center">
                   No messages yet
                 </Typography>
               )

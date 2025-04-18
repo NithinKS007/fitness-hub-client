@@ -19,7 +19,7 @@ export interface TrainerChatList {
   _id: string
   userId: string
   trainerId: string
-  lastMessage: string;
+  lastMessage: Chat| null;
   unreadCount: number;
   stripeSubscriptionStatus: string;
   subscribedUserData: {
@@ -36,7 +36,7 @@ export interface UserChatList {
   _id: string;
   userId: string;
   trainerId: string;
-  lastMessage: string;
+  lastMessage: Chat| null
   unreadCount: number;
   stripeSubscriptionStatus: string;
   subscribedTrainerData: {
