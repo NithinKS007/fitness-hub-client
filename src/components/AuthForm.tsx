@@ -13,7 +13,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import type { SignState } from "../types/authTypes";
 import GoogleAuth from "./GoogleAuth";
 import { Link } from "react-router-dom";
-import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
+const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
+
 
 interface AuthFormProps {
   signState: SignState;
@@ -126,7 +127,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
         <Box sx={styles.imageContainer}>
           <Box
             component="img"
-            src={fitnessCouple2}
+            src={authImage}
             alt="Fitness Couple"
             sx={styles.image}
           />

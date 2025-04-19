@@ -16,21 +16,21 @@ import { useSelector } from "react-redux";
 import { updateBlockStatus } from "../redux/admin/adminTypes";
 
 const useSubscription = () => {
-
   const { subscriptions, isLoading, error } = useSelector(
     (state: RootState) => state.subscription
   );
 
   const allSubPeriods = ["monthly", "yearly", "quarterly", "halfYearly"];
-  const subscriptionPeriods = subscriptions.map(sub => sub.subPeriod);
+  const subscriptionPeriods = subscriptions.map((sub) => sub.subPeriod);
 
-  const newSubs = allSubPeriods.filter((sub) => !subscriptionPeriods.includes(sub));
-  
-  const { handleClose : modalHandleClose,handleOpen,open } = useModal();
+  const newSubs = allSubPeriods.filter(
+    (sub) => !subscriptionPeriods.includes(sub)
+  );
+
+  const { handleClose: modalHandleClose, handleOpen, open } = useModal();
 
   const dispatch = useDispatch<AppDispatch>();
   const [isEditMode, setIsEditMode] = useState(false);
-
 
   const calculateDurationInWeeks = (period: string) => {
     switch (period) {
@@ -71,19 +71,20 @@ const useSubscription = () => {
           totalSessions,
         };
 
-        if(isEditMode && editId){
-          const response = await dispatch(updateSubscription({subscriptionData})).unwrap();
+        if (isEditMode && editId) {
+          const response = await dispatch(
+            updateSubscription({ subscriptionData })
+          ).unwrap();
           showSuccessToast(`${response.message}`);
-   
         } else {
           const response = await dispatch(
             addSubscription(subscriptionData)
           ).unwrap();
           showSuccessToast(`${response.message}`);
         }
-        handleClose()
+        handleClose();
       } catch (error) {
-        console.error("API Error:", error); 
+        console.error("API Error:", error);
         showErrorToast(`${error}`);
       }
     },
@@ -107,8 +108,6 @@ const useSubscription = () => {
     fetchTrainerSubscriptions();
   }, [dispatch]);
 
-
-
   const UpdateSubsBlockstatus = async (status: updateBlockStatus) => {
     const { _id, isBlocked } = status;
     try {
@@ -128,21 +127,20 @@ const useSubscription = () => {
 
   const deleteSubs = async (_id: string) => {
     try {
-      const response = await dispatch(deleteSubscription({_id})).unwrap()
-      showSuccessToast(`${response.message}`)
+      const response = await dispatch(deleteSubscription({ _id })).unwrap();
+      showSuccessToast(`${response.message}`);
     } catch (error) {
       console.error("API Error:", error);
       showErrorToast(`${error}`);
     }
-
-  }
+  };
 
   const editSubscription = async (_id: string) => {
-    const subscriptionToEdit = subscriptions.find(sub=>sub._id===_id)
-    if(subscriptionToEdit){
+    const subscriptionToEdit = subscriptions.find((sub) => sub._id === _id);
+    if (subscriptionToEdit) {
       setEditId(_id);
       setIsEditMode(true);
-      setCurrentSubPeriod(subscriptionToEdit.subPeriod); 
+      setCurrentSubPeriod(subscriptionToEdit.subPeriod);
       formik.setValues({
         subPeriod: subscriptionToEdit.subPeriod,
         price: subscriptionToEdit.price,
@@ -150,23 +148,18 @@ const useSubscription = () => {
         sessionsPerWeek: subscriptionToEdit.sessionsPerWeek,
         totalSessions: subscriptionToEdit.totalSessions,
       });
-      handleOpen()
+      handleOpen();
     }
-    
   };
   const handleClose = () => {
-    modalHandleClose(); 
+    modalHandleClose();
     formik.resetForm();
     setIsEditMode(false);
     setEditId(null);
-  }
+  };
 
-  const subPeriodsForForm = isEditMode && currentSubPeriod
-    ? [...allSubPeriods] 
-    : allSubPeriods;
-
-
-    
+  const subPeriodsForForm =
+    isEditMode && currentSubPeriod ? [...allSubPeriods] : newSubs;
 
   return {
     UpdateSubsBlockstatus,
@@ -177,13 +170,13 @@ const useSubscription = () => {
     isLoading,
     error,
 
-    subPeriods:subPeriodsForForm,
+    subPeriods: subPeriodsForForm,
     formik,
     isEditMode,
 
-    handleOpen, 
+    handleOpen,
     handleClose,
-    open, 
+    open,
   };
 };
 

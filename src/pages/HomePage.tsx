@@ -4,16 +4,19 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { useModal } from "../hooks/useModal";
 import useAuthForm from "../hooks/useAuthForm";
 import TrainerAuthForm from "../components/modals/TrainerAuthModal";
-import homePageImage from "../assets/homePageImage.jpg";
 import { Box, Button, CardMedia, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 const MotionBox = motion(Box);
-
+const homeImage = import.meta.env.VITE_HOME_PAGE_IMAGE
+const homeGridImage1 = import.meta.env.VITE_HOME_GRID_IMAGE1
+const homeGridImage2 = import.meta.env.VITE_HOME_GRID_IMAGE2
+const homeGridImage3 = import.meta.env.VITE_HOME_GRID_IMAGE3
+const homeGridImage4 = import.meta.env.VITE_HOME_GRID_IMAGE4
 const styles = {
   heroSection: {
     position: "relative",
     height: "100vh",
-    backgroundImage: `url(${homePageImage})`,
+    backgroundImage: `url(${homeImage})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     color: "white",
@@ -223,25 +226,25 @@ const programs = [
     title: "Cardio & Strength",
     description: "Improve stamina, heart health, and full-body strength.",
     image:
-      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+      `${homeGridImage1}`,
   },
   {
     title: "Fat Loss Focus",
     description: "Burn fat efficiently with guided workouts and tips.",
     image:
-      "https://images.unsplash.com/photo-1599058917212-d750089bc07e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+     `${homeGridImage2}`,
   },
   {
     title: "Muscle Building",
     description: "Gain lean muscle through expert strength training.",
     image:
-      "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    `${homeGridImage3}`,
   },
   {
     title: "StrengthTraining",
     description: "Enhance strength and muscle mass with targeted training.",
     image:
-      "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    `${homeGridImage4}`,
   },
 ];
 

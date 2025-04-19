@@ -1,8 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { TextField, Box, Button, Typography } from "@mui/material";
-import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
-
+import { TextField, Box, Button, Typography } from "@mui/material";;
+const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
 interface ForgotPasswordProps {
   formik: any;
 }
@@ -88,7 +87,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
         <Box sx={styles.imageContainer}>
           <Box
             component="img"
-            src={fitnessCouple2}
+            src={authImage}
             alt="Fitness Couple"
             sx={styles.image}
           />

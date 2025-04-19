@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { TextField, Box, Button, Typography } from "@mui/material";
-import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
+
+const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
 
 interface ResetPasswordProps {
   formik: any;
@@ -43,7 +44,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
         >
           <Box
             component="img"
-            src={fitnessCouple2}
+            src={authImage}
             alt="Fitness Couple"
             sx={{
               width: "100%",

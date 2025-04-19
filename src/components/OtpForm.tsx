@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Typography, TextField, Grid } from "@mui/material";
-import fitnessCouple2 from "../assets/fitnessCouple2.jpg";
+
+const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
 
 interface OtpFormProps {
   otp: {
@@ -59,7 +60,7 @@ const OtpForm: React.FC<OtpFormProps> = ({
         >
           <Box
             component="img"
-            src={fitnessCouple2}
+            src={authImage}
             alt="Fitness Couple"
             sx={{
               width: "100%",

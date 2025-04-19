@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import fitnessCouple2 from "../../assets/fitnessCouple2.jpg";
+const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
 
 interface TrainerAuthFormProps {
   open: boolean;
@@ -115,7 +115,7 @@ const TrainerAuthForm: React.FC<TrainerAuthFormProps> = ({
         <Box sx={imageContainerStyles}>
           <Box
             component="img"
-            src={fitnessCouple2}
+            src={authImage}
             alt="Fitness Couple"
             sx={imageStyles}
           />
