@@ -162,7 +162,7 @@ const useSubscription = () => {
   }
 
   const subPeriodsForForm = isEditMode && currentSubPeriod
-    ? [...newSubs] 
+    ? [...allSubPeriods] 
     : newSubs;
 
 
