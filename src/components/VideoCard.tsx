@@ -6,7 +6,7 @@ const styles = {
   videoWrapper: {
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "start",
     gap: "18px",
     marginTop: 2,
     width: "100%",
@@ -17,8 +17,9 @@ const styles = {
       xs: "100%",
       sm: "48%",
       md: "31%",
-      lg: "24%",
+      lg: "calc(25% - 14px)",
     },
+    flex: "0 0 auto",
     cursor: "pointer",
     backgroundColor: "#fff",
   },
@@ -79,12 +80,12 @@ interface Video {
   createdAt: string;
 }
 
-interface VideoGridProps {
+interface VideoCardProps {
   videos: Video[];
   onVideoClick: (videoId: string) => void;
 }
 
-const VideoGrid: React.FC<VideoGridProps> = ({ videos, onVideoClick }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ videos, onVideoClick }) => {
   return (
     <Box sx={styles.videoWrapper}>
       {videos.map((video) => (
@@ -116,4 +117,4 @@ const VideoGrid: React.FC<VideoGridProps> = ({ videos, onVideoClick }) => {
   );
 };
 
-export default VideoGrid;
+export default VideoCard;

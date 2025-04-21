@@ -19,7 +19,10 @@ const chat = createSlice({
   initialState,
   reducers: {
     addMessage: (state, action) => {
-      state.ChatMessages.push(action.payload);
+      const newMessage = action.payload;
+      if (!state.ChatMessages.some((msg) => msg._id === newMessage._id)) {
+        state.ChatMessages.push(newMessage);
+      }
     },
     updateMessageReadStatus: (state, action) => {
       const messageId = action.payload.messageId;
@@ -30,7 +33,7 @@ const chat = createSlice({
     },
     updateUserLastMessage: (state, action) => {
       const message = action.payload;
-      const chatToUpdate  = state.userChatList.find(
+      const chatToUpdate = state.userChatList.find(
         (trainer) =>
           (trainer.userId === message.senderId &&
             trainer.trainerId === message.receiverId) ||
@@ -39,7 +42,7 @@ const chat = createSlice({
       );
 
       if (chatToUpdate) {
-        chatToUpdate.lastMessage = message
+        chatToUpdate.lastMessage = message;
       }
     },
     sortUserChatList: (state, action) => {
@@ -87,33 +90,33 @@ const chat = createSlice({
             user.trainerId === message.senderId)
       );
       if (chatToUpdate) {
-        chatToUpdate.lastMessage = message
+        chatToUpdate.lastMessage = message;
       }
     },
-    updateTrainerChatListUnReadCount:(state,action) =>{
-      const { countUpdatedDocument } = action.payload
+    updateTrainerChatListUnReadCount: (state, action) => {
+      const { countUpdatedDocument } = action.payload;
 
-        const contactToUpdateCount = state.trainerChatList.find(
-            (list) =>
-              list._id === countUpdatedDocument._id 
-             
-          );
-       const stateCountToUpdate = state.trainerChatList.find((ch)=>ch._id===contactToUpdateCount?._id)
-       if(stateCountToUpdate && typeof countUpdatedDocument.unreadCount === "number"){
-         stateCountToUpdate.unreadCount = countUpdatedDocument.unreadCount
-       }
-       
-    },
-    updateUserChatListUnReadCount:(state,action) =>{
-      const { countUpdatedDocument }  = action.payload
-      const contactToUpdateCount = state.userChatList.find(
-        (list) =>
-          list._id === countUpdatedDocument._id 
+      const stateCountToUpdate = state.trainerChatList.find(
+        (ch) => ch._id === countUpdatedDocument?._id
       );
-      const stateCountToUpdate = state.userChatList.find((ch)=>ch._id===contactToUpdateCount?._id)
+      if (
+        stateCountToUpdate &&
+        typeof countUpdatedDocument.unreadCount === "number"
+      ) {
+        stateCountToUpdate.unreadCount = countUpdatedDocument.unreadCount;
+      }
+    },
+    updateUserChatListUnReadCount: (state, action) => {
+      const { countUpdatedDocument } = action.payload;
+      const stateCountToUpdate = state.userChatList.find(
+        (ch) => ch._id === countUpdatedDocument?._id
+      );
 
-      if(stateCountToUpdate && typeof countUpdatedDocument.unreadCount === "number"){
-        stateCountToUpdate.unreadCount = countUpdatedDocument.unreadCount
+      if (
+        stateCountToUpdate &&
+        typeof countUpdatedDocument.unreadCount === "number"
+      ) {
+        stateCountToUpdate.unreadCount = countUpdatedDocument.unreadCount;
       }
     },
   },
@@ -177,7 +180,6 @@ export const {
   sortTrainerChatList,
   sortUserChatList,
   updateTrainerChatListUnReadCount,
-  updateUserChatListUnReadCount
-
+  updateUserChatListUnReadCount,
 } = chat.actions;
 export default chat.reducer;

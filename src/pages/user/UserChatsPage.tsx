@@ -13,7 +13,7 @@ import {
 import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
 export interface Ichat {
   _id: string;
   senderId: string;
@@ -46,10 +46,10 @@ const UserChatsPage = () => {
   const typingTimeoutRef = useRef<number | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
-
+  const { searchTerm, handleSearchChange, getQueryParams } = useSearchFilter();
   useEffect(() => {
-    dispatch(getUserChatList());
-  }, [dispatch]);
+    dispatch(getUserChatList(getQueryParams()));
+  }, [dispatch, getQueryParams().search]);
 
   const {
     userChatList,
@@ -129,6 +129,7 @@ const UserChatsPage = () => {
     socket.on(
       "unreadCountUpdated",
       (countUpdatedDocument: UnreadCountPayload) => {
+        console.log("user", countUpdatedDocument);
         dispatch(
           updateUserChatListUnReadCount({
             countUpdatedDocument,
@@ -249,42 +250,41 @@ const UserChatsPage = () => {
 
   return (
     <Box sx={{ height: "90vh" }}>
-      {chatLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <>
-          <ReusableChat
-            contacts={fetchedUserSubscriptionData}
-            messages={messages}
-            selectedId={selectedTrainerId as null | string}
-            input={input}
-            isPlanActive={selectedTrainer?.planStatus === "active"}
-            isOnline={isOnline as boolean}
-            onContactClick={handleTrainerClick}
-            onInputChange={setInput}
-            onSendClick={handleSendMessage}
-            onEmojiClick={() => setShowPicker((prev) => !prev)}
-            messagesEndRef={messagesEndRef}
-            currentUserId={user?._id || ""}
-            typing={typing}
-            onTyping={handleTyping}
-            typingIndicatorRef={typingIndicatorRef}
-          />
-          {showPicker && (
-            <Box
-              ref={pickerRef}
-              sx={{
-                position: "absolute",
-                bottom: "100px",
-                right: "30px",
-                zIndex: 1000,
-              }}
-            >
-              <Picker onEmojiClick={onEmojiClick} />
-            </Box>
-          )}
-        </>
-      )}
+      <>
+        <ReusableChat
+          contacts={fetchedUserSubscriptionData}
+          messages={messages}
+          selectedId={selectedTrainerId as null | string}
+          input={input}
+          isPlanActive={selectedTrainer?.planStatus === "active"}
+          isOnline={isOnline as boolean}
+          onContactClick={handleTrainerClick}
+          onInputChange={setInput}
+          onSendClick={handleSendMessage}
+          onEmojiClick={() => setShowPicker((prev) => !prev)}
+          messagesEndRef={messagesEndRef}
+          currentUserId={user?._id || ""}
+          typing={typing}
+          onTyping={handleTyping}
+          typingIndicatorRef={typingIndicatorRef}
+          searchTerm={searchTerm as string}
+          onSearchChange={handleSearchChange}
+          chatLoading={chatLoading}
+        />
+        {showPicker && (
+          <Box
+            ref={pickerRef}
+            sx={{
+              position: "absolute",
+              bottom: "100px",
+              right: "30px",
+              zIndex: 1000,
+            }}
+          >
+            <Picker onEmojiClick={onEmojiClick} />
+          </Box>
+        )}
+      </>
     </Box>
   );
 };

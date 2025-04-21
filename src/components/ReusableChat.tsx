@@ -11,8 +11,11 @@ import {
   Button,
   Stack,
   Badge,
+  InputAdornment,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import LoadingSpinner from "./LoadingSpinner";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface ChatContact {
   _id: string;
@@ -43,12 +46,15 @@ interface ReusableChatProps {
   onContactClick: (id: string) => void;
   onInputChange: (value: string) => void;
   onSendClick: () => void;
+  onSearchChange: (value: string) => void;
+  searchTerm: string;
   onEmojiClick: () => void;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   currentUserId: string;
   onTyping: () => void;
   typing: string | null;
   typingIndicatorRef: React.RefObject<HTMLDivElement>;
+  chatLoading: boolean;
 }
 
 const ReusableChat = ({
@@ -67,6 +73,9 @@ const ReusableChat = ({
   onTyping,
   typing,
   typingIndicatorRef,
+  onSearchChange,
+  searchTerm,
+  chatLoading,
 }: ReusableChatProps) => {
   const selectedContact = contacts.find(
     (contact) => contact.contactId === selectedId
@@ -102,87 +111,125 @@ const ReusableChat = ({
             scrollbarWidth: "none",
           }}
         >
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ p: 2, fontWeight: "bold", color: "grey.700" }}
-          >
-            Messages
-          </Typography>
-          <List sx={{ p: 0 }}>
-            {contacts.map((contact) => (
-              <ListItem key={contact._id} disablePadding>
-                <ListItemButton
-                  onClick={() => onContactClick(contact.contactId)}
-                  sx={{
-                    backgroundColor:
-                      selectedId === contact.contactId ? "grey.300" : "inherit",
-                    "&:hover": {
-                      backgroundColor:
-                        selectedId === contact.contactId
-                          ? "grey.400"
-                          : "grey.200",
-                    },
-                    borderRadius: 1,
-                    mx: 1,
-                    height: 64,
-                    transition: "background-color 0.3s ease",
-                  }}
-                >
-                  <ListItemAvatar>
-                    <Avatar src={contact?.profilePic ?? undefined}>
-                      {!contact?.profilePic && contact?.name.charAt(0)}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={contact.name}
-                    secondary={
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <span
-                          style={{
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            maxWidth: "180px",
-                            display: "inline-block",
-                          }}
-                        >
-                          {contact.lastMessage?.message &&
-                          contact.lastMessage.message.length > 20
-                            ? `${contact.lastMessage.message.slice(0, 15)}...`
-                            : contact?.lastMessage?.message || "No messages yet"}
-                        </span>
-
-                        {contact.unReadCount > 0 &&contact.lastMessage?.receiverId!==contact.contactId &&  (
-                          <Badge
-                            badgeContent={contact.unReadCount}
-                            color="primary"
+          <Box sx={{ p: 2 }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: "bold", color: "grey.700", mb: 2 }}
+            >
+              Messages
+            </Typography>
+            <TextField
+              placeholder="Search contacts..."
+              variant="outlined"
+              size="small"
+              fullWidth
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: "grey.500" }} />
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    borderRadius: 2,
+                    bgcolor: "background.paper",
+                    border: "1px solid",
+                    borderColor: "grey.300",
+                  },
+                },
+              }}
+            />
+          </Box>
+          <Box sx={{ flex: 1, overflowY: "auto", scrollbarWidth: "none" }}>
+            {chatLoading ? (
+              <Box sx={{ p: 2, textAlign: "center" }}>
+                <LoadingSpinner size={30} />
+              </Box>
+            ) : (
+              <List sx={{ p: 0 }}>
+                {contacts.map((contact) => (
+                  <ListItem key={contact._id} disablePadding>
+                    <ListItemButton
+                      onClick={() => onContactClick(contact.contactId)}
+                      sx={{
+                        backgroundColor:
+                          selectedId === contact.contactId
+                            ? "grey.300"
+                            : "inherit",
+                        "&:hover": {
+                          backgroundColor:
+                            selectedId === contact.contactId
+                              ? "grey.400"
+                              : "grey.200",
+                        },
+                        borderRadius: 1,
+                        mx: 1,
+                        height: 64,
+                        transition: "background-color 0.3s ease",
+                      }}
+                    >
+                      <ListItemAvatar>
+                        <Avatar src={contact?.profilePic ?? undefined}>
+                          {!contact?.profilePic && contact?.name.charAt(0)}
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={contact.name}
+                        secondary={
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="text.secondary"
                             sx={{
-                              ml: 1,
-                              ".MuiBadge-badge": {
-                                fontSize: "0.7rem",
-                                height: 18,
-                                minWidth: 18,
-                              },
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
                             }}
-                          />
-                        )}
-                      </Typography>
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+                          >
+                            <span
+                              style={{
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                maxWidth: "180px",
+                                display: "inline-block",
+                              }}
+                            >
+                              {contact.lastMessage?.message &&
+                              contact.lastMessage.message.length > 20
+                                ? `${contact.lastMessage.message.slice(0, 15)}...`
+                                : contact?.lastMessage?.message ||
+                                  "No messages yet"}
+                            </span>
+
+                            {contact.unReadCount > 0 &&
+                              contact.lastMessage?.receiverId !==
+                                contact.contactId && (
+                                <Badge
+                                  badgeContent={contact.unReadCount}
+                                  color="primary"
+                                  sx={{
+                                    ml: 1,
+                                    ".MuiBadge-badge": {
+                                      fontSize: "0.7rem",
+                                      height: 18,
+                                      minWidth: 18,
+                                    },
+                                  }}
+                                />
+                              )}
+                          </Typography>
+                        }
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </Box>
         </Box>
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <Box
@@ -195,7 +242,7 @@ const ReusableChat = ({
               alignItems: "center",
             }}
           >
-            {selectedId && (
+            {selectedId && !chatLoading && selectedContact && (
               <>
                 <Avatar
                   src={selectedContact?.profilePic ?? undefined}
@@ -208,7 +255,7 @@ const ReusableChat = ({
                   <Typography component="div" variant="h6" color="grey.700">
                     {selectedContact?.name}
                   </Typography>
-                  {selectedId && (
+                  {selectedId && !chatLoading && selectedContact && (
                     <Stack direction="row" alignItems="center" spacing={0.5}>
                       <span
                         style={{
@@ -241,8 +288,12 @@ const ReusableChat = ({
               scrollbarWidth: "none",
             }}
           >
-            {selectedId ? (
-              messages.length > 0 ? (
+            {selectedId && selectedContact ? (
+              chatLoading ? (
+                <Box sx={{ p: 2, textAlign: "center" }}>
+                  <LoadingSpinner />
+                </Box>
+              ) : messages.length > 0 ? (
                 <>
                   {messages.map((message) => (
                     <Box
@@ -312,7 +363,7 @@ const ReusableChat = ({
                     </Box>
                   ))}
                   <div ref={messagesEndRef} />
-                  {typing && (
+                  {!chatLoading && typing && (
                     <Box
                       sx={{
                         display: "flex",
@@ -372,14 +423,14 @@ const ReusableChat = ({
               size="small"
               fullWidth
               sx={{ bgcolor: "white" }}
-              disabled={!isPlanActive}
+              disabled={!isPlanActive || chatLoading}
             />
             <Box sx={{ position: "relative" }}>
               <Button
                 variant="outlined"
                 onClick={onEmojiClick}
                 sx={{ minWidth: "40px", p: 0.9 }}
-                disabled={!isPlanActive}
+                disabled={!isPlanActive || chatLoading}
               >
                 😊
               </Button>
@@ -393,7 +444,7 @@ const ReusableChat = ({
                 backgroundColor: "#1f2937",
                 color: "white",
               }}
-              disabled={!isPlanActive}
+              disabled={!isPlanActive || chatLoading}
             >
               Send
             </Button>

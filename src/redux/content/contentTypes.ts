@@ -32,7 +32,7 @@ export interface Video{
   createdAt:string
   duration:number
   privacy:boolean
-  playLists:string[]
+  playLists:PlayList[]
 }
 
 export interface createPlayList {

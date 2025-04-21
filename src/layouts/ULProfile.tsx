@@ -25,34 +25,35 @@ const ULProfile: React.FC = () => {
     {
       icon: <GridViewIcon />,
       text: "DASHBOARD",
-      path: "/user/dashboard",
+      path: ["/user/dashboard"],
     },
     {
       icon: <SubscriptionsIcon />,
       text: "SUBSCRIPTIONS",
-      path: "/user/subscriptions",
+      path: ["/user/subscriptions","/user/trainer-videos","/user/trainer/video"],
     },
     {
       icon: <CollectionsBookmarkIcon />,
       text: "BOOKINGS",
-      path: "/user/bookings",
+      path: ["/user/bookings"],
     },
     {
       icon: <ChatIcon />,
       text: "CHAT",
-      path: "/user/chats",
+      path: ["/user/chats"],
     },
     {
       icon: <AccountCircle />,
       text: "PROFILE",
-      path: "/user/profile",
+      path: ["/user/profile"],
     },
     {
-      icon:<FiTrendingUp />, 
+      icon: <FiTrendingUp />,
       text: "WORKOUTS",
-      path: "/user/workouts", 
+      path: ["/user/workouts"],
     }
   ];
+  
 
   useEffect(() => {
     if (!user?._id) {
@@ -129,7 +130,7 @@ const ULProfile: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <TopNavbar />
       <div className="flex flex-1">
-        <div className="w-18">
+        <div className="w-24">
           <SideNavBar navItems={userNavItems} />
         </div>
         <div className="flex-1 pl-2 pr-2 pt-15 overflow-auto">

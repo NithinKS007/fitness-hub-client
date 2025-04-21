@@ -10,6 +10,7 @@ import {
 } from "../utils/validationSchema";
 import {
   addPlayList,
+  editPlayList,
   addVideo,
   editVideo,
 } from "../redux/content/contentThunk";
@@ -19,7 +20,7 @@ import {
   uploadThumbnailToCloudinary,
   uploadVideoToCloudinary,
 } from "../utils/upLoadToCloudinary";
-import { Video } from "../redux/content/contentTypes";
+import { PlayList, Video } from "../redux/content/contentTypes";
 
 const useContent = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,17 +36,29 @@ const useContent = () => {
   } = useModal();
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [selectedPlayList, setSelectedPlayList] = useState<PlayList | null>(
+    null
+  );
 
   const playListFormik = useFormik({
     initialValues: {
-      title: "",
+      title: selectedPlayList?.title || "",
     },
+    enableReinitialize: true,
     validationSchema: createPlayListSchema,
     onSubmit: async (values) => {
       const { title } = values;
       try {
-        const response = await dispatch(addPlayList({ title })).unwrap();
-        showSuccessToast(response.message);
+        if (isEditMode && selectedPlayList) {
+          const { _id } = selectedPlayList;
+          const response = await dispatch(
+            editPlayList({ title, playListId: _id })
+          ).unwrap();
+          showSuccessToast(response.message);
+        } else {
+          const response = await dispatch(addPlayList({ title })).unwrap();
+          showSuccessToast(response.message);
+        }
         modalPlayListHandleClose();
         playListFormik.resetForm();
       } catch (error) {
@@ -62,7 +75,7 @@ const useContent = () => {
       video: selectedVideo?.video || "",
       thumbnail: selectedVideo?.thumbnail || "",
       duration: selectedVideo?.duration || 0,
-      playLists: selectedVideo?.playLists || [],
+      playLists: selectedVideo?.playLists?.map((pl) => pl._id) || [],
     },
     enableReinitialize: true,
     validationSchema: videoCreationSchema,
@@ -179,7 +192,17 @@ const useContent = () => {
     setSelectedVideo(video);
     modalVideoHandleOpen();
   };
-
+  const handleEditPlayList = (playList: PlayList) => {
+    setIsEditMode(true);
+    setSelectedPlayList(playList);
+    modalPlayListHandleOpen();
+  };
+  const handleModalPlayListCloseWithReset = () => {
+    playListFormik.resetForm();
+    setIsEditMode(false);
+    setSelectedPlayList(null);
+    modalPlayListHandleClose();
+  };
   return {
     videoFormik,
     modalVideoHandleClose: handleModalVideoCloseWithReset,
@@ -187,7 +210,7 @@ const useContent = () => {
     modalVideoOpen,
 
     playListFormik,
-    modalPlayListHandleClose,
+    modalPlayListHandleClose: handleModalPlayListCloseWithReset,
     modalPlayListHandleOpen,
     modalPlayListOpen,
 
@@ -195,7 +218,9 @@ const useContent = () => {
     handleThumbnailChange,
 
     handleEditVideo,
+    handleEditPlayList,
     isEditMode,
+    
   };
 };
 

@@ -71,12 +71,15 @@ const MyTrainersTab: React.FC<MyTrainersTabProp> = ({ isActive }) => {
             watchVideos: (
               <Button
               variant="contained"
-              color="primary"
               size="small"
               startIcon={<PlayCircleOutlineIcon />}
               disabled={!isSubscriptionActive}
               onClick={() => handleShowTrainerVideos(sub.trainerId)}
-              sx={{ px: 1.5, py: 0.5, fontSize: "0.75rem", minWidth: "auto" }}
+              sx={{ px: 1.5, py: 0.5, fontSize: "0.75rem", minWidth: "auto" , backgroundColor: "#1f2937",
+                '&:hover': {
+                  backgroundColor: "#111827", 
+                },
+                color: '#fff',  }}
             >
               Watch
             </Button>

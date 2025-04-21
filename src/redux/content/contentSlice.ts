@@ -3,6 +3,8 @@ import { ContentState } from "./contentTypes";
 import {
   addPlayList,
   addVideo,
+  editPlayList,
+  editVideo,
   fetchFullPlayListOfTrainer,
   fetchVideoDataById,
   fetchVideosByTrainerUser,
@@ -91,6 +93,7 @@ const content = createSlice({
       .addCase(getUploadedVideosOfTrainer.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
+        console.log("videos in trainer side",action.payload.data.videoList)
         state.videos = action.payload.data.videoList;
         state.pagination.currentPage =
           action.payload.data.paginationData.currentPage;
@@ -105,7 +108,6 @@ const content = createSlice({
             : "Failed to get trainer videos list";
       })
 
-      //get playlists for viewing in trainer profile for both user and trainer
       .addCase(getPlayListsAvailableByTrainerId.pending, (state) => {
         state.isLoading = true;
       })
@@ -166,15 +168,12 @@ const content = createSlice({
       })
       .addCase(updatePlayListPrivacyStatus.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isLoading = false;
         const updatedPlayList = action.payload.data;
         state.playLists = state?.playLists?.map((p) =>
           p._id === updatedPlayList._id
             ? { ...p, privacy: updatedPlayList.privacy }
             : p
         );
-
-        state.error = null;
         state.error = null;
       })
       .addCase(updatePlayListPrivacyStatus.rejected, (state, action) => {
@@ -221,7 +220,50 @@ const content = createSlice({
             ? action.payload
             : "Failed to get trainer videos list";
       })
-      
+      //edit video
+      .addCase(editVideo.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(editVideo.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        const updatedVideo = action.payload.data;
+        const result = state.videos.filter((v)=>v._id===updatedVideo._id)
+        console.log("updatedvideo",action.payload.data,"the rs",result)
+        console.log("Filtered result (plain):", JSON.parse(JSON.stringify(result)));
+        state.videos = state.videos.map((video) =>
+          video._id === updatedVideo._id ? { ...video, ...updatedVideo } : video
+        );
+        
+      })
+      .addCase(editVideo.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to edit video";
+      })
+      //edit playlist
+      .addCase(editPlayList.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(editPlayList.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        const updatedPlayList = action.payload.data;
+        console.log("edited playlist data",action.payload.data)
+        state.playLists = state.playLists.map((p) =>
+          p._id === updatedPlayList._id ? { ...p, ...updatedPlayList } : p
+        );
+      })
+      .addCase(editPlayList.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to edit playlist";
+      })
+     
   },
 });
 

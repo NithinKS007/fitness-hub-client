@@ -1,3 +1,5 @@
+import { QueryParams } from "../reduxCommonTypes/tableTypes";
+
 export interface Chat {
   _id: string;
   senderId: string;
@@ -16,10 +18,10 @@ export interface ChatState {
 }
 
 export interface TrainerChatList {
-  _id: string
-  userId: string
-  trainerId: string
-  lastMessage: Chat| null;
+  _id: string;
+  userId: string;
+  trainerId: string;
+  lastMessage: Chat | null;
   unreadCount: number;
   stripeSubscriptionStatus: string;
   subscribedUserData: {
@@ -29,14 +31,14 @@ export interface TrainerChatList {
     profilePic: string;
     isBlocked: boolean;
   };
-  updatedAt:Date
-  createdAt:Date
+  updatedAt: Date;
+  createdAt: Date;
 }
 export interface UserChatList {
   _id: string;
   userId: string;
   trainerId: string;
-  lastMessage: Chat| null
+  lastMessage: Chat | null;
   unreadCount: number;
   stripeSubscriptionStatus: string;
   subscribedTrainerData: {
@@ -46,11 +48,16 @@ export interface UserChatList {
     profilePic: string;
     isBlocked: boolean;
   };
-  updatedAt:Date
-  createdAt:Date
+  updatedAt: Date;
+  createdAt: Date;
 }
 
 export interface RequestChatMessages {
   senderId: string;
   receiverId: string;
 }
+
+export type ChatQueryParams = Omit<
+  QueryParams,
+  "filters" | "page" | "limit" | "fromDate" | "toDate"
+>;

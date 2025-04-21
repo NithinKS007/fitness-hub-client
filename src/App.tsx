@@ -38,7 +38,7 @@ import OnSuccessPage from "./pages/OnSuccessPage";
 import TrainerVideosGrid from "./pages/user/TrainerVideosGrid";
 import UserWorkoutsPage from "./pages/user/UserWorkoutSettingPage";
 import CommissionHistory from "./pages/admin/CommissionHistory";
-import TrainerVideo from "./pages/user/TrainerVideo";
+import TrainerVideo from "./components/TrainerVideo";
 
 const App = () => {
   return (

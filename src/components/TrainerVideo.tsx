@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
-import { fetchVideoDataById } from "../../redux/content/contentThunk";
+import { AppDispatch, RootState } from "../redux/store";
+import { fetchVideoDataById } from "../redux/content/contentThunk";
 import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import ReuseableVideoPlayer from "../../components/ReuseableVideoPlayer";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import Error from "../../components/Error";
+import ReuseableVideoPlayer from "./ReuseableVideoPlayer";
+import LoadingSpinner from "./LoadingSpinner";
+import Error from "./Error";
 
 const styles = {
   container: {
@@ -46,7 +46,7 @@ const TrainerVideo: React.FC = () => {
     (state: RootState) => state.content
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (videoId) {
       dispatch(fetchVideoDataById({ videoId }));
     }

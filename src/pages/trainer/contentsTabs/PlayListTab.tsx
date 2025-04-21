@@ -62,6 +62,8 @@ const PlaylistSection = () => {
     modalPlayListHandleClose,
     modalPlayListHandleOpen,
     modalPlayListOpen,
+    isEditMode, 
+    handleEditPlayList,
   } = useContent();
   const {
     handlePageChange,
@@ -93,7 +95,10 @@ const PlaylistSection = () => {
   };
 
   const editPlaylist = (id: string) => {
-    console.log("Edit playlist", id);
+    const playlistToEdit = playLists.find((p) => p._id === id);
+    if (playlistToEdit) {
+      handleEditPlayList(playlistToEdit);
+    }
     handlePlayListCloseMenu();
   };
 
@@ -248,7 +253,7 @@ const PlaylistSection = () => {
         formik={playListFormik}
         open={modalPlayListOpen as boolean}
         onClose={modalPlayListHandleClose}
-        isEditMode={false}
+        isEditMode={isEditMode as boolean}
       />
       <PaginationTable
         handlePageChange={handlePageChange}

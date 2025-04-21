@@ -1,4 +1,11 @@
-import { Box } from "@mui/material";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import NavigationTabs from "../components/Tabs";
 import { useEffect, useState } from "react";
 import ViewTrainerDetailsCommon from "../components/ViewTrainerDetailsCommon";
@@ -20,11 +27,18 @@ import SlotBooking from "./SlotBooking";
 import { fetchTrainerSlots } from "../redux/booking/bookingThunk";
 import LoadingSpinner from "../components/LoadingSpinner";
 import useIsUserSubscribedToTrainer from "../hooks/useIsUserSubscribedToTrainer";
+import { CheckCircleOutline } from "@mui/icons-material";
 
 const tabItems = [
   { label: "About Me" },
   { label: "Show Plans" },
   { label: "Book a slot" },
+];
+const benefits = [
+  "Access to exclusive fitness content from your coach",
+  "Book personalized time slots for workout schedule and diet plan discussions",
+  "24/7 chat access to your fitness coach for continuous support",
+  "Live virtual meetings with top fitness experts to address your questions and concerns",
 ];
 
 const ViewTrainerDetailsUS = () => {
@@ -51,7 +65,9 @@ const ViewTrainerDetailsUS = () => {
     (state: RootState) => state.subscription
   );
 
-  const isHeSubscribedToTheTrainer = useIsUserSubscribedToTrainer(trainerId as string)
+  const isHeSubscribedToTheTrainer = useIsUserSubscribedToTrainer(
+    trainerId as string
+  );
 
   useEffect(() => {
     if (trainerId) {
@@ -176,34 +192,65 @@ const ViewTrainerDetailsUS = () => {
       isHeSubscribedToTheTrainer ? (
       <Box
         sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          padding: { xs: 2, md: 3 },
+          width: { xs: "100%", sm: "90%", md: "80%" },
+          margin: "0 auto",
+          boxShadow: 1,
+          borderRadius: 2,
           minHeight: "200px",
-          justifyContent: "space-between",
-          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          backgroundColor: "#f9f9f9",
         }}
       >
-        <TrainerSpecificationLeftSide
-          certifications={trainerDetails?.certifications || []}
-          specializations={trainerDetails?.specializations || []}
-        />
-        <Box
+        <Typography
+          variant="h6"
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: 1,
-            borderRadius: 2,
-            padding: "16px",
-            width: { xs: "100%", md: "50%" },
-            marginRight: { xs: 0, md: 20 },
-            marginTop: { xs: 2, md: 0 },
+            fontSize: { xs: "1.2rem", md: "1.5rem" },
+            fontWeight: 600,
+            color: "#2c3e50",
+            fontFamily: "'Roboto', sans-serif",
+            mb: 3,
           }}
         >
-          <>
-            You have been subscribed to the trainer enjoy the benefits of your
-            subscription
-          </>
+         ENJOY THE BENEFITS OF YOUR SUBSCRIPTION
+        </Typography>
+        <Box
+          sx={{
+            width: "100%",
+            bgcolor: "#fafafa",
+            borderRadius: 1,
+            p: { xs: 2, md: 3 },
+          }}
+        >
+          <List sx={{ p: 0 }}>
+            {benefits.map((benefit, index) => (
+              <ListItem
+                key={index}
+                sx={{
+                  px: 0,
+                  py: 1,
+                  alignItems: "flex-start",
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 32, mt: 0.5 }}>
+                  <CheckCircleOutline color="primary" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={benefit}
+                  primaryTypographyProps={{
+                    fontSize: "1rem",
+                    fontWeight: 400,
+                    color: "#2c3e50",
+                    fontFamily: "'Roboto', sans-serif",
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
         </Box>
       </Box>
     ) : trainerDetails &&
@@ -237,7 +284,7 @@ const ViewTrainerDetailsUS = () => {
   };
 
   const renderSlotBookingTab = () => {
-    if (isTrainerDataLoading||isLoading) {
+    if (isTrainerDataLoading || isLoading) {
       return (
         <Box
           sx={{
@@ -289,14 +336,27 @@ const ViewTrainerDetailsUS = () => {
           margin: "0 auto",
           boxShadow: 1,
           borderRadius: 2,
+          minHeight: "200px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          backgroundColor: "#f9f9f9",
         }}
       >
-        <p>Please subscribe to book slots with a trainer</p>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 500,
+            color: "#333",
+            fontFamily: "'Roboto', sans-serif",
+          }}
+        >
+          Please subscribe to book slots with a trainer
+        </Typography>
       </Box>
     );
   };
-
-
 
   if (authPersonLoading || isTrainerDataLoading) {
     return (

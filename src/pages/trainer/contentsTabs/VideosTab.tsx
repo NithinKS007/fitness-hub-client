@@ -57,7 +57,7 @@ const VideoSection = () => {
     modalVideoOpen,
     handleVideoChange,
     handleThumbnailChange,
-    isEditMode, 
+    isEditMode,
     handleEditVideo,
   } = useContent();
 
@@ -94,13 +94,12 @@ const VideoSection = () => {
   const handleVideoCloseMenu = () => {
     setAnchorVideoEl(null);
     setSelectedVideoId(null);
-    
   };
 
   const editVideo = (id: string) => {
     const videoToEdit = videos.find((v) => v._id === id);
     if (videoToEdit) {
-      handleEditVideo(videoToEdit)
+      handleEditVideo(videoToEdit);
     }
     handleVideoCloseMenu();
   };

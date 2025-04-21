@@ -13,7 +13,7 @@ import PaginationTable from "../../components/PaginationTable";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import SearchVideoGrid from "../../components/SearchVideoGrid";
 import VideoFilter from "../../components/VideoGridFilter";
-import VideoGrid from "../../components/VideoGrid";
+import VideoCard from "../../components/VideoCard";
 import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
 
 const styles = {
@@ -141,7 +141,7 @@ const TrainerVideosGrid: React.FC = () => {
           <Container maxWidth={false}>
             {isHeSubscribedToTheTrainer ? (
               videosData && videosData.length > 0 ? (
-                <VideoGrid
+                <VideoCard
                   videos={videosData}
                   onVideoClick={handleVideoClick}
                 />

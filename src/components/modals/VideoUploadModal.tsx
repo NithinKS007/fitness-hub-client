@@ -114,6 +114,8 @@ const VideoUpload = ({
   handleVideoChange,
   handleThumbnailChange,
 }: VideoUploadProps) => {
+
+  console.log("formik values",formik)
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalBoxStyles}>

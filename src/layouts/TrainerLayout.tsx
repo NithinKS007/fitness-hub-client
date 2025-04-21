@@ -20,39 +20,40 @@ const TrainerLayout: React.FC = () => {
     {
       icon: <Dashboard />,
       text: "DASHBOARD",
-      path: "/trainer/dashboard",
+      path: ["/trainer/dashboard"],
     },
     {
       icon: <People />,
       text: "SUBSCRIBERS",
-      path: "/trainer/subscribers",
+      path: ["/trainer/subscribers"],
     },
     {
       icon: <Chat />,
       text: "CHATS",
-      path: "/trainer/chat",
+      path: ["/trainer/chat"],
     },
     {
       icon: <Event />,
       text: "APPOINTMENTS",
-      path: "/trainer/appointments",
+      path: ["/trainer/appointments"],
     },
     {
       icon: <AccountCircle />,
       text: "PROFILE",
-      path: "/trainer/profile",
+      path: ["/trainer/profile"],
     },
     {
       icon: <SubscriptionsRounded />,
       text: "SUBSCRIPTION",
-      path: "/trainer/subscriptions",
+      path: ["/trainer/subscriptions"],
     },
     {
       icon: <PostAddRounded />,
       text: "ADD CONTENTS",
-      path: "/trainer/add-contents",
+      path: ["/trainer/add-contents"],
     },
   ];
+  
 
   useEffect(() => {
     if (!trainer?._id) {
@@ -76,7 +77,7 @@ const TrainerLayout: React.FC = () => {
     <div className="flex flex-col min-h-screen w-full">
       <TopNavbar />
       <div className="flex flex-1 w-full">
-        <div className="w-18">
+        <div className="w-24">
           <SideNavBar navItems={trainerNavItems} />
         </div>
         <div className="flex-1 pl-5 pr-5 pt-15 overflow-auto">
