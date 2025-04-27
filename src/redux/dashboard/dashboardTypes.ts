@@ -34,8 +34,8 @@ interface UserDashboard {
 }
 
 interface UserChartData {
-  _id:string
-  totalWeight:number
+  _id: string;
+  totalWeight: number;
 }
 
 interface TopList {

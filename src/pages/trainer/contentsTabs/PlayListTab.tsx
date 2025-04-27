@@ -230,7 +230,7 @@ const PlaylistSection = () => {
             variant="contained"
             onClick={modalPlayListHandleOpen}
             sx={{
-              backgroundColor: "black",
+              backgroundColor: "#1f2937",
               color: "white",
               textTransform: "none",
               borderRadius: 2,

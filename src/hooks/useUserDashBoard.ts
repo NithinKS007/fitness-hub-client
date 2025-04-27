@@ -7,7 +7,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 
 const useUserDashBoard = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("Today");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("This week");
   const [selectedBodyPart, setSelectedBodyPart] = useState<string>("All");
   const timePeriods = ["Today", "This week", "This month", "This year"];
   const bodyParts = ["All", "Chest", "Back", "Legs", "Arms", "Shouldrs", "Core"];

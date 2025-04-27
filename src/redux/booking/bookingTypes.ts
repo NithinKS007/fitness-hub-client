@@ -25,7 +25,12 @@ export interface AppointmentVideoCallLogsUser {
   callStartTime: Date;
   callEndTime: Date;
   callStatus: string;
-  trainerData: { fname: string; lname: string; email: string,profilePic:string };
+  trainerData: {
+    fname: string;
+    lname: string;
+    email: string;
+    profilePic: string;
+  };
 }
 
 export interface AppointmentVideoCallLogsTrainer {
@@ -40,7 +45,7 @@ export interface AppointmentVideoCallLogsTrainer {
   callStartTime: Date;
   callEndTime: Date;
   callStatus: string;
-  userData: { fname: string; lname: string; email: string,profilePic:string };
+  userData: { fname: string; lname: string; email: string; profilePic: string };
 }
 
 export interface bookingSlots {
@@ -145,12 +150,7 @@ export interface Pagination {
   totalPages: number;
 }
 
-
 export type AvailableSlotsQueryParams = Omit<QueryParams, "filters" | "search">;
-export type HandleBookingRequestsQueryParams = QueryParams
-export type ScheduledAppointmentsQueryParams = QueryParams
-export type VideoCallLogsQueryParams = QueryParams
-
-
-
-
+export type HandleBookingRequestsQueryParams = QueryParams;
+export type ScheduledAppointmentsQueryParams = QueryParams;
+export type VideoCallLogsQueryParams = QueryParams;

@@ -16,24 +16,21 @@ import {
   getUserTrainersList,
 } from "./subscriptionThunk";
 
-
 const initialState: SubscriptionState = {
   isLoading: false,
   error: null,
   subscriptions: [],
-  userSubscribedTrainerPlans:[],
-  subscribersOfTrainer:[],
-  userTrainersList:[],
-  isSubscribedToTheTrainer:null,
-  pagination:{ totalPages: 0, currentPage: 1}
-  
+  userSubscribedTrainerPlans: [],
+  subscribersOfTrainer: [],
+  userTrainersList: [],
+  isSubscribedToTheTrainer: null,
+  pagination: { totalPages: 0, currentPage: 1 },
 };
 
 const subscriptionSlice = createSlice({
   name: "subscription",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       //add subscriptions
@@ -164,11 +161,11 @@ const subscriptionSlice = createSlice({
             ? action.payload
             : "Failed to redirect to subscription checkout";
       })
-      
+
       .addCase(getSubscribedDetails.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getSubscribedDetails.fulfilled, (state,action) => {
+      .addCase(getSubscribedDetails.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
         state.userSubscribedTrainerPlans = [
@@ -180,8 +177,7 @@ const subscriptionSlice = createSlice({
           [action.payload.data.subscriptionData.trainerId]: {
             isSubscribed: action.payload.data.isSubscribed,
           },
-        }
-
+        };
       })
       .addCase(getSubscribedDetails.rejected, (state, action) => {
         state.isLoading = false;
@@ -198,10 +194,12 @@ const subscriptionSlice = createSlice({
       .addCase(getUserSubscriptionsData.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.userSubscribedTrainerPlans = action.payload.data.userSubscriptionsList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
-
+        state.userSubscribedTrainerPlans =
+          action.payload.data.userSubscriptionsList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(getUserSubscriptionsData.rejected, (state, action) => {
         state.isLoading = false;
@@ -217,9 +215,11 @@ const subscriptionSlice = createSlice({
       .addCase(getTrainerSubscribedUsers.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.subscribersOfTrainer = action.payload.data.trainerSubscribers,
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        (state.subscribersOfTrainer = action.payload.data.trainerSubscribers),
+          (state.pagination.currentPage =
+            action.payload.data.paginationData.currentPage);
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(getTrainerSubscribedUsers.rejected, (state, action) => {
         state.isLoading = false;
@@ -235,17 +235,18 @@ const subscriptionSlice = createSlice({
       .addCase(cancelSubscriptionUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        const {stripeSubscriptionId ,isActive,cancelAction} = action.payload.data.subscriptionCancelledData
+        const { stripeSubscriptionId, isActive, cancelAction } =
+          action.payload.data.subscriptionCancelledData;
 
-        if(cancelAction==="cancelImmediately") {
-          state.userSubscribedTrainerPlans = state.userSubscribedTrainerPlans.map((sub) => {
-            if (stripeSubscriptionId === sub.stripeSubscriptionId) {
-              return { ...sub, isActive }; 
-            }
-            return sub;
-        })
+        if (cancelAction === "cancelImmediately") {
+          state.userSubscribedTrainerPlans =
+            state.userSubscribedTrainerPlans.map((sub) => {
+              if (stripeSubscriptionId === sub.stripeSubscriptionId) {
+                return { ...sub, isActive };
+              }
+              return sub;
+            });
         }
-      
       })
       .addCase(cancelSubscriptionUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -260,7 +261,7 @@ const subscriptionSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(isSubscribedToTheTrainer.fulfilled, (state, action) => {
-        const subscribedData = action.payload.data.isUserSubscribedToTheTrainer
+        const subscribedData = action.payload.data.isUserSubscribedToTheTrainer;
         state.isLoading = false;
         state.error = null;
         state.isSubscribedToTheTrainer = {
@@ -283,12 +284,14 @@ const subscriptionSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getUserTrainersList.fulfilled, (state, action) => {
-        const trainersList = action.payload.data.userTrainersList
+        const trainersList = action.payload.data.userTrainersList;
         state.isLoading = false;
         state.error = null;
-        state.userTrainersList = trainersList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.userTrainersList = trainersList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(getUserTrainersList.rejected, (state, action) => {
         state.isLoading = false;
@@ -296,11 +299,8 @@ const subscriptionSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Error to get user trainers list";
-      })
-
-    
+      });
   },
 });
-
 
 export default subscriptionSlice.reducer;

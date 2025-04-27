@@ -6,8 +6,8 @@ import Chat from "@mui/icons-material/Chat";
 import Event from "@mui/icons-material/Event";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { PostAddRounded, SubscriptionsRounded } from "@mui/icons-material";
-import SideNavBar from "../components/DashBoardSideNavBar";
-import TopNavbar from "../components/DashBoardTopBar";
+import SideNavBar from "../components/dashboard/DashBoardSideNavBar";
+import TopNavbar from "../components/dashboard/DashBoardTopBar";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { socket } from "../config/socket";
@@ -77,10 +77,10 @@ const TrainerLayout: React.FC = () => {
     <div className="flex flex-col min-h-screen w-full">
       <TopNavbar />
       <div className="flex flex-1 w-full">
-        <div className="w-24">
+        <div className="w-24 hidden md:block md:w-24">
           <SideNavBar navItems={trainerNavItems} />
         </div>
-        <div className="flex-1 pl-5 pr-5 pt-15 overflow-auto">
+        <div className="flex-1 pl-5 pr-5 pt-20 overflow-auto">
           <Outlet />
         </div>
       </div>

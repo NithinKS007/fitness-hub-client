@@ -19,12 +19,12 @@ const videoCallLogColumns: TableColumn[] = [
   { label: "Profile", field: "profilePic" },
   { label: "Name", field: "userName" },
   { label: "Email", field: "userEmail" },
-  { label: "Appointment Date", field: "appointmentDate" },
-  { label: "Appointment Time", field: "appointmentTime" },
-  { label: "Appointment Status", field: "appointmentStatus" },
-  { label: "Call Start Time", field: "callStartTime" },
-  { label: "Call End Time", field: "callEndTime" },
-  { label: "Call Duration", field: "callDuration" },
+  { label: "Scheduled Date", field: "appointmentDate" },
+  { label: "Scheduled Time", field: "appointmentTime" },
+  { label: "Status", field: "appointmentStatus" },
+  { label: "Call Start", field: "callStartTime" },
+  { label: "Call End", field: "callEndTime" },
+  { label: "Duration", field: "callDuration" },
   { label: "Call Status", field: "callStatus" },
 ];
 

@@ -33,6 +33,7 @@ const ReuseableVideoPlayer: React.FC<VideoPlayerProps> = ({
       flex: { xs: 1, md: 6 },
       display: "flex",
       flexDirection: "column",
+      height: { xs: "50vh", md: "90vh" },
       maxHeight: { xs: "50vh", md: "100vh" },
       overflow: "hidden",
     },
@@ -64,7 +65,7 @@ const ReuseableVideoPlayer: React.FC<VideoPlayerProps> = ({
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
-            </video>
+          </video>
         </Box>
       </Box>
       <Box sx={styles.detailsContainer}>

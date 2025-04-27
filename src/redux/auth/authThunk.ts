@@ -183,13 +183,12 @@ export const updateUserProfile = createAsyncThunk(
       }
     }
   }
-)
+);
 
 export const updateTrainerProfile = createAsyncThunk(
   "auth/updateTrainerProfile",
   async ({ TrainerData }: { TrainerData: Trainer }, { rejectWithValue }) => {
-
-    console.log("trainer data for updating the profile",TrainerData)
+    console.log("trainer data for updating the profile", TrainerData);
     try {
       const response = await axiosInstance.put(
         `trainer/update-profile/`,
@@ -226,9 +225,15 @@ export const signOutUser = createAsyncThunk(
 
 export const updatePassword = createAsyncThunk(
   "auth/updatePassword",
-  async ({password,newPassword}:RequestUpdatePassword , { rejectWithValue }) => {
+  async (
+    { password, newPassword }: RequestUpdatePassword,
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axiosInstance.patch(`auth/update-password`,{password,newPassword});
+      const response = await axiosInstance.patch(`auth/update-password`, {
+        password,
+        newPassword,
+      });
       return response.data;
     } catch (error: any) {
       console.log(error);

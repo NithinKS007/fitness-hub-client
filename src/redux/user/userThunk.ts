@@ -4,7 +4,7 @@ import { ListApprovedTrainersQuery } from "./userType";
 
 export const getApprovedTrainers = createAsyncThunk(
   "user/getApprovedTrainers",
-  async (params:ListApprovedTrainersQuery, { rejectWithValue }) => {
+  async (params: ListApprovedTrainersQuery, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get("user/trainers", {
         params,
@@ -35,9 +35,4 @@ export const getTrainerDetailsWithSubscription = createAsyncThunk(
       }
     }
   }
-)
-
-
-
-
-
+);

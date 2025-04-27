@@ -269,7 +269,7 @@ const UserWorkoutsPage: React.FC = () => {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: "black",
+                backgroundColor: "#1f2937",
                 color: "white",
                 textTransform: "none",
                 borderRadius: 2,

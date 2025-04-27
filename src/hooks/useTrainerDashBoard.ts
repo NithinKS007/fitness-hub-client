@@ -7,7 +7,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 
 const useTrainerDashBoard = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("Today");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("This week");
 
   const {
     trainerDashboard: {

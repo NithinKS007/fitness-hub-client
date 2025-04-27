@@ -22,11 +22,11 @@ import { bookingSlots } from "../../../redux/booking/bookingTypes";
 
 const availableSlotColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
-  { label: "Date", field: "date" },
-  { label: "Time", field: "time" },
-  { label: "Slot Status", field: "status" },
-  { label: "Date Of Publishing", field: "dateOfPublishing" },
-  { label: "Actions", field: "actions" },
+  { label: "Slot Date", field: "date" },
+  { label: "Slot Time", field: "time" },
+  { label: "Slot Availability", field: "status" },
+  { label: "Published On", field: "dateOfPublishing" },
+  { label: "Manage", field: "actions" },
 ];
 
 interface AvailableSlotsTabProps {
@@ -153,7 +153,7 @@ const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
           variant="contained"
           onClick={modalHandleOpen}
           sx={{
-            backgroundColor: "black",
+            backgroundColor: "#1f2937",
             color: "white",
             textTransform: "none",
             borderRadius: 2,

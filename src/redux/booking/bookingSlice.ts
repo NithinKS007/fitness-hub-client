@@ -21,11 +21,11 @@ const initialState: bookingSlotState = {
   error: null,
   slots: [],
   appointMentRequests: [],
-  scheduledAppointmentsTrainer:[],
-  scheduledAppointmentsUser:[],
-  appointmentVideoCallLogsUser:[],
-  appointmentVideoCallLogsTrainer:[],
-  pagination:{ totalPages: 0, currentPage: 1}
+  scheduledAppointmentsTrainer: [],
+  scheduledAppointmentsUser: [],
+  appointmentVideoCallLogsUser: [],
+  appointmentVideoCallLogsTrainer: [],
+  pagination: { totalPages: 0, currentPage: 1 },
 };
 
 const bookingSlot = createSlice({
@@ -58,9 +58,11 @@ const bookingSlot = createSlice({
       .addCase(fetchAvailableSlots.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.slots = action.payload.data.availableSlotsList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.slots = action.payload.data.availableSlotsList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(fetchAvailableSlots.rejected, (state, action) => {
         state.isLoading = false;
@@ -90,7 +92,7 @@ const bookingSlot = createSlice({
       .addCase(bookSlot.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(bookSlot.fulfilled, (state,action) => {
+      .addCase(bookSlot.fulfilled, (state, action) => {
         state.isLoading = false;
         state.slots = state.slots.filter((slot) => {
           return slot._id !== action.payload.data.bookingSlotId;
@@ -112,10 +114,11 @@ const bookingSlot = createSlice({
       .addCase(fetchBookingRequests.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.appointMentRequests = action.payload.data.bookingRequestsList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
-
+        state.appointMentRequests = action.payload.data.bookingRequestsList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(fetchBookingRequests.rejected, (state, action) => {
         state.isLoading = false;
@@ -134,7 +137,8 @@ const bookingSlot = createSlice({
         state.error = null;
         const appointmentId = action.payload.data._id;
         state.appointMentRequests = state.appointMentRequests.filter(
-          (appointment) => appointment._id.toString() !== appointmentId.toString()
+          (appointment) =>
+            appointment._id.toString() !== appointmentId.toString()
         );
       })
       .addCase(approveRejectAppointmentBooking.rejected, (state, action) => {
@@ -152,10 +156,12 @@ const bookingSlot = createSlice({
       .addCase(getScheduledAppointments.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.scheduledAppointmentsTrainer = action.payload.data.trainerBookingSchedulesList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
-
+        state.scheduledAppointmentsTrainer =
+          action.payload.data.trainerBookingSchedulesList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(getScheduledAppointments.rejected, (state, action) => {
         state.isLoading = false;
@@ -169,12 +175,19 @@ const bookingSlot = createSlice({
       .addCase(cancelAppointmentScheduleByTrainer.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(cancelAppointmentScheduleByTrainer.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        state.scheduledAppointmentsTrainer = state.scheduledAppointmentsTrainer?.filter((appointment)=>
-            appointment._id.toString()!==action.payload.data._id.toString())
-      })
+      .addCase(
+        cancelAppointmentScheduleByTrainer.fulfilled,
+        (state, action) => {
+          state.isLoading = false;
+          state.error = null;
+          state.scheduledAppointmentsTrainer =
+            state.scheduledAppointmentsTrainer?.filter(
+              (appointment) =>
+                appointment._id.toString() !==
+                action.payload.data._id.toString()
+            );
+        }
+      )
       .addCase(cancelAppointmentScheduleByTrainer.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
@@ -190,10 +203,11 @@ const bookingSlot = createSlice({
       .addCase(getScheduledAppointmentsUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.scheduledAppointmentsUser = action.payload.data.appointmentList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
-
+        state.scheduledAppointmentsUser = action.payload.data.appointmentList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(getScheduledAppointmentsUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -210,8 +224,11 @@ const bookingSlot = createSlice({
       .addCase(cancelAppointmentScheduleByUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.scheduledAppointmentsUser = state.scheduledAppointmentsUser?.filter((appointment)=>
-            appointment._id.toString()!==action.payload.data._id.toString())
+        state.scheduledAppointmentsUser =
+          state.scheduledAppointmentsUser?.filter(
+            (appointment) =>
+              appointment._id.toString() !== action.payload.data._id.toString()
+          );
       })
       .addCase(cancelAppointmentScheduleByUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -228,8 +245,9 @@ const bookingSlot = createSlice({
       .addCase(deleteAvailableBookingSlot.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.slots = state.slots?.filter((slot)=>
-          slot._id.toString()!==action.payload.data._id.toString())
+        state.slots = state.slots?.filter(
+          (slot) => slot._id.toString() !== action.payload.data._id.toString()
+        );
       })
       .addCase(deleteAvailableBookingSlot.rejected, (state, action) => {
         state.isLoading = false;
@@ -243,14 +261,19 @@ const bookingSlot = createSlice({
       .addCase(getAppointmentVideoCallLogsTrainer.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getAppointmentVideoCallLogsTrainer.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        state.appointmentVideoCallLogsTrainer = action.payload.data.trainerVideoCallLogList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
-
-      })
+      .addCase(
+        getAppointmentVideoCallLogsTrainer.fulfilled,
+        (state, action) => {
+          state.isLoading = false;
+          state.error = null;
+          state.appointmentVideoCallLogsTrainer =
+            action.payload.data.trainerVideoCallLogList;
+          state.pagination.currentPage =
+            action.payload.data.paginationData.currentPage;
+          state.pagination.totalPages =
+            action.payload.data.paginationData.totalPages;
+        }
+      )
       .addCase(getAppointmentVideoCallLogsTrainer.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
@@ -267,9 +290,12 @@ const bookingSlot = createSlice({
       .addCase(getAppointmentVideoCallLogsUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.appointmentVideoCallLogsUser = action.payload.data.userVideoCallLogList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.appointmentVideoCallLogsUser =
+          action.payload.data.userVideoCallLogList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
       })
       .addCase(getAppointmentVideoCallLogsUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -277,7 +303,7 @@ const bookingSlot = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to get appointment call logs for user";
-      })
+      });
   },
 });
 

@@ -4,8 +4,8 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import ChatIcon from "@mui/icons-material/Chat";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
-import SideNavBar from "../components/DashBoardSideNavBar";
-import TopNavbar from "../components/DashBoardTopBar";
+import SideNavBar from "../components/dashboard/DashBoardSideNavBar";
+import TopNavbar from "../components/dashboard/DashBoardTopBar";
 import { socket } from "../config/socket";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -30,7 +30,11 @@ const ULProfile: React.FC = () => {
     {
       icon: <SubscriptionsIcon />,
       text: "SUBSCRIPTIONS",
-      path: ["/user/subscriptions","/user/trainer-videos","/user/trainer/video"],
+      path: [
+        "/user/subscriptions",
+        "/user/trainer-videos",
+        "/user/trainer/video",
+      ],
     },
     {
       icon: <CollectionsBookmarkIcon />,
@@ -51,9 +55,8 @@ const ULProfile: React.FC = () => {
       icon: <FiTrendingUp />,
       text: "WORKOUTS",
       path: ["/user/workouts"],
-    }
+    },
   ];
-  
 
   useEffect(() => {
     if (!user?._id) {
@@ -64,24 +67,49 @@ const ULProfile: React.FC = () => {
     socket.emit("register", user._id);
     socket.on("connect", () => {
       console.log("Socket connected in ULProfile:", socket.id);
-      socket.emit("register", user._id)
+      socket.emit("register", user._id);
     });
 
-    socket.on("incomingCall", (data:{  
-      callerId: string,
-      roomId: string,
-      appointmentId: string,
-      trainerName: string,
-      appointmentTime: string,
-      appointmentDate: string}) => {
-      console.log("incoming call event triggered",data)
-      const { callerId, roomId, appointmentId ,trainerName,appointmentTime,appointmentDate} = data;
-      if (callerId && roomId && appointmentId && trainerName && appointmentTime && appointmentDate) {
-        setIncomingCallData({trainerName,appointmentTime,appointmentDate, callerId, roomId, appointmentId });
-        setCallDialogOpen(true);
-        console.log("Modal should open, callDialogOpen:", true);
+    socket.on(
+      "incomingCall",
+      (data: {
+        callerId: string;
+        roomId: string;
+        appointmentId: string;
+        trainerName: string;
+        appointmentTime: string;
+        appointmentDate: string;
+      }) => {
+        console.log("incoming call event triggered", data);
+        const {
+          callerId,
+          roomId,
+          appointmentId,
+          trainerName,
+          appointmentTime,
+          appointmentDate,
+        } = data;
+        if (
+          callerId &&
+          roomId &&
+          appointmentId &&
+          trainerName &&
+          appointmentTime &&
+          appointmentDate
+        ) {
+          setIncomingCallData({
+            trainerName,
+            appointmentTime,
+            appointmentDate,
+            callerId,
+            roomId,
+            appointmentId,
+          });
+          setCallDialogOpen(true);
+          console.log("Modal should open, callDialogOpen:", true);
+        }
       }
-    });
+    );
 
     socket.on("callEnded", () => {
       console.log("Call ended");
@@ -101,9 +129,9 @@ const ULProfile: React.FC = () => {
     if (incomingCallData) {
       setRoomId(incomingCallData.roomId);
       setCallActive(true);
-      socket.emit("acceptVideoCall", { 
-        roomId: incomingCallData.roomId, 
-        userId: user?._id 
+      socket.emit("acceptVideoCall", {
+        roomId: incomingCallData.roomId,
+        userId: user?._id,
       });
     }
     setCallDialogOpen(false);
@@ -130,13 +158,13 @@ const ULProfile: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <TopNavbar />
       <div className="flex flex-1">
-        <div className="w-24">
+        <div className="w-24 hidden md:block md:w-24">
           <SideNavBar navItems={userNavItems} />
         </div>
         <div className="flex-1 pl-2 pr-2 pt-15 overflow-auto">
           <Outlet />
           {callActive && roomId && (
-            <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 1000 }}>
+            <div style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}>
               <ZegoCloudVideoCall
                 roomId={roomId}
                 userId={user?._id as string}
@@ -161,7 +189,6 @@ const ULProfile: React.FC = () => {
         cancelColor="error"
       />
     </div>
-    
   );
 };
 

@@ -24,10 +24,10 @@ const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Profile", field: "profilePic" },
   { label: "Name", field: "name" },
   { label: "Email", field: "email" },
-  { label: "Booking Date", field: "appointmentCreatedAt" },
-  { label: "Appointment Date", field: "appointmentDate" },
-  { label: "Appointment Time", field: "appointmentTime" },
-  { label: "status", field: "appointmentStatus" },
+  { label: "Booked On", field: "appointmentCreatedAt" },
+  { label: "Scheduled Date", field: "appointmentDate" },
+  { label: "Scheduled Time", field: "appointmentTime" },
+  { label: "Current Status", field: "appointmentStatus" },
   { label: "More", field: "actions" },
 ];
 
@@ -91,7 +91,8 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
   const { scheduledAppointmentsUser, isLoading, error, pagination } =
     useSelector((state: RootState) => state.bookingSlot);
   const { totalPages, currentPage } = pagination;
-  const [selectedAppointment, setSelectedAppointment] = useState<ScheduledAppointmentsUser | null>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<ScheduledAppointmentsUser | null>(null);
 
   const {
     anchorAppointmentSchedulesEl,
@@ -160,6 +161,11 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
       );
       const formattedAppointmentDate =
         appointmentDate.toLocaleDateString("en-GB");
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+    
+        appointmentDate.setHours(0, 0, 0, 0);
+      const isCancelDisabled = appointmentDate < today;
 
       return {
         ...appointmentData,
@@ -210,7 +216,10 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
                   },
                 }}
               >
-                <MenuItem onClick={() => handleCancelAction(appointmentData)}>
+                <MenuItem
+                  onClick={() => handleCancelAction(appointmentData)}
+                  disabled={isCancelDisabled}
+                >
                   Cancel
                 </MenuItem>
               </Menu>
@@ -279,8 +288,9 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
       <ConfirmationModalDialog
         open={confirmationModalOpen as boolean}
         content={
-          selectedAppointment ?
-          `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?` :""
+          selectedAppointment
+            ? `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`
+            : ""
         }
         onConfirm={handleConfirmCancel}
         onCancel={handleConfirmationModalClose}

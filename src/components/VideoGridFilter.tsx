@@ -17,7 +17,7 @@ const styles = {
     color: "#030303",
   },
   selectInput: {
-    height: 50,
+    height: 55,
     backgroundColor: "#fff",
     borderRadius: "4px",
     fontSize: "14px",

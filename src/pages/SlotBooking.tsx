@@ -47,6 +47,20 @@ const summaryTitleStyles = {
 const bookButtonStyles = {
   mt: 10,
   width: "100%",
+  backgroundColor: "#1f2937",
+  height: "50px",
+  color: "white",
+  "&:disabled": {
+    backgroundColor: "#d3d3d3",
+    color: "#a1a1a1",
+  },
+  "&:hover": {
+    backgroundColor: "#374151",
+  },
+
+  "&.MuiButton-root": {
+    textTransform: "none",
+  },
 };
 const messageBox = {
   width: "100%",
@@ -135,8 +149,6 @@ const SlotBooking: React.FC = () => {
         {selectedSlot?.time ? selectedSlot?.time : "N/A"}
       </Typography>
       <Button
-        variant="contained"
-        color="primary"
         onClick={handleBooking}
         sx={bookButtonStyles}
         disabled={!selectedSlotId}

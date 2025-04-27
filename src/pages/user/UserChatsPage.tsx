@@ -249,7 +249,7 @@ const UserChatsPage = () => {
   };
 
   return (
-    <Box sx={{ height: "90vh" }}>
+    <Box sx={{ height: "100vh", maxHeight: "600px" }}>
       <>
         <ReusableChat
           contacts={fetchedUserSubscriptionData}

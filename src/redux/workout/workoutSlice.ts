@@ -1,13 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { WorkoutState } from "./workoutType";
-import { addWorkout, deleteSet, getWorkouts, markCompleted } from "./workoutThunk";
+import {
+  addWorkout,
+  deleteSet,
+  getWorkouts,
+  markCompleted,
+} from "./workoutThunk";
 
 const initialState: WorkoutState = {
   isLoading: false,
   error: null,
-  workouts:[],
-  pagination:{ totalPages: 0, currentPage: 1}
-}
+  workouts: [],
+  pagination: { totalPages: 0, currentPage: 1 },
+};
 
 const workoutSlice = createSlice({
   name: "workout",
@@ -37,12 +42,13 @@ const workoutSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getWorkouts.fulfilled, (state, action) => {
-
-        console.log("user workout sets",action.payload.data)
+        console.log("user workout sets", action.payload.data);
         state.isLoading = false;
-        state.workouts = action.payload.data.workoutList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.workouts = action.payload.data.workoutList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
         state.error = null;
       })
       .addCase(getWorkouts.rejected, (state, action) => {
@@ -58,7 +64,7 @@ const workoutSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteSet.fulfilled, (state, action) => {
-        console.log("action data for deletion workout",action.payload.data)
+        console.log("action data for deletion workout", action.payload.data);
         state.isLoading = false;
         state.error = null;
         const deletedWorkoutId = action.payload.data._id;
@@ -79,16 +85,16 @@ const workoutSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(markCompleted.fulfilled, (state, action) => {
-        console.log("action data for mark as completed",action.payload.data)
+        console.log("action data for mark as completed", action.payload.data);
         state.isLoading = false;
         const workoutId = action.payload.data._id;
-        console.log("workoutId",workoutId)
+        console.log("workoutId", workoutId);
 
         const updatedWorkout = action.payload.data;
         const workoutIndex = state.workouts.findIndex(
-          workout => workout._id === updatedWorkout._id
+          (workout) => workout._id === updatedWorkout._id
         );
-        
+
         if (workoutIndex !== -1) {
           state.workouts[workoutIndex] = updatedWorkout;
         }
@@ -100,8 +106,8 @@ const workoutSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to change workout status";
-      })
-  }
+      });
+  },
 });
 
 export default workoutSlice.reducer;

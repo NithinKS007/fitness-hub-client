@@ -287,7 +287,7 @@ export const videoCreationSchema = Yup.object().shape({
     .required("Description is required"),
   playLists: Yup.array()
     .of(Yup.string())
-    .min(1, "One playlist is required")
+    .min(1, "Playlist is required")
     .required("Playlists are required"),
     duration: Yup.number()
     .min(0, "Duration cannot be negative")

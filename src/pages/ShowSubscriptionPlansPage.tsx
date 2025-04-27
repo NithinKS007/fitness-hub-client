@@ -19,7 +19,6 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 interface ShowSubscriptionPlansPageProps {
   trainerSubscriptions: Subscription[];
-  isPurchaseableUser: boolean;
   selectedPlan: Subscription | null;
   isLoading: boolean;
   error: string | null;
@@ -29,7 +28,6 @@ interface ShowSubscriptionPlansPageProps {
 
 const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
   trainerSubscriptions,
-  isPurchaseableUser,
   selectedPlan,
   isLoading,
   error,
@@ -83,7 +81,7 @@ const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
                       selectedPlan?._id === plan._id
                         ? "2px solid #1976d2"
                         : "1px solid #e0e0e0",
-                    cursor: isPurchaseableUser ? "pointer" : "not-allowed",
+                    cursor: "pointer",
                     backgroundColor:
                       selectedPlan?._id === plan._id ? "#f5f9ff" : "#ffffff",
                     transition: "all 0.2s ease-in-out",
@@ -92,11 +90,11 @@ const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
                       backgroundColor: "#f8fbff",
                     },
                   }}
-                  onClick={() => isPurchaseableUser && handlePlanClick(plan)}
+                  onClick={() => handlePlanClick(plan)}
                 >
                   <FormControlLabel
                     value={plan._id}
-                    control={<Radio disabled={!isPurchaseableUser} />}
+                    control={<Radio/>}
                     label={
                       <Box sx={{ width: "100%", p: 2 }}>
                         <Typography
@@ -140,7 +138,7 @@ const ShowSubscriptionPlansPage: React.FC<ShowSubscriptionPlansPageProps> = ({
             </Box>
           </RadioGroup>
 
-          {selectedPlan && isPurchaseableUser && (
+          {selectedPlan  && (
             <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
               <Button
                 variant="contained"

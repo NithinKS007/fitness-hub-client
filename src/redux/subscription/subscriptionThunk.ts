@@ -1,6 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { UserTrainersListQueryParams, RequestDeleteSubscription, RequestSessionIdForSubscription, SubscribersListQueryParams, Subscription, UserSubscriptionsListQueryParams } from "./subscriptionTypes";
+import {
+  UserTrainersListQueryParams,
+  RequestDeleteSubscription,
+  RequestSessionIdForSubscription,
+  SubscribersListQueryParams,
+  Subscription,
+  UserSubscriptionsListQueryParams,
+} from "./subscriptionTypes";
 import { updateBlockStatus } from "../admin/adminTypes";
 import { Stripe } from "@stripe/stripe-js";
 
@@ -63,7 +70,7 @@ export const updateSubscriptionBlockStatus = createAsyncThunk(
 
 export const deleteSubscription = createAsyncThunk(
   "subscription/deleteSubscription",
-  async ({_id}: RequestDeleteSubscription, { rejectWithValue }) => {
+  async ({ _id }: RequestDeleteSubscription, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
         `trainer/subscriptions/${_id}`
@@ -128,11 +135,10 @@ export const getTrainerSubscriptionById = createAsyncThunk(
 export const purchaseSubscription = createAsyncThunk(
   "subscription/purchaseSubscription",
   async (
-    { subscriptionId, stripe }: { subscriptionId: string ,stripe: Stripe },
+    { subscriptionId, stripe }: { subscriptionId: string; stripe: Stripe },
     { rejectWithValue }
   ) => {
-
-    console.log("stripe passing",stripe)
+    console.log("stripe passing", stripe);
     try {
       const response = await axiosInstance.post(
         `user/checkout-subscription-session/`,
@@ -158,10 +164,12 @@ export const purchaseSubscription = createAsyncThunk(
 
 export const getSubscribedDetails = createAsyncThunk(
   "subscription/getSubscribedDetails",
-  async ({sessionId}: RequestSessionIdForSubscription, { rejectWithValue }) => {
+  async (
+    { sessionId }: RequestSessionIdForSubscription,
+    { rejectWithValue }
+  ) => {
     try {
-
-      console.log("sessionid",sessionId)
+      console.log("sessionid", sessionId);
       const response = await axiosInstance.get(
         `user/verify-subscriptions/${sessionId}`
       );
@@ -181,9 +189,11 @@ export const getSubscribedDetails = createAsyncThunk(
 
 export const getUserSubscriptionsData = createAsyncThunk(
   "subscription/getUserSubscriptionsData",
-  async (params:UserSubscriptionsListQueryParams, { rejectWithValue }) => {
+  async (params: UserSubscriptionsListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/subscriptions/`,{ params });
+      const response = await axiosInstance.get(`user/subscriptions/`, {
+        params,
+      });
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -200,14 +210,18 @@ export const isSubscribedToTheTrainer = createAsyncThunk(
   "user/isSubscribedToTheTrainer",
   async (_id: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/trainer-subscription-status/${_id}`);
+      const response = await axiosInstance.get(
+        `user/trainer-subscription-status/${_id}`
+      );
       return response.data;
     } catch (error: any) {
       console.log(error);
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
-        return rejectWithValue("Failed to get is he subscribed to the trainer status");
+        return rejectWithValue(
+          "Failed to get is he subscribed to the trainer status"
+        );
       }
     }
   }
@@ -228,12 +242,7 @@ export const cancelSubscriptionUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log(
-        "data for submitting",
-        stripeSubscriptionId,
-        action,
-        subId
-      );
+      console.log("data for submitting", stripeSubscriptionId, action, subId);
       const response = await axiosInstance.patch(`user/cancel-subscriptions`, {
         stripeSubscriptionId,
         action,
@@ -253,9 +262,11 @@ export const cancelSubscriptionUser = createAsyncThunk(
 
 export const getTrainerSubscribedUsers = createAsyncThunk(
   "subscription/getTrainerSubscribedUsers",
-  async (params:SubscribersListQueryParams, { rejectWithValue }) => {
+  async (params: SubscribersListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/subscribers/`,{params});
+      const response = await axiosInstance.get(`trainer/subscribers/`, {
+        params,
+      });
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -270,9 +281,9 @@ export const getTrainerSubscribedUsers = createAsyncThunk(
 
 export const getUserTrainersList = createAsyncThunk(
   "subscription/getUserTrainersList",
-  async (params:UserTrainersListQueryParams, { rejectWithValue }) => {
+  async (params: UserTrainersListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/my-trainers/`,{params});
+      const response = await axiosInstance.get(`user/my-trainers/`, { params });
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -284,4 +295,3 @@ export const getUserTrainersList = createAsyncThunk(
     }
   }
 );
-

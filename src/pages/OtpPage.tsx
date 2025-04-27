@@ -3,7 +3,6 @@ import useOtp from "../hooks/useOtp";
 import React, { useRef, useState } from "react";
 
 const OtpPage: React.FC = () => {
-
   const { otp, isTimerExpired, handleResendOtp, handleVerifyOtp } = useOtp();
   const [otpData, setOtpData] = useState(new Array(6).fill(""));
   const otpBoxRef = useRef<(HTMLInputElement | null)[]>([]);
@@ -33,7 +32,7 @@ const OtpPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if(otpData){
+    if (otpData) {
       const otpString = otpData.join("");
       if (otpString.length === numberOfDigits) {
         await handleVerifyOtp(otpString, event);
@@ -44,8 +43,8 @@ const OtpPage: React.FC = () => {
 
   return (
     <OtpForm
-      otpData={otpData!! as string[]}
-      isTimerExpired={isTimerExpired as boolean}
+      otpData={otpData}
+      isTimerExpired={isTimerExpired}
       handleResendOtp={handleResendOtp}
       handleVerifyOtp={handleVerifyOtp}
       otp={otp}

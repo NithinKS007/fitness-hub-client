@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import Tabs from "../../components/Tabs";
-import {  useSelector } from "react-redux";
-import {  RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 import { socket } from "../../config/socket";
 import ZegoCloudVideoCall from "../../components/VideoCallZego";
 import AvailableSlotsTab from "./ScheduleTabs/AvailableSlotsTab";
@@ -14,9 +14,8 @@ const tabItems = [
   { label: "Available Slots" },
   { label: "Booking Requests" },
   { label: "Booking Schedules" },
-  { label: "Appointment Call Logs" },
+  { label: "Call Logs" },
 ];
-
 
 const SessionSchedulesPage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
@@ -26,7 +25,7 @@ const SessionSchedulesPage: React.FC = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
-    console.log("event",event)
+    console.log("event", event);
   };
 
   const handleEndCall = () => {
@@ -55,11 +54,16 @@ const SessionSchedulesPage: React.FC = () => {
   const renderContent = () => {
     switch (selectedTab) {
       case 0:
-        return <AvailableSlotsTab isActive={selectedTab === 0}/>;
+        return <AvailableSlotsTab isActive={selectedTab === 0} />;
       case 1:
         return <BookingRequestsTab isActive={selectedTab === 1} />;
       case 2:
-        return <BookingSchedulesTab  isActive={selectedTab === 2} onVideoCallClick={handleVideoCallClick} />;
+        return (
+          <BookingSchedulesTab
+            isActive={selectedTab === 2}
+            onVideoCallClick={handleVideoCallClick}
+          />
+        );
       case 3:
         return <AppointmentCallLogsTab isActive={selectedTab === 3} />;
       default:
@@ -69,7 +73,11 @@ const SessionSchedulesPage: React.FC = () => {
 
   return (
     <>
-      <Tabs tabItems={tabItems} value={selectedTab as number} handleChange={handleTabChange} />
+      <Tabs
+        tabItems={tabItems}
+        value={selectedTab as number}
+        handleChange={handleTabChange}
+      />
       {renderContent()}
       {callActive && roomId && (
         <Box sx={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}>

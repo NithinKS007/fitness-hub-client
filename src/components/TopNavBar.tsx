@@ -30,10 +30,9 @@ interface TopNavBarProps {
 const styles = {
   appBar: {
     bgcolor: "white",
-    boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
   },
   toolbar: {
-    height: "75px",
+    height: "80px",
     justifyContent: "space-between",
     alignItems: "center",
   },

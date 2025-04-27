@@ -6,7 +6,7 @@ import { SelectChangeEvent } from "@mui/material";
 
 const useAdminDashBoard = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("Today");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("This week");
   const timePeriods = ["Today", "This week", "This month", "This year"];
 
   const {

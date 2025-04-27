@@ -18,7 +18,6 @@ const columns: TableColumn[] = [
   { label: "Actions", field: "actions" },
 ];
 
-
 const SubscriptionSettingPage: React.FC = () => {
   const {
     subPeriods,
@@ -36,12 +35,14 @@ const SubscriptionSettingPage: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<
     string | null
-  >(null)
-  const [selectedSubscriptionForDelete, setSelectedSubscriptionForDelete] = useState<any | null>(null); 
-  const [selectedSubscriptionForBlock, setSelectedSubscriptionForBlock] = useState<any | null>(null); 
+  >(null);
+  const [selectedSubscriptionForDelete, setSelectedSubscriptionForDelete] =
+    useState<any | null>(null);
+  const [selectedSubscriptionForBlock, setSelectedSubscriptionForBlock] =
+    useState<any | null>(null);
 
   const openMenu = Boolean(anchorEl);
-const {
+  const {
     open: confirmationDeleteModalOpen,
     handleOpen: handleConfirmationDeleteModalOpen,
     handleClose: handleConfirmationDeleteModalClose,
@@ -51,7 +52,7 @@ const {
     open: confirmationBlockblockModalOpen,
     handleOpen: handleConfirmationBlockModalOpen,
     handleClose: handleConfirmationBlockModalClose,
-  } = useModal()
+  } = useModal();
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -64,7 +65,7 @@ const {
   const handleCloseMenu = () => {
     setAnchorEl(null);
     setSelectedSubscriptionId(null);
-  }
+  };
 
   const handleDeleteAction = (sub: any) => {
     setSelectedSubscriptionForDelete(sub);
@@ -76,7 +77,7 @@ const {
     setSelectedSubscriptionForBlock(sub);
     handleConfirmationBlockModalOpen();
     handleCloseMenu();
-  }
+  };
 
   const handleConfirmDelete = () => {
     if (selectedSubscriptionForDelete) {
@@ -105,7 +106,7 @@ const {
             slno: index + 1,
             subPeriod:
               sub.subPeriod.charAt(0).toUpperCase() + sub.subPeriod.slice(1),
-              price:`USD : ${sub.price}`,
+            price: `USD : ${sub.price}`,
             actions: (
               <>
                 <IconButton
@@ -127,7 +128,7 @@ const {
                       "& .MuiPaper-root": {
                         boxShadow: "none",
                         border: "1px solid",
-                        width:150,
+                        width: 150,
                         borderColor: "grey.400",
                         borderRadius: 2,
                       },
@@ -141,10 +142,7 @@ const {
                     <MenuItem onClick={() => handleDeleteAction(sub)}>
                       Delete
                     </MenuItem>
-                    <MenuItem
-                      onClick={() => handleBlockAction(sub)
-                      }
-                    >
+                    <MenuItem onClick={() => handleBlockAction(sub)}>
                       {sub.isBlocked ? "Unblock" : "Block"}
                     </MenuItem>
                   </Menu>
@@ -170,7 +168,7 @@ const {
           variant="contained"
           onClick={handleOpen}
           sx={{
-            backgroundColor: "black",
+            backgroundColor: "#1f2937",
             color: "white",
             textTransform: "none",
             borderRadius: 2,

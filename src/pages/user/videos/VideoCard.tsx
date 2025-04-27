@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { formatVideoDuration, getRelativeTime } from "../utils/conversion";
+import { formatVideoDuration, getRelativeTime } from "../../../utils/conversion";
 
 const styles = {
   videoWrapper: {

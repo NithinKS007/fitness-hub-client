@@ -1,4 +1,5 @@
-import { Box, Modal, Typography, Button } from "@mui/material";
+import { Box, Modal, Typography, Button, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface ModalData {
   providedBy: { label: string; value: string }[];
@@ -23,45 +24,52 @@ const styles = {
     borderRadius: 2,
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
     width: "100%",
-    maxWidth: 600,
+    maxWidth: 1000,
     maxHeight: "90vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "24px",
     overflowY: "auto",
-    p: 4,
-    mx: 2,
     position: "relative",
-    fontFamily: "'Roboto', sans-serif",
   },
   title: {
     fontWeight: 600,
     color: "#1f2937",
-    mb: 3,
+    marginBottom: "16px",
     textAlign: "center",
     borderBottom: "1px solid #e5e7eb",
-    pb: 2,
+    paddingBottom: "8px",
+  },
+  sectionWrapper: {
+    display: "flex",
+    gap: "32px",
+    flexWrap: "wrap",
+    width: "100%",
+    justifyContent: "space-between",
   },
   section: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
+    flex: "1",
+    minWidth: "250px",
+    maxWidth: "300px",
+    backgroundColor: "#f9fafb",
+    padding: "30px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
   },
   sectionTitle: {
     fontWeight: 500,
     color: "#1f2937",
-  },
-  detailBox: {
-    backgroundColor: "#f9fafb",
-    p: 2,
-    borderRadius: 1,
+    marginBottom: "8px",
   },
   detailRow: {
     display: "flex",
-    gap: 2,
-    mb: 1,
-    "&:last-child": { mb: 0 },
+    gap: "12px",
+    marginBottom: "8px",
   },
   label: {
-    minWidth: 100,
     color: "#4b5563",
+    minWidth: "100px",
   },
   value: {
     color: "#111827",
@@ -69,15 +77,23 @@ const styles = {
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    mt: 4,
+    marginTop: "24px",
   },
   button: {
     backgroundColor: "#1f2937",
     color: "#ffffff",
     textTransform: "none",
-    px: 4,
-    py: 1,
+    padding: "8px 16px",
     "&:hover": { backgroundColor: "#374151" },
+  },
+  closeButton: {
+    position: "absolute",
+    top: "16px",
+    right: "16px",
+    color: "#1f2937",
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
   },
 };
 
@@ -100,6 +116,10 @@ const CommissionDetailsModal = ({
       sx={styles.modal}
     >
       <Box sx={styles.container}>
+        <IconButton onClick={onClose} sx={styles.closeButton}>
+          <CloseIcon />
+        </IconButton>
+
         <Typography
           id="commission-details-modal"
           variant="h5"
@@ -109,7 +129,7 @@ const CommissionDetailsModal = ({
         </Typography>
 
         {modalData && (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <Box sx={styles.sectionWrapper}>
             {sections.map(
               (section, index) =>
                 section.data && (
@@ -117,18 +137,12 @@ const CommissionDetailsModal = ({
                     <Typography variant="h6" sx={styles.sectionTitle}>
                       {section.title}
                     </Typography>
-                    <Box sx={styles.detailBox}>
-                      {section.data.map((item, idx) => (
-                        <Box key={idx} sx={styles.detailRow}>
-                          <Typography sx={styles.label}>
-                            {item.label}:
-                          </Typography>
-                          <Typography sx={styles.value}>
-                            {item.value}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
+                    {section.data.map((item, idx) => (
+                      <Box key={idx} sx={styles.detailRow}>
+                        <Typography sx={styles.label}>{item.label}:</Typography>
+                        <Typography sx={styles.value}>{item.value}</Typography>
+                      </Box>
+                    ))}
                   </Box>
                 )
             )}
@@ -136,11 +150,7 @@ const CommissionDetailsModal = ({
         )}
 
         <Box sx={styles.buttonContainer}>
-          <Button
-            onClick={onClose}
-            variant="contained"
-            sx={styles.button}
-          >
+          <Button onClick={onClose} variant="contained" sx={styles.button}>
             Close
           </Button>
         </Box>

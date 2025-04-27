@@ -163,7 +163,6 @@ const useUpdateProfileForm = (profileData: any) => {
 
     if (files) {
       const selectedFilesArray = Array.from(files);
-      console.log("Selected files before processing:", selectedFilesArray);
       try {
         const filesData: any = [];
         for (const file of selectedFilesArray) {

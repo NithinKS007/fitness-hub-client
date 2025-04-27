@@ -17,8 +17,7 @@ import useSearchFilter from "../../hooks/useSearchFilterTable";
 import Box from "@mui/material/Box";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
-import { TableColumn,Filter } from "../../types/tableTypes";
-
+import { TableColumn, Filter } from "../../types/tableTypes";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -46,11 +45,13 @@ const TrainerListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { handleUpdateBlockStatus } = useUpdateBlockStatus();
-  const { trainers, isLoading, error} = useSelector(
+  const { trainers, isLoading, error } = useSelector(
     (state: RootState) => state.admin
   );
 
-  const {totalPages, currentPage } = useSelector((state:RootState)=>state.admin.pagination)
+  const { totalPages, currentPage } = useSelector(
+    (state: RootState) => state.admin.pagination
+  );
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(
@@ -74,10 +75,14 @@ const TrainerListPage: React.FC = () => {
     handleClose: handleConfirmationModalClose,
   } = useModal();
 
-  
   useEffect(() => {
     dispatch(getTrainers(getQueryParams()));
-  }, [dispatch,getQueryParams().page, getQueryParams().search, getQueryParams().filters]);
+  }, [
+    dispatch,
+    getQueryParams().page,
+    getQueryParams().search,
+    getQueryParams().filters,
+  ]);
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -92,7 +97,7 @@ const TrainerListPage: React.FC = () => {
     setSelectedTrainerId(null);
   };
 
-  const handleTrainerDetails = async(_id: string) => {
+  const handleTrainerDetails = async (_id: string) => {
     navigate(`/admin/trainer-details/${_id}`);
     handleMenuClose();
   };
@@ -104,8 +109,8 @@ const TrainerListPage: React.FC = () => {
 
   const handleBlockAction = (trainer: Trainer) => {
     setSelectedTrainer(trainer);
-    handleConfirmationModalOpen()
-    handleMenuClose()
+    handleConfirmationModalOpen();
+    handleMenuClose();
   };
   const handleConfirmBlockStatus = () => {
     if (selectedTrainer) {
@@ -126,7 +131,7 @@ const TrainerListPage: React.FC = () => {
 
           return {
             ...trainer,
-            name:`${trainer.fname} ${trainer.lname}`,
+            name: `${trainer.fname} ${trainer.lname}`,
             slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: trainer.otpVerified || trainer.googleVerified,
@@ -137,13 +142,13 @@ const TrainerListPage: React.FC = () => {
                   onClick={(e) => handleMenuClick(e, trainer._id as string)}
                   aria-label="More options"
                   sx={{
-                    padding: "16px", 
-                    minWidth: "0",  
-                    width: "25px",  
+                    padding: "16px",
+                    minWidth: "0",
+                    width: "25px",
                     height: "25px",
                   }}
                 >
-                  <MoreVertIcon sx={{ fontSize: "20px" }}/>
+                  <MoreVertIcon sx={{ fontSize: "20px" }} />
                 </IconButton>
                 <Paper>
                   <Menu
@@ -173,9 +178,7 @@ const TrainerListPage: React.FC = () => {
                     >
                       Subscriptions
                     </MenuItem>
-                    <MenuItem
-                     onClick={() => handleBlockAction(trainer)}
-                    >
+                    <MenuItem onClick={() => handleBlockAction(trainer)}>
                       {trainer.isBlocked ? "Unblock" : "Block"}
                     </MenuItem>
                   </Menu>
@@ -211,7 +214,7 @@ const TrainerListPage: React.FC = () => {
           <ReuseTable columns={columns} data={fetchedTrainersData} />
           <PaginationTable
             handlePageChange={handlePageChange}
-            page={currentPage} 
+            page={currentPage}
             totalPages={totalPages}
           />
         </>
@@ -220,9 +223,9 @@ const TrainerListPage: React.FC = () => {
         open={confirmationModalOpen as boolean}
         content={
           (selectedTrainer &&
-          `Are you sure you want to ${
-            selectedTrainer.isBlocked ? "unblock" : "block"
-          } ${selectedTrainer.fname} ${selectedTrainer.lname}?`) as string
+            `Are you sure you want to ${
+              selectedTrainer.isBlocked ? "unblock" : "block"
+            } ${selectedTrainer.fname} ${selectedTrainer.lname}?`) as string
         }
         onConfirm={handleConfirmBlockStatus}
         onCancel={handleConfirmationModalClose}

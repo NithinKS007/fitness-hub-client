@@ -151,7 +151,7 @@ const VideoSection = () => {
             slno: index + 1 + (currentPage - 1) * 9,
             title: v.title,
             privacy: v.privacy,
-            description: v.description,
+            description:v.description.split(" ").slice(0, 15).join(" ") + "...",
             isBlocked: v.privacy,
             dateOfPublishing: `${formattedDate} ${formattedTime}`,
             thumbnail: (
@@ -246,7 +246,7 @@ const VideoSection = () => {
             variant="contained"
             onClick={modalVideoHandleOpen}
             sx={{
-              backgroundColor: "black",
+              backgroundColor: "#1f2937",
               color: "white",
               textTransform: "none",
               borderRadius: 2,

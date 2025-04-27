@@ -59,16 +59,16 @@ export interface Trainer {
   height?: string;
   weight?: string;
 
-  userId:string
+  userId: string;
   yearsOfExperience?: string;
   specializations?: string[];
-  certifications?: { fileName: string; url: string }[] 
+  certifications?: { fileName: string; url: string }[];
   isApproved?: boolean;
   aboutMe?: string;
 }
 
-export interface TrainerWithSubscriptionDetails extends Trainer{
-  subscriptionDetails :Subscription[]
+export interface TrainerWithSubscriptionDetails extends Trainer {
+  subscriptionDetails: Subscription[];
 }
 
 export interface SignupUser {
@@ -91,9 +91,9 @@ export interface Otp {
 
 export interface Auth {
   otp: Otp | null;
-  user: User | null
-  trainer:Trainer | null
-  admin:Admin | null
+  user: User | null;
+  trainer: Trainer | null;
+  admin: Admin | null;
   isLoading: boolean;
   error: string | null;
 }

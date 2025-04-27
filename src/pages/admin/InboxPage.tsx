@@ -46,6 +46,7 @@ const InboxPage: React.FC = () => {
     pagination: { totalPages, currentPage },
   } = useSelector((state: RootState) => state.admin);
 
+  console.log("approved trainers",trainers)
   const {
     handlePageChange,
     searchTerm,
@@ -118,11 +119,14 @@ const InboxPage: React.FC = () => {
                     size="small"
                     onClick={() => handleTrainerAction(trainer, "approved")}
                     sx={{
-                      fontSize: "14px",
-                      backgroundColor: "green",
-                      color: "white",
+                      px: 1.5,
+                      py: 0.5,
+                      fontSize: "0.75rem",
+                      minWidth: "auto",
+                      backgroundColor: "#10b981",
+                      color: "#fff",
                       "&:hover": {
-                        backgroundColor: "darkgreen",
+                        backgroundColor: "#059669", 
                       },
                     }}
                     variant="contained"
@@ -133,12 +137,15 @@ const InboxPage: React.FC = () => {
                     size="small"
                     onClick={() => handleTrainerAction(trainer, "rejected")}
                     sx={{
-                      fontSize: "14px",
-                      color: "white",
-                      borderColor: "red",
-                      backgroundColor: "red",
+                      px: 1.5,
+                      py: 0.5,
+                      fontSize: "0.75rem",
+                      minWidth: "auto",
+                      backgroundColor: "#ffffff",
+                      color: "#dc2626", 
+                      border: "1px solid #e5e7eb", 
                       "&:hover": {
-                        backgroundColor: "darkred",
+                        backgroundColor: "#f9fafb", 
                       },
                     }}
                     variant="contained"
@@ -160,7 +167,7 @@ const InboxPage: React.FC = () => {
         />
         <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
           <DateFilter
-            fromDate={fromDate as Dayjs |null}
+            fromDate={fromDate as Dayjs | null}
             toDate={toDate as Dayjs | null}
             onFromDateChange={handleFromDateChange}
             onToDateChange={handleToDateChange}

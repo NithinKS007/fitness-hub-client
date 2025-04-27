@@ -9,7 +9,7 @@ import {
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import ScheduleIcon from "@mui/icons-material/Schedule";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Dayjs } from "dayjs";
 
@@ -39,9 +39,10 @@ const styles = {
     bgcolor: "white",
     color: "gray",
     border: "1px solid",
-    borderColor: "gray.50",
+    borderColor: "rgba(0, 0, 0, 0.23)",
     "&:hover": {
       bgcolor: "gray.100",
+      borderColor: "rgba(0, 0, 0, 0.23)",
     },
   },
 };
@@ -73,7 +74,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
                 InputProps: {
                   endAdornment: (
                     <InputAdornment position="end">
-                      <CalendarTodayIcon sx={styles.calendarIcon} />
+                      <ScheduleIcon sx={styles.calendarIcon} />
                     </InputAdornment>
                   ),
                 },
@@ -99,7 +100,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
                 InputProps: {
                   endAdornment: (
                     <InputAdornment position="end">
-                      <CalendarTodayIcon sx={styles.calendarIcon} />
+                      <ScheduleIcon sx={styles.calendarIcon} />
                     </InputAdornment>
                   ),
                 },

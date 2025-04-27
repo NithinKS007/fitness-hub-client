@@ -24,10 +24,10 @@ const bookingRequestsColumns: TableColumn[] = [
   { label: "Name", field: "name" },
   { label: "Email", field: "email" },
   { label: "Phone", field: "phone" },
-  { label: "Slot Creation Date", field: "bookingSlotCreatedAt" },
-  { label: "Booking Date", field: "appointmentCreatedAt" },
-  { label: "Appointment Date", field: "appointmentDate" },
-  { label: "Appointment Time", field: "appointmentTime" },
+  { label: "Slot Created On", field: "bookingSlotCreatedAt" },
+  { label: "Booked On", field: "appointmentCreatedAt" },
+  { label: "Scheduled Date", field: "appointmentDate" },
+  { label: "Scheduled Time", field: "appointmentTime" },
   { label: "Current Status", field: "appointmentStatus" },
   { label: "Manage Actions", field: "actions" },
 ];
@@ -199,7 +199,9 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
       const appointmentDate = new Date(req?.appointmentDate as string);
       const formattedAppointmentDate =
         appointmentDate.toLocaleDateString("en-GB");
-
+   const today = new Date();
+   today.setUTCHours(0, 0, 0, 0); 
+   const isAppointmentInPast = appointmentDate < today;
       return {
         ...req,
         slno: index + 1 + (currentPage - 1) * 9,
@@ -237,10 +239,10 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
                 },
               }}
             >
-              <MenuItem onClick={() => handleApproveBooking(req)}>
+              <MenuItem onClick={() => handleApproveBooking(req)}  disabled={isAppointmentInPast} >
                 Approve
               </MenuItem>
-              <MenuItem onClick={() => handleRejectBooking(req)}>
+              <MenuItem onClick={() => handleRejectBooking(req)}  disabled={isAppointmentInPast} >
                 Reject
               </MenuItem>
             </Menu>

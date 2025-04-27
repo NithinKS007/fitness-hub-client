@@ -74,10 +74,10 @@ const DBPageAdmin = () => {
   const trainersWithPercentages = topTrainersList.map((trainer) => ({
     ...trainer,
     activePercentage:
-      (trainer.totalActiveSubscriptions / trainer.totalSubscriptions) * 100 ||
+      (trainer?.totalActiveSubscriptions / trainer?.totalSubscriptions) * 100 ||
       0,
     canceledPercentage:
-      (trainer.totalCanceledSubscriptions / trainer.totalSubscriptions) * 100 ||
+      (trainer?.totalCanceledSubscriptions / trainer?.totalSubscriptions) * 100 ||
       0,
   }));
 
@@ -96,9 +96,9 @@ const DBPageAdmin = () => {
           {dashboardItems.map((item, index) => (
             <Box key={index} sx={{ flex: 1 }}>
               <DashBoardBox
-                content={item.content}
-                number={item.number}
-                icon={item.icon}
+                content={item?.content}
+                number={item?.number}
+                icon={item?.icon}
               />
             </Box>
           ))}
@@ -131,23 +131,23 @@ const DBPageAdmin = () => {
           <Box sx={{ flex: 1, height: 300 }}>
             <Typography variant="h6">Top 5 Trainers</Typography>
             {trainersWithPercentages.map((trainer) => (
-              <Box key={trainer._id} sx={{ mb: 2 }}>
+              <Box key={trainer?._id} sx={{ mb: 2 }}>
                 <Typography>
-                  {trainer.fname} {trainer.lname} (Total:{" "}
-                  {trainer.totalSubscriptions})
+                  {trainer?.fname} {trainer?.lname} (Total:{" "}
+                  {trainer?.totalSubscriptions})
                 </Typography>
                 <ProgressBar
                   label="Active"
-                  value={trainer.activePercentage}
-                  count={trainer.totalActiveSubscriptions}
+                  value={trainer?.activePercentage}
+                  count={trainer?.totalActiveSubscriptions}
                   color="success"
                   labelWidth={100}
                   height={10}
                 />
                 <ProgressBar
                   label="Canceled"
-                  value={trainer.canceledPercentage}
-                  count={trainer.totalCanceledSubscriptions}
+                  value={trainer?.canceledPercentage}
+                  count={trainer?.totalCanceledSubscriptions}
                   color="error"
                   labelWidth={100}
                   height={10}

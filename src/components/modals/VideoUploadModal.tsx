@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import VideoCameraBackIcon from "@mui/icons-material/VideoCameraBack";
 import CloseIcon from "@mui/icons-material/Close";
+import { FormHelperText } from "@mui/material";
 
 interface VideoUploadProps {
   open: boolean;
@@ -101,7 +102,7 @@ const cancelButtonStyles = {
 
 const submitButtonStyles = {
   width: { xs: "100%", sm: "auto" },
-  backgroundColor: "black",
+  backgroundColor: "#1f2937",
   color: "white",
 };
 
@@ -114,8 +115,7 @@ const VideoUpload = ({
   handleVideoChange,
   handleThumbnailChange,
 }: VideoUploadProps) => {
-
-  console.log("formik values",formik)
+  console.log("formik values", formik);
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalBoxStyles}>
@@ -180,10 +180,10 @@ const VideoUpload = ({
           <Typography sx={fileNameStyles}>
             {formik.values.video?.name || ""}
           </Typography>
-          {formik.touched.video && formik.errors.video && (
-            <Typography color="error" sx={errorTextStyles}>
+          {formik.errors.video && (
+            <FormHelperText error sx={{ ...errorTextStyles, ml: 1.5 }}>
               {formik.errors.video}
-            </Typography>
+            </FormHelperText>
           )}
         </Box>
 
@@ -200,14 +200,18 @@ const VideoUpload = ({
           <Typography sx={fileNameStyles}>
             {formik.values.thumbnail?.name || ""}
           </Typography>
-          {formik.touched.thumbnail && formik.errors.thumbnail && (
-            <Typography color="error" sx={errorTextStyles}>
+          {formik.errors.thumbnail && (
+            <FormHelperText error sx={{ ...errorTextStyles, ml: 1.5 }}>
               {formik.errors.thumbnail}
-            </Typography>
+            </FormHelperText>
           )}
         </Box>
 
-        <FormControl fullWidth sx={formControlStyles}>
+        <FormControl
+          fullWidth
+          sx={formControlStyles}
+          error={formik.touched.playLists && Boolean(formik.errors.playLists)}
+        >
           {playLists.length > 0 ? (
             <Select
               labelId="playlist-select-label"
@@ -241,9 +245,7 @@ const VideoUpload = ({
             </Typography>
           )}
           {formik.touched.playLists && formik.errors.playLists && (
-            <Typography color="error" sx={errorTextStyles}>
-              {formik.errors.playLists}
-            </Typography>
+            <FormHelperText error>{formik.errors.playLists}</FormHelperText>
           )}
         </FormControl>
 

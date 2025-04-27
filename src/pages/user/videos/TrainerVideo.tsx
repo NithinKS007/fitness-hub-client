@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/store";
-import { fetchVideoDataById } from "../redux/content/contentThunk";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { fetchVideoDataById } from "../../../redux/content/contentThunk";
 import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import ReuseableVideoPlayer from "./ReuseableVideoPlayer";
-import LoadingSpinner from "./LoadingSpinner";
-import Error from "./Error";
+import ReuseableVideoPlayer from "../../../components/ReuseableVideoPlayer";
+import LoadingSpinner from "../../../components/LoadingSpinner";
+import Error from "../../../components/Error";
 
 const styles = {
   container: {
@@ -52,7 +51,7 @@ const TrainerVideo: React.FC = () => {
     }
   }, [dispatch, videoId]);
 
-  if (isLoading) {
+  if (isLoading || !videoData) {
     return (
       <Box sx={styles.loadingContainer}>
         <LoadingSpinner />
@@ -70,20 +69,14 @@ const TrainerVideo: React.FC = () => {
 
   return (
     <Box sx={styles.container}>
-      {videoData?.video ? (
-        <ReuseableVideoPlayer
-          videoUrl={videoData.video}
-          thumbnail={videoData.thumbnail}
-          videoId={videoData._id}
-          title={videoData.title}
-          duration={videoData.duration}
-          description={videoData.description}
-        />
-      ) : (
-        <Box sx={styles.noVideo}>
-          <Typography color="text.secondary">No video available</Typography>
-        </Box>
-      )}
+      <ReuseableVideoPlayer
+        videoUrl={videoData?.video}
+        thumbnail={videoData?.thumbnail}
+        videoId={videoData?._id}
+        title={videoData?.title}
+        duration={videoData?.duration}
+        description={videoData?.description}
+      />
     </Box>
   );
 };

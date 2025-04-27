@@ -156,9 +156,9 @@ const useContent = () => {
           videoFormik.setFieldError("video", "Error loading video metadata");
         };
         video.src = window.URL.createObjectURL(file);
-      } catch (error) {
-        showErrorToast(`${error}`);
-        videoFormik.setFieldError("video", `${error}`);
+      } catch (error:any) {
+        showErrorToast(`${error.message}`);
+        videoFormik.setFieldError("video", `${error.message}`);
         event.target.value = "";
       }
     }
@@ -172,9 +172,9 @@ const useContent = () => {
       try {
         await thumbnailFileSchema.validate(file);
         videoFormik.setFieldValue("thumbnail", file);
-      } catch (error) {
-        showErrorToast(`${error}`);
-        videoFormik.setFieldError("thumbnail", `${error}`);
+      } catch (error:any) {
+        showErrorToast(`${error.message}`);
+        videoFormik.setFieldError("thumbnail", `${error.message}`);
         event.target.value = "";
       }
     }

@@ -3,9 +3,9 @@ import { QueryParams } from "../reduxCommonTypes/tableTypes";
 export interface ContentState {
   isLoading: boolean;
   error: string | null;
-  playLists: PlayList[]
-  videos:Video[],
-  videoData:Video | null,
+  playLists: PlayList[];
+  videos: Video[];
+  videoData: Video | null;
   pagination: Pagination;
 }
 export interface Pagination {
@@ -18,21 +18,21 @@ export interface PlayList {
   trainerId: string;
   title: string;
   privacy: boolean;
-  videoCount:number
+  videoCount: number;
   createdAt: string;
 }
 
-export interface Video{
-  _id: string
-  trainerId: string
+export interface Video {
+  _id: string;
+  trainerId: string;
   title: string;
   description: string;
   thumbnail: string;
   video: string;
-  createdAt:string
-  duration:number
-  privacy:boolean
-  playLists:PlayList[]
+  createdAt: string;
+  duration: number;
+  privacy: boolean;
+  playLists: PlayList[];
 }
 
 export interface createPlayList {
@@ -43,32 +43,31 @@ export interface AddVideo {
   title: string;
   description: string;
   thumbnail: string;
-  duration:number
-  video:string,
+  duration: number;
+  video: string;
   playLists: string[];
 }
 
 export interface RequestPlayListsByTrainerId {
-  trainerId:string
+  trainerId: string;
 }
 
-export interface UpdateVideoBlockStatus{
-  videoId:string
-  privacy:boolean
+export interface UpdateVideoBlockStatus {
+  videoId: string;
+  privacy: boolean;
 }
 
-export interface UpdatePlayListBlockStatus{
-  playListId:string
-  privacy:boolean
+export interface UpdatePlayListBlockStatus {
+  playListId: string;
+  privacy: boolean;
 }
 
-export interface RequestVideoId{
-  videoId:string
+export interface RequestVideoId {
+  videoId: string;
 }
 
-
-export type VideosQueryParams = QueryParams
-export type PlayListQueryParams = QueryParams
+export type VideosQueryParams = QueryParams;
+export type PlayListQueryParams = QueryParams;
 export type VideosQueryParamsUser = VideosQueryParams & {
   trainerId: string;
 };

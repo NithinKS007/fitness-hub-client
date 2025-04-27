@@ -84,7 +84,7 @@ const ReusableChat = ({
     <Box
       sx={{
         height: "100vh",
-        maxHeight: "620px",
+        maxHeight: "630px",
         display: "flex",
         flexDirection: "column",
       }}
@@ -290,7 +290,15 @@ const ReusableChat = ({
           >
             {selectedId && selectedContact ? (
               chatLoading ? (
-                <Box sx={{ p: 2, textAlign: "center" }}>
+                <Box
+                  sx={{
+                    height: "100vh",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    maxHeight: "450px",
+                  }}
+                >
                   <LoadingSpinner />
                 </Box>
               ) : messages.length > 0 ? (

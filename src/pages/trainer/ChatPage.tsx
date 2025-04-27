@@ -251,7 +251,6 @@ const ChatPage = () => {
     }
   };
 
-  console.log("fetched subs", fetchedSubscribers);
   return (
     <Box sx={{ height: "100vh", maxHeight: "600px" }}>
       <>

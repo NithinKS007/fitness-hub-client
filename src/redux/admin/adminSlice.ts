@@ -18,8 +18,8 @@ const initialState: AdminState = {
   error: null,
   userDetails: {},
   trainerDetails: {},
-  revenueData:[],
-  pagination:{ totalPages: 0, currentPage: 1}
+  revenueData: [],
+  pagination: { totalPages: 0, currentPage: 1 },
 };
 
 const adminSlice = createSlice({
@@ -34,9 +34,11 @@ const adminSlice = createSlice({
       })
       .addCase(getUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.users = action.payload.data.usersList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.users = action.payload.data.usersList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
         state.error = null;
       })
       .addCase(getUsers.rejected, (state, action) => {
@@ -51,12 +53,13 @@ const adminSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getTrainers.fulfilled, (state, action) => {
-
-        console.log("actions",action.payload.data)
+        console.log("actions", action.payload.data);
         state.isLoading = false;
-        state.trainers = action.payload.data.trainersList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.trainers = action.payload.data.trainersList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
         state.error = null;
       })
       .addCase(getTrainers.rejected, (state, action) => {
@@ -75,11 +78,15 @@ const adminSlice = createSlice({
         const updatedUser = action.payload.data;
         if (updatedUser.role === "user") {
           state.users = state?.users?.map((user) =>
-            user._id === updatedUser._id ? {...user,isBlocked:updatedUser.isBlocked}: user
+            user._id === updatedUser._id
+              ? { ...user, isBlocked: updatedUser.isBlocked }
+              : user
           );
         } else if (updatedUser.role === "trainer") {
           state.trainers = state?.trainers?.map((trainer) =>
-            trainer.userId === updatedUser._id ?{...trainer,isBlocked:updatedUser.isBlocked}: trainer
+            trainer.userId === updatedUser._id
+              ? { ...trainer, isBlocked: updatedUser.isBlocked }
+              : trainer
           );
         }
         state.error = null;
@@ -99,10 +106,12 @@ const adminSlice = createSlice({
       })
       .addCase(getApprovalPendingList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.trainers = action.payload.data.trainersList
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
-        state.error = null
+        state.trainers = action.payload.data.trainersList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
+        state.error = null;
       })
       .addCase(getApprovalPendingList.rejected, (state, action) => {
         state.isLoading = false;
@@ -119,10 +128,10 @@ const adminSlice = createSlice({
       .addCase(updatedApprovalStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         const updatedTrainer = action.payload.data;
-          state.trainers = state.trainers.filter(
-            (trainer) => trainer._id !== updatedTrainer._id
-          );
-          state.error = null;
+        state.trainers = state.trainers.filter(
+          (trainer) => trainer._id !== updatedTrainer._id
+        );
+        state.error = null;
       })
       .addCase(updatedApprovalStatus.rejected, (state, action) => {
         state.isLoading = false;
@@ -170,9 +179,11 @@ const adminSlice = createSlice({
       })
       .addCase(getRevenueData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.revenueData = action.payload.data.revenueData
-        state.pagination.currentPage = action.payload.data.paginationData.currentPage
-        state.pagination.totalPages = action.payload.data.paginationData.totalPages
+        state.revenueData = action.payload.data.revenueData;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
         state.error = null;
       })
       .addCase(getRevenueData.rejected, (state, action) => {
@@ -181,8 +192,7 @@ const adminSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to retrieve revenueData";
-      })
-
+      });
   },
 });
 

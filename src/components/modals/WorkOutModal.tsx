@@ -128,7 +128,7 @@ const cancelButtonStyles = {
 
 const saveButtonStyles = {
   width: { xs: "100%", sm: "auto" },
-  backgroundColor: "black",
+  backgroundColor: "#1f2937",
   color: "white",
 };
 

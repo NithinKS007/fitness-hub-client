@@ -85,7 +85,7 @@ const content = createSlice({
             ? action.payload
             : "Failed to create video";
       })
-      
+
       // get videos uploaded by the trainer
       .addCase(getUploadedVideosOfTrainer.pending, (state) => {
         state.isLoading = true;
@@ -93,7 +93,7 @@ const content = createSlice({
       .addCase(getUploadedVideosOfTrainer.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        console.log("videos in trainer side",action.payload.data.videoList)
+        console.log("videos in trainer side", action.payload.data.videoList);
         state.videos = action.payload.data.videoList;
         state.pagination.currentPage =
           action.payload.data.paginationData.currentPage;
@@ -183,7 +183,7 @@ const content = createSlice({
             ? action.payload
             : "Failed to update block status";
       })
-      
+
       //get full playlist
       .addCase(fetchFullPlayListOfTrainer.pending, (state) => {
         state.isLoading = true;
@@ -191,7 +191,7 @@ const content = createSlice({
       .addCase(fetchFullPlayListOfTrainer.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.playLists = action.payload.data
+        state.playLists = action.payload.data;
       })
       .addCase(fetchFullPlayListOfTrainer.rejected, (state, action) => {
         state.isLoading = false;
@@ -228,13 +228,15 @@ const content = createSlice({
         state.isLoading = false;
         state.error = null;
         const updatedVideo = action.payload.data;
-        const result = state.videos.filter((v)=>v._id===updatedVideo._id)
-        console.log("updatedvideo",action.payload.data,"the rs",result)
-        console.log("Filtered result (plain):", JSON.parse(JSON.stringify(result)));
+        const result = state.videos.filter((v) => v._id === updatedVideo._id);
+        console.log("updatedvideo", action.payload.data, "the rs", result);
+        console.log(
+          "Filtered result (plain):",
+          JSON.parse(JSON.stringify(result))
+        );
         state.videos = state.videos.map((video) =>
           video._id === updatedVideo._id ? { ...video, ...updatedVideo } : video
         );
-        
       })
       .addCase(editVideo.rejected, (state, action) => {
         state.isLoading = false;
@@ -251,7 +253,7 @@ const content = createSlice({
         state.isLoading = false;
         state.error = null;
         const updatedPlayList = action.payload.data;
-        console.log("edited playlist data",action.payload.data)
+        console.log("edited playlist data", action.payload.data);
         state.playLists = state.playLists.map((p) =>
           p._id === updatedPlayList._id ? { ...p, ...updatedPlayList } : p
         );
@@ -262,8 +264,7 @@ const content = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to edit playlist";
-      })
-     
+      });
   },
 });
 

@@ -179,7 +179,7 @@ const ViewTrainerDetailsUS = () => {
       !isHeSubscribedToTheTrainer ? (
       <ShowSubscriptionPlansPage
         trainerSubscriptions={trainerDetails?.subscriptionDetails || []}
-        isPurchaseableUser={isPurchaseableUser}
+       
         selectedPlan={selectedPlan!!}
         isLoading={isLoading}
         error={error}
@@ -216,7 +216,7 @@ const ViewTrainerDetailsUS = () => {
             mb: 3,
           }}
         >
-         ENJOY THE BENEFITS OF YOUR SUBSCRIPTION
+          ENJOY THE BENEFITS OF YOUR SUBSCRIPTION
         </Typography>
         <Box
           sx={{
@@ -264,9 +264,24 @@ const ViewTrainerDetailsUS = () => {
           margin: "0 auto",
           boxShadow: 1,
           borderRadius: 2,
+          minHeight: "200px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          backgroundColor: "#f9f9f9",
         }}
       >
-        Please login to purchase subscription
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 500,
+            color: "#333",
+            fontFamily: "'Roboto', sans-serif",
+          }}
+        >
+          Please login to purchase subscription
+        </Typography>
       </Box>
     ) : (
       <Box
@@ -276,9 +291,24 @@ const ViewTrainerDetailsUS = () => {
           margin: "0 auto",
           boxShadow: 1,
           borderRadius: 2,
+          minHeight: "200px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          backgroundColor: "#f9f9f9",
         }}
       >
-        Subscription Plan Currently Unavailable
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 500,
+            color: "#333",
+            fontFamily: "'Roboto', sans-serif",
+          }}
+        >
+          Subscription Plan Currently Unavailable
+        </Typography>
       </Box>
     );
   };
@@ -300,14 +330,16 @@ const ViewTrainerDetailsUS = () => {
       );
     }
 
-    return isHeSubscribedToTheTrainer &&
+    return trainerDetails &&
+      trainerDetails?.subscriptionDetails?.length > 0 &&
+      isHeSubscribedToTheTrainer &&
       isPurchaseableUser &&
       isUserLoggedIn?.role === "user" ? (
       <SlotBooking />
     ) : !isUserLoggedIn ? (
       <Box
         sx={{
-          padding: "16px",
+          padding: "16px", 
           width: { xs: "100%", md: "80%" },
           margin: "0 auto",
           boxShadow: 1,
@@ -324,9 +356,24 @@ const ViewTrainerDetailsUS = () => {
           margin: "0 auto",
           boxShadow: 1,
           borderRadius: 2,
+          minHeight: "200px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          backgroundColor: "#f9f9f9",
         }}
       >
-        Slot booking currently unavailable
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 500,
+            color: "#333",
+            fontFamily: "'Roboto', sans-serif",
+          }}
+        >
+          Slot booking currently unavailable
+        </Typography>
       </Box>
     ) : (
       <Box
