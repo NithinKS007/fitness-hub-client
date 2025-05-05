@@ -9,14 +9,20 @@ import { formatDateTodddMMMDYYYY } from "../utils/conversion";
 import { Select, MenuItem } from "@mui/material";
 
 const containerStyles = {
-  py: 3,
-  width: { xs: "100%", md: "79%" },
+  width: "100%",
+  maxWidth: "100%",
+  padding: { xs: 0, sm: 0 },
+  margin: 0,
 };
 
 const paperStyles = {
-  p: 2,
+  p: { xs: 1.5, sm: 2 },
   borderRadius: "8px",
   elevation: 3,
+  width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
+  border: "2px solid #e0e0e0"
 };
 
 const mainBoxStyles = {
@@ -24,19 +30,23 @@ const mainBoxStyles = {
   flexDirection: { xs: "column", md: "row" },
   gap: 3,
   width: "100%",
+  boxSizing: "border-box",
 };
 
 const calendarBoxStyles = {
   flex: { xs: "100%", md: "50%" },
+  width: "100%",
 };
 
 const selectorBoxStyles = {
   flex: { xs: "100%", md: "50%" },
   marginTop: { xs: 2, md: 2 },
+  width: "100%",
 };
 
 const summaryStyles = {
   mt: 3,
+  width: "100%",
 };
 
 const summaryTitleStyles = {
@@ -57,11 +67,11 @@ const bookButtonStyles = {
   "&:hover": {
     backgroundColor: "#374151",
   },
-
   "&.MuiButton-root": {
     textTransform: "none",
   },
 };
+
 const messageBox = {
   width: "100%",
   padding: { xs: "0.75rem", sm: "1rem" },
@@ -73,10 +83,12 @@ const messageBox = {
   fontFamily: "sans-serif",
   fontSize: { xs: "0.875rem", sm: "1rem" },
 };
+
 const wrapper = {
   width: "100%",
   fontFamily: "sans-serif",
 };
+
 const selectBox = {
   width: "100%",
   padding: { xs: "0.5rem 0.75rem", sm: "0.75rem 1rem" },
@@ -159,7 +171,7 @@ const SlotBooking: React.FC = () => {
   );
 
   return (
-    <Container sx={containerStyles}>
+    <Container sx={containerStyles} maxWidth={false}>
       <Paper sx={paperStyles}>
         <Box sx={mainBoxStyles}>
           <Box sx={calendarBoxStyles}>{renderCalendar()}</Box>

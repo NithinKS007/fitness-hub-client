@@ -249,43 +249,41 @@ const UserChatsPage = () => {
   };
 
   return (
-    <Box sx={{ height: "100vh", maxHeight: "600px" }}>
-      <>
-        <ReusableChat
-          contacts={fetchedUserSubscriptionData}
-          messages={messages}
-          selectedId={selectedTrainerId as null | string}
-          input={input}
-          isPlanActive={selectedTrainer?.planStatus === "active"}
-          isOnline={isOnline as boolean}
-          onContactClick={handleTrainerClick}
-          onInputChange={setInput}
-          onSendClick={handleSendMessage}
-          onEmojiClick={() => setShowPicker((prev) => !prev)}
-          messagesEndRef={messagesEndRef}
-          currentUserId={user?._id || ""}
-          typing={typing}
-          onTyping={handleTyping}
-          typingIndicatorRef={typingIndicatorRef}
-          searchTerm={searchTerm as string}
-          onSearchChange={handleSearchChange}
-          chatLoading={chatLoading}
-        />
-        {showPicker && (
-          <Box
-            ref={pickerRef}
-            sx={{
-              position: "absolute",
-              bottom: "100px",
-              right: "30px",
-              zIndex: 1000,
-            }}
-          >
-            <Picker onEmojiClick={onEmojiClick} />
-          </Box>
-        )}
-      </>
-    </Box>
+    <>
+      <ReusableChat
+        contacts={fetchedUserSubscriptionData}
+        messages={messages}
+        selectedId={selectedTrainerId as null | string}
+        input={input}
+        isPlanActive={selectedTrainer?.planStatus === "active"}
+        isOnline={isOnline as boolean}
+        onContactClick={handleTrainerClick}
+        onInputChange={setInput}
+        onSendClick={handleSendMessage}
+        onEmojiClick={() => setShowPicker((prev) => !prev)}
+        messagesEndRef={messagesEndRef}
+        currentUserId={user?._id || ""}
+        typing={typing}
+        onTyping={handleTyping}
+        typingIndicatorRef={typingIndicatorRef}
+        searchTerm={searchTerm as string}
+        onSearchChange={handleSearchChange}
+        chatLoading={chatLoading}
+      />
+      {showPicker && (
+        <Box
+          ref={pickerRef}
+          sx={{
+            position: "absolute",
+            bottom: "100px",
+            right: "30px",
+            zIndex: 1000,
+          }}
+        >
+          <Picker onEmojiClick={onEmojiClick} />
+        </Box>
+      )}
+    </>
   );
 };
 

@@ -123,10 +123,10 @@ const InboxPage: React.FC = () => {
                       py: 0.5,
                       fontSize: "0.75rem",
                       minWidth: "auto",
-                      backgroundColor: "#10b981",
+                      backgroundColor: "#4A6D5E", 
                       color: "#fff",
                       "&:hover": {
-                        backgroundColor: "#059669", 
+                        backgroundColor: "#3A5D4D", 
                       },
                     }}
                     variant="contained"
@@ -141,11 +141,11 @@ const InboxPage: React.FC = () => {
                       py: 0.5,
                       fontSize: "0.75rem",
                       minWidth: "auto",
-                      backgroundColor: "#ffffff",
-                      color: "#dc2626", 
+                      backgroundColor: "#9B2C2C", 
+                      color: "#fff",
                       border: "1px solid #e5e7eb", 
                       "&:hover": {
-                        backgroundColor: "#f9fafb", 
+                        backgroundColor: "#7B1D1D", 
                       },
                     }}
                     variant="contained"

@@ -13,14 +13,15 @@ import SearchBarTable from "../../../components/SearchBarTable";
 import Button from "@mui/material/Button";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { useNavigate } from "react-router-dom";
-
+import EventNoteIcon from "@mui/icons-material/EventNote";
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Profile", field: "profilePic" },
   { label: "Name", field: "name" },
   { label: "Email", field: "email" },
-  { label: "Subscription status", field: "isActive" },
-  { label: "Watch videos", field: "watchVideos" },
+  { label: "Subscription Status", field: "isActive" },
+  { label: "Watch Videos", field: "watchVideos" },
+  { label: "Book Appointment", field: "BookAppointment" },
 ];
 
 interface MyTrainersTabProp {
@@ -35,6 +36,10 @@ const MyTrainersTab: React.FC<MyTrainersTabProp> = ({ isActive }) => {
 
   const handleShowTrainerVideos = async (trainerId: string) => {
     navigate(`/user/trainer-videos/${trainerId}`);
+  };
+
+  const handleShowTrainerSlots = async (trainerId: string) => {
+    navigate(`/user/trainer-booking-slot/${trainerId}`);
   };
 
   useEffect(() => {
@@ -70,20 +75,47 @@ const MyTrainersTab: React.FC<MyTrainersTabProp> = ({ isActive }) => {
             isActive: isActive,
             watchVideos: (
               <Button
-              variant="contained"
-              size="small"
-              startIcon={<PlayCircleOutlineIcon />}
-              disabled={!isSubscriptionActive}
-              onClick={() => handleShowTrainerVideos(sub.trainerId)}
-              sx={{ px: 1.5, py: 0.5, fontSize: "0.75rem", minWidth: "auto" , backgroundColor: "#1f2937",
-                '&:hover': {
-                  backgroundColor: "#111827", 
-                },
-                color: '#fff',  }}
-            >
-              Watch
-            </Button>
-            
+                variant="contained"
+                size="small"
+                startIcon={<PlayCircleOutlineIcon />}
+                disabled={!isSubscriptionActive}
+                onClick={() => handleShowTrainerVideos(sub.trainerId)}
+                sx={{
+                  px: 1.5,
+                  py: 0.5,
+                  fontSize: "0.75rem",
+                  minWidth: "auto",
+                  backgroundColor: "#1f2937",
+                  "&:hover": {
+                    backgroundColor: "#111827",
+                  },
+                  color: "#fff",
+                }}
+              >
+                Watch
+              </Button>
+            ),
+            BookAppointment: (
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<EventNoteIcon />}
+                disabled={!isSubscriptionActive}
+                onClick={() => handleShowTrainerSlots(sub.trainerId)}
+                sx={{
+                  px: 1.5,
+                  py: 0.5,
+                  fontSize: "0.75rem",
+                  minWidth: "auto",
+                  backgroundColor: "#1f2937",
+                  "&:hover": {
+                    backgroundColor: "#111827",
+                  },
+                  color: "#fff",
+                }}
+              >
+                Book Now
+              </Button>
             ),
           };
         })

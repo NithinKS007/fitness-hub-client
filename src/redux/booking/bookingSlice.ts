@@ -14,6 +14,7 @@ import {
   deleteAvailableBookingSlot,
   getAppointmentVideoCallLogsTrainer,
   getAppointmentVideoCallLogsUser,
+  fetchAvailableSlotsFromToday,
 } from "./bookingThunk";
 
 const initialState: bookingSlotState = {
@@ -81,6 +82,26 @@ const bookingSlot = createSlice({
         state.slots = action.payload.data;
       })
       .addCase(fetchTrainerSlots.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to fetch available slots for the user";
+      })
+
+      .addCase(fetchAvailableSlotsFromToday.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAvailableSlotsFromToday.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.slots = action.payload.data.availableSlotsList;
+        state.pagination.currentPage =
+          action.payload.data.paginationData.currentPage;
+        state.pagination.totalPages =
+          action.payload.data.paginationData.totalPages;
+      })
+      .addCase(fetchAvailableSlotsFromToday.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"

@@ -1,20 +1,20 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { AppDispatch, RootState } from "../../../redux/store";
-import { isSubscribedToTheTrainer } from "../../../redux/subscription/subscriptionThunk";
+import { AppDispatch, RootState } from "../../redux/store";
+import { isSubscribedToTheTrainer } from "../../redux/subscription/subscriptionThunk";
 import {
   fetchVideosByTrainerUser,
   getPlayListsAvailableByTrainerId,
-} from "../../../redux/content/contentThunk";
+} from "../../redux/content/contentThunk";
 import { Box, Typography, Container } from "@mui/material";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
-import PaginationTable from "../../../components/PaginationTable";
-import LoadingSpinner from "../../../components/LoadingSpinner";
-import SearchVideoGrid from "../../../components/SearchVideoGrid";
-import VideoFilter from "../../../components/VideoGridFilter";
-import VideoCard from "./VideoCard";
-import useIsUserSubscribedToTrainer from "../../../hooks/useIsUserSubscribedToTrainer";
+import useSearchFilter from "../../hooks/useSearchFilterTable";
+import PaginationTable from "../../components/PaginationTable";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import SearchVideoGrid from "../../components/SearchVideoGrid";
+import VideoFilter from "../../components/VideoGridFilter";
+import VideoCard from "../../components/VideoCard";
+import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
 
 const styles = {
   loaderBox: {
@@ -55,7 +55,7 @@ const styles = {
   },
 };
 
-const TrainerVideosPage: React.FC = () => {
+const VideosPage: React.FC = () => {
   const { trainerId } = useParams<{ trainerId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -141,10 +141,29 @@ const TrainerVideosPage: React.FC = () => {
           <Container maxWidth={false}>
             {isHeSubscribedToTheTrainer && videosData?.length > 0 ? (
               <>
-                <VideoCard
-                  videos={videosData}
-                  onVideoClick={handleVideoClick}
-                />
+                <Box
+                  sx={{
+                    marginTop:"20px",
+                    display: "grid",
+                    gridTemplateColumns: {
+                      xs: "1fr", 
+                      sm: "1fr 1fr", 
+                      md: "1fr 1fr 1fr", 
+                      lg: "1fr 1fr 1fr 1fr", 
+                    },
+                    gap: "18px", 
+                    width: "100%",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  {videosData.map((video) => (
+                    <VideoCard
+                      key={video._id}
+                      video={video}
+                      onVideoClick={handleVideoClick}
+                    />
+                  ))}
+                </Box>
                 <Box sx={styles.paginationContainer}>
                   <PaginationTable
                     handlePageChange={handlePageChange}
@@ -175,4 +194,4 @@ const TrainerVideosPage: React.FC = () => {
   );
 };
 
-export default TrainerVideosPage;
+export default VideosPage;

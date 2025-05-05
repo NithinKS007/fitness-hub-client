@@ -19,7 +19,11 @@ interface AccountDropDownProps {
 
 const userMenuItems = [
   { label: "Dashboard", action: "user-dashboard", path: "/user/dashboard" },
-  { label: "Subscriptions", action: "user-subscriptions", path: "/user/subscriptions" },
+  {
+    label: "Subscriptions",
+    action: "user-subscriptions",
+    path: "/user/subscriptions",
+  },
   { label: "Bookings", action: "user-bookings", path: "/user/bookings" },
   { label: "Chats", action: "user-chats", path: "/user/chats" },
   { label: "Profile", action: "user-profile", path: "/user/profile" },
@@ -32,16 +36,42 @@ const adminMenuItems = [
   { label: "Users", action: "admin-users", path: "/admin/users" },
   { label: "Trainers", action: "admin-trainers", path: "/admin/trainers" },
   { label: "Inbox", action: "admin-inbox", path: "/admin/inbox" },
-  { label: "Commission", action: "admin-commission", path: "/admin/commission" },
+  {
+    label: "Commission",
+    action: "admin-commission",
+    path: "/admin/commission",
+  },
   { label: "Signout", action: "signout", path: "" },
 ];
 
 const trainerMenuItems = [
-  { label: "Dashboard", action: "trainer-dashboard", path: "/trainer/dashboard" },
-  { label: "Subscribers", action: "trainer-subscribers", path: "/trainer/subscribers" },
+  {
+    label: "Dashboard",
+    action: "trainer-dashboard",
+    path: "/trainer/dashboard",
+  },
+  {
+    label: "Subscribers",
+    action: "trainer-subscribers",
+    path: "/trainer/subscribers",
+  },
   { label: "Chat", action: "trainer-chat", path: "/trainer/chat" },
-  { label: "Appointments", action: "trainer-appointments", path: "/trainer/appointments" },
+  {
+    label: "Appointments",
+    action: "trainer-appointments",
+    path: "/trainer/appointments",
+  },
   { label: "Profile", action: "trainer-profile", path: "/trainer/profile" },
+  {
+    label: "Profile",
+    action: "trainer-subscription",
+    path: "/trainer/subscriptions",
+  },
+  {
+    label: "Add-contents",
+    action: "trainer-add-contents",
+    path: "/trainer/add-contents",
+  },
   { label: "Signout", action: "signout", path: "" },
 ];
 
@@ -105,23 +135,62 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
 
   const handleMenuAction = (action: string) => {
     switch (action) {
-      case "user-profile": navigate("/user/profile"); break;
-      case "user-dashboard": navigate("/user/dashboard"); break;
-      case "user-subscriptions": navigate("/user/subscriptions"); break;
-      case "user-bookings": navigate("/user/bookings"); break;
-      case "user-chats": navigate("/user/chats"); break;
-      case "user-workouts": navigate("/user/workouts"); break;
-      case "signout": signout(); break;
-      case "admin-dashboard": navigate("/admin/dashboard"); break;
-      case "admin-users": navigate("/admin/users"); break;
-      case "admin-trainers": navigate("/admin/trainers"); break;
-      case "admin-inbox": navigate("/admin/inbox"); break;
-      case "trainer-dashboard": navigate("/trainer/dashboard"); break;
-      case "trainer-subscribers": navigate("/trainer/subscribers"); break;
-      case "trainer-chat": navigate("/trainer/chat"); break;
-      case "trainer-appointments": navigate("/trainer/appointments"); break;
-      case "trainer-profile": navigate("/trainer/profile"); break;
-      default: break;
+      case "user-profile":
+        navigate("/user/profile");
+        break;
+      case "user-dashboard":
+        navigate("/user/dashboard");
+        break;
+      case "user-subscriptions":
+        navigate("/user/subscriptions");
+        break;
+      case "user-bookings":
+        navigate("/user/bookings");
+        break;
+      case "user-chats":
+        navigate("/user/chats");
+        break;
+      case "user-workouts":
+        navigate("/user/workouts");
+        break;
+      case "signout":
+        signout();
+        break;
+      case "admin-dashboard":
+        navigate("/admin/dashboard");
+        break;
+      case "admin-users":
+        navigate("/admin/users");
+        break;
+      case "admin-trainers":
+        navigate("/admin/trainers");
+        break;
+      case "admin-inbox":
+        navigate("/admin/inbox");
+        break;
+      case "trainer-dashboard":
+        navigate("/trainer/dashboard");
+        break;
+      case "trainer-subscribers":
+        navigate("/trainer/subscribers");
+        break;
+      case "trainer-chat":
+        navigate("/trainer/chat");
+        break;
+      case "trainer-appointments":
+        navigate("/trainer/appointments");
+        break;
+      case "trainer-subscription":
+        navigate("/trainer/subscriptions");
+        break;
+      case "trainer-add-contents":
+        navigate("/trainer/add-contents");
+        break;
+      case "trainer-profile":
+        navigate("/trainer/profile");
+        break;
+      default:
+        break;
     }
     handleClose();
   };
@@ -139,9 +208,17 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
     <Box sx={styles.container}>
       {authPerson ? (
         <>
-          <IconButton sx={styles.iconButton} ref={anchorRef} onClick={handleToggle}>
+          <IconButton
+            sx={styles.iconButton}
+            ref={anchorRef}
+            onClick={handleToggle}
+          >
             {userData?.profilePic ? (
-              <Avatar alt="Profile" src={userData.profilePic} sx={styles.avatar} />
+              <Avatar
+                alt="Profile"
+                src={userData.profilePic}
+                sx={styles.avatar}
+              />
             ) : (
               <AccountCircleIcon sx={styles.accountIcon} />
             )}

@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../redux/store";
-import { fetchVideoDataById } from "../../../redux/content/contentThunk";
+import { AppDispatch, RootState } from "../../redux/store";
+import { fetchVideoDataById } from "../../redux/content/contentThunk";
 import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
-import ReuseableVideoPlayer from "../../../components/ReuseableVideoPlayer";
-import LoadingSpinner from "../../../components/LoadingSpinner";
-import Error from "../../../components/Error";
+import ReuseableVideoPlayer from "../../components/ReuseableVideoPlayer";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import Error from "../../components/Error";
 
 const styles = {
   container: {
@@ -38,7 +38,7 @@ const styles = {
     bgcolor: "grey.200",
   },
 };
-const TrainerVideo: React.FC = () => {
+const VideoPlayerPage: React.FC = () => {
   const { videoId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { videoData, isLoading, error } = useSelector(
@@ -81,4 +81,4 @@ const TrainerVideo: React.FC = () => {
   );
 };
 
-export default TrainerVideo;
+export default VideoPlayerPage;

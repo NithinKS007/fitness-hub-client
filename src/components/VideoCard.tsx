@@ -1,6 +1,9 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { formatVideoDuration, getRelativeTime } from "../../../utils/conversion";
+import {
+  formatVideoDuration,
+  getRelativeTime,
+} from "../utils/conversion";
 
 const styles = {
   videoWrapper: {
@@ -13,12 +16,6 @@ const styles = {
     boxSizing: "border-box",
   },
   cardContainer: {
-    width: {
-      xs: "100%",
-      sm: "48%",
-      md: "31%",
-      lg: "calc(25% - 14px)",
-    },
     flex: "0 0 auto",
     cursor: "pointer",
     backgroundColor: "#fff",
@@ -81,38 +78,30 @@ interface Video {
 }
 
 interface VideoCardProps {
-  videos: Video[];
+  video: Video;
   onVideoClick: (videoId: string) => void;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ videos, onVideoClick }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ video, onVideoClick }) => {
   return (
-    <Box sx={styles.videoWrapper}>
-      {videos.map((video) => (
+    <Box sx={styles.cardContainer} onClick={() => onVideoClick(video._id)}>
+      <Box sx={styles.thumbnailWrapper}>
         <Box
-          key={video._id}
-          sx={styles.cardContainer}
-          onClick={() => onVideoClick(video._id)}
-        >
-          <Box sx={styles.thumbnailWrapper}>
-            <Box
-              component="img"
-              src={`${video.thumbnail}?t=0`}
-              alt={video.title}
-              sx={styles.thumbnail}
-            />
-            <Box sx={styles.durationOverlay}>
-              {formatVideoDuration(video.duration)}
-            </Box>
-          </Box>
-          <Box sx={styles.cardContent}>
-            <Typography sx={styles.title}>{video.title}</Typography>
-            <Typography sx={styles.metadata}>
-              {getRelativeTime(new Date(video.createdAt))}
-            </Typography>
-          </Box>
+          component="img"
+          src={`${video.thumbnail}?t=0`}
+          alt={video.title}
+          sx={styles.thumbnail}
+        />
+        <Box sx={styles.durationOverlay}>
+          {formatVideoDuration(video.duration)}
         </Box>
-      ))}
+      </Box>
+      <Box sx={styles.cardContent}>
+        <Typography sx={styles.title}>{video.title}</Typography>
+        <Typography sx={styles.metadata}>
+          {getRelativeTime(new Date(video.createdAt))}
+        </Typography>
+      </Box>
     </Box>
   );
 };

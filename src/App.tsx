@@ -35,10 +35,11 @@ import AddContentsPage from "./pages/trainer/AddContentsPage";
 import TrainerSubscriptionDetailsPage from "./pages/admin/TrainerSubscriptionDetailsPage";
 import OnFailurePage from "./pages/OnFailurePage";
 import OnSuccessPage from "./pages/OnSuccessPage";
-import TrainerVideosPage from "./pages/user/videos/TrainerVideosPage";
+import VideosPage from "./pages/user/VideosPage";
 import UserWorkoutsPage from "./pages/user/UserWorkoutSettingPage";
 import CommissionHistory from "./pages/admin/CommissionHistory";
-import TrainerVideo from "./pages/user/videos/TrainerVideo";
+import VideoPlayerPage from "./pages/user/VideoPlayerPage";
+import BookSlotPage from "./pages/user/BookSlotPage";
 
 const App = () => {
   return (
@@ -77,8 +78,9 @@ const App = () => {
           <Route path="/user/bookings" element={<UserBookingsPage />} />
           <Route path="/user/chats" element={<UserChatsPage />} />
           <Route path="/user/workouts" element={<UserWorkoutsPage />} />
-          <Route path="/user/trainer-videos/:trainerId/" element={<TrainerVideosPage />} />
-          <Route path="/user/trainer/video/:videoId" element={<TrainerVideo />} />
+          <Route path="/user/trainer-videos/:trainerId/" element={<VideosPage />} />
+          <Route path="/user/trainer/video/:videoId" element={<VideoPlayerPage />} />
+          <Route path="/user/trainer-booking-slot/:trainerId" element={<BookSlotPage />} />
         </Route>
       </Route>
 

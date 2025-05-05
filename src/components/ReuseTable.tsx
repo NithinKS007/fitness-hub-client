@@ -29,12 +29,23 @@ interface TableProps {
 const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
   return (
     <>
-      <TableContainer sx={{ border: "1px solid lightgrey " ,borderRadius:2,bgcolor:"white"}}>
+      <TableContainer
+        sx={{
+          border: "1px solid lightgrey",
+          borderRadius: 2,
+          bgcolor: "white",
+          maxHeight: "900px",
+          overflowY: "auto",
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableCell key={column.field} sx={{ padding: " 8px",fontWeight:"600" }}>
+                <TableCell
+                  key={column.field}
+                  sx={{ padding: " 8px", fontWeight: "600" }}
+                >
                   {column.label}
                 </TableCell>
               ))}
@@ -60,10 +71,19 @@ const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
                       )
                     ) : column.field === "profilePic" ? (
                       row.profilePic ? (
-                        <Avatar src={row.profilePic} sx={{height:"30px",width:"30px"}} alt="Profile" />
+                        <Avatar
+                          src={row.profilePic}
+                          sx={{ height: "30px", width: "30px" }}
+                          alt="Profile"
+                        />
                       ) : (
                         <Avatar
-                          sx={{ color: "#616161 ", height:"30px",width:"30px", backgroundColor: "#61512" }}
+                          sx={{
+                            color: "#616161 ",
+                            height: "30px",
+                            width: "30px",
+                            backgroundColor: "#61512",
+                          }}
                         />
                       )
                     ) : column.field === "isApproved" ? (
@@ -92,7 +112,6 @@ const ReuseTable: React.FC<TableProps> = ({ columns, data }) => {
           </TableBody>
         </Table>
       </TableContainer>
-     
     </>
   );
 };

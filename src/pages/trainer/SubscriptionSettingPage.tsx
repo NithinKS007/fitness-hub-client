@@ -7,6 +7,10 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../types/tableTypes";
+import ShimmerTableLoader from "../../components/ShimmerTable";
+import Error from "../../components/Error";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -54,6 +58,9 @@ const SubscriptionSettingPage: React.FC = () => {
     handleClose: handleConfirmationBlockModalClose,
   } = useModal();
 
+  const { isLoading, error } = useSelector(
+    (state: RootState) => state.subscription
+  );
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
     _id: string
@@ -152,6 +159,14 @@ const SubscriptionSettingPage: React.FC = () => {
           };
         })
       : [];
+
+  if (isLoading) {
+    return <ShimmerTableLoader columns={columns} />;
+  }
+
+  if (error) {
+    return <Error message={error} />;
+  }
 
   return (
     <>

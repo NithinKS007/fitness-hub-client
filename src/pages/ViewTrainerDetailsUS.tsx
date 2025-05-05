@@ -23,17 +23,11 @@ import {
 import { showErrorToast } from "../utils/toast";
 import { useStripe } from "@stripe/react-stripe-js";
 import { Subscription } from "../redux/subscription/subscriptionTypes";
-import SlotBooking from "./SlotBooking";
-import { fetchTrainerSlots } from "../redux/booking/bookingThunk";
 import LoadingSpinner from "../components/LoadingSpinner";
 import useIsUserSubscribedToTrainer from "../hooks/useIsUserSubscribedToTrainer";
 import { CheckCircleOutline } from "@mui/icons-material";
 
-const tabItems = [
-  { label: "About Me" },
-  { label: "Show Plans" },
-  { label: "Book a slot" },
-];
+const tabItems = [{ label: "About Me" }, { label: "Show Plans" }];
 const benefits = [
   "Access to exclusive fitness content from your coach",
   "Book personalized time slots for workout schedule and diet plan discussions",
@@ -69,14 +63,13 @@ const ViewTrainerDetailsUS = () => {
     trainerId as string
   );
 
+  console.log("hello", isHeSubscribedToTheTrainer);
+
   useEffect(() => {
     if (trainerId) {
       dispatch(getTrainerDetailsWithSubscription(trainerId));
       if (user && user.role === "user") {
         dispatch(isSubscribedToTheTrainer(trainerId));
-      }
-      if (activeTab === 2) {
-        dispatch(fetchTrainerSlots({ trainerId: trainerId }));
       }
     }
   }, [dispatch, trainerId, user, activeTab]);
@@ -113,8 +106,6 @@ const ViewTrainerDetailsUS = () => {
         return renderAboutMeTab();
       case 1:
         return renderSubscriptionPlansTab();
-      case 2:
-        return renderSlotBookingTab();
       default:
         return null;
     }
@@ -179,7 +170,6 @@ const ViewTrainerDetailsUS = () => {
       !isHeSubscribedToTheTrainer ? (
       <ShowSubscriptionPlansPage
         trainerSubscriptions={trainerDetails?.subscriptionDetails || []}
-       
         selectedPlan={selectedPlan!!}
         isLoading={isLoading}
         error={error}
@@ -308,98 +298,6 @@ const ViewTrainerDetailsUS = () => {
           }}
         >
           Subscription Plan Currently Unavailable
-        </Typography>
-      </Box>
-    );
-  };
-
-  const renderSlotBookingTab = () => {
-    if (isTrainerDataLoading || isLoading) {
-      return (
-        <Box
-          sx={{
-            height: "100vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            maxHeight: "450px",
-          }}
-        >
-          <LoadingSpinner />
-        </Box>
-      );
-    }
-
-    return trainerDetails &&
-      trainerDetails?.subscriptionDetails?.length > 0 &&
-      isHeSubscribedToTheTrainer &&
-      isPurchaseableUser &&
-      isUserLoggedIn?.role === "user" ? (
-      <SlotBooking />
-    ) : !isUserLoggedIn ? (
-      <Box
-        sx={{
-          padding: "16px", 
-          width: { xs: "100%", md: "80%" },
-          margin: "0 auto",
-          boxShadow: 1,
-          borderRadius: 2,
-        }}
-      >
-        <p>Please log in to book slots</p>
-      </Box>
-    ) : !isPurchaseableUser ? (
-      <Box
-        sx={{
-          padding: "16px",
-          width: { xs: "100%", md: "80%" },
-          margin: "0 auto",
-          boxShadow: 1,
-          borderRadius: 2,
-          minHeight: "200px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 500,
-            color: "#333",
-            fontFamily: "'Roboto', sans-serif",
-          }}
-        >
-          Slot booking currently unavailable
-        </Typography>
-      </Box>
-    ) : (
-      <Box
-        sx={{
-          padding: "16px",
-          width: { xs: "100%", md: "80%" },
-          margin: "0 auto",
-          boxShadow: 1,
-          borderRadius: 2,
-          minHeight: "200px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 500,
-            color: "#333",
-            fontFamily: "'Roboto', sans-serif",
-          }}
-        >
-          Please subscribe to book slots with a trainer
         </Typography>
       </Box>
     );

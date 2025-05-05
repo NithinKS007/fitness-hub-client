@@ -72,6 +72,32 @@ export const fetchTrainerSlots = createAsyncThunk(
   }
 );
 
+export const fetchAvailableSlotsFromToday = createAsyncThunk(
+  "bookingSlot/fetchAvailableSlotsFromToday",
+  async (
+    {
+      trainerId,
+      params,
+    }: { trainerId: string; params: AvailableSlotsQueryParams },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.get(
+        `user/available-slots/${trainerId}`,
+        { params }
+      );
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to get available slots for the user");
+      }
+    }
+  }
+);
+
 export const bookSlot = createAsyncThunk(
   "bookingSlot/bookSlot",
   async ({ slotId }: RequestBookSlot, { rejectWithValue }) => {
