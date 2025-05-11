@@ -24,8 +24,8 @@ import { Link } from "@mui/material";
 import { Download as DownloadIcon } from "@mui/icons-material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
-interface ProfileProps {
-  formik?: any;
+interface TrainerProfileProps {
+  formik: any;
   handleProfilePicChange?: React.ChangeEventHandler<HTMLInputElement>
   handlePdfChange?: React.ChangeEventHandler<HTMLInputElement>;
   isEditable: boolean;
@@ -45,7 +45,7 @@ const specializationsList = [
   "Nutrition Coaching",
 ];
 
-const Profile: React.FC<ProfileProps> = ({
+const TrainerProfile: React.FC<TrainerProfileProps> = ({
   formik,
   isEditable,
   handleProfilePicChange,
@@ -490,4 +490,4 @@ const Profile: React.FC<ProfileProps> = ({
   );
 };
 
-export default Profile;
+export default TrainerProfile

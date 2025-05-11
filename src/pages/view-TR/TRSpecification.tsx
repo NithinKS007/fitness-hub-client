@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-interface TrainerSpecificationLeftSideProps {
+interface TRSpecificationProps {
   certifications: { fileName: string; url: string }[];
   specializations: string[];
 }
@@ -14,7 +14,7 @@ const styles = {
     borderRadius: 2,
     padding: "16px",
     width: { xs: "100%", md: "25%" },
-    marginLeft: { xs: 0, md: 20 },
+    marginLeft: { xs: 0, md: 3 },
     marginBottom: { xs: 2, md: 0 },
   },
   listBox: {
@@ -36,8 +36,8 @@ const styles = {
   },
 };
 
-const TrainerSpecificationLeftSide: React.FC<
-  TrainerSpecificationLeftSideProps
+const TRSpecification: React.FC<
+  TRSpecificationProps
 > = ({ certifications, specializations }) => {
   return (
     <Box sx={styles.outerBox}>
@@ -85,4 +85,4 @@ const TrainerSpecificationLeftSide: React.FC<
   );
 };
 
-export default TrainerSpecificationLeftSide;
+export default TRSpecification;

@@ -162,7 +162,7 @@ const ULProfile: React.FC = () => {
         <div className="w-24 hidden md:block md:w-24">
           <SideNavBar navItems={userNavItems} />
         </div>
-        <div className="flex-1 pl-2 pr-2 pt-20 overflow-auto">
+        <div className="flex-1 pl-2 pr-2 pt-17 overflow-auto">
           <Outlet />
           {callActive && roomId && (
             <div style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}>

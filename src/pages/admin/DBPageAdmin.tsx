@@ -13,7 +13,6 @@ import useAdminDashBoard from "../../hooks/useAdminDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ReusableLineChart from "../../components/dashboard/LineChart";
 import ProgressBar from "../../components/dashboard/ProgressBar";
-import CommissionHistory from "./CommissionHistory";
 
 const DBPageAdmin = () => {
   const {
@@ -157,12 +156,6 @@ const DBPageAdmin = () => {
           </Box>
         </Box>
       </Box>
-      <div className="bg-gray-100 text-center py-4  mt-35 mb-5">
-        <h2 className="text-2xl font-medium text-gray-800">
-          Latest Commissions Received
-        </h2>
-      </div>
-      <CommissionHistory />
     </>
   );
 };

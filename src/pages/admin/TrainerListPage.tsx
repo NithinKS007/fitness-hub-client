@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
-import ReuseTable from "../../components/ReuseTable";
+import ReuseTable from "../../components/table/ReuseTable";
 import { useDispatch } from "react-redux";
 import { getTrainers } from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Trainer } from "../../redux/auth/authTypes";
-import SearchBarTable from "../../components/SearchBarTable";
-import ShimmerTableLoader from "../../components/ShimmerTable";
+import SearchBarTable from "../../components/table/SearchBarTable";
+import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import TableFilter from "../../components/TableFilter";
+import TableFilter from "../../components/table/TableFilter";
 import PaginationTable from "../../components/PaginationTable";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import Box from "@mui/material/Box";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn, Filter } from "../../types/tableTypes";
+import NavigationTabs from "../../components/Tabs";
+import Error from "../../components/shared/Error";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -41,7 +43,14 @@ const filter: Filter[] = [
   { value: "Not Approved" },
 ];
 
+const tabItems = [{ label: "Trainers" }];
 const TrainerListPage: React.FC = () => {
+  const [selectedTab, setSelectedTab] = useState(0);
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log(event);
+    setSelectedTab(newValue);
+  };
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { handleUpdateBlockStatus } = useUpdateBlockStatus();
@@ -191,49 +200,61 @@ const TrainerListPage: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
-        <SearchBarTable
-          searchTerm={searchTerm as string}
-          handleSearchChange={handleSearchChange}
-        />
-        <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
-          <TableFilter
-            filter={filter}
-            selectedFilter={selectedFilter as string[]}
-            handleFilterChange={handleFilterChange}
-          />
-        </Box>
-      </Box>
-
-      {isLoading ? (
-        <ShimmerTableLoader columns={columns} />
-      ) : error ? (
-        <Box>{error}</Box>
-      ) : (
+      <NavigationTabs
+        tabItems={tabItems}
+        value={selectedTab}
+        handleChange={handleTabChange}
+      />
+      {selectedTab === 0 && (
         <>
-          <ReuseTable columns={columns} data={fetchedTrainersData} />
-          <PaginationTable
-            handlePageChange={handlePageChange}
-            page={currentPage}
-            totalPages={totalPages}
+          <Box sx={{mt:3, display: "flex", justifyContent: "space-between" }}>
+            <SearchBarTable
+              searchTerm={searchTerm as string}
+              handleSearchChange={handleSearchChange}
+            />
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between" }}
+              gap={1}
+            >
+              <TableFilter
+                filter={filter}
+                selectedFilter={selectedFilter as string[]}
+                handleFilterChange={handleFilterChange}
+              />
+            </Box>
+          </Box>
+
+          {isLoading ? (
+            <ShimmerTableLoader columns={columns} />
+          ) : error ? (
+            <Error message={error as string} />
+          ) : (
+            <>
+              <ReuseTable columns={columns} data={fetchedTrainersData} />
+              <PaginationTable
+                handlePageChange={handlePageChange}
+                page={currentPage}
+                totalPages={totalPages}
+              />
+            </>
+          )}
+
+          <ConfirmationModalDialog
+            open={confirmationModalOpen as boolean}
+            content={
+              selectedTrainer
+                ? `Are you sure you want to ${selectedTrainer.isBlocked ? "unblock" : "block"} ${selectedTrainer.fname} ${selectedTrainer.lname}?`
+                : "Are you sure you want to proceed?"
+            }
+            onConfirm={handleConfirmBlockStatus}
+            onCancel={handleConfirmationModalClose}
+            confirmText="Yes"
+            cancelText="No"
+            confirmColor="success"
+            cancelColor="error"
           />
         </>
       )}
-      <ConfirmationModalDialog
-        open={confirmationModalOpen as boolean}
-        content={
-          (selectedTrainer &&
-            `Are you sure you want to ${
-              selectedTrainer.isBlocked ? "unblock" : "block"
-            } ${selectedTrainer.fname} ${selectedTrainer.lname}?`) as string
-        }
-        onConfirm={handleConfirmBlockStatus}
-        onCancel={handleConfirmationModalClose}
-        confirmText="Yes"
-        cancelText="No"
-        confirmColor="success"
-        cancelColor="error"
-      />
     </>
   );
 };

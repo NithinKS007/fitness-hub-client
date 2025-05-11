@@ -73,11 +73,13 @@ const VideoFilter: React.FC<VideoFilterProps> = ({
         input={<OutlinedInput label="Filter by" sx={styles.selectInput} />}
         renderValue={(selected) =>
           selected.length > 0
-          ? selected
-              .map((id) => filter.find((item) => item.playListId === id)?.value)
-              .filter(Boolean)
-              .join(", ")
-          : "Select filters"
+            ? selected
+                .map(
+                  (id) => filter.find((item) => item.playListId === id)?.value
+                )
+                .filter(Boolean)
+                .join(", ")
+            : "Select filters"
         }
         MenuProps={{ PaperProps: { sx: styles.menu } }}
       >

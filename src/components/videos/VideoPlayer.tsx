@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { formatVideoDuration } from "../utils/conversion";
+import { formatVideoDuration } from "../../utils/conversion";
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -12,7 +12,7 @@ interface VideoPlayerProps {
   description: string;
 }
 
-const ReuseableVideoPlayer: React.FC<VideoPlayerProps> = ({
+const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoUrl,
   thumbnail,
   videoId,
@@ -61,7 +61,8 @@ const ReuseableVideoPlayer: React.FC<VideoPlayerProps> = ({
             autoPlay
             key={videoId}
             poster={thumbnail}
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            controlsList="nodownload"
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
@@ -87,4 +88,4 @@ const ReuseableVideoPlayer: React.FC<VideoPlayerProps> = ({
   );
 };
 
-export default ReuseableVideoPlayer;
+export default VideoPlayer;

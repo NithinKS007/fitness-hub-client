@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import { Box, Button, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import TrainerSubscriptionForm from "../../components/modals/SubscriptionSetting";
 import useSubscription from "../../hooks/useSubscription";
-import ReuseTable from "../../components/ReuseTable";
+import ReuseTable from "../../components/table/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../types/tableTypes";
-import ShimmerTableLoader from "../../components/ShimmerTable";
-import Error from "../../components/Error";
+import ShimmerTableLoader from "../../components/table/ShimmerTable";
+import Error from "../../components/shared/Error";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import NavigationTabs from "../../components/Tabs";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -22,7 +23,11 @@ const columns: TableColumn[] = [
   { label: "Actions", field: "actions" },
 ];
 
+
+const tabItems = [{ label: "My plans" }];
+
 const SubscriptionSettingPage: React.FC = () => {
+  const [selectedTab, setSelectedTab] = useState<number>(0);
   const {
     subPeriods,
     formik,
@@ -35,6 +40,11 @@ const SubscriptionSettingPage: React.FC = () => {
     handleClose,
     handleOpen,
   } = useSubscription();
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log("event",event)
+    setSelectedTab(newValue);
+  };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<
@@ -160,16 +170,13 @@ const SubscriptionSettingPage: React.FC = () => {
         })
       : [];
 
-  if (isLoading) {
-    return <ShimmerTableLoader columns={columns} />;
-  }
-
-  if (error) {
-    return <Error message={error} />;
-  }
-
   return (
     <>
+      <NavigationTabs
+        tabItems={tabItems}
+        value={selectedTab}
+        handleChange={handleTabChange}
+      />
       <Box
         sx={{
           display: "flex",
@@ -192,15 +199,27 @@ const SubscriptionSettingPage: React.FC = () => {
           ADD NEW PLAN
         </Button>
       </Box>
-
-      <TrainerSubscriptionForm
-        open={open as boolean}
-        onClose={handleClose}
-        subPeriods={subPeriods}
-        formik={formik}
-        isEditMode={isEditMode!! as boolean}
-      />
-      <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
+      {selectedTab === 0 && (
+        <>
+          <TrainerSubscriptionForm
+            open={open as boolean}
+            onClose={handleClose}
+            subPeriods={subPeriods}
+            formik={formik}
+            isEditMode={isEditMode!! as boolean}
+          />
+          {isLoading ? (
+            <ShimmerTableLoader columns={columns} />
+          ) : error ? (
+            <Error message={error} />
+          ) : (
+            <ReuseTable
+              columns={columns}
+              data={fetchedTrainerSubscriptionData}
+            />
+          )}
+        </>
+      )}
 
       <ConfirmationModalDialog
         open={confirmationDeleteModalOpen as boolean}

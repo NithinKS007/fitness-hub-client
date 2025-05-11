@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Tabs from "../../components/Tabs";
+import NavigationTabs from "../../components/Tabs";
 import VideoSection from "../trainer/contentsTabs/VideosTab";
 import PlaylistSection from "../trainer/contentsTabs/PlayListTab";
 
@@ -15,7 +15,7 @@ const AddContentsPage = () => {
 
   return (
     <>
-      <Tabs
+      <NavigationTabs
         tabItems={tabItems}
         value={selectedTab as number}
         handleChange={handleTabChange}

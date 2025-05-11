@@ -84,7 +84,7 @@ const ReusableChat = ({
     <Box
       sx={{
         height: "90vh",
-        maxHeight: "630px",
+        maxHeight: "650px",
         display: "flex",
         flexDirection: "column",
       }}

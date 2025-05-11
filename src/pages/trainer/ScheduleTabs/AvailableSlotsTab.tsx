@@ -8,10 +8,10 @@ import {
   fetchAvailableSlots,
 } from "../../../redux/booking/bookingThunk";
 import { IconButton, Menu, MenuItem } from "@mui/material";
-import ReuseTable from "../../../components/ReuseTable";
+import ReuseTable from "../../../components/table/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ShimmerTableLoader from "../../../components/ShimmerTable";
-import DateAndTimeFilter from "../../../components/DateAndTimeFilter";
+import ShimmerTableLoader from "../../../components/table/ShimmerTable";
+import DateAndTimeFilter from "../../../components/table/DateFilter";
 import useSearchFilter from "../../../hooks/useSearchFilterTable";
 import PaginationTable from "../../../components/PaginationTable";
 import { useModal } from "../../../hooks/useModal";

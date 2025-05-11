@@ -5,13 +5,13 @@ import {
   cancelSubscriptionUser,
   getUserSubscriptionsData,
 } from "../../../redux/subscription/subscriptionThunk";
-import ReuseTable from "../../../components/ReuseTable";
+import ReuseTable from "../../../components/table/ReuseTable";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
-import ShimmerTableLoader from "../../../components/ShimmerTable";
-import SearchBarTable from "../../../components/SearchBarTable";
+import ShimmerTableLoader from "../../../components/table/ShimmerTable";
+import SearchBarTable from "../../../components/table/SearchBarTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { showErrorToast, showSuccessToast } from "../../../utils/toast";
-import TableFilter from "../../../components/TableFilter";
+import TableFilter from "../../../components/table/TableFilter";
 import useSearchFilter from "../../../hooks/useSearchFilterTable";
 import PaginationTable from "../../../components/PaginationTable";
 import { useModal } from "../../../hooks/useModal";

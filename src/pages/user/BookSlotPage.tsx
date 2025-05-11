@@ -7,20 +7,23 @@ import {
   fetchTrainerSlots,
 } from "../../redux/booking/bookingThunk";
 import Tabs from "../../components/Tabs";
-import Error from "../../components/Error";
-import { Box } from "@mui/material";
+import Error from "../../components/shared/Error";
+import { Box, Container, Paper } from "@mui/material";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useSelector } from "react-redux";
-import SlotBooking from "../../components/SlotBooking";
 import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
 import { isSubscribedToTheTrainer } from "../../redux/subscription/subscriptionThunk";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
-import ReuseTable from "../../components/ReuseTable";
+import ReuseTable from "../../components/table/ReuseTable";
 import PaginationTable from "../../components/PaginationTable";
 import { TableColumn } from "../../types/tableTypes";
-import { Dayjs } from "dayjs";
-import DateAndTimeFilter from "../../components/DateAndTimeFilter";
-import ShimmerTableLoader from "../../components/ShimmerTable";
+import dayjs, { Dayjs } from "dayjs";
+import DateAndTimeFilter from "../../components/table/DateFilter";
+import ShimmerTableLoader from "../../components/table/ShimmerTable";
+import useSlotBooking from "../../hooks/useSlotBooking";
+import Calendar from "../../components/slot-booking/Calender";
+import TimeSelector from "../../components/slot-booking/TimeSelector";
+import Summary from "../../components/slot-booking/Summary";
 
 const availableSlotColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -79,6 +82,16 @@ const BookSlotPage: React.FC = () => {
     handleResetDates,
     getQueryParams,
   } = useSearchFilter();
+
+  const {
+    selectedSlotId,
+    selectedSlot,
+    handleDateChange,
+    shouldDisableDate,
+    getFilteredTimeSlots,
+    handleTimeChange,
+    handleBooking,
+  } = useSlotBooking();
 
   useEffect(() => {
     if (trainerId) {
@@ -184,7 +197,67 @@ const BookSlotPage: React.FC = () => {
                 totalPages={totalPages}
               />
               <Box sx={{ mb: 2, mt: 2 }}>
-                <SlotBooking />
+                <Container
+                  sx={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    padding: { xs: 0, sm: 0 },
+                    margin: 0,
+                  }}
+                  maxWidth={false}
+                >
+                  <Paper
+                    sx={{
+                      p: { xs: 1.5, sm: 2 },
+                      borderRadius: "8px",
+                      elevation: 3,
+                      width: "100%",
+                      maxWidth: "100%",
+                      boxSizing: "border-box",
+                      border: "2px solid #e0e0e0",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", md: "row" },
+                        gap: 3,
+                        width: "100%",
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      <Box
+                        sx={{ flex: { xs: "100%", md: "50%" }, width: "100%" }}
+                      >
+                        <Calendar
+                          selectedDate={
+                            selectedSlot ? dayjs(selectedSlot.date) : null
+                          }
+                          handleDateChange={handleDateChange}
+                          shouldDisableDate={shouldDisableDate}
+                        />
+                      </Box>
+                      <Box
+                        sx={{
+                          flex: { xs: "100%", md: "50%" },
+                          marginTop: { xs: 2, md: 2 },
+                          width: "100%",
+                        }}
+                      >
+                        <TimeSelector
+                          selectedSlotTime={selectedSlot?.time}
+                          handleTimeChange={handleTimeChange}
+                          filteredSlots={getFilteredTimeSlots()}
+                        />
+                        <Summary
+                          selectedSlot={selectedSlot}
+                          handleBooking={handleBooking}
+                          selectedSlotId={selectedSlotId}
+                        />
+                      </Box>
+                    </Box>
+                  </Paper>
+                </Container>
               </Box>
             </>
           );

@@ -1,11 +1,11 @@
 import React from "react";
-import ForgotPassword from "../components/ForgotPassword";
+import ForgotPassword from "../../components/user-authentication/ForgotPassword";
 import { useFormik } from "formik";
-import { emailValidationSchema } from "../utils/validationSchema";
-import { showErrorToast, showSuccessToast } from "../utils/toast";
+import { emailValidationSchema } from "../../utils/validationSchema";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { useDispatch } from "react-redux";
-import { forgotPassLink } from "../redux/auth/authThunk";
-import { AppDispatch } from "../redux/store";
+import { forgotPassLink } from "../../redux/auth/authThunk";
+import { AppDispatch } from "../../redux/store";
 
 const ForgotPassPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

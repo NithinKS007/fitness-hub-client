@@ -11,9 +11,9 @@ import { Box, Typography, Container } from "@mui/material";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import SearchVideoGrid from "../../components/SearchVideoGrid";
-import VideoFilter from "../../components/VideoGridFilter";
-import VideoCard from "../../components/VideoCard";
+import SearchVideoGrid from "../../components/videos/SearchVideoGrid";
+import VideoFilter from "../../components/videos/VideoGridFilter";
+import VideoCard from "../../components/videos/VideoCard";
 import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
 
 const styles = {

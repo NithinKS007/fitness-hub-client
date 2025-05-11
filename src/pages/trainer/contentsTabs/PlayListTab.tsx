@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useContent from "../../../hooks/useTrainerContent";
 import PlayListModal from "../../../components/modals/PlayListModal";
-import ReuseTable from "../../../components/ReuseTable";
-import ShimmerTableLoader from "../../../components/ShimmerTable";
+import ReuseTable from "../../../components/table/ReuseTable";
+import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
 import { TableColumn } from "../../../types/tableTypes";
-import SearchBarTable from "../../../components/SearchBarTable";
-import TableFilter from "../../../components/TableFilter";
-import DateAndTimeFilter from "../../../components/DateAndTimeFilter";
+import SearchBarTable from "../../../components/table/SearchBarTable";
+import TableFilter from "../../../components/table/TableFilter";
+import DateAndTimeFilter from "../../../components/table/DateFilter";
 import useSearchFilter from "../../../hooks/useSearchFilterTable";
 import { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
@@ -24,7 +24,7 @@ const playListColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Title", field: "title" },
   { label: "Date Of Publishing", field: "dateOfPublishing" },
-  { label: "Publicly Accessible", field: "isBlocked" },
+  { label: "Public Access", field: "isBlocked" },
   { label: "No of videos", field: "videoCount" },
   { label: "Actions", field: "actions" },
 ];
@@ -196,7 +196,7 @@ const PlaylistSection = () => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: 1,
+          marginTop: 1.5,
           alignItems: "center",
           width: "100%",
         }}

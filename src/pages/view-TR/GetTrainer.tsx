@@ -5,18 +5,19 @@ import {
   Divider,
   InputAdornment,
   TextField,
+  Typography,
 } from "@mui/material";
-import FilterButton from "../components/FilterIconButton";
-import FilterSidebar from "../components/FilterSideBar";
-import TrainerGrid from "../components/TrainerCard";
-import TrainerGridShimmer from "../components/TrainerCardShimmer";
-import useSearchFilterListing from "../hooks/useSearchFilterListing";
+import FilterButton from "../../components/FilterIconButton";
+import FilterSidebar from "../../components/FilterSideBar";
+import TrainerGridShimmer from "../../components/trainer-card/TrainerCardShimmer";
+import useUserTrainerSearch from "../../hooks/useUserTrainerSearch";
 import SearchIcon from "@mui/icons-material/Search";
-import PaginationTable from "../components/PaginationTable";
-import { RootState } from "../redux/store";
+import PaginationTable from "../../components/PaginationTable";
+import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
-import ReuseSort from "../components/Sort";
-import Error from "../components/Error";
+import ReuseSort from "../../components/Sort";
+import Error from "../../components/shared/Error";
+import TrainerCard from "../../components/trainer-card/TrainerCard";
 
 const styles = {
   container: { py: 4 },
@@ -50,6 +51,27 @@ const styles = {
     display: "flex",
     justifyContent: "center",
   },
+  gridContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 2,
+    cursor: "pointer",
+    justifyContent: "flex-start",
+    width: "100%",
+  },
+  trainerBox: {
+    width: { xs: "100%", sm: "48%", md: "31%", lg: "24%" },
+    display: "flex",
+    justifyContent: "center",
+  },
+  noTrainersBox: {
+    width: "100%",
+    height: "100vh",
+  },
+  noTrainersText: {
+    marginTop: "20px",
+    textAlign: "center",
+  },
 };
 
 const GetTrainer: React.FC = () => {
@@ -74,7 +96,7 @@ const GetTrainer: React.FC = () => {
     handleSortChange,
     sortValue,
     sortOptions,
-  } = useSearchFilterListing();
+  } = useUserTrainerSearch();
 
   const { totalPages, currentPage } = useSelector(
     (state: RootState) => state.user.pagination
@@ -137,10 +159,28 @@ const GetTrainer: React.FC = () => {
         ) : (
           <>
             <Box sx={styles.trainerContainer}>
-              <TrainerGrid
-                trainersList={trainersList}
-                handleTrainerDetails={handleTrainerDetails}
-              />
+              <Box sx={styles.gridContainer}>
+                {trainersList && trainersList.length > 0 ? (
+                  trainersList.map((trainer) => (
+                    <Box key={trainer._id} sx={styles.trainerBox}>
+                      <TrainerCard
+                        trainer={trainer}
+                        handleTrainerDetails={handleTrainerDetails}
+                      />
+                    </Box>
+                  ))
+                ) : (
+                  <Box sx={styles.noTrainersBox}>
+                    <Typography
+                      variant="h6"
+                      color="textSecondary"
+                      sx={styles.noTrainersText}
+                    >
+                      No Trainers Found
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
               <Box sx={styles.paginationContainer}>
                 <PaginationTable
                   handlePageChange={handlePageChange}

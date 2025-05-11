@@ -1,17 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import useSubscription from "../../hooks/useSubscription";
-import ReuseTable from "../../components/ReuseTable";
+import ReuseTable from "../../components/table/ReuseTable";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getTrainerSubscriptionById } from "../../redux/subscription/subscriptionThunk";
 import { TableColumn } from "../../types/tableTypes";
-import Error from "../../components/Error";
-import ShimmerTableLoader from "../../components/ShimmerTable";
+import Error from "../../components/shared/Error";
+import ShimmerTableLoader from "../../components/table/ShimmerTable";
+import NavigationTabs from "../../components/Tabs";
+
+const tabItems = [{ label: "Trainer-Subscriptions" }];
 
 const TrainerSubscriptionDetailsPage: React.FC = () => {
+  const [selectedTab, setSelectedTab] = useState(0);
   const { subscriptions } = useSubscription();
 
   const { _id } = useParams();
@@ -39,6 +43,10 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
     { label: "Total Sessions", field: "totalSessions" },
   ];
 
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log(event);
+    setSelectedTab(newValue);
+  };
   const fetchedTrainerSubscriptionData =
     trainerSubscriptionData && trainerSubscriptionData.length > 0
       ? subscriptions.map((sub, index) => {
@@ -52,34 +60,24 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
         })
       : [];
 
-  if (isLoading) {
-    return <ShimmerTableLoader columns={columns} />;
-  }
-
-  if (error) {
-    return <Error message={error} />;
-  }
-
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          width: "100%",
-          marginBottom: "10px",
-          marginTop: "10px",
-        }}
-      ></Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "end",
-          gap: 4,
-          marginBottom: "10px",
-        }}
-      ></Box>
-      <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
+     <NavigationTabs
+        tabItems={tabItems}
+        value={selectedTab}
+        handleChange={handleTabChange}
+      />
+      {selectedTab === 0 && (
+        <Box sx={{ mt: 3 }}>
+          {isLoading ? (
+            <ShimmerTableLoader columns={columns} />
+          ) : error ? (
+            <Error message={error} />
+          ) : (
+            <ReuseTable columns={columns} data={fetchedTrainerSubscriptionData} />
+          )}
+        </Box>
+      )}
     </>
   );
 };

@@ -262,7 +262,10 @@ export const createPlayListSchema = Yup.object({
 export const videoFileSchema = Yup.mixed()
   .required("Video is required")
   .test("fileType", "Unsupported video format", (value) => {
-    return value && ["video/mp4", "video/webm", "video/ogg"].includes((value as File).type);
+    return (
+      value &&
+      ["video/mp4", "video/webm", "video/ogg"].includes((value as File).type)
+    );
   });
 
 export const thumbnailFileSchema = Yup.mixed()
@@ -273,7 +276,9 @@ export const thumbnailFileSchema = Yup.mixed()
   .test("fileType", "Unsupported image format", (value) => {
     return (
       value &&
-      ["image/jpeg", "image/png", "image/gif", "image/webp"].includes((value as File).type)
+      ["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
+        (value as File).type
+      )
     );
   });
 
@@ -289,7 +294,7 @@ export const videoCreationSchema = Yup.object().shape({
     .of(Yup.string())
     .min(1, "Playlist is required")
     .required("Playlists are required"),
-    duration: Yup.number()
+  duration: Yup.number()
     .min(0, "Duration cannot be negative")
     .required("Duration is required"),
 });
@@ -317,8 +322,8 @@ export const workoutValidationSchema = Yup.object({
   workouts: Yup.array()
     .of(
       Yup.object({
-        bodyPart: Yup.string().required("Body part is required"), 
-        exercise: Yup.string().required("Exercise name is required"), 
+        bodyPart: Yup.string().required("Body part is required"),
+        exercise: Yup.string().required("Exercise name is required"),
         kg: Yup.number()
           .min(0, "Kg must be positive")
           .required("Kg is required"),

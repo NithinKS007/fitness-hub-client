@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getTrainerSubscribedUsers } from "../../redux/subscription/subscriptionThunk";
 import { useSelector } from "react-redux";
-import ReuseTable from "../../components/ReuseTable";
-import SearchBarTable from "../../components/SearchBarTable";
-import ShimmerTableLoader from "../../components/ShimmerTable";
+import ReuseTable from "../../components/table/ReuseTable";
+import SearchBarTable from "../../components/table/SearchBarTable";
+import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import { Box } from "@mui/material";
-import TableFilter from "../../components/TableFilter";
+import TableFilter from "../../components/table/TableFilter";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
-import { TableColumn,Filter } from "../../types/tableTypes";
+import { TableColumn, Filter } from "../../types/tableTypes";
+import Error from "../../components/shared/Error";
+import NavigationTabs from "../../components/Tabs";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -39,19 +41,24 @@ const filter: Filter[] = [
   { value: "Monthly" },
   { value: "Quarterly" },
   { value: "Yearly" },
-  { value: "HalfYearly" }
+  { value: "HalfYearly" },
 ];
+
+const tabItems = [{ label: "My subscribers" }];
 
 const SubscribersListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const [selectedTab, setSelectedTab] = useState<number>(0);
   const {
     subscribersOfTrainer: userSubscribedPlans,
     isLoading,
     error,
     pagination: { totalPages, currentPage },
   } = useSelector((state: RootState) => state.subscription);
-
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+    console.log("event", event);
+  };
   const {
     handlePageChange,
     searchTerm,
@@ -97,30 +104,28 @@ const SubscribersListPage: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between",mt:5}}>
-        <SearchBarTable
-          searchTerm={searchTerm as string}
-          handleSearchChange={handleSearchChange}
-        />
-        <TableFilter
-          filter={filter}
-          selectedFilter={selectedFilter as string[]}
-          handleFilterChange={handleFilterChange}
-        />
-      </Box>
-
-      {isLoading ? (
-        <ShimmerTableLoader columns={columns} />
-      ) : error ? (
-        <Box>{error}</Box>
-      ) : (
+      <NavigationTabs
+        tabItems={tabItems}
+        value={selectedTab as number}
+        handleChange={handleTabChange}
+      />
+      {selectedTab === 0 && (
         <>
-          <ReuseTable columns={columns} data={fetchedUserSubscriptionsData} />
-          <PaginationTable
-            handlePageChange={handlePageChange}
-            page={currentPage}
-            totalPages={totalPages}
-          />
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <SearchBarTable searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
+            <TableFilter filter={filter} selectedFilter={selectedFilter} handleFilterChange={handleFilterChange} />
+          </Box>
+
+          {isLoading ? (
+            <ShimmerTableLoader columns={columns} />
+          ) : error ? (
+            <Error message={error} />
+          ) : (
+            <>
+              <ReuseTable columns={columns} data={fetchedUserSubscriptionsData} />
+              <PaginationTable handlePageChange={handlePageChange} page={currentPage} totalPages={totalPages} />
+            </>
+          )}
         </>
       )}
     </>

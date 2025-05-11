@@ -28,7 +28,6 @@ const filters:Filter[] = [
       "Injury Rehab",
       "Competition Prep",
       "Pre & Post Natal Training",
-      "Diabetes management",
       "Cardio",
       "Nutrition Coaching",
     ],
@@ -48,7 +47,7 @@ const filters:Filter[] = [
 
 const sortOptions: Sort[] = [{ value: "aA - zz" }, { value: "zz - aa" }];
 
-export const useSearchFilterListing = () => {
+export const useUserTrainerSearch = () => {
   const rowsPerPage: number = 12;
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [page, setPage] = useState<number>(1);
@@ -178,4 +177,4 @@ export const useSearchFilterListing = () => {
     sortOptions
   };
 };
-export default useSearchFilterListing
+export default useUserTrainerSearch

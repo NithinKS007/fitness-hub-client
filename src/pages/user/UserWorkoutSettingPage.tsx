@@ -4,21 +4,22 @@ import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import useWorkouts from "../../hooks/useWorkouts";
 import WorkOutModal from "../../components/modals/WorkOutModal";
-import ReuseTable from "../../components/ReuseTable";
-import ShimmerTableLoader from "../../components/ShimmerTable";
+import ReuseTable from "../../components/table/ReuseTable";
+import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import { Filter, TableColumn } from "../../types/tableTypes";
-import SearchBarTable from "../../components/SearchBarTable";
+import SearchBarTable from "../../components/table/SearchBarTable";
 import PaginationTable from "../../components/PaginationTable";
-import DateAndTimeFilter from "../../components/DateAndTimeFilter";
+import DateAndTimeFilter from "../../components/table/DateFilter";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import { getWorkouts } from "../../redux/workout/workoutThunk";
 import { useDispatch } from "react-redux";
-import TableFilter from "../../components/TableFilter";
+import TableFilter from "../../components/table/TableFilter";
 import { Dayjs } from "dayjs";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
+import NavigationTabs from "../../components/Tabs";
 
 const columns: TableColumn[] = [
   { label: "Date", field: "date" },
@@ -34,13 +35,15 @@ const columns: TableColumn[] = [
 
 const filter: Filter[] = [{ value: "Completed" }, { value: "Pending" }];
 
+const tabItems = [{ label: "My workouts" }];
+
 const UserWorkoutsPage: React.FC = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openCompleteModal, setOpenCompleteModal] = useState(false);
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(
     null
   );
-
+  const [selectedTab, setSelectedTab] = useState<number>(0);
   const {
     open,
     selectedDate,
@@ -87,6 +90,11 @@ const UserWorkoutsPage: React.FC = () => {
     getQueryParams().fromDate,
     getQueryParams().toDate,
   ]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log("event", event);
+    setSelectedTab(newValue);
+  };
   const handleConfirmDelete = () => {
     if (selectedWorkoutId) {
       handleDelete(selectedWorkoutId);
@@ -225,115 +233,126 @@ const UserWorkoutsPage: React.FC = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
-          marginTop: 3,
-        }}
-      >
-        <SearchBarTable
-          searchTerm={searchTerm as string}
-          handleSearchChange={handleSearchChange}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "end",
-            gap: 2,
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <TableFilter
-            selectedFilter={selectedFilter as string[]}
-            handleFilterChange={handleFilterChange}
-            filter={filter}
-          />
-          <DateAndTimeFilter
-            fromDate={fromDate as Dayjs | null}
-            toDate={toDate as Dayjs | null}
-            onFromDateChange={handleFromDateChange}
-            onToDateChange={handleToDateChange}
-            onReset={handleResetDates}
-          />
+      <NavigationTabs
+        tabItems={tabItems}
+        value={selectedTab}
+        handleChange={handleTabChange}
+      />
+      {selectedTab === 0 && (
+        <>
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
-              alignItems: "end",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+              marginTop: 3,
             }}
           >
-            <Button
-              variant="contained"
+            <SearchBarTable
+              searchTerm={searchTerm as string}
+              handleSearchChange={handleSearchChange}
+            />
+            <Box
               sx={{
-                backgroundColor: "#1f2937",
-                color: "white",
-                textTransform: "none",
-                borderRadius: 2,
+                display: "flex",
+                justifyContent: "end",
+                gap: 2,
+                alignItems: "center",
+                width: "100%",
               }}
-              onClick={handleOpen}
             >
-              Add Workout
-            </Button>
+              <TableFilter
+                selectedFilter={selectedFilter as string[]}
+                handleFilterChange={handleFilterChange}
+                filter={filter}
+              />
+              <DateAndTimeFilter
+                fromDate={fromDate as Dayjs | null}
+                toDate={toDate as Dayjs | null}
+                onFromDateChange={handleFromDateChange}
+                onToDateChange={handleToDateChange}
+                onReset={handleResetDates}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "end",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#1f2937",
+                    color: "white",
+                    textTransform: "none",
+                    borderRadius: 2,
+                  }}
+                  onClick={handleOpen}
+                >
+                  Add Workout
+                </Button>
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }} />
-      {isLoading ? (
-        <ShimmerTableLoader columns={columns} />
-      ) : (
-        <>
-          <ReuseTable columns={columns} data={mapWorkoutData(workouts)} />
-          <PaginationTable
-            handlePageChange={handlePageChange}
-            page={currentPage}
-            totalPages={totalPages}
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+          />
+          {isLoading ? (
+            <ShimmerTableLoader columns={columns} />
+          ) : (
+            <>
+              <ReuseTable columns={columns} data={mapWorkoutData(workouts)} />
+              <PaginationTable
+                handlePageChange={handlePageChange}
+                page={currentPage}
+                totalPages={totalPages}
+              />
+            </>
+          )}
+          <WorkOutModal
+            open={open as boolean}
+            selectedDate={selectedDate}
+            workoutData={workoutData}
+            formik={formik}
+            handleClose={handleClose}
+            addWorkout={addWorkout}
+            removeWorkout={removeWorkout}
+            addNewRow={addNewRow}
+            handleDateChange={handleDateChange}
+            isExerciseDisabled={isExerciseDisabled}
+            handleBodyPartChange={handleBodyPartChange}
+          />
+          <ConfirmationModalDialog
+            open={openDeleteModal}
+            onConfirm={handleConfirmDelete}
+            onCancel={() => {
+              setOpenDeleteModal(false);
+              setSelectedWorkoutId(null);
+            }}
+            content="Are you sure you want to delete this workout?"
+            confirmText="Delete"
+            cancelText="Cancel"
+            confirmColor="error"
+            cancelColor="primary"
+          />
+
+          <ConfirmationModalDialog
+            open={openCompleteModal}
+            onConfirm={handleConfirmComplete}
+            onCancel={() => {
+              setOpenCompleteModal(false);
+              setSelectedWorkoutId(null);
+            }}
+            content="Mark this workout as complete? NB: You cannot mark future workouts as completed."
+            confirmText="Yes"
+            cancelText="No"
+            confirmColor="success"
+            cancelColor="primary"
           />
         </>
       )}
-      <WorkOutModal
-        open={open as boolean}
-        selectedDate={selectedDate}
-        workoutData={workoutData}
-        formik={formik}
-        handleClose={handleClose}
-        addWorkout={addWorkout}
-        removeWorkout={removeWorkout}
-        addNewRow={addNewRow}
-        handleDateChange={handleDateChange}
-        isExerciseDisabled={isExerciseDisabled}
-        handleBodyPartChange={handleBodyPartChange}
-      />
-      <ConfirmationModalDialog
-        open={openDeleteModal}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => {
-          setOpenDeleteModal(false);
-          setSelectedWorkoutId(null);
-        }}
-        content="Are you sure you want to delete this workout?"
-        confirmText="Delete"
-        cancelText="Cancel"
-        confirmColor="error"
-        cancelColor="primary"
-      />
-
-      <ConfirmationModalDialog
-        open={openCompleteModal}
-        onConfirm={handleConfirmComplete}
-        onCancel={() => {
-          setOpenCompleteModal(false);
-          setSelectedWorkoutId(null);
-        }}
-        content="Mark this workout as complete? NB: You cannot mark future workouts as completed."
-        confirmText="Yes"
-        cancelText="No"
-        confirmColor="success"
-        cancelColor="primary"
-      />
     </>
   );
 };

@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import {
   formatVideoDuration,
   getRelativeTime,
-} from "../utils/conversion";
+} from "../../utils/conversion";
 
 const styles = {
   videoWrapper: {

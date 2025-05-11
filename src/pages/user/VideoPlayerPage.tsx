@@ -4,9 +4,9 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { fetchVideoDataById } from "../../redux/content/contentThunk";
 import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
-import ReuseableVideoPlayer from "../../components/ReuseableVideoPlayer";
+import VideoPlayer from "../../components/videos/VideoPlayer";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import Error from "../../components/Error";
+import Error from "../../components/shared/Error";
 
 const styles = {
   container: {
@@ -69,7 +69,7 @@ const VideoPlayerPage: React.FC = () => {
 
   return (
     <Box sx={styles.container}>
-      <ReuseableVideoPlayer
+      <VideoPlayer
         videoUrl={videoData?.video}
         thumbnail={videoData?.thumbnail}
         videoId={videoData?._id}

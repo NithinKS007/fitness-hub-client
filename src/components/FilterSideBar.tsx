@@ -13,7 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Add, Remove, Close } from "@mui/icons-material";
-import { FilterValues} from "../hooks/useSearchFilterListing";
+import { FilterValues} from "../hooks/useUserTrainerSearch";
 interface FilterSidebarProps {
   filters: any[];
   open: boolean;

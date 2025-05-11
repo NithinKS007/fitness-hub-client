@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
-import ReuseTable from "../../components/ReuseTable";
+import ReuseTable from "../../components/table/ReuseTable";
 import { useDispatch } from "react-redux";
 import { getUsers } from "../../redux/admin/adminThunk";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { User } from "../../redux/auth/authTypes";
-import SearchBarTable from "../../components/SearchBarTable";
-import ShimmerTableLoader from "../../components/ShimmerTable";
+import SearchBarTable from "../../components/table/SearchBarTable";
+import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import useUpdateBlockStatus from "../../hooks/useUpdateBlockStatus";
 import { Box, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import TableFilter from "../../components/TableFilter";
+import TableFilter from "../../components/table/TableFilter";
 import useSearchFilter from "../../hooks/useSearchFilterTable";
 import PaginationTable from "../../components/PaginationTable";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { useModal } from "../../hooks/useModal";
-import { TableColumn,Filter } from "../../types/tableTypes";
+import { TableColumn, Filter } from "../../types/tableTypes";
+import NavigationTabs from "../../components/Tabs";
+import Error from "../../components/shared/Error";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -36,7 +38,14 @@ const filter: Filter[] = [
   { value: "verified" },
   { value: "Not verified" },
 ];
+
+const tabItems = [{ label: "Users" }];
 const UsersListPage: React.FC = () => {
+  const [selectedTab, setSelectedTab] = useState(0);
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log(event);
+    setSelectedTab(newValue);
+  };
   const dispatch = useDispatch<AppDispatch>();
   const { users, isLoading, error } = useSelector(
     (state: RootState) => state.admin
@@ -132,9 +141,9 @@ const UsersListPage: React.FC = () => {
                   onClick={(event) => handleClick(event, user?._id as string)}
                   aria-label="More options"
                   sx={{
-                    padding: "16px", 
-                    minWidth: "0",  
-                    width: "25px",  
+                    padding: "16px",
+                    minWidth: "0",
+                    width: "25px",
                     height: "25px",
                   }}
                 >
@@ -172,7 +181,14 @@ const UsersListPage: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
+      <NavigationTabs
+        tabItems={tabItems}
+        value={selectedTab}
+        handleChange={handleTabChange}
+      />
+       {selectedTab === 0 && (
+         <>
+      <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
         <SearchBarTable
           searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
@@ -189,28 +205,24 @@ const UsersListPage: React.FC = () => {
       {isLoading ? (
         <ShimmerTableLoader columns={columns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error as string} />
       ) : (
         <>
           <ReuseTable columns={columns} data={usersData} />
-          {usersData.length > 5 ? (
             <PaginationTable
               handlePageChange={handlePageChange}
               page={currentPage}
               totalPages={totalPages}
             />
-          ) : (
-            ""
-          )}
         </>
       )}
       <ConfirmationModalDialog
         open={confirmationModalOpen as boolean}
         content={
           (selectedUser &&
-          `Are you sure you want to ${
-            selectedUser.isBlocked ? "unblock" : "block"
-          } ${selectedUser.fname} ${selectedUser.lname} ?`) as string
+            `Are you sure you want to ${
+              selectedUser.isBlocked ? "unblock" : "block"
+            } ${selectedUser.fname} ${selectedUser.lname} ?`) as string
         }
         onConfirm={handleConfirmBlockStatus}
         onCancel={handleConfirmationModalClose}
@@ -219,6 +231,8 @@ const UsersListPage: React.FC = () => {
         confirmColor="success"
         cancelColor="error"
       />
+    </>
+      )}
     </>
   );
 };

@@ -10,19 +10,15 @@ import {
   Button,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import type { SignState } from "../types/authTypes";
 import GoogleAuth from "./GoogleAuth";
 import { Link } from "react-router-dom";
-const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
 
-
-interface AuthFormProps {
-  signState: SignState;
-  setSignState: React.Dispatch<React.SetStateAction<SignState>>;
+interface SignInFormProps {
   showPassword: boolean;
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
   formik: any;
   handleGoogleAuthSuccess: (res: any) => void;
+  handleAuthClick: () => void;
 }
 
 const styles = {
@@ -112,14 +108,14 @@ const styles = {
     cursor: "pointer",
   },
 };
+const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
 
-const AuthForm: React.FC<AuthFormProps> = ({
-  signState,
-  setSignState,
+const SignInForm: React.FC<SignInFormProps> = ({
   showPassword,
   setShowPassword,
   formik,
   handleGoogleAuthSuccess,
+  handleAuthClick,
 }) => {
   return (
     <Box sx={styles.root}>
@@ -135,46 +131,11 @@ const AuthForm: React.FC<AuthFormProps> = ({
         <Box sx={styles.formContainer}>
           <Box sx={styles.formBox}>
             <Typography variant="h5" gutterBottom>
-              {signState === "sign in"
-                ? "Sign in to your account"
-                : "Create your account"}
+              Sign in to your account
             </Typography>
 
             <form onSubmit={formik.handleSubmit}>
               <Box sx={styles.formFields}>
-                {signState === "sign up" && (
-                  <Box sx={styles.nameFieldsContainer}>
-                    <TextField
-                      fullWidth
-                      name="fname"
-                      label="First Name"
-                      variant="outlined"
-                      size="small"
-                      value={formik.values.fname}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.fname && Boolean(formik.errors.fname)
-                      }
-                      helperText={formik.touched.fname && formik.errors.fname}
-                      sx={styles.textField}
-                    />
-                    <TextField
-                      fullWidth
-                      name="lname"
-                      label="Last Name"
-                      variant="outlined"
-                      size="small"
-                      value={formik.values.lname}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.lname && Boolean(formik.errors.lname)
-                      }
-                      helperText={formik.touched.lname && formik.errors.lname}
-                      sx={styles.textField}
-                    />
-                  </Box>
-                )}
-
                 <TextField
                   fullWidth
                   name="email"
@@ -217,53 +178,15 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   sx={styles.textField}
                 />
 
-                {signState === "sign up" && (
-                  <TextField
-                    fullWidth
-                    name="cPassword"
-                    label="Confirm Password"
-                    type={showPassword ? "text" : "password"}
-                    variant="outlined"
-                    size="small"
-                    value={formik.values.cPassword}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.cPassword &&
-                      Boolean(formik.errors.cPassword)
-                    }
-                    helperText={
-                      formik.touched.cPassword && formik.errors.cPassword
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword((prev) => !prev)}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={styles.textField}
+                <Box sx={styles.rememberMeContainer}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="Remember Me"
                   />
-                )}
-
-                {signState === "sign in" && (
-                  <Box sx={styles.rememberMeContainer}>
-                    <FormControlLabel
-                      control={<Checkbox />}
-                      label="Remember Me"
-                    />
-                    <Link
-                      to="/forgot-password"
-                      style={styles.forgotPasswordLink}
-                    >
-                      Forgot Password?
-                    </Link>
-                  </Box>
-                )}
+                  <Link to="/forgot-password" style={styles.forgotPasswordLink}>
+                    Forgot Password?
+                  </Link>
+                </Box>
 
                 <GoogleAuth handleGoogleAuthSuccess={handleGoogleAuthSuccess} />
 
@@ -273,32 +196,16 @@ const AuthForm: React.FC<AuthFormProps> = ({
                   fullWidth
                   sx={styles.submitButton}
                 >
-                  {formik.isSubmitting
-                    ? signState === "sign in"
-                      ? "Signing In..."
-                      : "Signing Up..."
-                    : signState === "sign in"
-                      ? "Sign In"
-                      : "Sign Up"}
+                  {formik.isSubmitting ? "Signing In..." : "Sign In"}
                 </Button>
               </Box>
             </form>
 
             <Box sx={styles.toggleSignBox}>
               <Typography sx={styles.toggleSignText}>
-                {signState === "sign up"
-                  ? "Already have an account?"
-                  : "Don't have an account?"}
-                <Box
-                  component="span"
-                  onClick={() =>
-                    setSignState(
-                      signState === "sign up" ? "sign in" : "sign up"
-                    )
-                  }
-                  sx={styles.toggleSignLink}
-                >
-                  {signState === "sign up" ? "Sign In" : "Sign Up"}
+                Don't have an account?
+                <Box component="span" onClick={handleAuthClick} sx={styles.toggleSignLink}>
+                  Sign Up
                 </Box>
               </Typography>
             </Box>
@@ -310,4 +217,4 @@ const AuthForm: React.FC<AuthFormProps> = ({
   );
 };
 
-export default AuthForm;
+export default SignInForm;

@@ -1,13 +1,13 @@
-import AuthPage from "./pages/AuthPage";
-import OtpPage from "./pages/OtpPage";
+import AuthPage from "./pages/auth/AuthPage";
+import OtpPage from "./pages/auth/OtpPage";
 import { Route, Routes } from "react-router-dom";
 import ProtectedUser from "./components/protected/ProtectedUser";
 import ProtectedAdmin from "./components/protected/ProtectedAdmin";
 import ProtectedTrainer from "./components/protected/ProtectedTrainer";
 import DBPageAdmin from "./pages/admin/DBPageAdmin";
 import DBPageTrainer from "./pages/trainer/DBPageTrainer";
-import ForgotPassPage from "./pages/ForgotPassPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ForgotPassPage from "./pages/auth/ForgotPassPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import HomePage from "./pages/HomePage";
 import AdminLayouts from "./layouts/AdminLayout";
 import UsersListPage from "./pages/admin/UsersListPage";
@@ -24,22 +24,23 @@ import PageNotFound from "./pages/PageNotFound";
 import ULProfile from "./layouts/ULProfile";
 import UserProfilePage from "./pages/user/UserProfilePage";
 import DBPageUser from "./pages/user/DBPageUser";
-import GetTrainer from "./pages/GetTrainer";
+import GetTrainer from "./pages/view-TR/GetTrainer";
 import ULwithNavFooter from "./layouts/ULwithNavFooter";
-import ViewTrainerDetailsUS from "./pages/ViewTrainerDetailsUS";
+import ViewTrainerDetailsUS from "./pages/view-TR/ViewTrainerDetailsUS";
 import UserSubscriptionsPage from "./pages/user/UserSubscriptionPage";
 import UserBookingsPage from "./pages/user/UserBookingsPage";
 import UserChatsPage from "./pages/user/UserChatsPage";
 import SubscriptionSettingPage from "./pages/trainer/SubscriptionSettingPage";
 import AddContentsPage from "./pages/trainer/AddContentsPage";
 import TrainerSubscriptionDetailsPage from "./pages/admin/TrainerSubscriptionDetailsPage";
-import OnFailurePage from "./pages/OnFailurePage";
-import OnSuccessPage from "./pages/OnSuccessPage";
 import VideosPage from "./pages/user/VideosPage";
 import UserWorkoutsPage from "./pages/user/UserWorkoutSettingPage";
 import CommissionHistory from "./pages/admin/CommissionHistory";
 import VideoPlayerPage from "./pages/user/VideoPlayerPage";
 import BookSlotPage from "./pages/user/BookSlotPage";
+import ShowPlansPage from "./pages/view-sub/ShowPlansPage";
+import SubSuccessPage from "./pages/view-sub/SubSuccessPage";
+import SubFailurePage from "./pages/view-sub/SubFailurePage";
 
 const App = () => {
   return (
@@ -53,8 +54,8 @@ const App = () => {
       <Route path="*" element={<PageNotFound />} />
 
       <Route element={<ProtectedUser />}>
-        <Route path="/subscription-success" element={<OnSuccessPage />} />
-        <Route path="/subscription-failed" element={<OnFailurePage />} />
+        <Route path="/subscription-success" element={<SubSuccessPage />} />
+        <Route path="/subscription-failed" element={<SubFailurePage />} />
       </Route>
 
       <Route element={<ULwithNavFooter />}>
@@ -78,10 +79,27 @@ const App = () => {
           <Route path="/user/bookings" element={<UserBookingsPage />} />
           <Route path="/user/chats" element={<UserChatsPage />} />
           <Route path="/user/workouts" element={<UserWorkoutsPage />} />
-          <Route path="/user/trainer-videos/:trainerId/" element={<VideosPage />} />
-          <Route path="/user/trainer/video/:videoId" element={<VideoPlayerPage />} />
-          <Route path="/user/trainer-booking-slot/:trainerId" element={<BookSlotPage />} />
+          <Route
+            path="/user/trainer-videos/:trainerId/"
+            element={<VideosPage />}
+          />
+          <Route
+            path="/user/trainer/video/:videoId"
+            element={<VideoPlayerPage />}
+          />
+          <Route
+            path="/user/trainer-booking-slot/:trainerId"
+            element={<BookSlotPage />}
+          />
         </Route>
+      </Route>
+
+      {/*userRoute-show-trainer-plans*/}
+      <Route element={<ProtectedUser />}>
+        <Route
+          path="/trainer-show-plans/:trainerId"
+          element={<ShowPlansPage />}
+        />
       </Route>
 
       {/*adminRoutes*/}

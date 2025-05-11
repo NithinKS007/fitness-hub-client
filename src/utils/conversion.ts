@@ -4,9 +4,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-const getRelativeTime  = (date: Date) => {
+const getRelativeTime = (date: Date) => {
   return dayjs(date).fromNow();
-}
+};
 
 const formatVideoDuration = (decimalSeconds: number | undefined): string => {
   if (!decimalSeconds || isNaN(decimalSeconds) || decimalSeconds < 0) {
@@ -34,24 +34,28 @@ const getFormattedTimeRange = (time: Date) => {
         hour12: true,
       })
     : "N/A";
-}
+};
 
-const formatDateTodddMMMDYYYY = (date:Date) =>{
+const formatDateTodddMMMDYYYY = (date: Date) => {
   return dayjs(date).format("ddd, MMM D, YYYY");
-} 
+};
 
-const formatCurrency = (amount: number,maxLength:number) => {
+const formatCurrency = (amount: number, maxLength: number) => {
   const fixed = amount.toFixed(2);
   return `USD : ${fixed.padStart(maxLength, " ")}`;
 };
 
+const formatPlanPeriod = (subPeriod:string) => {
+  return subPeriod.charAt(0).toUpperCase() + subPeriod.slice(1);
+};
 
 export {
-  getRelativeTime ,
+  getRelativeTime,
   formatVideoDuration,
   formatTime,
   getFormattedTimeRange,
   formatDateTodddMMMDYYYY,
   formatDateToYYYYMMDD,
-  formatCurrency
+  formatCurrency,
+  formatPlanPeriod
 };

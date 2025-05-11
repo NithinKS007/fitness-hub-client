@@ -1,11 +1,11 @@
 import React from "react";
-import ResetPassword from "../components/ResetPassword";
+import ResetPassword from "../../components/user-authentication/ResetPassword";
 import {  useFormik } from "formik";
-import { passwordValidationSchema } from "../utils/validationSchema";
-import { showErrorToast, showSuccessToast } from "../utils/toast";
+import { passwordValidationSchema } from "../../utils/validationSchema";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
-import { forgotPassword } from "../redux/auth/authThunk";
+import { AppDispatch } from "../../redux/store";
+import { forgotPassword } from "../../redux/auth/authThunk";
 import { useParams } from "react-router-dom";
 
 const ResetPasswordPage: React.FC = () => {

@@ -8,11 +8,6 @@ import {
 } from "@mui/material";
 import { ChatBubbleOutline } from "@mui/icons-material";
 
-interface TrainerGridProps {
-  trainersList: any[];
-  handleTrainerDetails: (_id: string) => void;
-}
-
 const styles = {
   card: {
     borderRadius: "16px",
@@ -104,27 +99,6 @@ const styles = {
     "&:hover": { backgroundColor: "#374151" },
     transition: "background-color 0.3s",
   },
-  gridContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 2,
-    cursor: "pointer",
-    justifyContent: "flex-start",
-    width: "100%",
-  },
-  trainerBox: {
-    width: { xs: "100%", sm: "48%", md: "31%", lg: "24%" },
-    display: "flex",
-    justifyContent: "center",
-  },
-  noTrainersBox: {
-    width: "100%",
-    height: "100vh",
-  },
-  noTrainersText: {
-    marginTop: "20px",
-    textAlign: "center",
-  },
 };
 
 const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
@@ -153,34 +127,4 @@ const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
   );
 };
 
-const TrainerGrid: React.FC<TrainerGridProps> = ({
-  trainersList,
-  handleTrainerDetails,
-}) => {
-  return (
-    <Box sx={styles.gridContainer}>
-      {trainersList && trainersList.length > 0 ? (
-        trainersList.map((trainer) => (
-          <Box key={trainer._id} sx={styles.trainerBox}>
-            <TrainerCard
-              trainer={trainer}
-              handleTrainerDetails={handleTrainerDetails}
-            />
-          </Box>
-        ))
-      ) : (
-        <Box sx={styles.noTrainersBox}>
-          <Typography
-            variant="h6"
-            color="textSecondary"
-            sx={styles.noTrainersText}
-          >
-            No Trainers Found
-          </Typography>
-        </Box>
-      )}
-    </Box>
-  );
-};
-
-export default TrainerGrid;
+export default TrainerCard;

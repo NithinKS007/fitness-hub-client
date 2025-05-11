@@ -1,5 +1,5 @@
 import React, { useEffect} from "react";
-import Profile from "../../components/Profile";
+import Profile from "../../components/profile/TrainerProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import useUpdateProfileForm from "../../hooks/useUpdateProfileForm";

@@ -1,5 +1,5 @@
-import OtpForm from "../components/OtpForm";
-import useOtp from "../hooks/useOtp";
+import OtpForm from "../../components/user-authentication/OtpForm";
+import useOtp from "../../hooks/useOtp";
 import React, { useRef, useState } from "react";
 
 const OtpPage: React.FC = () => {

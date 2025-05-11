@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import useUpdateProfileForm from "../../hooks/useUpdateProfileForm";
 import { useParams } from "react-router-dom";
 import { userDetails } from "../../redux/admin/adminThunk";
-import UserProfile from "../../components/UserProfile";
+import UserProfile from "../../components/profile/UserProfile";
 
 const UserDetailsPage: React.FC = () => {
   const { _id } = useParams<{ _id: string }>();

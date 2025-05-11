@@ -1,5 +1,5 @@
 import React from "react";
-import Profile from "../../components/Profile";
+import TrainerProfileProps from "../../components/profile/TrainerProfile";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useUpdateProfileForm from "../../hooks/useUpdateProfileForm";
@@ -14,7 +14,7 @@ const TrainerProfilePage: React.FC = () => {
 
   return (
     <>
-      <Profile
+      <TrainerProfileProps
         formik={formik}
         handleProfilePicChange={handleProfilePicChange}
         handlePdfChange={handlePdfChange}
