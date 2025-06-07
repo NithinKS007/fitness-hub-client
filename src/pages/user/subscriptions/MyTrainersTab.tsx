@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { TableColumn } from "../../../types/tableTypes";
 import { AppDispatch, RootState } from "../../../redux/store";
 import { useDispatch } from "react-redux";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 import { getUserTrainersList } from "../../../redux/subscription/subscriptionThunk";
 import { useSelector } from "react-redux";
-import PaginationTable from "../../../components/PaginationTable";
+import PaginationTable from "../../../components/Pagination";
 import ReuseTable from "../../../components/table/ReuseTable";
 import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import { Box } from "@mui/material";
@@ -14,6 +14,8 @@ import Button from "@mui/material/Button";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { useNavigate } from "react-router-dom";
 import EventNoteIcon from "@mui/icons-material/EventNote";
+import { GetProfilePic } from "../../../components/icons/IconIndex";
+
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
   { label: "Profile", field: "profilePic" },
@@ -59,7 +61,9 @@ const MyTrainersTab: React.FC<MyTrainersTabProp> = ({ isActive }) => {
       ? userTrainersList.map((sub, index) => {
           const fname = sub.subscribedTrainerData?.fname || "";
           const lname = sub.subscribedTrainerData?.lname || "";
-          const name = `${fname.charAt(0).toUpperCase() + fname.slice(1).toLowerCase()} ${lname.charAt(0).toUpperCase() + lname.slice(1).toLowerCase()}`;
+          const name = `${
+            fname.charAt(0).toUpperCase() + fname.slice(1).toLowerCase()
+          } ${lname.charAt(0).toUpperCase() + lname.slice(1).toLowerCase()}`;
           const isSubscriptionActive =
             sub.stripeSubscriptionStatus === "active";
           const isActive =
@@ -71,7 +75,9 @@ const MyTrainersTab: React.FC<MyTrainersTabProp> = ({ isActive }) => {
             slno: index + 1 + (currentPage - 1) * 9,
             name: name,
             email: sub.subscribedTrainerData?.email || "",
-            profilePic: sub.subscribedTrainerData?.profilePic || "",
+            profilePic: GetProfilePic(
+              sub.subscribedTrainerData?.profilePic || ""
+            ),
             isActive: isActive,
             watchVideos: (
               <Button

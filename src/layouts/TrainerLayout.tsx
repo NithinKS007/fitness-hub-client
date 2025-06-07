@@ -13,9 +13,8 @@ import { RootState } from "../redux/store";
 import { socket } from "../config/socket";
 
 const TrainerLayout: React.FC = () => {
+  const trainer = useSelector((state: RootState) => state.auth.trainer);
 
-  const trainer = useSelector((state:RootState)=>state.auth.trainer)
-  
   const trainerNavItems = [
     {
       icon: <Dashboard />,
@@ -53,22 +52,14 @@ const TrainerLayout: React.FC = () => {
       path: ["/trainer/add-contents"],
     },
   ];
-  
 
   useEffect(() => {
-    if (!trainer?._id) {
-      console.log("No trainer ID, skipping socket setup");
-      return;
+    if (trainer?._id) {
+      socket.emit("register", trainer._id);
+      socket.on("connect", () => {
+        socket.emit("register", trainer._id);
+      });
     }
-
-    console.log("Registering trainer with socket:", trainer._id);
-    socket.emit("register", trainer._id);
-
-    socket.on("connect", () => {
-      console.log("Socket connected in SessionSchedulesPage:", socket.id);
-      socket.emit("register", trainer._id); 
-    });
-
     return () => {
       socket.off("connect");
     };

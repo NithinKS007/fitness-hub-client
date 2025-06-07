@@ -63,7 +63,7 @@ const trainerMenuItems = [
   },
   { label: "Profile", action: "trainer-profile", path: "/trainer/profile" },
   {
-    label: "Profile",
+    label: "Subscription",
     action: "trainer-subscription",
     path: "/trainer/subscriptions",
   },

@@ -6,7 +6,7 @@ export const addWorkout = createAsyncThunk(
   "workouts/addWorkout",
   async (workouts: AddnewWorkout, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("user/add-workout", workouts);
+      const response = await axiosInstance.post("user/workouts", workouts);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -40,9 +40,7 @@ export const deleteSet = createAsyncThunk(
   "workouts/deleteSet",
   async (setId: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(
-        `user/delete-workout-set/${setId}`
-      );
+      const response = await axiosInstance.delete(`user/workouts/${setId}`);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -59,9 +57,7 @@ export const markCompleted = createAsyncThunk(
   "workouts/markCompleted",
   async (setId: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.patch(
-        `user/complete-workout-set/${setId}`
-      );
+      const response = await axiosInstance.patch(`user/workouts/${setId}`);
       return response.data;
     } catch (error: any) {
       console.log(error);

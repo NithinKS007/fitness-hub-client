@@ -12,11 +12,12 @@ import SearchBarTable from "../../../components/table/SearchBarTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { showErrorToast, showSuccessToast } from "../../../utils/toast";
 import TableFilter from "../../../components/table/TableFilter";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
-import PaginationTable from "../../../components/PaginationTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
+import PaginationTable from "../../../components/Pagination";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn, Filter } from "../../../types/tableTypes";
+import { GetProfilePic } from "../../../components/icons/IconIndex";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -159,7 +160,8 @@ const MySubscriptions: React.FC<MySubscriptionsProp> = ({ isActive }) => {
             slno: index + 1 + (currentPage - 1) * 9,
             name: name,
             email: sub.subscribedTrainerData.email,
-            profilePic: sub.subscribedTrainerData.profilePic,
+
+            profilePic: GetProfilePic(sub.subscribedTrainerData.profilePic),
             price: price,
             startDate: sub.startDate,
             endDate: sub.endDate,

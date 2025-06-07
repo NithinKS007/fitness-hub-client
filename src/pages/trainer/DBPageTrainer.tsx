@@ -1,5 +1,11 @@
 import DashBoardBox from "../../components/dashboard/DashBoardBox";
-import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Typography,
+} from "@mui/material";
 import { Box, List, ListItem, ListItemText } from "@mui/material";
 import { People } from "@mui/icons-material";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -84,11 +90,28 @@ const DBPageTrainer = () => {
       </Box>
       <Box sx={{ display: "flex", gap: 2 }}>
         <Box sx={{ flex: 1.5, height: 300 }}>
-          <ReusableLineChart
-            data={transformedChartData}
-            lines={lines}
-            xAxisKey={"_id"}
-          />
+          {transformedChartData.length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                fontSize: "20px",
+                color: "gray",
+              }}
+            >
+              <Typography variant="h6">
+                No data available for the selected time period
+              </Typography>
+            </Box>
+          ) : (
+            <ReusableLineChart
+              data={transformedChartData}
+              lines={lines}
+              xAxisKey={"_id"}
+            />
+          )}
         </Box>
         <Box sx={{ display: "flex", flex: 1 }}>
           <Box sx={{ flex: 1, height: 300 }}>
@@ -105,8 +128,11 @@ const DBPageTrainer = () => {
               {pieChartFormattedData?.map((entry, index) => (
                 <ListItem key={index} sx={{ padding: "4px 0" }}>
                   <ListItemText
-                    primary={`${entry.name.charAt(0).toUpperCase()}${entry.name.split("").splice(1).join("")}`}
-                    secondary={`Number of subscribers : ${entry.value}`}
+                    primary={`${entry.name.charAt(0).toUpperCase()}${entry.name
+                      .split("")
+                      .splice(1)
+                      .join("")}`}
+                    secondary={`Subscribers Count : ${entry.value}`}
                     sx={{ color: entry.color, fontSize: 12 }}
                   />
                 </ListItem>

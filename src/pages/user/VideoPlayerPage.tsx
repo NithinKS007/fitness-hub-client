@@ -28,15 +28,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
   },
-  noVideo: {
-    width: "100%",
-    height: "100%",
-    maxHeight: { xs: "50vh", md: "90vh" },
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    bgcolor: "grey.200",
-  },
 };
 const VideoPlayerPage: React.FC = () => {
   const { videoId } = useParams();

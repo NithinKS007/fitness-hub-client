@@ -10,10 +10,10 @@ export interface userState {
 }
 
 export interface ListApprovedTrainersQuery {
-  Search?: string;
-  Specialization?: string[];
-  Experience?: string[];
-  Gender?: string[];
+  search?: string;
+  specialization?: string[];
+  experience?: string[];
+  gender?: string[];
   sort?:string
   page: number;
   limit: number;

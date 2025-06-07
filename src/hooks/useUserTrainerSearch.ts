@@ -8,7 +8,6 @@ export interface FilterValues {
   Specialization?: string[];
   Experience?: string[];
   Gender?: string[];
-  
 }
 
 export interface Filter {
@@ -16,7 +15,7 @@ export interface Filter {
   options: string[];
 }
 
-const filters:Filter[] = [
+const filters: Filter[] = [
   {
     label: "Specialization",
     options: [
@@ -34,16 +33,15 @@ const filters:Filter[] = [
   },
   {
     label: "Experience",
-    
+
     options: ["Less than 1", "1-3", "3-5", "Greater than 5"],
   },
   {
     label: "Gender",
-    
+
     options: ["Male", "Female"],
   },
-]
-
+];
 
 const sortOptions: Sort[] = [{ value: "aA - zz" }, { value: "zz - aa" }];
 
@@ -55,9 +53,10 @@ export const useUserTrainerSearch = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filterValues, setFilterValues] = useState<FilterValues>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [openFilters, setOpenFilters] = useState<{ [key: string]: boolean }>({})
-  const [sortValue,setSortValue] = useState<string>("")
-
+  const [openFilters, setOpenFilters] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [sortValue, setSortValue] = useState<string>("");
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -66,35 +65,36 @@ export const useUserTrainerSearch = () => {
   );
 
   useEffect(() => {
-   dispatch(getApprovedTrainers({ page: 1, limit: rowsPerPage }));
+    dispatch(getApprovedTrainers({ page: 1, limit: rowsPerPage }));
   }, [dispatch]);
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if(searchTerm){
+      if (searchTerm) {
         setDebouncedSearchTerm(searchTerm);
-        setFilterValues((prev) => ({ ...prev, Search:searchTerm }));
+        setFilterValues((prev) => ({ ...prev, Search: searchTerm }));
       }
-    }, 700); 
+    }, 700);
 
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
   useEffect(() => {
-    dispatch(getApprovedTrainers({
-      Search: debouncedSearchTerm,
-      page:page as number,
-      limit: rowsPerPage,
-      sort: sortValue,
-    }));
-  }, [debouncedSearchTerm, page, dispatch,sortValue]);
+    dispatch(
+      getApprovedTrainers({
+        search: debouncedSearchTerm,
+        page: page,
+        limit: rowsPerPage,
+        sort: sortValue,
+      })
+    );
+  }, [debouncedSearchTerm, page, dispatch, sortValue]);
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     newPage: number
   ) => {
-    console.log("event",event)
+    console.log("event", event);
     setPage(newPage);
   };
 
@@ -107,7 +107,7 @@ export const useUserTrainerSearch = () => {
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    setPage(1); 
+    setPage(1);
   };
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -115,7 +115,7 @@ export const useUserTrainerSearch = () => {
   ) => {
     const { value, checked } = event.target;
     setFilterValues((prev) => {
-      const currentValues = prev[filterLabel] || [] ;
+      const currentValues = prev[filterLabel] || [];
       const updatedValues = checked
         ? [...currentValues, value]
         : currentValues?.filter((item: string) => item !== value);
@@ -123,10 +123,10 @@ export const useUserTrainerSearch = () => {
     });
   };
 
-  const handleSortChange = (value:string) =>{
-    setSortValue(value)
+  const handleSortChange = (value: string) => {
+    setSortValue(value);
     setPage(1);
-  }
+  };
 
   const handleResetAll = () => {
     setFilterValues({});
@@ -139,11 +139,19 @@ export const useUserTrainerSearch = () => {
   };
 
   const handleSearchWithFilterTrainer = () => {
-    setPage(1); 
+    const transformedFilterValues = Object.entries(filterValues).reduce(
+      (acc: { [key: string]: string[] }, [key, value]) => {
+        const newKey = key.charAt(0).toLowerCase() + key.slice(1);
+        acc[newKey] = value;
+        return acc;
+      },
+      {}
+    );
+    setPage(1);
     dispatch(
       getApprovedTrainers({
-        ...filterValues,
-        Search: debouncedSearchTerm,
+         ...transformedFilterValues,
+        search: debouncedSearchTerm,
         page: 1,
         limit: rowsPerPage,
         sort: sortValue,
@@ -174,7 +182,7 @@ export const useUserTrainerSearch = () => {
 
     handleSortChange,
     sortValue,
-    sortOptions
+    sortOptions,
   };
 };
-export default useUserTrainerSearch
+export default useUserTrainerSearch;

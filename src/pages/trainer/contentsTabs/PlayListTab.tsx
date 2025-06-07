@@ -11,14 +11,15 @@ import { TableColumn } from "../../../types/tableTypes";
 import SearchBarTable from "../../../components/table/SearchBarTable";
 import TableFilter from "../../../components/table/TableFilter";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 import { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
 import { getPlayListsOfTrainer, updatePlayListPrivacyStatus } from "../../../redux/content/contentThunk";
-import PaginationTable from "../../../components/PaginationTable";
+import PaginationTable from "../../../components/Pagination";
 import { PlayList } from "../../../redux/content/contentTypes";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
+import { GetBlockStatusIcon } from "../../../components/icons/IconIndex";
 
 const playListColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -148,7 +149,7 @@ const PlaylistSection = () => {
             ...list,
             slno: index + 1 + (currentPage - 1) * 9,
             title: list.title,
-            isBlocked:list.privacy,
+            isBlocked:GetBlockStatusIcon(list.privacy),
             videoCount: list?.videoCount ? list.videoCount : 0,
             dateOfPublishing: `${formattedDate} ${formattedTime}`,
             actions: (

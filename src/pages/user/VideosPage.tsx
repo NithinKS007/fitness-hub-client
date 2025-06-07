@@ -8,8 +8,8 @@ import {
   getPlayListsAvailableByTrainerId,
 } from "../../redux/content/contentThunk";
 import { Box, Typography, Container } from "@mui/material";
-import useSearchFilter from "../../hooks/useSearchFilterTable";
-import PaginationTable from "../../components/PaginationTable";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import PaginationTable from "../../components/Pagination";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import SearchVideoGrid from "../../components/videos/SearchVideoGrid";
 import VideoFilter from "../../components/videos/VideoGridFilter";
@@ -71,7 +71,7 @@ const VideosPage: React.FC = () => {
   useEffect(() => {
     if (trainerId) {
       const queryParams = getQueryParams();
-      queryParams.limit = 12;
+      queryParams.limit = 8;
       dispatch(fetchVideosByTrainerUser({ trainerId, ...queryParams }));
       dispatch(getPlayListsAvailableByTrainerId({ trainerId }));
       dispatch(isSubscribedToTheTrainer(trainerId));
@@ -113,12 +113,12 @@ const VideosPage: React.FC = () => {
     <>
       <Box sx={styles.searchFilterContainer}>
         <SearchVideoGrid
-          searchTerm={searchTerm as string}
+          searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
         />
         <Box sx={styles.filterWrapper}>
           <VideoFilter
-            selectedFilter={selectedFilter as string[]}
+            selectedFilter={selectedFilter}
             filter={fetchedPlayListsData}
             handleFilterChange={handleFilterChange}
           />
@@ -143,15 +143,15 @@ const VideosPage: React.FC = () => {
               <>
                 <Box
                   sx={{
-                    marginTop:"20px",
+                    marginTop: "20px",
                     display: "grid",
                     gridTemplateColumns: {
-                      xs: "1fr", 
-                      sm: "1fr 1fr", 
-                      md: "1fr 1fr 1fr", 
-                      lg: "1fr 1fr 1fr 1fr", 
+                      xs: "1fr",
+                      sm: "1fr 1fr",
+                      md: "1fr 1fr 1fr",
+                      lg: "1fr 1fr 1fr 1fr",
                     },
-                    gap: "18px", 
+                    gap: "18px",
                     width: "100%",
                     boxSizing: "border-box",
                   }}

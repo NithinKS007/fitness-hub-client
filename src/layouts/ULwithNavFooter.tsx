@@ -14,7 +14,6 @@ const ULwithNavFooter: React.FC = () => {
     if (user) {
       return user;
     }
-
     if (trainer) {
       return trainer;
     }

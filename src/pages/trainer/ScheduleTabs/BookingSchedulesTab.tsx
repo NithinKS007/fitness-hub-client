@@ -10,14 +10,16 @@ import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
 import VideoChatIcon from "@mui/icons-material/VideoChat";
 import useAppointments from "../../../hooks/useAppointments";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 import SearchBarTable from "../../../components/table/SearchBarTable";
 import TableFilter from "../../../components/table/TableFilter";
-import PaginationTable from "../../../components/PaginationTable";
+import PaginationTable from "../../../components/Pagination";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
+import { GetProfilePic } from "../../../components/icons/IconIndex";
+import { filters } from "../../../utils/timeOptions";
 
 const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -31,57 +33,6 @@ const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Scheduled Time", field: "appointmentTime" },
   { label: "Current Status", field: "appointmentStatus" },
   { label: "Manage Actions", field: "actions" },
-];
-
-const filters = [
-  { value: "12:00 AM" },
-  { value: "12:30 AM" },
-  { value: "01:00 AM" },
-  { value: "01:30 AM" },
-  { value: "02:00 AM" },
-  { value: "02:30 AM" },
-  { value: "03:00 AM" },
-  { value: "03:30 AM" },
-  { value: "04:00 AM" },
-  { value: "04:30 AM" },
-  { value: "05:00 AM" },
-  { value: "05:30 AM" },
-  { value: "06:00 AM" },
-  { value: "06:30 AM" },
-  { value: "07:00 AM" },
-  { value: "07:30 AM" },
-  { value: "08:00 AM" },
-  { value: "08:30 AM" },
-  { value: "09:00 AM" },
-  { value: "09:30 AM" },
-  { value: "10:00 AM" },
-  { value: "10:30 AM" },
-  { value: "11:00 AM" },
-  { value: "11:30 AM" },
-  { value: "12:00 PM" },
-  { value: "12:30 PM" },
-  { value: "01:00 PM" },
-  { value: "01:30 PM" },
-  { value: "02:00 PM" },
-  { value: "02:30 PM" },
-  { value: "03:00 PM" },
-  { value: "03:30 PM" },
-  { value: "04:00 PM" },
-  { value: "04:30 PM" },
-  { value: "05:00 PM" },
-  { value: "05:30 PM" },
-  { value: "06:00 PM" },
-  { value: "06:30 PM" },
-  { value: "07:00 PM" },
-  { value: "07:30 PM" },
-  { value: "08:00 PM" },
-  { value: "08:30 PM" },
-  { value: "09:00 PM" },
-  { value: "09:30 PM" },
-  { value: "10:00 PM" },
-  { value: "10:30 PM" },
-  { value: "11:00 PM" },
-  { value: "11:30 PM" },
 ];
 
 interface BookingSchedulesTabProps {
@@ -178,7 +129,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
       return {
         ...appointmentData,
         slno: index + 1 + (currentPage - 1) * 9,
-        profilePic: appointmentData.userData.profilePic,
+        profilePic: GetProfilePic(appointmentData.userData.profilePic),
         name: `${appointmentData.userData.fname} ${appointmentData.userData.lname}`,
         email: appointmentData.userData.email,
         phone: appointmentData.userData.phone,
@@ -206,12 +157,6 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
                   fontSize: "30px",
                   opacity: isAppointmentInPast ? 0.5 : 1,
                 }}
-                // onClick={() =>
-                //   onVideoCallClick(
-                //     appointmentData.userData._id,
-                //     appointmentData._id
-                //   )
-                // }
                 onClick={() =>
                   !isAppointmentInPast &&
                   onVideoCallClick(
@@ -320,7 +265,11 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
         open={cancelModalOpen as boolean}
         content={
           selectedAppointment &&
-          `Are you sure you want to cancel the appointment with ${selectedAppointment.userData.fname} ${selectedAppointment.userData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`
+          `Are you sure you want to cancel the appointment with ${
+            selectedAppointment.userData.fname
+          } ${selectedAppointment.userData.lname} scheduled for ${new Date(
+            selectedAppointment.appointmentDate
+          ).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`
         }
         onConfirm={handleConfirmCancel}
         onCancel={handleCancelModalClose}

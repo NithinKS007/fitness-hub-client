@@ -12,13 +12,18 @@ import { Box, IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TableFilter from "../../components/table/TableFilter";
-import useSearchFilter from "../../hooks/useSearchFilterTable";
-import PaginationTable from "../../components/PaginationTable";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import PaginationTable from "../../components/Pagination";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { useModal } from "../../hooks/useModal";
 import { TableColumn, Filter } from "../../types/tableTypes";
 import NavigationTabs from "../../components/Tabs";
 import Error from "../../components/shared/Error";
+import {
+  GetBlockStatusIcon,
+  GetProfilePic,
+  GetVerificationStatusIcon,
+} from "../../components/icons/IconIndex";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -128,13 +133,19 @@ const UsersListPage: React.FC = () => {
           const dateObj = new Date(user.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
-
+          const profilePic = GetProfilePic(user.profilePic as string);
+          const isBlocked = GetBlockStatusIcon(user?.isBlocked as boolean);
+          const verified = GetVerificationStatusIcon(
+            (user.otpVerified as boolean) || (user.googleVerified as boolean)
+          );
           return {
             ...user,
+            profilePic: profilePic,
+            verified: verified,
+            isBlocked: isBlocked,
             name: `${user.fname} ${user.lname}`,
             slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
-            verified: user.otpVerified || user.googleVerified,
             details: (
               <>
                 <IconButton
@@ -186,52 +197,55 @@ const UsersListPage: React.FC = () => {
         value={selectedTab}
         handleChange={handleTabChange}
       />
-       {selectedTab === 0 && (
-         <>
-      <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
-        <SearchBarTable
-          searchTerm={searchTerm as string}
-          handleSearchChange={handleSearchChange}
-        />
-        <Box sx={{ display: "flex", justifyContent: "space-between" }} gap={1}>
-          <TableFilter
-            filter={filter}
-            selectedFilter={selectedFilter as string[]}
-            handleFilterChange={handleFilterChange}
-          />
-        </Box>
-      </Box>
-
-      {isLoading ? (
-        <ShimmerTableLoader columns={columns} />
-      ) : error ? (
-        <Error message={error as string} />
-      ) : (
+      {selectedTab === 0 && (
         <>
-          <ReuseTable columns={columns} data={usersData} />
-            <PaginationTable
-              handlePageChange={handlePageChange}
-              page={currentPage}
-              totalPages={totalPages}
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
+            <SearchBarTable
+              searchTerm={searchTerm as string}
+              handleSearchChange={handleSearchChange}
             />
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between" }}
+              gap={1}
+            >
+              <TableFilter
+                filter={filter}
+                selectedFilter={selectedFilter as string[]}
+                handleFilterChange={handleFilterChange}
+              />
+            </Box>
+          </Box>
+
+          {isLoading ? (
+            <ShimmerTableLoader columns={columns} />
+          ) : error ? (
+            <Error message={error as string} />
+          ) : (
+            <>
+              <ReuseTable columns={columns} data={usersData} />
+              <PaginationTable
+                handlePageChange={handlePageChange}
+                page={currentPage}
+                totalPages={totalPages}
+              />
+            </>
+          )}
+          <ConfirmationModalDialog
+            open={confirmationModalOpen as boolean}
+            content={
+              (selectedUser &&
+                `Are you sure you want to ${
+                  selectedUser.isBlocked ? "unblock" : "block"
+                } ${selectedUser.fname} ${selectedUser.lname} ?`) as string
+            }
+            onConfirm={handleConfirmBlockStatus}
+            onCancel={handleConfirmationModalClose}
+            confirmText="Yes"
+            cancelText="No"
+            confirmColor="success"
+            cancelColor="error"
+          />
         </>
-      )}
-      <ConfirmationModalDialog
-        open={confirmationModalOpen as boolean}
-        content={
-          (selectedUser &&
-            `Are you sure you want to ${
-              selectedUser.isBlocked ? "unblock" : "block"
-            } ${selectedUser.fname} ${selectedUser.lname} ?`) as string
-        }
-        onConfirm={handleConfirmBlockStatus}
-        onCancel={handleConfirmationModalClose}
-        confirmText="Yes"
-        cancelText="No"
-        confirmColor="success"
-        cancelColor="error"
-      />
-    </>
       )}
     </>
   );

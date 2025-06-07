@@ -9,14 +9,16 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
 import useAppointments from "../../../hooks/useAppointments";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 import SearchBarTable from "../../../components/table/SearchBarTable";
 import TableFilter from "../../../components/table/TableFilter";
-import PaginationTable from "../../../components/PaginationTable";
+import PaginationTable from "../../../components/Pagination";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
+import { GetProfilePic } from "../../../components/icons/IconIndex";
+import { filters } from "../../../utils/timeOptions";
 
 const bookingRequestsColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -32,56 +34,6 @@ const bookingRequestsColumns: TableColumn[] = [
   { label: "Manage Actions", field: "actions" },
 ];
 
-const filters = [
-  { value: "12:00 AM" },
-  { value: "12:30 AM" },
-  { value: "01:00 AM" },
-  { value: "01:30 AM" },
-  { value: "02:00 AM" },
-  { value: "02:30 AM" },
-  { value: "03:00 AM" },
-  { value: "03:30 AM" },
-  { value: "04:00 AM" },
-  { value: "04:30 AM" },
-  { value: "05:00 AM" },
-  { value: "05:30 AM" },
-  { value: "06:00 AM" },
-  { value: "06:30 AM" },
-  { value: "07:00 AM" },
-  { value: "07:30 AM" },
-  { value: "08:00 AM" },
-  { value: "08:30 AM" },
-  { value: "09:00 AM" },
-  { value: "09:30 AM" },
-  { value: "10:00 AM" },
-  { value: "10:30 AM" },
-  { value: "11:00 AM" },
-  { value: "11:30 AM" },
-  { value: "12:00 PM" },
-  { value: "12:30 PM" },
-  { value: "01:00 PM" },
-  { value: "01:30 PM" },
-  { value: "02:00 PM" },
-  { value: "02:30 PM" },
-  { value: "03:00 PM" },
-  { value: "03:30 PM" },
-  { value: "04:00 PM" },
-  { value: "04:30 PM" },
-  { value: "05:00 PM" },
-  { value: "05:30 PM" },
-  { value: "06:00 PM" },
-  { value: "06:30 PM" },
-  { value: "07:00 PM" },
-  { value: "07:30 PM" },
-  { value: "08:00 PM" },
-  { value: "08:30 PM" },
-  { value: "09:00 PM" },
-  { value: "09:30 PM" },
-  { value: "10:00 PM" },
-  { value: "10:30 PM" },
-  { value: "11:00 PM" },
-  { value: "11:30 PM" },
-];
 
 interface BookingRequestsTabProps {
   isActive: boolean;
@@ -205,7 +157,7 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
       return {
         ...req,
         slno: index + 1 + (currentPage - 1) * 9,
-        profilePic: req.userData.profilePic,
+        profilePic: GetProfilePic(req.userData.profilePic),
         name: `${req.userData.fname} ${req.userData.lname}`,
         email: req.userData.email,
         phone: req.userData.phone,

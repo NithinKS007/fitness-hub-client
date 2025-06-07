@@ -18,7 +18,7 @@ export const addBookingSlot = createAsyncThunk(
   async (bookingSlotData: CreateBookingSlot, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
-        `trainer/add-slot/`,
+        `trainer/slots/`,
         bookingSlotData
       );
       return response.data;
@@ -38,7 +38,7 @@ export const fetchAvailableSlots = createAsyncThunk(
   async (params: AvailableSlotsQueryParams, { rejectWithValue }) => {
     try {
       console.log("sending params", params);
-      const response = await axiosInstance.get(`trainer/available-slots/`, {
+      const response = await axiosInstance.get(`trainer/slots/`, {
         params,
       });
       return response.data;
@@ -58,7 +58,7 @@ export const fetchTrainerSlots = createAsyncThunk(
   async ({ trainerId }: RequestTrainerAvailableSlot, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `user/booking-slots/${trainerId}`
+        `user/slots/all/${trainerId}`
       );
       return response.data;
     } catch (error: any) {
@@ -83,7 +83,7 @@ export const fetchAvailableSlotsFromToday = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(
-        `user/available-slots/${trainerId}`,
+        `user/slots/${trainerId}`,
         { params }
       );
       return response.data;
@@ -102,7 +102,7 @@ export const bookSlot = createAsyncThunk(
   "bookingSlot/bookSlot",
   async ({ slotId }: RequestBookSlot, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`user/book-slot/${slotId}`);
+      const response = await axiosInstance.post(`user/slots/${slotId}`);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -119,7 +119,7 @@ export const fetchBookingRequests = createAsyncThunk(
   "bookingSlot/fetchBookingRequests",
   async (params: HandleBookingRequestsQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/booking-requests/`, {
+      const response = await axiosInstance.get(`trainer/bookings/`, {
         params,
       });
       return response.data;
@@ -147,7 +147,7 @@ export const approveRejectAppointmentBooking = createAsyncThunk(
 
     try {
       const response = await axiosInstance.patch(
-        `trainer/approve-reject-booking/`,
+        `trainer/bookings/`,
         { appointmentId, bookingSlotId, action }
       );
       return response.data;
@@ -167,7 +167,7 @@ export const getScheduledAppointments = createAsyncThunk(
   async (params: ScheduledAppointmentsQueryParams, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `trainer/appointment-schedules/`,
+        `trainer/appointments/`,
         { params }
       );
       return response.data;
@@ -189,7 +189,7 @@ export const cancelAppointmentScheduleByTrainer = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `trainer/cancel-appointment-schedule/${appointmentId}`
+        `trainer/appointments/${appointmentId}`
       );
       return response.data;
     } catch (error: any) {
@@ -210,7 +210,7 @@ export const cancelAppointmentScheduleByUser = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `user/cancel-appointment-schedule/${appointmentId}`
+        `user/appointments/${appointmentId}`
       );
       return response.data;
     } catch (error: any) {
@@ -227,7 +227,7 @@ export const getScheduledAppointmentsUser = createAsyncThunk(
   "bookingSlot/getScheduledAppointmentsForUser",
   async (params: ScheduledAppointmentsQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/appointment-schedules/`, {
+      const response = await axiosInstance.get(`user/appointments/`, {
         params,
       });
       return response.data;
@@ -246,7 +246,7 @@ export const deleteAvailableBookingSlot = createAsyncThunk(
   async ({ bookingSlotId }: RequestDeleteBookingSlot, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
-        `trainer/delete-booking-slot/${bookingSlotId}`
+        `trainer/slots/${bookingSlotId}`
       );
       return response.data;
     } catch (error: any) {

@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import { Box, Button} from "@mui/material";
+import { Box, Button } from "@mui/material";
 import SlotModal from "../../../components/modals/SlotModal";
 import useSlot from "../../../hooks/useSlot";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
-import {
-  fetchAvailableSlots,
-} from "../../../redux/booking/bookingThunk";
+import { fetchAvailableSlots } from "../../../redux/booking/bookingThunk";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import ReuseTable from "../../../components/table/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
-import PaginationTable from "../../../components/PaginationTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
+import PaginationTable from "../../../components/Pagination";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
@@ -30,16 +28,16 @@ const availableSlotColumns: TableColumn[] = [
 ];
 
 interface AvailableSlotsTabProps {
-    isActive: boolean;
+  isActive: boolean;
 }
 
-const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
+const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { slots, isLoading, error, pagination } = useSelector(
     (state: RootState) => state.bookingSlot
   );
   const { totalPages, currentPage } = pagination;
-    const [selectedSlot, setSelectedSlot] = useState<bookingSlots | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<bookingSlots | null>(null);
 
   const {
     modalHandleOpen,
@@ -146,7 +144,7 @@ const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
           justifyContent: "space-between",
           alignItems: "center",
           mt: 1,
-          mb:1
+          mb: 1,
         }}
       >
         <Button
@@ -193,8 +191,11 @@ const AvailableSlotsTab:React.FC<AvailableSlotsTabProps> = ({isActive}) => {
       <ConfirmationModalDialog
         open={deleteModalOpen as boolean}
         content={
-          selectedSlot ?
-          `Are you sure you want to delete the slot for ${new Date(selectedSlot.date).toLocaleDateString()} at ${selectedSlot.time}?`:""
+          selectedSlot
+            ? `Are you sure you want to delete the slot for ${new Date(
+                selectedSlot.date
+              ).toLocaleDateString()} at ${selectedSlot.time}?`
+            : ""
         }
         onConfirm={handleConfirmDelete}
         onCancel={handleDeleteModalClose}

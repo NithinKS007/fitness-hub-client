@@ -10,14 +10,16 @@ import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
 import SearchBarTable from "../../../components/table/SearchBarTable";
 import useAppointments from "../../../hooks/useAppointments";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 import TableFilter from "../../../components/table/TableFilter";
-import PaginationTable from "../../../components/PaginationTable";
+import PaginationTable from "../../../components/Pagination.tsx";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
 import { ScheduledAppointmentsUser } from "../../../redux/booking/bookingTypes";
+import { GetProfilePic } from "../../../components/icons/IconIndex.tsx";
+import { filters } from "../../../utils/timeOptions.ts";
 
 const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -29,57 +31,6 @@ const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Scheduled Time", field: "appointmentTime" },
   { label: "Current Status", field: "appointmentStatus" },
   { label: "More", field: "actions" },
-];
-
-const filters = [
-  { value: "12:00 AM" },
-  { value: "12:30 AM" },
-  { value: "01:00 AM" },
-  { value: "01:30 AM" },
-  { value: "02:00 AM" },
-  { value: "02:30 AM" },
-  { value: "03:00 AM" },
-  { value: "03:30 AM" },
-  { value: "04:00 AM" },
-  { value: "04:30 AM" },
-  { value: "05:00 AM" },
-  { value: "05:30 AM" },
-  { value: "06:00 AM" },
-  { value: "06:30 AM" },
-  { value: "07:00 AM" },
-  { value: "07:30 AM" },
-  { value: "08:00 AM" },
-  { value: "08:30 AM" },
-  { value: "09:00 AM" },
-  { value: "09:30 AM" },
-  { value: "10:00 AM" },
-  { value: "10:30 AM" },
-  { value: "11:00 AM" },
-  { value: "11:30 AM" },
-  { value: "12:00 PM" },
-  { value: "12:30 PM" },
-  { value: "01:00 PM" },
-  { value: "01:30 PM" },
-  { value: "02:00 PM" },
-  { value: "02:30 PM" },
-  { value: "03:00 PM" },
-  { value: "03:30 PM" },
-  { value: "04:00 PM" },
-  { value: "04:30 PM" },
-  { value: "05:00 PM" },
-  { value: "05:30 PM" },
-  { value: "06:00 PM" },
-  { value: "06:30 PM" },
-  { value: "07:00 PM" },
-  { value: "07:30 PM" },
-  { value: "08:00 PM" },
-  { value: "08:30 PM" },
-  { value: "09:00 PM" },
-  { value: "09:30 PM" },
-  { value: "10:00 PM" },
-  { value: "10:30 PM" },
-  { value: "11:00 PM" },
-  { value: "11:30 PM" },
 ];
 
 interface BookingsTabProps {
@@ -161,16 +112,18 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
       );
       const formattedAppointmentDate =
         appointmentDate.toLocaleDateString("en-GB");
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-    
-        appointmentDate.setHours(0, 0, 0, 0);
-      const isCancelDisabled = appointmentDate < today;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
+      appointmentDate.setHours(0, 0, 0, 0);
+      const isCancelDisabled = appointmentDate < today;
+      const profilePic = GetProfilePic(
+        appointmentData.trainerData.profilePic as string
+      );
       return {
         ...appointmentData,
         slno: index + 1 + (currentPage - 1) * 9,
-        profilePic: appointmentData.trainerData.profilePic,
+        profilePic: profilePic,
         name: `${appointmentData.trainerData.fname} ${appointmentData.trainerData.lname}`,
         email: appointmentData.trainerData.email,
         appointmentDate: `${formattedAppointmentDate}`,
@@ -289,7 +242,15 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
         open={confirmationModalOpen as boolean}
         content={
           selectedAppointment
-            ? `Are you sure you want to cancel your appointment with ${selectedAppointment.trainerData.fname} ${selectedAppointment.trainerData.lname} scheduled for ${new Date(selectedAppointment.appointmentDate).toLocaleDateString()} at ${selectedAppointment.appointmentTime}?`
+            ? `Are you sure you want to cancel your appointment with ${
+                selectedAppointment.trainerData.fname
+              } ${
+                selectedAppointment.trainerData.lname
+              } scheduled for ${new Date(
+                selectedAppointment.appointmentDate
+              ).toLocaleDateString()} at ${
+                selectedAppointment.appointmentTime
+              }?`
             : ""
         }
         onConfirm={handleConfirmCancel}

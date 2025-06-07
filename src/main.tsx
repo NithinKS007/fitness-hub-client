@@ -17,6 +17,7 @@ const STRIPE_PUBLISHABLE_KEY = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string
 );
 
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Elements stripe={STRIPE_PUBLISHABLE_KEY}>

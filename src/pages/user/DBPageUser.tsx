@@ -12,7 +12,6 @@ import useUserDashBoard from "../../hooks/useUserDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ReusableLineChart from "../../components/dashboard/LineChart";
 
-
 const DBPageUser = () => {
   const {
     selectedTimePeriod,
@@ -37,7 +36,9 @@ const DBPageUser = () => {
     return (
       <Box sx={{ textAlign: "center", padding: 2 }}>
         <Typography color="error">
-          {typeof error === "string" ? error : "Unable to load your dashboard. Please try again later."}
+          {typeof error === "string"
+            ? error
+            : "Unable to load your dashboard. Please try again later."}
         </Typography>
       </Box>
     );
@@ -108,20 +109,36 @@ const DBPageUser = () => {
           </FormControl>
         </Box>
 
-        <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
-          Workout Progress (Completed Workouts)
+        <Typography variant="h6" sx={{ mb: 3, textAlign: "center" }}>
+          Workout Progress (Completed)
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
           <Box sx={{ flex: 1.5, height: 300 }}>
-            <ReusableLineChart
-              data={lineChartData}
-              xAxisKey={"date"}
-              yAxisValue={"Weight Lifted (kg)"}
-              lines={lines}
-            />
+            {lineChartData && lineChartData.length === 0 ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  fontSize: "16px",
+                  color: "gray",
+                }}
+              >
+                <Typography variant="h6">
+                  No data available for the selected time period.
+                </Typography>
+              </Box>
+            ) : (
+              <ReusableLineChart
+                data={lineChartData}
+                xAxisKey="date"
+                yAxisValue="Weight Lifted (kg)"
+                lines={lines}
+              />
+            )}
           </Box>
-          
         </Box>
       </Box>
     </>

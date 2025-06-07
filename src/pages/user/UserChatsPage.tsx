@@ -13,7 +13,7 @@ import {
 import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
-import useSearchFilter from "../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../hooks/useSearchFilter";
 export interface Ichat {
   _id: string;
   senderId: string;

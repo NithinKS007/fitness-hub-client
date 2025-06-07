@@ -8,11 +8,13 @@ import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
 import SearchBarTable from "../../../components/table/SearchBarTable";
 import { formatTime, getFormattedTimeRange } from "../../../utils/conversion";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 import TableFilter from "../../../components/table/TableFilter";
-import PaginationTable from "../../../components/PaginationTable";
+import PaginationTable from "../../../components/Pagination";
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
+import { GetProfilePic } from "../../../components/icons/IconIndex";
+import { filters } from "../../../utils/timeOptions";
 
 const videoCallLogColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -26,56 +28,6 @@ const videoCallLogColumns: TableColumn[] = [
   { label: "Call End Time", field: "callEndTime" },
   { label: "Call Duration", field: "callDuration" },
   { label: "Call Status", field: "callStatus" },
-];
-const filters = [
-  { value: "12:00 AM" },
-  { value: "12:30 AM" },
-  { value: "01:00 AM" },
-  { value: "01:30 AM" },
-  { value: "02:00 AM" },
-  { value: "02:30 AM" },
-  { value: "03:00 AM" },
-  { value: "03:30 AM" },
-  { value: "04:00 AM" },
-  { value: "04:30 AM" },
-  { value: "05:00 AM" },
-  { value: "05:30 AM" },
-  { value: "06:00 AM" },
-  { value: "06:30 AM" },
-  { value: "07:00 AM" },
-  { value: "07:30 AM" },
-  { value: "08:00 AM" },
-  { value: "08:30 AM" },
-  { value: "09:00 AM" },
-  { value: "09:30 AM" },
-  { value: "10:00 AM" },
-  { value: "10:30 AM" },
-  { value: "11:00 AM" },
-  { value: "11:30 AM" },
-  { value: "12:00 PM" },
-  { value: "12:30 PM" },
-  { value: "01:00 PM" },
-  { value: "01:30 PM" },
-  { value: "02:00 PM" },
-  { value: "02:30 PM" },
-  { value: "03:00 PM" },
-  { value: "03:30 PM" },
-  { value: "04:00 PM" },
-  { value: "04:30 PM" },
-  { value: "05:00 PM" },
-  { value: "05:30 PM" },
-  { value: "06:00 PM" },
-  { value: "06:30 PM" },
-  { value: "07:00 PM" },
-  { value: "07:30 PM" },
-  { value: "08:00 PM" },
-  { value: "08:30 PM" },
-  { value: "09:00 PM" },
-  { value: "09:30 PM" },
-  { value: "10:00 PM" },
-  { value: "10:30 PM" },
-  { value: "11:00 PM" },
-  { value: "11:30 PM" },
 ];
 
 interface CallLogsTabProps {
@@ -136,7 +88,7 @@ const CallLogsTab: React.FC<CallLogsTabProps> = ({ isActive }) => {
         log.callStatus.slice(1).toLowerCase(),
       trainerName: `${log.trainerData.fname} ${log.trainerData.lname}`,
       trainerEmail: log.trainerData.email,
-      profilePic: log.trainerData.profilePic,
+      profilePic: GetProfilePic(log.trainerData.profilePic as string),
     })
   );
 

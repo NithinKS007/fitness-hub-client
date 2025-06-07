@@ -12,14 +12,20 @@ import { useNavigate } from "react-router-dom";
 import { IconButton, Menu, MenuItem, Paper } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TableFilter from "../../components/table/TableFilter";
-import PaginationTable from "../../components/PaginationTable";
-import useSearchFilter from "../../hooks/useSearchFilterTable";
+import PaginationTable from "../../components/Pagination";
+import useSearchFilter from "../../hooks/useSearchFilter";
 import Box from "@mui/material/Box";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn, Filter } from "../../types/tableTypes";
 import NavigationTabs from "../../components/Tabs";
 import Error from "../../components/shared/Error";
+import {
+  GetApprovalStatusIcon,
+  GetBlockStatusIcon,
+  GetProfilePic,
+  GetVerificationStatusIcon,
+} from "../../components/icons/IconIndex";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -44,6 +50,7 @@ const filter: Filter[] = [
 ];
 
 const tabItems = [{ label: "Trainers" }];
+
 const TrainerListPage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -137,14 +144,24 @@ const TrainerListPage: React.FC = () => {
           const dateObj = new Date(trainer.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
-
+          const isBlocked = GetBlockStatusIcon(trainer?.isBlocked as boolean);
+          const verified = GetVerificationStatusIcon(
+            (trainer.otpVerified as boolean) ||
+              (trainer.googleVerified as boolean)
+          );
+          const isApproved = GetApprovalStatusIcon(
+            trainer.isApproved as boolean
+          );
+          const profilePic = GetProfilePic(trainer.profilePic as string);
           return {
             ...trainer,
+            profilePic: profilePic,
             name: `${trainer.fname} ${trainer.lname}`,
             slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
-            verified: trainer.otpVerified || trainer.googleVerified,
-            isApproved: trainer?.isApproved,
+            verified: verified,
+            isApproved: isApproved,
+            isBlocked: isBlocked,
             details: (
               <>
                 <IconButton
@@ -207,7 +224,7 @@ const TrainerListPage: React.FC = () => {
       />
       {selectedTab === 0 && (
         <>
-          <Box sx={{mt:3, display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
             <SearchBarTable
               searchTerm={searchTerm as string}
               handleSearchChange={handleSearchChange}
@@ -243,7 +260,9 @@ const TrainerListPage: React.FC = () => {
             open={confirmationModalOpen as boolean}
             content={
               selectedTrainer
-                ? `Are you sure you want to ${selectedTrainer.isBlocked ? "unblock" : "block"} ${selectedTrainer.fname} ${selectedTrainer.lname}?`
+                ? `Are you sure you want to ${
+                    selectedTrainer.isBlocked ? "unblock" : "block"
+                  } ${selectedTrainer.fname} ${selectedTrainer.lname}?`
                 : "Are you sure you want to proceed?"
             }
             onConfirm={handleConfirmBlockStatus}

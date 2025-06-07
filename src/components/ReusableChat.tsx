@@ -200,7 +200,10 @@ const ReusableChat = ({
                             >
                               {contact.lastMessage?.message &&
                               contact.lastMessage.message.length > 20
-                                ? `${contact.lastMessage.message.slice(0, 15)}...`
+                                ? `${contact.lastMessage.message.slice(
+                                    0,
+                                    15
+                                  )}...`
                                 : contact?.lastMessage?.message ||
                                   "No messages yet"}
                             </span>
@@ -425,6 +428,12 @@ const ReusableChat = ({
               onChange={(e) => {
                 onInputChange(e.target.value);
                 onTyping();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault(); 
+                  onSendClick(); 
+                }
               }}
               placeholder="Type your message..."
               variant="outlined"

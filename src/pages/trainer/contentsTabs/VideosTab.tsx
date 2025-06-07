@@ -11,7 +11,7 @@ import { TableColumn } from "../../../types/tableTypes";
 import SearchBarTable from "../../../components/table/SearchBarTable";
 import TableFilter from "../../../components/table/TableFilter";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
-import useSearchFilter from "../../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 import {
   getUploadedVideosOfTrainer,
   updateVideoPrivacyStatus,
@@ -19,10 +19,11 @@ import {
 } from "../../../redux/content/contentThunk";
 import { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
-import PaginationTable from "../../../components/PaginationTable";
+import PaginationTable from "../../../components/Pagination";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { Video } from "../../../redux/content/contentTypes";
+import { GetBlockStatusIcon } from "../../../components/icons/IconIndex";
 
 const videoColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -152,7 +153,7 @@ const VideoSection = () => {
             title: v.title,
             privacy: v.privacy,
             description:v.description.split(" ").slice(0, 15).join(" ") + "...",
-            isBlocked: v.privacy,
+            isBlocked:GetBlockStatusIcon( v.privacy),
             dateOfPublishing: `${formattedDate} ${formattedTime}`,
             thumbnail: (
               <img

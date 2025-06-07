@@ -10,7 +10,7 @@ export const fetchChatMessages = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(
-        `chat/get-chat/${senderId}/${receiverId}`
+        `chat/messages/${senderId}/${receiverId}`
       );
       return response.data;
     } catch (error: any) {

@@ -12,7 +12,7 @@ import FilterSidebar from "../../components/FilterSideBar";
 import TrainerGridShimmer from "../../components/trainer-card/TrainerCardShimmer";
 import useUserTrainerSearch from "../../hooks/useUserTrainerSearch";
 import SearchIcon from "@mui/icons-material/Search";
-import PaginationTable from "../../components/PaginationTable";
+import PaginationTable from "../../components/Pagination";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import ReuseSort from "../../components/Sort";

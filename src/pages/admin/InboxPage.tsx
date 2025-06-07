@@ -14,14 +14,17 @@ import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import MailIcon from "@mui/icons-material/Mail";
 import { Box, Typography } from "@mui/material";
 import SearchBarTable from "../../components/table/SearchBarTable";
-import useSearchFilter from "../../hooks/useSearchFilterTable";
+import useSearchFilter from "../../hooks/useSearchFilter";
 import DateFilter from "../../components/table/DateFilter";
-import PaginationTable from "../../components/PaginationTable";
+import PaginationTable from "../../components/Pagination";
 import { useModal } from "../../hooks/useModal";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../types/tableTypes";
-import { Dayjs } from "dayjs";
 import NavigationTabs from "../../components/Tabs";
+import {
+  GetProfilePic,
+  GetVerificationStatusIcon,
+} from "../../components/icons/IconIndex";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -33,6 +36,7 @@ const columns: TableColumn[] = [
   { label: "More", field: "actions" },
 ];
 const tabItems = [{ label: "Inbox" }];
+
 const InboxPage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [selectedTrainer, setSelectedTrainer] = React.useState<Trainer | null>(
@@ -48,7 +52,6 @@ const InboxPage: React.FC = () => {
     pagination: { totalPages, currentPage },
   } = useSelector((state: RootState) => state.admin);
 
-  console.log("approved trainers", trainers);
   const {
     handlePageChange,
     searchTerm,
@@ -112,12 +115,17 @@ const InboxPage: React.FC = () => {
           const dateObj = new Date(trainer.createdAt as string);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
+          const verified = GetVerificationStatusIcon(
+            (trainer.otpVerified as boolean) ||
+              (trainer.googleVerified as boolean)
+          );
           return {
             ...trainer,
             name: `${trainer.fname} ${trainer.lname}`,
             slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
-            verified: trainer.otpVerified || trainer.googleVerified,
+            verified: verified,
+            profilePic: GetProfilePic(trainer.profilePic as string),
             actions: (
               <>
                 <Box sx={{ display: "flex", gap: "8px" }}>
@@ -190,8 +198,8 @@ const InboxPage: React.FC = () => {
               gap={1}
             >
               <DateFilter
-                fromDate={fromDate as Dayjs | null}
-                toDate={toDate as Dayjs | null}
+                fromDate={fromDate}
+                toDate={toDate}
                 onFromDateChange={handleFromDateChange}
                 onToDateChange={handleToDateChange}
                 onReset={handleResetDates}

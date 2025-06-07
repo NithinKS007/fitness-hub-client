@@ -82,6 +82,7 @@ const useSubscription = () => {
           ).unwrap();
           showSuccessToast(`${response.message}`);
         }
+        dispatch(getTrainerSubscriptions());
         handleClose();
       } catch (error) {
         console.error("API Error:", error);

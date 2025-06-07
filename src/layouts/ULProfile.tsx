@@ -64,7 +64,6 @@ const ULProfile: React.FC = () => {
       console.log("No user ID, skipping socket setup");
       return;
     }
-    console.log("Registering user with socket:", user._id);
     socket.emit("register", user._id);
     socket.on("connect", () => {
       console.log("Socket connected in ULProfile:", socket.id);
@@ -81,7 +80,6 @@ const ULProfile: React.FC = () => {
         appointmentTime: string;
         appointmentDate: string;
       }) => {
-        console.log("incoming call event triggered", data);
         const {
           callerId,
           roomId,
@@ -107,13 +105,11 @@ const ULProfile: React.FC = () => {
             appointmentId,
           });
           setCallDialogOpen(true);
-          console.log("Modal should open, callDialogOpen:", true);
         }
       }
     );
 
     socket.on("callEnded", () => {
-      console.log("Call ended");
       setCallActive(false);
       setRoomId(null);
     });
@@ -180,7 +176,13 @@ const ULProfile: React.FC = () => {
         open={callDialogOpen as boolean}
         content={
           incomingCallData &&
-          `Incoming call from ${incomingCallData?.trainerName} for appointment at ${incomingCallData?.appointmentTime} on ${new Date(incomingCallData.appointmentDate).toLocaleDateString()}. Accept?`
+          `Incoming call from ${
+            incomingCallData?.trainerName
+          } for appointment at ${
+            incomingCallData?.appointmentTime
+          } on ${new Date(
+            incomingCallData.appointmentDate
+          ).toLocaleDateString()}. Accept?`
         }
         onConfirm={handleAcceptCall}
         onCancel={handleRejectCall}

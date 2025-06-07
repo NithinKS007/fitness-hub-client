@@ -228,12 +228,6 @@ const content = createSlice({
         state.isLoading = false;
         state.error = null;
         const updatedVideo = action.payload.data;
-        const result = state.videos.filter((v) => v._id === updatedVideo._id);
-        console.log("updatedvideo", action.payload.data, "the rs", result);
-        console.log(
-          "Filtered result (plain):",
-          JSON.parse(JSON.stringify(result))
-        );
         state.videos = state.videos.map((video) =>
           video._id === updatedVideo._id ? { ...video, ...updatedVideo } : video
         );
@@ -253,7 +247,6 @@ const content = createSlice({
         state.isLoading = false;
         state.error = null;
         const updatedPlayList = action.payload.data;
-        console.log("edited playlist data", action.payload.data);
         state.playLists = state.playLists.map((p) =>
           p._id === updatedPlayList._id ? { ...p, ...updatedPlayList } : p
         );

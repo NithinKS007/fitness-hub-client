@@ -76,8 +76,8 @@ const DBPageAdmin = () => {
       (trainer?.totalActiveSubscriptions / trainer?.totalSubscriptions) * 100 ||
       0,
     canceledPercentage:
-      (trainer?.totalCanceledSubscriptions / trainer?.totalSubscriptions) * 100 ||
-      0,
+      (trainer?.totalCanceledSubscriptions / trainer?.totalSubscriptions) *
+        100 || 0,
   }));
 
   if (isLoading) {
@@ -121,11 +121,28 @@ const DBPageAdmin = () => {
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
           <Box sx={{ flex: 1.5, height: 300 }}>
-            <ReusableLineChart
-              data={transformedChartData}
-              lines={lines}
-              xAxisKey={"_id"}
-            />
+            {transformedChartData.length === 0 ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  fontSize: "16px",
+                  color: "gray",
+                }}
+              >
+                <Typography variant="h6">
+                  No data available for the selected time period.
+                </Typography>
+              </Box>
+            ) : (
+              <ReusableLineChart
+                data={transformedChartData}
+                lines={lines}
+                xAxisKey={"_id"}
+              />
+            )}
           </Box>
           <Box sx={{ flex: 1, height: 300 }}>
             <Typography variant="h6">Top 5 Trainers</Typography>

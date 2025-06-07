@@ -8,11 +8,12 @@ import SearchBarTable from "../../components/table/SearchBarTable";
 import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import { Box } from "@mui/material";
 import TableFilter from "../../components/table/TableFilter";
-import useSearchFilter from "../../hooks/useSearchFilterTable";
-import PaginationTable from "../../components/PaginationTable";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import PaginationTable from "../../components/Pagination";
 import { TableColumn, Filter } from "../../types/tableTypes";
 import Error from "../../components/shared/Error";
 import NavigationTabs from "../../components/Tabs";
+import { GetProfilePic } from "../../components/icons/IconIndex";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -90,7 +91,7 @@ const SubscribersListPage: React.FC = () => {
           return {
             ...sub,
             slno: index + 1 + (currentPage - 1) * 9,
-            image: sub.subscribedUserData.profilePic,
+            profilePic: GetProfilePic(sub.subscribedUserData.profilePic),
             name: name,
             email: sub.subscribedUserData.email,
             price: price,

@@ -26,9 +26,10 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 interface TrainerProfileProps {
   formik: any;
-  handleProfilePicChange?: React.ChangeEventHandler<HTMLInputElement>
+  handleProfilePicChange?: React.ChangeEventHandler<HTMLInputElement>;
   handlePdfChange?: React.ChangeEventHandler<HTMLInputElement>;
   isEditable: boolean;
+  handleDownload: (fileUrl: string, fileName: string) => void;
 }
 
 const specializationsList = [
@@ -50,6 +51,7 @@ const TrainerProfile: React.FC<TrainerProfileProps> = ({
   isEditable,
   handleProfilePicChange,
   handlePdfChange,
+  handleDownload,
 }) => {
   return (
     <Container maxWidth={false} sx={{ py: 4 }}>
@@ -463,10 +465,9 @@ const TrainerProfile: React.FC<TrainerProfileProps> = ({
                               </Link>
                             </Typography>
                             <IconButton
-                              component="a"
-                              href={cert.url || cert.fileName}
-                              target="_blank"
-                              download
+                              onClick={() =>
+                                handleDownload?.(cert.url, cert.fileName)
+                              }
                               sx={{ color: "black" }}
                             >
                               <DownloadIcon />
@@ -490,4 +491,4 @@ const TrainerProfile: React.FC<TrainerProfileProps> = ({
   );
 };
 
-export default TrainerProfile
+export default TrainerProfile;
