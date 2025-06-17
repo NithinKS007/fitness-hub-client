@@ -20,6 +20,7 @@ import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
 import { GetProfilePic } from "../../../components/icons/IconIndex";
 import { filters } from "../../../utils/timeOptions";
+import Error from "../../../components/shared/Error";
 
 const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -247,7 +248,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
       {isLoading ? (
         <ShimmerTableLoader columns={scheduledAppointmentsColumn} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable

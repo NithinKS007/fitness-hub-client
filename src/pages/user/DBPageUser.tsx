@@ -108,10 +108,14 @@ const DBPageUser = () => {
             </Select>
           </FormControl>
         </Box>
-
-        <Typography variant="h6" sx={{ mb: 3, textAlign: "center" }}>
-          Workout Progress (Completed)
-        </Typography>
+        
+        {lineChartData && lineChartData.length > 0 ? (
+          <Typography variant="h6" sx={{ mb: 3, textAlign: "center" }}>
+            Workout Progress (Completed)
+          </Typography>
+        ) : (
+          ""
+        )}
 
         <Box sx={{ display: "flex", gap: 2 }}>
           <Box sx={{ flex: 1.5, height: 300 }}>
@@ -127,7 +131,7 @@ const DBPageUser = () => {
                 }}
               >
                 <Typography variant="h6">
-                  No data available for the selected time period.
+                  Not available for the selected time period.
                 </Typography>
               </Box>
             ) : (

@@ -14,12 +14,16 @@ import DateAndTimeFilter from "../../../components/table/DateFilter";
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
-import { getPlayListsOfTrainer, updatePlayListPrivacyStatus } from "../../../redux/content/contentThunk";
+import {
+  getPlayListsOfTrainer,
+  updatePlayListPrivacyStatus,
+} from "../../../redux/content/contentThunk";
 import PaginationTable from "../../../components/Pagination";
 import { PlayList } from "../../../redux/content/contentTypes";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { GetBlockStatusIcon } from "../../../components/icons/IconIndex";
+import Error from "../../../components/shared/Error";
 
 const playListColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -43,7 +47,9 @@ const PlaylistSection = () => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(
     null
   );
-  const [selectedPlaylist, setSelectedPlaylist] = useState<PlayList | null>(null)
+  const [selectedPlaylist, setSelectedPlaylist] = useState<PlayList | null>(
+    null
+  );
   const { isLoading, error, playLists, pagination } = useSelector(
     (state: RootState) => state.content
   );
@@ -63,7 +69,7 @@ const PlaylistSection = () => {
     modalPlayListHandleClose,
     modalPlayListHandleOpen,
     modalPlayListOpen,
-    isEditMode, 
+    isEditMode,
     handleEditPlayList,
   } = useContent();
   const {
@@ -149,7 +155,7 @@ const PlaylistSection = () => {
             ...list,
             slno: index + 1 + (currentPage - 1) * 9,
             title: list.title,
-            isBlocked:GetBlockStatusIcon(list.privacy),
+            isBlocked: GetBlockStatusIcon(list.privacy),
             videoCount: list?.videoCount ? list.videoCount : 0,
             dateOfPublishing: `${formattedDate} ${formattedTime}`,
             actions: (
@@ -235,18 +241,18 @@ const PlaylistSection = () => {
               color: "white",
               textTransform: "none",
               borderRadius: 2,
-              minWidth: "150px",
+              minWidth: "10px",
               minHeight: "41px",
             }}
           >
-            Create Playlist
+           Add
           </Button>
         </Box>
       </Box>
       {isLoading ? (
         <ShimmerTableLoader columns={playListColumns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <ReuseTable columns={playListColumns} data={fetchedPlayLists} />
       )}

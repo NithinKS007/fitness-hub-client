@@ -15,6 +15,7 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { useNavigate } from "react-router-dom";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import { GetProfilePic } from "../../../components/icons/IconIndex";
+import Error from "../../../components/shared/Error";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -155,7 +156,7 @@ const MyTrainersTab: React.FC<MyTrainersTabProp> = ({ isActive }) => {
       {isLoading ? (
         <ShimmerTableLoader columns={columns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable columns={columns} data={fetchedUserTrainersList} />

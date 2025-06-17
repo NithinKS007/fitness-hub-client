@@ -16,18 +16,6 @@ const styles = {
     flexDirection: "column",
     overflow: "hidden",
   },
-  loadingContainer: {
-    height: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  errorContainer: {
-    height: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
 };
 const VideoPlayerPage: React.FC = () => {
   const { videoId } = useParams();
@@ -42,20 +30,12 @@ const VideoPlayerPage: React.FC = () => {
     }
   }, [dispatch, videoId]);
 
-  if (isLoading || !videoData) {
-    return (
-      <Box sx={styles.loadingContainer}>
-        <LoadingSpinner />
-      </Box>
-    );
+  if (error) {
+    return <Error message={error} />;
   }
 
-  if (error) {
-    return (
-      <Box sx={styles.errorContainer}>
-        <Error message={error} />
-      </Box>
-    );
+  if (isLoading || !videoData) {
+    return <LoadingSpinner size={60} thickness={4} />;
   }
 
   return (

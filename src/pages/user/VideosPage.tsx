@@ -11,10 +11,11 @@ import { Box, Typography, Container } from "@mui/material";
 import useSearchFilter from "../../hooks/useSearchFilter";
 import PaginationTable from "../../components/Pagination";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import SearchVideoGrid from "../../components/videos/SearchVideoGrid";
-import VideoFilter from "../../components/videos/VideoGridFilter";
 import VideoCard from "../../components/videos/VideoCard";
 import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
+import Error from "../../components/shared/Error";
+import SearchBarTable from "../../components/table/SearchBarTable";
+import TableFilter from "../../components/table/TableFilter";
 
 const styles = {
   loaderBox: {
@@ -36,7 +37,8 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginRight: "22px",
+    marginRight: 3,
+    marginLeft: 2,
     marginTop: 2,
   },
   filterWrapper: {
@@ -89,6 +91,7 @@ const VideosPage: React.FC = () => {
     playLists: playListsData,
     isLoading,
     pagination: { currentPage, totalPages },
+    error: videoError,
   } = useSelector((state: RootState) => state.content);
 
   const { isLoading: isSubscriptionLoading } = useSelector(
@@ -105,19 +108,23 @@ const VideosPage: React.FC = () => {
   const fetchedPlayListsData =
     playListsData.length > 0
       ? playListsData.map((p) => {
-          return { value: p.title, playListId: p._id };
+          return { value: p.title, _id: p._id };
         })
       : [];
+
+  if (videoError) {
+    return <Error message={videoError} />;
+  }
 
   return (
     <>
       <Box sx={styles.searchFilterContainer}>
-        <SearchVideoGrid
+        <SearchBarTable
           searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
         />
         <Box sx={styles.filterWrapper}>
-          <VideoFilter
+          <TableFilter
             selectedFilter={selectedFilter}
             filter={fetchedPlayListsData}
             handleFilterChange={handleFilterChange}
@@ -141,20 +148,9 @@ const VideosPage: React.FC = () => {
           <Container maxWidth={false}>
             {isHeSubscribedToTheTrainer && videosData?.length > 0 ? (
               <>
-                <Box
-                  sx={{
-                    marginTop: "20px",
-                    display: "grid",
-                    gridTemplateColumns: {
-                      xs: "1fr",
-                      sm: "1fr 1fr",
-                      md: "1fr 1fr 1fr",
-                      lg: "1fr 1fr 1fr 1fr",
-                    },
-                    gap: "18px",
-                    width: "100%",
-                    boxSizing: "border-box",
-                  }}
+                <div
+                  className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+                lg:grid-cols-4 gap-4 w-full box-border"
                 >
                   {videosData.map((video) => (
                     <VideoCard
@@ -163,7 +159,8 @@ const VideosPage: React.FC = () => {
                       onVideoClick={handleVideoClick}
                     />
                   ))}
-                </Box>
+                </div>
+
                 <Box sx={styles.paginationContainer}>
                   <PaginationTable
                     handlePageChange={handlePageChange}

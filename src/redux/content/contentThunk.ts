@@ -18,7 +18,7 @@ export const fetchVideosByTrainerUser = createAsyncThunk(
     try {
       console.log("params", videosQueryParams);
       const { trainerId, ...queryParams } = videosQueryParams;
-      const response = await axiosInstance.get(`user/trainer/videos/${trainerId}`, {
+      const response = await axiosInstance.get(`user/trainers/${trainerId}/videos/`, {
         params: queryParams,
       });
       return response.data;
@@ -38,7 +38,7 @@ export const getPlayListsAvailableByTrainerId = createAsyncThunk(
   async ({ trainerId }: RequestPlayListsByTrainerId, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `user/playlists/all/${trainerId}`
+        `user/playlists/${trainerId}`
       );
       return response.data;
     } catch (error: any) {

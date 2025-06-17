@@ -15,6 +15,7 @@ import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
 import { GetProfilePic } from "../../../components/icons/IconIndex";
 import { filters } from "../../../utils/timeOptions";
+import Error from "../../../components/shared/Error";
 
 const videoCallLogColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -133,7 +134,7 @@ const CallLogsTab: React.FC<CallLogsTabProps> = ({ isActive }) => {
       {isLoading ? (
         <ShimmerTableLoader columns={videoCallLogColumns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable

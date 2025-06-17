@@ -20,6 +20,7 @@ import { Dayjs } from "dayjs";
 import { ScheduledAppointmentsUser } from "../../../redux/booking/bookingTypes";
 import { GetProfilePic } from "../../../components/icons/IconIndex.tsx";
 import { filters } from "../../../utils/timeOptions.ts";
+import Error from "../../../components/shared/Error.tsx";
 
 const scheduledAppointmentsColumn: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -224,7 +225,7 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
       {isLoading ? (
         <ShimmerTableLoader columns={scheduledAppointmentsColumn} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable

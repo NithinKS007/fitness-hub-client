@@ -24,6 +24,7 @@ import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { Video } from "../../../redux/content/contentTypes";
 import { GetBlockStatusIcon } from "../../../components/icons/IconIndex";
+import Error from "../../../components/shared/Error";
 
 const videoColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -152,8 +153,9 @@ const VideoSection = () => {
             slno: index + 1 + (currentPage - 1) * 9,
             title: v.title,
             privacy: v.privacy,
-            description:v.description.split(" ").slice(0, 15).join(" ") + "...",
-            isBlocked:GetBlockStatusIcon( v.privacy),
+            description:
+              v.description.split(" ").slice(0, 15).join(" ") + "...",
+            isBlocked: GetBlockStatusIcon(v.privacy),
             dateOfPublishing: `${formattedDate} ${formattedTime}`,
             thumbnail: (
               <img
@@ -199,7 +201,7 @@ const VideoSection = () => {
         })
       : [];
 
-  const fetchedPlayListsIdAndNames =
+  const fetchedPlayLists =
     playLists.length > 0
       ? playLists.map((list) => ({
           _id: list._id,
@@ -234,8 +236,12 @@ const VideoSection = () => {
           <TableFilter
             selectedFilter={selectedFilter as string[]}
             handleFilterChange={handleFilterChange}
-            filter={videofilter}
+            filter={[
+              ...videofilter,
+              ...fetchedPlayLists.map((p) => ({ value: p.title, _id: p._id })),
+            ]}
           />
+
           <DateAndTimeFilter
             fromDate={fromDate as Dayjs | null}
             toDate={toDate as Dayjs | null}
@@ -251,18 +257,18 @@ const VideoSection = () => {
               color: "white",
               textTransform: "none",
               borderRadius: 2,
-              minWidth: "150px",
+              minWidth: "10px",
               minHeight: "41px",
             }}
           >
-            Create Video
+            Add
           </Button>
         </Box>
       </Box>
       {isLoading ? (
         <ShimmerTableLoader columns={videoColumns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable columns={videoColumns} data={fetchedVideos} />
@@ -278,7 +284,7 @@ const VideoSection = () => {
         open={modalVideoOpen as boolean}
         onClose={modalVideoHandleClose}
         isEditMode={isEditMode as boolean}
-        playLists={fetchedPlayListsIdAndNames}
+        playLists={fetchedPlayLists}
         handleVideoChange={handleVideoChange}
         handleThumbnailChange={handleThumbnailChange}
       />

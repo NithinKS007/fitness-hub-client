@@ -1,5 +1,5 @@
 import { Trainer, User } from "../auth/authTypes";
-import { QueryParams } from "../reduxCommonTypes/tableTypes";
+import { QueryParams } from "../commonTypes/tableTypes";
 
 export interface AdminState {
   users: User[];

@@ -17,6 +17,7 @@ import ConfirmationModalDialog from "../../../components/modals/ConfirmationModa
 import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
 import { bookingSlots } from "../../../redux/booking/bookingTypes";
+import Error from "../../../components/shared/Error";
 
 const availableSlotColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -170,7 +171,7 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
       {isLoading ? (
         <ShimmerTableLoader columns={availableSlotColumns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable columns={availableSlotColumns} data={fetchedAddedSlots} />

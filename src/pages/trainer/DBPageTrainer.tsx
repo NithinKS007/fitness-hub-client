@@ -12,6 +12,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import useTrainerDashBoard from "../../hooks/useTrainerDashBoard";
 import ReusableLineChart from "../../components/dashboard/LineChart";
 import ReusablePieChart from "../../components/dashboard/ReuseablePieChart";
+import Error from "../../components/shared/Error";
 
 const DBPageTrainer = () => {
   const {
@@ -32,7 +33,7 @@ const DBPageTrainer = () => {
   }
 
   if (error) {
-    return <> {error}</>;
+    return <Error message={error} />;
   }
 
   const dashboardItems = [
@@ -102,7 +103,7 @@ const DBPageTrainer = () => {
               }}
             >
               <Typography variant="h6">
-                No data available for the selected time period
+                Not available for the selected time period
               </Typography>
             </Box>
           ) : (

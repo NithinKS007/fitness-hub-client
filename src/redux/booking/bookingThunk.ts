@@ -58,7 +58,7 @@ export const fetchTrainerSlots = createAsyncThunk(
   async ({ trainerId }: RequestTrainerAvailableSlot, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `user/slots/all/${trainerId}`
+        `user/slots/${trainerId}/available`
       );
       return response.data;
     } catch (error: any) {
@@ -83,7 +83,7 @@ export const fetchAvailableSlotsFromToday = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(
-        `user/slots/${trainerId}`,
+        `user/slots/${trainerId}/upcoming`,
         { params }
       );
       return response.data;

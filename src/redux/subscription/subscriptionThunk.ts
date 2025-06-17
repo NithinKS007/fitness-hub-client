@@ -118,7 +118,7 @@ export const getTrainerSubscriptionById = createAsyncThunk(
   async (_id: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `admin/trainer/subscriptions/${_id}`
+        `admin/trainers/${_id}/subscriptions`
       );
       return response.data;
     } catch (error: any) {
@@ -170,7 +170,7 @@ export const getSubscribedDetails = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(
-        `user/subscriptions/verify/${sessionId}`
+        `user/subscriptions/${sessionId}/verify`
       );
       return response.data;
     } catch (error: any) {
@@ -210,7 +210,7 @@ export const isSubscribedToTheTrainer = createAsyncThunk(
   async (_id: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `user/subscriptions/status/${_id}`
+        `user/subscriptions/${_id}/status/`
       );
       return response.data;
     } catch (error: any) {

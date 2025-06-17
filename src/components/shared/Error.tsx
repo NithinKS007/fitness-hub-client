@@ -11,7 +11,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
+    height: "10%",
   },
   errorText: {
     color: "error.main",

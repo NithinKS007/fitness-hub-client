@@ -13,6 +13,7 @@ import useAdminDashBoard from "../../hooks/useAdminDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ReusableLineChart from "../../components/dashboard/LineChart";
 import ProgressBar from "../../components/dashboard/ProgressBar";
+import Error from "../../components/shared/Error";
 
 const DBPageAdmin = () => {
   const {
@@ -85,7 +86,7 @@ const DBPageAdmin = () => {
   }
 
   if (error) {
-    return <> {error}</>;
+    return <Error />;
   }
 
   return (
@@ -133,7 +134,7 @@ const DBPageAdmin = () => {
                 }}
               >
                 <Typography variant="h6">
-                  No data available for the selected time period.
+                  Not available for the selected time period.
                 </Typography>
               </Box>
             ) : (

@@ -18,6 +18,7 @@ import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn, Filter } from "../../../types/tableTypes";
 import { GetProfilePic } from "../../../components/icons/IconIndex";
+import Error from "../../../components/shared/Error";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -145,7 +146,13 @@ const MySubscriptions: React.FC<MySubscriptionsProp> = ({ isActive }) => {
   const fetchedUserSubscriptionsData =
     userSubscribedPlans.length > 0
       ? userSubscribedPlans.map((sub, index) => {
-          const name = `${sub.subscribedTrainerData?.fname?.charAt(0).toUpperCase() + sub.subscribedTrainerData?.fname?.slice(1).toLowerCase()} ${sub.subscribedTrainerData?.lname?.charAt(0).toUpperCase() + sub.subscribedTrainerData?.lname?.slice(1).toLowerCase()}`;
+          const name = `${
+            sub.subscribedTrainerData?.fname?.charAt(0).toUpperCase() +
+            sub.subscribedTrainerData?.fname?.slice(1).toLowerCase()
+          } ${
+            sub.subscribedTrainerData?.lname?.charAt(0).toUpperCase() +
+            sub.subscribedTrainerData?.lname?.slice(1).toLowerCase()
+          }`;
           const price = `$${sub.price.toFixed(2)}`;
           const subPeriod =
             sub.subPeriod.charAt(0).toUpperCase() +
@@ -221,7 +228,7 @@ const MySubscriptions: React.FC<MySubscriptionsProp> = ({ isActive }) => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mt:2 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
         <SearchBarTable
           searchTerm={searchTerm as string}
           handleSearchChange={handleSearchChange}
@@ -236,7 +243,7 @@ const MySubscriptions: React.FC<MySubscriptionsProp> = ({ isActive }) => {
       {isLoading ? (
         <ShimmerTableLoader columns={columns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable columns={columns} data={fetchedUserSubscriptionsData} />
@@ -251,7 +258,9 @@ const MySubscriptions: React.FC<MySubscriptionsProp> = ({ isActive }) => {
         open={confirmationModalOpen as boolean}
         content={
           selectedSubscription &&
-          `Are you sure you want to cancel your ${selectedSubscription.subPeriod.toLowerCase()} subscription with ${selectedSubscription.subscribedTrainerData.fname} ${selectedSubscription.subscribedTrainerData.lname}?`
+          `Are you sure you want to cancel your ${selectedSubscription.subPeriod.toLowerCase()} subscription with ${
+            selectedSubscription.subscribedTrainerData.fname
+          } ${selectedSubscription.subscribedTrainerData.lname}?`
         }
         onConfirm={handleConfirmCancel}
         onCancel={handleConfirmationModalClose}

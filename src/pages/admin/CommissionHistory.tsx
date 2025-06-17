@@ -14,7 +14,11 @@ import { Dayjs } from "dayjs";
 import { Box } from "@mui/material";
 import TableFilter from "../../components/table/TableFilter";
 import NavigationTabs from "../../components/Tabs";
-import { formatDateTodddMMMDYYYY, formatPlanPeriod } from "../../utils/conversion";
+import {
+  formatDateTodddMMMDYYYY,
+  formatPlanPeriod,
+} from "../../utils/conversion";
+import Error from "../../components/shared/Error";
 
 const filter: Filter[] = [
   { value: "Active" },
@@ -83,7 +87,6 @@ const CommissionHistory = () => {
 
   const { currentPage, totalPages } = pagination;
 
-  console.log("",revenueData)
   const transformedData = revenueData.map((item, index) => {
     const amountPaid = item.amountPaid;
     const commission = item.commission;
@@ -92,7 +95,7 @@ const CommissionHistory = () => {
 
     return {
       slno: index + 1,
-      applicationDate: formatDateTodddMMMDYYYY( item.createdAt),
+      applicationDate: formatDateTodddMMMDYYYY(item.createdAt),
       amountPaid: amountPaid,
       commission: commission,
       platformRevenue: platformRevenue,
@@ -102,13 +105,15 @@ const CommissionHistory = () => {
       ),
       subscriptionPeriod: item.subscriptionPlanData?.subPeriod || "-",
       subscriptionProvidedBy:
-        `${item.subscriptionProvidedBy?.fname || ""} ${item.subscriptionProvidedBy?.lname || ""}`.trim() ||
-        "-",
+        `${item.subscriptionProvidedBy?.fname || ""} ${
+          item.subscriptionProvidedBy?.lname || ""
+        }`.trim() || "-",
       subscriptionProvidedByEmail: item.subscriptionProvidedBy?.email || "-",
       subscriptionProvidedByPhone: item.subscriptionProvidedBy?.phone || "-",
       subscriptionTakenBy:
-        `${item.subscriptionTakenBy?.fname || ""} ${item.subscriptionTakenBy?.lname || ""}`.trim() ||
-        "-",
+        `${item.subscriptionTakenBy?.fname || ""} ${
+          item.subscriptionTakenBy?.lname || ""
+        }`.trim() || "-",
       subscriptionTakenByEmail: item.subscriptionTakenBy?.email || "-",
       subscriptionTakenByPhone: item.subscriptionTakenBy?.phone || "-",
     };
@@ -163,11 +168,11 @@ const CommissionHistory = () => {
           <Box
             sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}
             gap={1}
-            />
+          />
           {isLoading ? (
             <ShimmerTableLoader columns={columns} />
           ) : error ? (
-            <Box>{error}</Box>
+            <Error message={error} />
           ) : (
             <>
               <ReuseTable columns={columns} data={transformedData} />

@@ -64,7 +64,7 @@ export const getApprovalPendingList = createAsyncThunk(
   "admin/getApprovalPendingList",
   async (params: InboxListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/pending-approval/`, {
+      const response = await axiosinstance.get(`/admin/trainers/approval/`, {
         params,
       });
       return response.data;
@@ -83,7 +83,7 @@ export const updatedApprovalStatus = createAsyncThunk(
   async ({ _id, action }: RequestTrainerVerification, { rejectWithValue }) => {
     try {
       const response = await axiosinstance.patch(
-        `/admin/pending-approval/${_id}`,
+        `/admin/trainers/${_id}/approval`,
         {
           action,
         }

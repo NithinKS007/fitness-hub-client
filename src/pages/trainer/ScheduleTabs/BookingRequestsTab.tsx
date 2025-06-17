@@ -19,6 +19,7 @@ import { TableColumn } from "../../../types/tableTypes";
 import { Dayjs } from "dayjs";
 import { GetProfilePic } from "../../../components/icons/IconIndex";
 import { filters } from "../../../utils/timeOptions";
+import Error from "../../../components/shared/Error";
 
 const bookingRequestsColumns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -34,11 +35,12 @@ const bookingRequestsColumns: TableColumn[] = [
   { label: "Manage Actions", field: "actions" },
 ];
 
-
 interface BookingRequestsTabProps {
   isActive: boolean;
 }
-const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
+const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({
+  isActive,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { appointMentRequests, isLoading, error, pagination } = useSelector(
     (state: RootState) => state.bookingSlot
@@ -151,9 +153,9 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
       const appointmentDate = new Date(req?.appointmentDate as string);
       const formattedAppointmentDate =
         appointmentDate.toLocaleDateString("en-GB");
-   const today = new Date();
-   today.setUTCHours(0, 0, 0, 0); 
-   const isAppointmentInPast = appointmentDate < today;
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+      const isAppointmentInPast = appointmentDate < today;
       return {
         ...req,
         slno: index + 1 + (currentPage - 1) * 9,
@@ -191,10 +193,16 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
                 },
               }}
             >
-              <MenuItem onClick={() => handleApproveBooking(req)}  disabled={isAppointmentInPast} >
+              <MenuItem
+                onClick={() => handleApproveBooking(req)}
+                disabled={isAppointmentInPast}
+              >
                 Approve
               </MenuItem>
-              <MenuItem onClick={() => handleRejectBooking(req)}  disabled={isAppointmentInPast} >
+              <MenuItem
+                onClick={() => handleRejectBooking(req)}
+                disabled={isAppointmentInPast}
+              >
                 Reject
               </MenuItem>
             </Menu>
@@ -243,7 +251,7 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
       {isLoading ? (
         <ShimmerTableLoader columns={bookingRequestsColumns} />
       ) : error ? (
-        <Box>{error}</Box>
+        <Error message={error} />
       ) : (
         <>
           <ReuseTable
@@ -261,7 +269,11 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
         open={approveModalOpen as boolean}
         content={
           selectedBookingRequest &&
-          `Are you sure you want to approve the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
+          `Are you sure you want to approve the booking request from ${
+            selectedBookingRequest.userData.fname
+          } ${selectedBookingRequest.userData.lname} for ${new Date(
+            selectedBookingRequest.appointmentDate
+          ).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
         }
         onConfirm={handleConfirmApprove}
         onCancel={handleApproveModalClose}
@@ -274,7 +286,11 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({isActive}) => {
         open={rejectModalOpen as boolean}
         content={
           selectedBookingRequest &&
-          `Are you sure you want to reject the booking request from ${selectedBookingRequest.userData.fname} ${selectedBookingRequest.userData.lname} for ${new Date(selectedBookingRequest.appointmentDate).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
+          `Are you sure you want to reject the booking request from ${
+            selectedBookingRequest.userData.fname
+          } ${selectedBookingRequest.userData.lname} for ${new Date(
+            selectedBookingRequest.appointmentDate
+          ).toLocaleDateString()} at ${selectedBookingRequest.appointmentTime}?`
         }
         onConfirm={handleConfirmReject}
         onCancel={handleRejectModalClose}

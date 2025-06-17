@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://www.ftservices.life/api/:path*" 
+      "destination": "https://www.backend.ftservices.life/api/:path*" 
     },
     {
       "source": "/(.*)",

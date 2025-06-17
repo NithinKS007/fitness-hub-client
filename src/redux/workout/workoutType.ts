@@ -1,4 +1,4 @@
-import { QueryParams } from "../reduxCommonTypes/tableTypes";
+import { QueryParams } from "../commonTypes/tableTypes";
 export interface WorkoutState {
   isLoading: boolean;
   error: string | null;
