@@ -12,6 +12,7 @@ import Error from "../../components/shared/Error";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import NavigationTabs from "../../components/Tabs";
+import { GetBlockStatusIcon } from "../../components/icons/IconIndex";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -20,9 +21,9 @@ const columns: TableColumn[] = [
   { label: "Duration in Weeks", field: "durationInWeeks" },
   { label: "Sessions Per Week", field: "sessionsPerWeek" },
   { label: "Total Sessions", field: "totalSessions" },
+  { label: "Status", field: "isBlocked" },
   { label: "Actions", field: "actions" },
 ];
-
 
 const tabItems = [{ label: "My plans" }];
 
@@ -42,7 +43,7 @@ const SubscriptionSettingPage: React.FC = () => {
   } = useSubscription();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log("event",event)
+    console.log("event", event);
     setSelectedTab(newValue);
   };
 
@@ -115,11 +116,12 @@ const SubscriptionSettingPage: React.FC = () => {
     }
   };
 
-  const fetchedTrainerSubscriptionData =
+  const SubscriptionsData =
     subscriptions && subscriptions.length > 0
       ? subscriptions.map((sub, index) => {
           return {
             ...sub,
+            isBlocked: GetBlockStatusIcon(sub?.isBlocked as boolean),
             slno: index + 1,
             subPeriod:
               sub.subPeriod.charAt(0).toUpperCase() + sub.subPeriod.slice(1),
@@ -169,6 +171,7 @@ const SubscriptionSettingPage: React.FC = () => {
           };
         })
       : [];
+  console.log(SubscriptionsData);
 
   return (
     <>
@@ -213,10 +216,7 @@ const SubscriptionSettingPage: React.FC = () => {
           ) : error ? (
             <Error message={error} />
           ) : (
-            <ReuseTable
-              columns={columns}
-              data={fetchedTrainerSubscriptionData}
-            />
+            <ReuseTable columns={columns} data={SubscriptionsData} />
           )}
         </>
       )}
@@ -225,7 +225,12 @@ const SubscriptionSettingPage: React.FC = () => {
         open={confirmationDeleteModalOpen as boolean}
         content={
           selectedSubscriptionForDelete
-            ? `Are you sure you want to delete the ${selectedSubscriptionForDelete?.subPeriod.charAt(0).toUpperCase() + selectedSubscriptionForDelete.subPeriod.slice(1)} subscription?`
+            ? `Are you sure you want to delete the ${
+                selectedSubscriptionForDelete?.subPeriod
+                  .charAt(0)
+                  .toUpperCase() +
+                selectedSubscriptionForDelete.subPeriod.slice(1)
+              } subscription?`
             : ""
         }
         onConfirm={handleConfirmDelete}
@@ -241,7 +246,12 @@ const SubscriptionSettingPage: React.FC = () => {
           selectedSubscriptionForBlock
             ? `Are you sure you want to ${
                 selectedSubscriptionForBlock.isBlocked ? "unblock" : "block"
-              } the ${selectedSubscriptionForBlock?.subPeriod.charAt(0).toUpperCase() + selectedSubscriptionForBlock.subPeriod.slice(1)} subscription?`
+              } the ${
+                selectedSubscriptionForBlock?.subPeriod
+                  .charAt(0)
+                  .toUpperCase() +
+                selectedSubscriptionForBlock.subPeriod.slice(1)
+              } subscription?`
             : ""
         }
         onConfirm={handleConfirmBlock}

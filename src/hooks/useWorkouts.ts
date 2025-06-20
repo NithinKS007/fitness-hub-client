@@ -128,7 +128,6 @@ const useWorkouts = () => {
 
       try {
         const response = await dispatch(addWorkout(workoutPayload)).unwrap();
-        console.log("response for adding workout", response);
         showSuccessToast(response.message);
         handleClose();
         dispatch(getWorkouts(getQueryParams()));

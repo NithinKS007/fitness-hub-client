@@ -18,7 +18,7 @@ export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
   async ({ userData }: { userData: SignupUser }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("auth/sign-up", userData);
+      const response = await axiosInstance.post("auth/user/sign-up", userData);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -147,10 +147,9 @@ export const googleAuth = createAsyncThunk(
 export const trainerEntroll = createAsyncThunk(
   "auth/trainerEntroll",
   async (trainerData: SignupTrainer, { rejectWithValue }) => {
-    console.log(trainerData, "for send");
     try {
       const response = await axiosInstance.post(
-        `auth/trainer-sign-up/`,
+        `auth/trainer/sign-up/`,
         trainerData
       );
       return response.data;
