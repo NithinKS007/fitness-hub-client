@@ -1,25 +1,29 @@
 import React from "react";
-import ResetPassword from "../../components/user-authentication/ResetPassword";
+import ResetPassword from "../../components/auth/ResetPassword";
 import { useFormik } from "formik";
-import { passwordValidationSchema } from "../../utils/validationSchema";
+import { resetPasswordSchema } from "../../utils/validationSchema";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { forgotPassword } from "../../redux/auth/authThunk";
 import { useParams } from "react-router-dom";
 
+export interface ResetPasswordFormik {
+  password: string;
+  cPassword: string;
+}
 const ResetPasswordPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { token } = useParams<{ token: string }>();
   if (!token) {
     return;
   }
-  const formik = useFormik({
+  const formik = useFormik<ResetPasswordFormik>({
     initialValues: {
       password: "",
       cPassword: "",
     },
-    validationSchema: passwordValidationSchema,
+    validationSchema: resetPasswordSchema,
     onSubmit: async (values) => {
       try {
         const { password } = values;

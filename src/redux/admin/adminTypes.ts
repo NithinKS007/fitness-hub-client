@@ -9,10 +9,10 @@ export interface AdminState {
   userDetails: User | {};
   trainerDetails: Trainer | {};
   pagination: Pagination;
-  revenueData: AdminRevenueHistory[];
+  financialLog: FinancialLog[];
 }
 
-interface AdminRevenueHistory {
+interface FinancialLog {
   amountPaid: number;
   commission: number;
   createdAt: Date;
@@ -48,21 +48,21 @@ interface Pagination {
 }
 
 export interface updateBlockStatus {
-  _id: string;
+  id: string;
   isBlocked: boolean;
 }
 
 export type RequestTrainerVerification = {
-  _id: string;
+  id: string;
   action?: string;
 };
 
 export interface RequestUserDetails {
-  _id: string;
+  id: string;
 }
 
 export interface RequestTrainerDetails {
-  _id: string;
+  id: string;
 }
 
 export interface RequestUsers {

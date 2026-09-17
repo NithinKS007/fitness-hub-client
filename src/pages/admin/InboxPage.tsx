@@ -93,7 +93,7 @@ const InboxPage: React.FC = () => {
       try {
         const response = await dispatch(
           updatedApprovalStatus({
-            _id: selectedTrainer._id,
+            id: selectedTrainer.id,
             action: actionType,
           })
         ).unwrap();
@@ -125,7 +125,9 @@ const InboxPage: React.FC = () => {
             slno: index + 1 + (currentPage - 1) * 9,
             createdAt: `${formattedDate} ${formattedTime}`,
             verified: verified,
-            profilePic: GetProfilePic(trainer.profilePic as string),
+            profilePic: GetProfilePic(
+              trainer.profilePic ? trainer?.profilePic : ""
+            ),
             actions: (
               <>
                 <Box sx={{ display: "flex", gap: "8px" }}>
@@ -190,7 +192,7 @@ const InboxPage: React.FC = () => {
             }}
           >
             <SearchBarTable
-              searchTerm={searchTerm as string}
+              searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
             />
             <Box
@@ -240,10 +242,11 @@ const InboxPage: React.FC = () => {
           )}
 
           <ConfirmationModalDialog
-            open={confirmationModalOpen as boolean}
+            open={confirmationModalOpen}
             content={
-              (selectedTrainer &&
-                `Are you sure you want to ${actionType} ${selectedTrainer.fname} ${selectedTrainer.lname}'s application?`) as string
+              selectedTrainer
+                ? `Are you sure you want to ${actionType} ${selectedTrainer.fname} ${selectedTrainer.lname}'s application?`
+                : ""
             }
             onConfirm={handleConfirmAction}
             onCancel={handleConfirmationModalClose}

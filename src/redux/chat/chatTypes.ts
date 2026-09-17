@@ -1,7 +1,7 @@
 import { QueryParams } from "../commonTypes/tableTypes";
 
 export interface Chat {
-  _id: string;
+  id: string;
   senderId: string;
   receiverId: string;
   message: string;
@@ -18,7 +18,7 @@ export interface ChatState {
 }
 
 export interface TrainerChatList {
-  _id: string;
+  id: string;
   userId: string;
   trainerId: string;
   lastMessage: Chat | null;
@@ -35,7 +35,7 @@ export interface TrainerChatList {
   createdAt: Date;
 }
 export interface UserChatList {
-  _id: string;
+  id: string;
   userId: string;
   trainerId: string;
   lastMessage: Chat | null;

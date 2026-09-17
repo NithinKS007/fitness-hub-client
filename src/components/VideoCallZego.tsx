@@ -2,39 +2,41 @@ import React, { useEffect, useRef } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { Box } from "@mui/material";
 
-const ZEGO_CLOUD_APP_ID = import.meta.env.VITE_ZEGOCLOUD_APP_ID;
-const ZEGOCLOUD_SERVER_SECRET = import.meta.env.VITE_ZEGOCLOUD_SERVER_SECRET;
-
 interface ZegoCloudVideoCallProps {
+  appId: number;
   roomId: string;
   userId: string;
   userName: string;
+  token: string;
   onEndCall: () => void;
 }
 
 const ZegoCloudVideoCall: React.FC<ZegoCloudVideoCallProps> = ({
+  appId,
   roomId,
   userId,
   userName,
+  token,
   onEndCall,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const zpRef = useRef<any>(null);
-
+  const zpRef = useRef<ZegoUIKitPrebuilt | null>(null);
   useEffect(() => {
     const myMeeting = async (element: HTMLElement | null) => {
-      if (!element) return;
+      if (!element) {
+        console.error("Container reference is null");
+        return;
+      }
 
       try {
-        const appID = Number(ZEGO_CLOUD_APP_ID);
-        const serverSecret = ZEGOCLOUD_SERVER_SECRET;
-        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-          appID,
-          serverSecret,
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
+          appId,
+          token,
           roomId,
           userId,
           userName
         );
+
         const zp = ZegoUIKitPrebuilt.create(kitToken);
         zpRef.current = zp;
         zp.joinRoom({
@@ -45,25 +47,38 @@ const ZegoCloudVideoCall: React.FC<ZegoCloudVideoCallProps> = ({
           onLeaveRoom: () => {
             onEndCall();
           },
-          showPreJoinView: false, 
-          showRoomTimer: true
+          showPreJoinView: false,
+          showRoomTimer: true,
         });
-      } catch (error) {
-        console.log("Error joining Zego room:", error);
+      } catch (error: any) {
+        console.error("Zego Error:", {
+          message: error.message,
+          stack: error.stack,
+          token,
+          roomId,
+          userId,
+        });
       }
     };
 
-    myMeeting(containerRef.current);
+    const timeout = setTimeout(() => {
+      if (containerRef.current) {
+        myMeeting(containerRef.current);
+      }
+    }, 0);
+
     return () => {
-      if (zpRef.current) {
-        zpRef.current.destroy();
+      clearTimeout(timeout);
+      if (zpRef?.current) {
+        zpRef?.current?.destroy();
+      }
+      if (containerRef?.current) {
+        containerRef.current.innerHTML = "";
       }
     };
-  }, [roomId, userId, userName, onEndCall]);
+  }, [roomId, userId, userName, token, onEndCall]);
 
-  return (
-    <Box ref={containerRef} sx={{ width: "100vw", height: "100vh" }} />
-  );
+  return <Box ref={containerRef} sx={{ width: "100vw", height: "100vh" }} />;
 };
 
 export default ZegoCloudVideoCall;

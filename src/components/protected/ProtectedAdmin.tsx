@@ -4,9 +4,11 @@ import { Navigate, Outlet } from "react-router-dom";
 import { RootState } from "../../redux/store";
 
 const ProtectedAdmin: React.FC = () => {
-  const admin = useSelector((state: RootState) => state?.auth?.admin)
+  const { admin, isAuthenticated } = useSelector(
+    (state: RootState) => state?.auth
+  );
 
-  return !admin ? (
+  return !admin || !isAuthenticated ? (
     <Navigate to="/" />
   ) : admin.role !== "admin" ? (
     <Navigate to="/" />

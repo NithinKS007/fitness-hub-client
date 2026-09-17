@@ -3,9 +3,9 @@ import { AppDispatch } from "../redux/store";
 import { useFormik } from "formik";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import {
-  createPlayListSchema,
+  playListSchema,
   thumbnailFileSchema,
-  videoCreationSchema,
+  videoSchema,
   videoFileSchema,
 } from "../utils/validationSchema";
 import {
@@ -24,6 +24,19 @@ import {
 } from "../utils/upLoadToCloudinary";
 import { PlayList, Video } from "../redux/content/contentTypes";
 import useSearchFilter from "./useSearchFilter";
+
+export interface PlayListFormik {
+  title: string;
+}
+
+export interface VideoFormik {
+  title: string;
+  description: string;
+  video: string;
+  thumbnail: string;
+  duration: number;
+  playLists: string[];
+}
 
 const useContent = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,19 +59,19 @@ const useContent = () => {
     null
   );
 
-  const playListFormik = useFormik({
+  const playListFormik = useFormik<PlayListFormik>({
     initialValues: {
       title: selectedPlayList?.title || "",
     },
     enableReinitialize: true,
-    validationSchema: createPlayListSchema,
+    validationSchema: playListSchema,
     onSubmit: async (values) => {
       const { title } = values;
       try {
         if (isEditMode && selectedPlayList) {
-          const { _id } = selectedPlayList;
+          const { id } = selectedPlayList;
           const response = await dispatch(
-            editPlayList({ title, playListId: _id })
+            editPlayList({ title, id })
           ).unwrap();
           showSuccessToast(response.message);
         } else {
@@ -75,64 +88,47 @@ const useContent = () => {
     },
   });
 
-  const videoFormik = useFormik({
+  const videoFormik = useFormik<VideoFormik>({
     initialValues: {
       title: selectedVideo?.title || "",
       description: selectedVideo?.description || "",
       video: selectedVideo?.video || "",
       thumbnail: selectedVideo?.thumbnail || "",
       duration: selectedVideo?.duration || 0,
-      playLists: selectedVideo?.playLists?.map((pl) => pl._id) || [],
+      playLists: selectedVideo?.playLists?.map((list) => list.id) || [],
     },
     enableReinitialize: true,
-    validationSchema: videoCreationSchema,
+    validationSchema: videoSchema,
     onSubmit: async (values) => {
       const { title, description, video, playLists, thumbnail, duration } =
         values;
-      console.log(
-        "values for submitting for adding or editing the playlist",
-        values
-      );
-      if (!video) {
-        videoFormik.setFieldError("video", "Video is required");
-        return;
-      }
-      if (!thumbnail) {
-        videoFormik.setFieldError("thumbnail", "Thumbnail is required");
+      if (!video || !thumbnail) {
+        if (!video) videoFormik.setFieldError("video", "Video is required");
+        if (!thumbnail)
+          videoFormik.setFieldError("thumbnail", "Thumbnail is required");
         return;
       }
       try {
+        const videoURL = (await uploadVideoToCloudinary(video)).secure_url;
+        const thumbnailURL = (await uploadThumbnailToCloudinary(thumbnail))
+          .secure_url;
+
+        const videoData = {
+          title,
+          description,
+          video: videoURL,
+          thumbnail: thumbnailURL,
+          playLists,
+          duration,
+        };
+
         if (isEditMode && selectedVideo) {
-          const updatedVideoData = {
-            _id: selectedVideo._id,
-            title,
-            description,
-            video:
-              typeof video === "string"
-                ? video
-                : (await uploadVideoToCloudinary(video)).secure_url,
-            thumbnail:
-              typeof thumbnail === "string"
-                ? thumbnail
-                : (await uploadThumbnailToCloudinary(thumbnail)).secure_url,
-            playLists,
-            duration,
-          };
+          const { id } = selectedVideo;
+          const updatedVideoData = { ...videoData, id };
           const response = await dispatch(editVideo(updatedVideoData)).unwrap();
           showSuccessToast(response.message);
         } else {
-          const videoData = await uploadVideoToCloudinary(video);
-          const thumbnailData = await uploadThumbnailToCloudinary(thumbnail);
-
-          const createdVideoData = {
-            title,
-            description,
-            video: videoData.secure_url,
-            thumbnail: thumbnailData.secure_url,
-            playLists,
-            duration,
-          };
-          const response = await dispatch(addVideo(createdVideoData)).unwrap();
+          const response = await dispatch(addVideo(videoData)).unwrap();
           showSuccessToast(response.message);
         }
         dispatch(getUploadedVideosOfTrainer(getQueryParams()));
@@ -188,7 +184,7 @@ const useContent = () => {
     }
   };
 
-  const handleModalVideoCloseWithReset = () => {
+  const handleModalVideoClose = () => {
     videoFormik.resetForm();
     setIsEditMode(false);
     setSelectedVideo(null);
@@ -205,7 +201,7 @@ const useContent = () => {
     setSelectedPlayList(playList);
     modalPlayListHandleOpen();
   };
-  const handleModalPlayListCloseWithReset = () => {
+  const handleModalPlayListClose = () => {
     playListFormik.resetForm();
     setIsEditMode(false);
     setSelectedPlayList(null);
@@ -213,12 +209,12 @@ const useContent = () => {
   };
   return {
     videoFormik,
-    modalVideoHandleClose: handleModalVideoCloseWithReset,
+    modalVideoHandleClose: handleModalVideoClose,
     modalVideoHandleOpen,
     modalVideoOpen,
 
     playListFormik,
-    modalPlayListHandleClose: handleModalPlayListCloseWithReset,
+    modalPlayListHandleClose: handleModalPlayListClose,
     modalPlayListHandleOpen,
     modalPlayListOpen,
 

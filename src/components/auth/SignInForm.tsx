@@ -3,19 +3,25 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  Checkbox,
+  FormControlLabel,
   Box,
   Typography,
   Button,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import GoogleAuth from "./GoogleAuth";
+import { Link } from "react-router-dom";
+import { FormikProps } from "formik";
+import { SignInFormik } from "../../pages/auth/AuthPage";
+import { CredentialResponse } from "@react-oauth/google";
 
-interface SignUpFormProps {
+interface SignInFormProps {
   showPassword: boolean;
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
-  formik: any;
-  handleGoogleAuthSuccess: (res: any) => void;
-  handleAuthClick: () => void;
+  formik: FormikProps<SignInFormik>;
+  handleGoogleAuthSuccess: (res:CredentialResponse) => void;
+  handleAuthClick: (state: string) => void;
 }
 
 const styles = {
@@ -107,7 +113,7 @@ const styles = {
 };
 const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
 
-const SignUpForm: React.FC<SignUpFormProps> = ({
+const SignInForm: React.FC<SignInFormProps> = ({
   showPassword,
   setShowPassword,
   formik,
@@ -128,36 +134,11 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
         <Box sx={styles.formContainer}>
           <Box sx={styles.formBox}>
             <Typography variant="h5" gutterBottom>
-              Create your account
+              Sign in to your account
             </Typography>
+
             <form onSubmit={formik.handleSubmit}>
               <Box sx={styles.formFields}>
-                <Box sx={styles.nameFieldsContainer}>
-                  <TextField
-                    fullWidth
-                    name="fname"
-                    label="First Name"
-                    variant="outlined"
-                    size="small"
-                    value={formik.values.fname}
-                    onChange={formik.handleChange}
-                    error={formik.touched.fname && Boolean(formik.errors.fname)}
-                    helperText={formik.touched.fname && formik.errors.fname}
-                    sx={styles.textField}
-                  />
-                  <TextField
-                    fullWidth
-                    name="lname"
-                    label="Last Name"
-                    variant="outlined"
-                    size="small"
-                    value={formik.values.lname}
-                    onChange={formik.handleChange}
-                    error={formik.touched.lname && Boolean(formik.errors.lname)}
-                    helperText={formik.touched.lname && formik.errors.lname}
-                    sx={styles.textField}
-                  />
-                </Box>
                 <TextField
                   fullWidth
                   name="email"
@@ -199,35 +180,16 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
                   }}
                   sx={styles.textField}
                 />
-                <TextField
-                  fullWidth
-                  name="cPassword"
-                  label="Confirm Password"
-                  type={showPassword ? "text" : "password"}
-                  variant="outlined"
-                  size="small"
-                  value={formik.values.cPassword}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.cPassword && Boolean(formik.errors.cPassword)
-                  }
-                  helperText={
-                    formik.touched.cPassword && formik.errors.cPassword
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword((prev) => !prev)}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={styles.textField}
-                />
+
+                <Box sx={styles.rememberMeContainer}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="Remember Me"
+                  />
+                  <Link to="/forgot-password" style={styles.forgotPasswordLink}>
+                    Forgot Password?
+                  </Link>
+                </Box>
 
                 <GoogleAuth handleGoogleAuthSuccess={handleGoogleAuthSuccess} />
 
@@ -237,23 +199,37 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
                   fullWidth
                   sx={styles.submitButton}
                 >
-                  {formik.isSubmitting ? "Signing Up..." : "Sign Up"}
+                  {formik.isSubmitting ? "Signing In..." : "Sign In"}
                 </Button>
               </Box>
             </form>
 
             <Box sx={styles.toggleSignBox}>
               <Typography sx={styles.toggleSignText}>
-                Already have an account?
+                Don't have an account?{" "}
                 <Box
                   component="span"
-                  onClick={handleAuthClick}
+                  onClick={() => {
+                    handleAuthClick("user sign up");
+                  }}
                   sx={styles.toggleSignLink}
                 >
-                  Sign In
+                  Sign up as a user
+                </Box>{" "}
+                or{" "}
+                <Box
+                  component="span"
+                  onClick={() => {
+                    handleAuthClick("trainer sign up");
+                  }}
+                  sx={styles.toggleSignLink}
+                >
+                  Sign up as a trainer
                 </Box>
+                .
               </Typography>
             </Box>
+
             <p>2unni468N@</p>
           </Box>
         </Box>
@@ -262,4 +238,4 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
   );
 };
 
-export default SignUpForm;
+export default SignInForm;

@@ -136,7 +136,7 @@ const MySubscriptions: React.FC<MySubscriptionsProp> = ({ isActive }) => {
       handleCancelSubscriptionsUser(
         selectedSubscription.stripeSubscriptionId,
         "cancelImmediately",
-        selectedSubscription._id
+        selectedSubscription.id
       );
       handleConfirmationModalClose();
       handleMenuClose();

@@ -1,23 +1,24 @@
-import { Trainer, TrainerWithSubscriptionDetails} from "../auth/authTypes";
+import { Trainer, TrainerWithSubscriptionDetails } from "../auth/authTypes";
 
 export interface userState {
   trainersList: Trainer[];
   isLoading: boolean;
   error: string | null;
-  trainerDetailsWithSubscription: TrainerWithSubscriptionDetails | null
-  trainerSuggestions:string[]
+  trainerDetailsWithSubscription: TrainerWithSubscriptionDetails | null;
+  trainerSuggestions: string[];
   pagination: Pagination;
 }
 
-export interface ListApprovedTrainersQuery {
+export interface TrainersQuery {
   search?: string;
   specialization?: string[];
   experience?: string[];
   gender?: string[];
-  sort?:string
+  sort?: string;
   page: number;
   limit: number;
 }
+
 interface Pagination {
   currentPage: number;
   totalPages: number;

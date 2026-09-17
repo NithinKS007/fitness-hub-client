@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { subscriptionValidationSchema } from "../utils/validationSchema";
+import { subscriptionSchema } from "../utils/validationSchema";
 import {
   addSubscription,
   deleteSubscription,
@@ -14,6 +14,14 @@ import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { useModal } from "./useModal";
 import { useSelector } from "react-redux";
 import { updateBlockStatus } from "../redux/admin/adminTypes";
+
+export interface SubFormik {
+  subPeriod: string;
+  price: number;
+  durationInWeeks: number;
+  sessionsPerWeek: number;
+  totalSessions: number;
+}
 
 const useSubscription = () => {
   const { subscriptions, isLoading, error } = useSelector(
@@ -47,7 +55,7 @@ const useSubscription = () => {
     }
   };
 
-  const formik = useFormik({
+  const formik = useFormik<SubFormik>({
     initialValues: {
       subPeriod: "",
       price: 0,
@@ -55,15 +63,15 @@ const useSubscription = () => {
       sessionsPerWeek: 0,
       totalSessions: 0,
     },
-    validationSchema: subscriptionValidationSchema,
+    validationSchema: subscriptionSchema,
     enableReinitialize: true,
-    onSubmit: async (values) => {
+    onSubmit: async (values:SubFormik) => {
       try {
         const durationInWeeks = calculateDurationInWeeks(values.subPeriod);
         const totalSessions = durationInWeeks * values.sessionsPerWeek;
 
         const subscriptionData = {
-          _id: isEditMode ? editId : undefined,
+          id: isEditMode ? editId : undefined,
           subPeriod: values.subPeriod,
           price: Number(values.price),
           durationInWeeks,
@@ -110,10 +118,10 @@ const useSubscription = () => {
   }, [dispatch]);
 
   const UpdateSubsBlockstatus = async (status: updateBlockStatus) => {
-    const { _id, isBlocked } = status;
+    const { id, isBlocked } = status;
     try {
       const response = await dispatch(
-        updateSubscriptionBlockStatus({ _id, isBlocked })
+        updateSubscriptionBlockStatus({ id, isBlocked })
       ).unwrap();
       showSuccessToast(
         response.data.isBlocked
@@ -126,9 +134,9 @@ const useSubscription = () => {
     }
   };
 
-  const deleteSubs = async (_id: string) => {
+  const deleteSubs = async (id: string) => {
     try {
-      const response = await dispatch(deleteSubscription({ _id })).unwrap();
+      const response = await dispatch(deleteSubscription({ id })).unwrap();
       showSuccessToast(`${response.message}`);
     } catch (error) {
       console.error("API Error:", error);
@@ -136,10 +144,10 @@ const useSubscription = () => {
     }
   };
 
-  const editSubscription = async (_id: string) => {
-    const subscriptionToEdit = subscriptions.find((sub) => sub._id === _id);
+  const editSubscription = async (id: string) => {
+    const subscriptionToEdit = subscriptions.find((sub) => sub.id === id);
     if (subscriptionToEdit) {
-      setEditId(_id);
+      setEditId(id);
       setIsEditMode(true);
       setCurrentSubPeriod(subscriptionToEdit.subPeriod);
       formik.setValues({

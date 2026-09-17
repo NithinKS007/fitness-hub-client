@@ -14,97 +14,17 @@ import {
 import VideoCameraBackIcon from "@mui/icons-material/VideoCameraBack";
 import CloseIcon from "@mui/icons-material/Close";
 import { FormHelperText } from "@mui/material";
+import { styles } from "./styleVideo";
 
 interface VideoUploadProps {
   open: boolean;
   onClose: () => void;
   formik: any;
   isEditMode: boolean;
-  playLists: { _id: string; title: string }[];
+  playLists: { id: string; title: string }[];
   handleVideoChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleThumbnailChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
-
-const modalBoxStyles = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: { xs: "90%", sm: 500, md: 700 },
-  maxHeight: "80vh",
-  bgcolor: "white",
-  borderRadius: 2,
-  boxShadow: 24,
-  p: { xs: 2, sm: 3, md: 4 },
-  overflowY: "auto",
-};
-
-const headerBoxStyles = {
-  display: "flex",
-  justifyContent: "space-between",
-  mb: 1,
-};
-
-const closeButtonStyles = {
-  p: 0,
-};
-
-const textFieldStyles = {
-  mb: 2,
-};
-
-const uploadBoxStyles = {
-  mb: 2,
-};
-
-const uploadButtonStyles = {
-  width: { xs: "100%", sm: "auto" },
-};
-
-const fileNameStyles = {
-  mt: 1,
-  wordBreak: "break-word",
-};
-
-const errorTextStyles = {
-  mt: 1,
-};
-
-const formControlStyles = {
-  mb: 2,
-};
-
-const noPlaylistsStyles = {
-  mt: 1,
-};
-
-const menuPropsStyles = {
-  PaperProps: {
-    sx: {
-      boxShadow: "none",
-      border: "1px solid",
-      borderColor: "grey.400",
-      borderRadius: 2,
-    },
-  },
-};
-
-const buttonContainerStyles = {
-  display: "flex",
-  gap: 2,
-  justifyContent: "flex-end",
-  flexDirection: { xs: "column", sm: "row" },
-};
-
-const cancelButtonStyles = {
-  width: { xs: "100%", sm: "auto" },
-};
-
-const submitButtonStyles = {
-  width: { xs: "100%", sm: "auto" },
-  backgroundColor: "#1f2937",
-  color: "white",
-};
 
 const VideoUpload = ({
   open,
@@ -118,18 +38,12 @@ const VideoUpload = ({
   console.log("formik values", formik);
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={modalBoxStyles}>
-        <Box sx={headerBoxStyles}>
+      <Box sx={styles.modalContainer}>
+        <Box sx={styles.headerContainer}>
           <Typography variant="h6">
-            {isEditMode ? "Edit Video Content" : "Upload Video Content"}
+            {isEditMode ? "EDIT VIDEO" : "ADD VIDEO"}
           </Typography>
-          <IconButton
-            onClick={() => {
-              onClose();
-              formik.resetForm();
-            }}
-            sx={closeButtonStyles}
-          >
+          <IconButton onClick={onClose} sx={styles.closeButtonContainer}>
             <CloseIcon />
           </IconButton>
         </Box>
@@ -141,7 +55,7 @@ const VideoUpload = ({
           value={formik.values.title}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          sx={textFieldStyles}
+          sx={styles.textField}
           error={formik.touched.title && Boolean(formik.errors.title)}
           helperText={formik.touched.title && formik.errors.title}
         />
@@ -155,19 +69,19 @@ const VideoUpload = ({
           onBlur={formik.handleBlur}
           multiline
           rows={2}
-          sx={textFieldStyles}
+          sx={styles.textField}
           error={
             formik.touched.description && Boolean(formik.errors.description)
           }
           helperText={formik.touched.description && formik.errors.description}
         />
 
-        <Box sx={uploadBoxStyles}>
+        <Box sx={styles.uploadSection}>
           <Button
             variant="outlined"
             component="label"
             startIcon={<VideoCameraBackIcon />}
-            sx={uploadButtonStyles}
+            sx={styles.uploadButton}
           >
             {isEditMode ? "Change Video" : "Upload Video"}
             <input
@@ -177,18 +91,18 @@ const VideoUpload = ({
               onChange={handleVideoChange}
             />
           </Button>
-          <Typography sx={fileNameStyles}>
+          <Typography sx={styles.fileName}>
             {formik.values.video?.name || ""}
           </Typography>
           {formik.errors.video && (
-            <FormHelperText error sx={{ ...errorTextStyles, ml: 1.5 }}>
+            <FormHelperText error sx={styles.errorText}>
               {formik.errors.video}
             </FormHelperText>
           )}
         </Box>
 
-        <Box sx={uploadBoxStyles}>
-          <Button variant="outlined" component="label" sx={uploadButtonStyles}>
+        <Box sx={styles.uploadSection}>
+          <Button variant="outlined" component="label" sx={styles.uploadButton}>
             {isEditMode ? "Change Thumbnail" : "Upload Thumbnail"}
             <input
               type="file"
@@ -197,11 +111,11 @@ const VideoUpload = ({
               onChange={handleThumbnailChange}
             />
           </Button>
-          <Typography sx={fileNameStyles}>
+          <Typography sx={styles.fileName}>
             {formik.values.thumbnail?.name || ""}
           </Typography>
           {formik.errors.thumbnail && (
-            <FormHelperText error sx={{ ...errorTextStyles, ml: 1.5 }}>
+            <FormHelperText error sx={styles.errorText}>
               {formik.errors.thumbnail}
             </FormHelperText>
           )}
@@ -209,7 +123,7 @@ const VideoUpload = ({
 
         <FormControl
           fullWidth
-          sx={formControlStyles}
+          sx={styles.formControl}
           error={formik.touched.playLists && Boolean(formik.errors.playLists)}
         >
           {playLists.length > 0 ? (
@@ -224,23 +138,23 @@ const VideoUpload = ({
               }}
               renderValue={(selected) =>
                 playLists
-                  .filter((pl) => selected?.includes(pl?._id))
+                  .filter((pl) => selected?.includes(pl?.id))
                   .map((pl) => pl?.title)
                   .join(", ")
               }
-              MenuProps={menuPropsStyles}
+              MenuProps={styles.menuProps}
             >
               {playLists.map((pl) => (
-                <MenuItem key={pl._id} value={pl._id}>
+                <MenuItem key={pl.id} value={pl.id}>
                   <Checkbox
-                    checked={formik.values.playLists?.includes(pl._id) || false}
+                    checked={formik.values.playLists?.includes(pl.id)}
                   />
                   <ListItemText primary={pl.title} />
                 </MenuItem>
               ))}
             </Select>
           ) : (
-            <Typography color="text.secondary" sx={noPlaylistsStyles}>
+            <Typography color="text.secondary">
               No Playlists Available
             </Typography>
           )}
@@ -249,24 +163,17 @@ const VideoUpload = ({
           )}
         </FormControl>
 
-        <Box sx={buttonContainerStyles}>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              onClose();
-              formik.resetForm();
-            }}
-            sx={cancelButtonStyles}
-          >
+        <Box sx={styles.buttonContainer}>
+          <Button variant="outlined" onClick={onClose} sx={styles.cancelButton}>
             Cancel
           </Button>
           <Button
             variant="contained"
             onClick={formik.handleSubmit}
             disabled={formik.isSubmitting}
-            sx={submitButtonStyles}
+            sx={styles.submitButton}
           >
-            {isEditMode ? "Update" : "Upload"}
+            {isEditMode ? "UPDATE" : "ADD"}
           </Button>
         </Box>
       </Box>

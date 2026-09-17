@@ -34,12 +34,12 @@ interface UserDashboard {
 }
 
 interface UserChartData {
-  _id: string;
+  id: string;
   totalWeight: number;
 }
 
 interface TopList {
-  _id: string;
+  id: string;
   totalActiveSubscriptions: number;
   totalCanceledSubscriptions: number;
   totalSubscriptions: number;
@@ -49,21 +49,21 @@ interface TopList {
 }
 
 interface AdminChartData {
-  _id: string;
+  id: string;
   platformRevenue: number;
   commission: number;
   totalRevenue: number;
 }
 
 export interface TrainerChartData {
-  _id: string;
+  id: string;
   total: number;
   active: number;
   canceled: number;
 }
 
 export interface TrainerPieChartData {
-  _id: string;
+  id: string;
   name: string;
   value: number;
 }

@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useContent from "../../../hooks/useTrainerContent";
-import VideoUpload from "../../../components/modals/VideoUploadModal";
+import VideoUpload from "../../../components/modals/Video/VideoUploadModal";
 import ReuseTable from "../../../components/table/ReuseTable";
 import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import { useSelector } from "react-redux";
@@ -99,7 +99,7 @@ const VideoSection = () => {
   };
 
   const editVideo = (id: string) => {
-    const videoToEdit = videos.find((v) => v._id === id);
+    const videoToEdit = videos.find((v) => v.id === id);
     if (videoToEdit) {
       handleEditVideo(videoToEdit);
     }
@@ -116,7 +116,7 @@ const VideoSection = () => {
       try {
         const response = await dispatch(
           updateVideoPrivacyStatus({
-            videoId: selectedVideo._id,
+            videoId: selectedVideo.id,
             privacy: !selectedVideo.privacy,
           })
         ).unwrap();
@@ -167,7 +167,7 @@ const VideoSection = () => {
             actions: (
               <>
                 <IconButton
-                  onClick={(event) => handleVideoMenuClick(event, v._id)}
+                  onClick={(event) => handleVideoMenuClick(event, v.id)}
                   sx={{
                     padding: "2px",
                     minWidth: "0",
@@ -179,7 +179,7 @@ const VideoSection = () => {
                 </IconButton>
                 <Menu
                   anchorEl={anchorVideoEl}
-                  open={openMenuVideo && selectedVideoId === v._id}
+                  open={openMenuVideo && selectedVideoId === v.id}
                   onClose={handleVideoCloseMenu}
                   sx={{
                     "& .MuiPaper-root": {
@@ -190,7 +190,7 @@ const VideoSection = () => {
                     },
                   }}
                 >
-                  <MenuItem onClick={() => editVideo(v._id)}>Edit</MenuItem>
+                  <MenuItem onClick={() => editVideo(v.id)}>Edit</MenuItem>
                   <MenuItem onClick={() => handleBlockAction(v)}>
                     {v?.privacy ? "Make Public" : "Make Private"}
                   </MenuItem>
@@ -204,7 +204,7 @@ const VideoSection = () => {
   const fetchedPlayLists =
     playLists.length > 0
       ? playLists.map((list) => ({
-          _id: list._id,
+          id: list.id,
           title: list.title,
         }))
       : [];
@@ -238,7 +238,7 @@ const VideoSection = () => {
             handleFilterChange={handleFilterChange}
             filter={[
               ...videofilter,
-              ...fetchedPlayLists.map((p) => ({ value: p.title, _id: p._id })),
+              ...fetchedPlayLists.map((p) => ({ value: p.title, id: p.id })),
             ]}
           />
 

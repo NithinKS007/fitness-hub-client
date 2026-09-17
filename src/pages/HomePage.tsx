@@ -1,18 +1,15 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import { useModal } from "../hooks/useModal";
-import useAuthForm from "../hooks/useAuthForm";
-import TrainerAuthForm from "../components/modals/TrainerAuthModal";
-import { Box, Button, CardMedia, Typography } from "@mui/material";
+import { Box, CardMedia, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
 const MotionBox = motion(Box);
-const homeImage = import.meta.env.VITE_HOME_PAGE_IMAGE
-const homeGridImage1 = import.meta.env.VITE_HOME_GRID_IMAGE1
-const homeGridImage2 = import.meta.env.VITE_HOME_GRID_IMAGE2
-const homeGridImage3 = import.meta.env.VITE_HOME_GRID_IMAGE3
-const homeGridImage4 = import.meta.env.VITE_HOME_GRID_IMAGE4
+const homeImage = import.meta.env.VITE_HOME_PAGE_IMAGE;
+const homeGridImage1 = import.meta.env.VITE_HOME_GRID_IMAGE1;
+const homeGridImage2 = import.meta.env.VITE_HOME_GRID_IMAGE2;
+const homeGridImage3 = import.meta.env.VITE_HOME_GRID_IMAGE3;
+const homeGridImage4 = import.meta.env.VITE_HOME_GRID_IMAGE4;
 
 const styles = {
   heroSection: {
@@ -227,26 +224,22 @@ const programs = [
   {
     title: "Cardio & Strength",
     description: "Improve stamina, heart health, and full-body strength.",
-    image:
-      `${homeGridImage1}`,
+    image: `${homeGridImage1}`,
   },
   {
     title: "Fat Loss Focus",
     description: "Burn fat efficiently with guided workouts and tips.",
-    image:
-     `${homeGridImage2}`,
+    image: `${homeGridImage2}`,
   },
   {
     title: "Muscle Building",
     description: "Gain lean muscle through expert strength training.",
-    image:
-    `${homeGridImage3}`,
+    image: `${homeGridImage3}`,
   },
   {
     title: "StrengthTraining",
     description: "Enhance strength and muscle mass with targeted training.",
-    image:
-    `${homeGridImage4}`,
+    image: `${homeGridImage4}`,
   },
 ];
 
@@ -269,9 +262,6 @@ const steps = [
 ];
 
 const HomePage = () => {
-  const { handleOpen, handleClose, open } = useModal();
-  const { handleTrainerAuth } = useAuthForm();
-
   return (
     <>
       <Box component="section" sx={styles.heroSection}>
@@ -291,17 +281,6 @@ const HomePage = () => {
             Join a community of fitness enthusiasts, get expert guidance, and
             track your journey to a healthier you.
           </Typography>
-          <Box sx={styles.buttonContainer}>
-            <Button sx={styles.getStartedButton}>Get Started</Button>
-            <Button sx={styles.coachButton} onClick={handleOpen}>
-              Enroll as a Coach
-            </Button>
-          </Box>
-          <TrainerAuthForm
-            handleClose={handleClose}
-            open={open as boolean}
-            formik={handleTrainerAuth}
-          />
         </MotionBox>
       </Box>
 

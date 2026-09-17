@@ -7,15 +7,11 @@ import { updateBlockStatus } from "../redux/admin/adminTypes";
 const useUpdateBlockStatus = () => {
   const dispatch = useDispatch<AppDispatch>();
   const handleUpdateBlockStatus = async (status: updateBlockStatus) => {
-    const { _id, isBlocked } = status;
+    const { id, isBlocked } = status;
     try {
       const response = await dispatch(
-        updateUserBlockStatus({ _id, isBlocked })
+        updateUserBlockStatus({ id, isBlocked })
       ).unwrap();
-
-      console.log("Res", response);
-      const updatedEntity = response.data;
-      console.log(updatedEntity, "updated entity data");
 
       showSuccessToast(
         response.data.isBlocked

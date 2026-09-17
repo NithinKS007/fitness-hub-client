@@ -5,9 +5,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
 
-interface ConfirmationModalDialogProps {
+interface CmdProps {
   open: boolean;
-  content: string 
+  content: string;
   onConfirm: () => void;
   onCancel: () => void;
   confirmText: string;
@@ -30,7 +30,7 @@ interface ConfirmationModalDialogProps {
     | "warning";
 }
 
-const ConfirmationModalDialog: React.FC<ConfirmationModalDialogProps> = ({
+const ConfirmationModalDialog: React.FC<CmdProps> = ({
   open,
   content,
   onConfirm,

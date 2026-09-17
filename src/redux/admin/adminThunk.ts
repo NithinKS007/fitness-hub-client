@@ -44,9 +44,9 @@ export const getTrainers = createAsyncThunk(
 );
 export const updateUserBlockStatus = createAsyncThunk(
   "admin/updateUserBlockStatus",
-  async ({ _id, isBlocked }: updateBlockStatus, { rejectWithValue }) => {
+  async ({ id, isBlocked }: updateBlockStatus, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.patch(`/admin/users/${_id}`, {
+      const response = await axiosinstance.patch(`/admin/users/${id}`, {
         isBlocked,
       });
       return response.data;
@@ -80,14 +80,11 @@ export const getApprovalPendingList = createAsyncThunk(
 
 export const updatedApprovalStatus = createAsyncThunk(
   "admin/updatedApprovalStatus",
-  async ({ _id, action }: RequestTrainerVerification, { rejectWithValue }) => {
+  async ({ id, action }: RequestTrainerVerification, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.patch(
-        `/admin/trainers/${_id}/approval`,
-        {
-          action,
-        }
-      );
+      const response = await axiosinstance.patch(`/admin/trainers/${id}/approval`, {
+        action,
+      });
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -101,9 +98,9 @@ export const updatedApprovalStatus = createAsyncThunk(
 
 export const userDetails = createAsyncThunk(
   "admin/userDetails",
-  async ({ _id }: RequestUserDetails, { rejectWithValue }) => {
+  async ({ id }: RequestUserDetails, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/users/${_id}`);
+      const response = await axiosinstance.get(`/admin/users/${id}`);
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -117,9 +114,9 @@ export const userDetails = createAsyncThunk(
 
 export const trainerDetails = createAsyncThunk(
   "admin/trainerDetails",
-  async ({ _id }: RequestTrainerDetails, { rejectWithValue }) => {
+  async ({ id }: RequestTrainerDetails, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/trainers/${_id}`);
+      const response = await axiosinstance.get(`/admin/trainers/${id}`);
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {

@@ -103,7 +103,7 @@ const styles = {
 
 const TrainerCard = ({ trainer, handleTrainerDetails }: any) => {
   return (
-    <Card sx={styles.card} onClick={() => handleTrainerDetails(trainer._id)}>
+    <Card sx={styles.card} onClick={() => handleTrainerDetails(trainer.id)}>
       <CardContent sx={styles.cardContent}>
         <Box sx={styles.contentBox}>
           <Avatar src={trainer.profilePic || ""} sx={styles.avatar} />

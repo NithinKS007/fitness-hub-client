@@ -17,7 +17,6 @@ import PaginationTable from "../../../components/Pagination";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
-import { Dayjs } from "dayjs";
 import { GetProfilePic } from "../../../components/icons/IconIndex";
 import { filters } from "../../../utils/timeOptions";
 import Error from "../../../components/shared/Error";
@@ -99,7 +98,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
 
   const handleConfirmCancel = () => {
     if (selectedAppointment) {
-      handleCancelAppointmentSchedule(selectedAppointment._id);
+      handleCancelAppointmentSchedule(selectedAppointment.id);
       handleCancelModalClose();
       handleAppointmentSchedulesCloseMenu();
     }
@@ -107,19 +106,17 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
 
   const fetchedScheduledAppointments = scheduledAppointmentsTrainer.map(
     (appointmentData, index) => {
-      const reqDateObj = new Date(appointmentData?.createdAt as string);
+      const reqDateObj = new Date(appointmentData?.createdAt);
       const formattedReqDate = reqDateObj.toLocaleDateString("en-GB");
       const formattedReqTime = reqDateObj.toLocaleTimeString("en-GB");
       const bookingSlotCreatedAt = new Date(
-        appointmentData?.bookingSlotData.createdAt as string
+        appointmentData?.bookingSlotData.createdAt
       );
       const formattedBookingSlotDate =
         bookingSlotCreatedAt.toLocaleDateString("en-GB");
       const formattedBookingSlotTime =
         bookingSlotCreatedAt.toLocaleTimeString("en-GB");
-      const appointmentDate = new Date(
-        appointmentData?.appointmentDate as string
-      );
+      const appointmentDate = new Date(appointmentData?.appointmentDate);
       const formattedAppointmentDate =
         appointmentDate.toLocaleDateString("en-GB");
 
@@ -161,8 +158,8 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
                 onClick={() =>
                   !isAppointmentInPast &&
                   onVideoCallClick(
-                    appointmentData.userData._id,
-                    appointmentData._id
+                    appointmentData.userData.id,
+                    appointmentData.id
                   )
                 }
               />
@@ -170,7 +167,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
                 onClick={(event) =>
                   handleAppointmentSchedulesMenuClick(
                     event,
-                    appointmentData?._id as string
+                    appointmentData?.id
                   )
                 }
                 sx={{ minWidth: "0", width: "25px", height: "25px" }}
@@ -181,7 +178,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
             <Menu
               anchorEl={anchorAppointmentSchedulesEl}
               open={
-                open && selectedAppointmentScheduleId === appointmentData?._id
+                open && selectedAppointmentScheduleId === appointmentData?.id
               }
               onClose={handleAppointmentSchedulesCloseMenu}
               sx={{
@@ -220,7 +217,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
         }}
       >
         <SearchBarTable
-          searchTerm={searchTerm as string}
+          searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
         />
         <Box
@@ -233,12 +230,12 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
         >
           <TableFilter
             filter={filters}
-            selectedFilter={selectedFilter as string[]}
+            selectedFilter={selectedFilter}
             handleFilterChange={handleFilterChange}
           />
           <DateAndTimeFilter
-            fromDate={fromDate as Dayjs | null}
-            toDate={toDate as Dayjs | null}
+            fromDate={fromDate}
+            toDate={toDate}
             onFromDateChange={handleFromDateChange}
             onToDateChange={handleToDateChange}
             onReset={handleResetDates}
@@ -263,7 +260,7 @@ const BookingSchedulesTab: React.FC<BookingSchedulesTabProps> = ({
         </>
       )}
       <ConfirmationModalDialog
-        open={cancelModalOpen as boolean}
+        open={cancelModalOpen}
         content={
           selectedAppointment &&
           `Are you sure you want to cancel the appointment with ${

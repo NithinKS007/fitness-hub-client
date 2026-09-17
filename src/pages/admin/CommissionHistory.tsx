@@ -10,7 +10,6 @@ import useSearchFilter from "../../hooks/useSearchFilter";
 import DateAndTimeFilter from "../../components/table/DateFilter";
 import PaginationTable from "../../components/Pagination";
 import { Filter, TableColumn } from "../../types/tableTypes";
-import { Dayjs } from "dayjs";
 import { Box } from "@mui/material";
 import TableFilter from "../../components/table/TableFilter";
 import NavigationTabs from "../../components/Tabs";
@@ -66,10 +65,12 @@ const CommissionHistory = () => {
     handleToDateChange,
     handleResetDates,
   } = useSearchFilter();
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     console.log("event", event);
     setSelectedTab(newValue);
   };
+
   useEffect(() => {
     dispatch(getRevenueData(getQueryParams()));
   }, [
@@ -81,13 +82,13 @@ const CommissionHistory = () => {
     getQueryParams().toDate,
   ]);
 
-  const { revenueData, isLoading, error, pagination } = useSelector(
+  const { financialLog, isLoading, error, pagination } = useSelector(
     (state: RootState) => state.admin
   );
 
   const { currentPage, totalPages } = pagination;
 
-  const transformedData = revenueData.map((item, index) => {
+  const transformedData = financialLog.map((item, index) => {
     const amountPaid = item.amountPaid;
     const commission = item.commission;
     const platformRevenue = item.platformRevenue;
@@ -139,7 +140,7 @@ const CommissionHistory = () => {
             }}
           >
             <SearchBarTable
-              searchTerm={searchTerm as string}
+              searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
             />
             <Box
@@ -152,13 +153,13 @@ const CommissionHistory = () => {
               }}
             >
               <TableFilter
-                selectedFilter={selectedFilter as string[]}
+                selectedFilter={selectedFilter}
                 handleFilterChange={handleFilterChange}
                 filter={filter}
               />
               <DateAndTimeFilter
-                fromDate={fromDate as Dayjs | null}
-                toDate={toDate as Dayjs | null}
+                fromDate={fromDate}
+                toDate={toDate}
                 onFromDateChange={handleFromDateChange}
                 onToDateChange={handleToDateChange}
                 onReset={handleResetDates}

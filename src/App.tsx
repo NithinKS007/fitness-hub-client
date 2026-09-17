@@ -25,7 +25,9 @@ import ULProfile from "./layouts/ULProfile";
 import ULwithNavFooter from "./layouts/ULwithNavFooter";
 
 //USER
-const UserSubscriptionsPage = lazy(() => import("./pages/user/UserSubscriptionPage"));
+const UserSubscriptionsPage = lazy(
+  () => import("./pages/user/UserSubscriptionPage")
+);
 const UserBookingsPage = lazy(() => import("./pages/user/UserBookingsPage"));
 const UserChatsPage = lazy(() => import("./pages/user/UserChatsPage"));
 const VideoPlayerPage = lazy(() => import("./pages/user/VideoPlayerPage"));
@@ -33,25 +35,37 @@ const BookSlotPage = lazy(() => import("./pages/user/BookSlotPage"));
 const UserProfilePage = lazy(() => import("./pages/user/UserProfilePage"));
 const DBPageUser = lazy(() => import("./pages/user/DBPageUser"));
 const VideosPage = lazy(() => import("./pages/user/VideosPage"));
-const UserWorkoutsPage = lazy(() => import("./pages/user/UserWorkoutSettingPage"));
+const UserWorkoutsPage = lazy(
+  () => import("./pages/user/UserWorkoutSettingPage")
+);
 
 //TRAINER
-const SubscriptionSettingPage = lazy(() => import("./pages/trainer/SubscriptionSettingPage"));
+const SubscriptionSettingPage = lazy(
+  () => import("./pages/trainer/SubscriptionSettingPage")
+);
 const AddContentsPage = lazy(() => import("./pages/trainer/AddContentsPage"));
 const DBPageTrainer = lazy(() => import("./pages/trainer/DBPageTrainer"));
-const SubscribersListPage = lazy(() => import("./pages/trainer/SubscribersList"));
+const SubscribersListPage = lazy(
+  () => import("./pages/trainer/SubscribersList")
+);
 const ChatPage = lazy(() => import("./pages/trainer/ChatPage"));
-const SessionSchedulesPage = lazy(() => import("./pages/trainer/SessionSchedulesPage"));
+const SessionSchedulesPage = lazy(
+  () => import("./pages/trainer/SessionSchedulesPage")
+);
 const TrainerProfilePage = lazy(() => import("./pages/trainer/ProfilePage"));
 
 //ADMIN
 const DBPageAdmin = lazy(() => import("./pages/admin/DBPageAdmin"));
 const CommissionHistory = lazy(() => import("./pages/admin/CommissionHistory"));
-const TrainerSubscriptionDetailsPage = lazy(() => import("./pages/admin/TrainerSubscriptionDetailsPage"));
+const TrainerSubscriptionDetailsPage = lazy(
+  () => import("./pages/admin/TrainerSubscriptionDetailsPage")
+);
 const UsersListPage = lazy(() => import("./pages/admin/UsersListPage"));
 const TrainerListPage = lazy(() => import("./pages/admin/TrainerListPage"));
 const InboxPage = lazy(() => import("./pages/admin/InboxPage"));
-const TrainerDetailsPage = lazy(() => import("./pages/admin/TrainerDetailsPage"));
+const TrainerDetailsPage = lazy(
+  () => import("./pages/admin/TrainerDetailsPage")
+);
 const UserDetailsPage = lazy(() => import("./pages/admin/UserDetailsPage"));
 
 //OTHERS
@@ -60,12 +74,19 @@ import GetTrainer from "./pages/view-TR/GetTrainer";
 import LoadingSpinner from "./components/LoadingSpinner";
 const PageNotFound = lazy(() => import("./pages/PageNotFound"));
 
-
 const App = () => {
   return (
-    <Suspense fallback={<LoadingSpinner size={60} thickness={4}/>}>
+    <Suspense
+      fallback={
+        <>
+          <div className="flex justify-center items-center h-screen">
+            <LoadingSpinner size={60} thickness={4} />
+          </div>
+        </>
+      }
+    >
       <Routes>
-        {/*commonRoutes*/}
+        {/*CommonRoutes*/}
         <Route path="/sign-in" element={<AuthPage />} />
         <Route path="/verify-otp" element={<OtpPage />} />
         <Route path="/forgot-password" element={<ForgotPassPage />} />
@@ -87,7 +108,7 @@ const App = () => {
             element={<ViewTrainerDetailsUS />}
           />
         </Route>
-        {/*userRoutes*/}
+        {/*UserRoutes*/}
         <Route element={<ProtectedUser />}>
           <Route element={<ULProfile />}>
             <Route path="/user/dashboard" element={<DBPageUser />} />
@@ -104,7 +125,7 @@ const App = () => {
               element={<VideosPage />}
             />
             <Route
-              path="/user/trainer/video/:videoId"
+              path="/user/trainer/:trainerId/video/:videoId"
               element={<VideoPlayerPage />}
             />
             <Route
@@ -114,7 +135,7 @@ const App = () => {
           </Route>
         </Route>
 
-        {/*userRoute-show-trainer-plans*/}
+        {/*UserRoute-show-trainer-plans*/}
         <Route element={<ProtectedUser />}>
           <Route
             path="/trainer-show-plans/:trainerId"
@@ -122,7 +143,7 @@ const App = () => {
           />
         </Route>
 
-        {/*adminRoutes*/}
+        {/*AdminRoutes*/}
         <Route element={<ProtectedAdmin />}>
           <Route element={<AdminLayouts />}>
             <Route path="/admin/dashboard" element={<DBPageAdmin />} />
@@ -131,21 +152,21 @@ const App = () => {
             <Route path="/admin/inbox" element={<InboxPage />} />
             <Route path="/admin/commission" element={<CommissionHistory />} />
             <Route
-              path="/admin/trainer-details/:_id"
+              path="/admin/trainer-details/:id"
               element={<TrainerDetailsPage />}
             />
             <Route
-              path="/admin/trainer-subscriptions/:_id"
+              path="/admin/trainer-subscriptions/:id"
               element={<TrainerSubscriptionDetailsPage />}
             />
             <Route
-              path="/admin/user-details/:_id"
+              path="/admin/user-details/:id"
               element={<UserDetailsPage />}
             />
           </Route>
         </Route>
 
-        {/*trainerRoutes*/}
+        {/*TrainerRoutes*/}
         <Route element={<ProtectedTrainer />}>
           <Route element={<TrainerLayout />}>
             <Route path="/trainer/dashboard" element={<DBPageTrainer />} />

@@ -34,10 +34,10 @@ const ShimmerTableLoader: React.FC<ShimmerTableProps> = ({ columns }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {Array.from({ length: 9}).map((_, rowIndex) => (
+        {Array.from({ length: 10 }).map((_, rowIndex) => (
           <TableRow key={rowIndex}>
             <TableCell padding="checkbox" sx={{ padding: "8px" }}>
-              <Skeleton variant="rectangular" width={24} height={24} />
+              <Skeleton variant="rectangular" width={24} height={25} />
             </TableCell>
             {columns.map((column) => (
               <TableCell key={column.field} sx={{ padding: "8px" }}>

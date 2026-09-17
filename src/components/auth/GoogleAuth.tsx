@@ -1,8 +1,8 @@
 import React from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 
 interface GoogleAuthProps {
-  handleGoogleAuthSuccess: (res: any) => void;
+ handleGoogleAuthSuccess: (res: CredentialResponse) => void;
 }
 const GoogleAuth: React.FC<GoogleAuthProps> = ({ handleGoogleAuthSuccess }) => {
   return (

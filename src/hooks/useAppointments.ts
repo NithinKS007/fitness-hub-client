@@ -29,10 +29,10 @@ const useAppointments = () => {
     setSelectedAppointmentScheduleId(null);
   };
 
-  const handleCancelAppointmentSchedule = async (_id: string) => {
+  const handleCancelAppointmentSchedule = async (id: string) => {
     try {
       const response = await dispatch(
-        cancelAppointmentScheduleByTrainer({ appointmentId: _id })
+        cancelAppointmentScheduleByTrainer({ appointmentId: id })
       ).unwrap();
       showSuccessToast(response.message);
     } catch (error) {
@@ -56,7 +56,6 @@ const useAppointments = () => {
           action,
         })
       ).unwrap();
-      console.log("Response for approve reject approval", response);
       showSuccessToast(`${response.message}`);
     } catch (error) {
       console.log(`API Error ${error}`);
@@ -64,10 +63,10 @@ const useAppointments = () => {
     }
   };
 
-  const handleCancelAppointmentScheduleUser = async (_id: string) => {
+  const handleCancelAppointmentScheduleUser = async (id: string) => {
     try {
       const response = await dispatch(
-        cancelAppointmentScheduleByUser({ appointmentId: _id })
+        cancelAppointmentScheduleByUser({ appointmentId: id })
       ).unwrap();
       showSuccessToast(response.message);
     } catch (error) {

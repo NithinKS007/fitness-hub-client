@@ -6,25 +6,17 @@ import Footer from "../components/Footer";
 import { Outlet, useLocation } from "react-router-dom";
 
 const ULwithNavFooter: React.FC = () => {
-  const { user, trainer, admin } = useSelector((state: RootState) => state?.auth);
-  const pagination = useSelector((state:RootState)=>state.user.pagination)
+  const { user, trainer, admin } = useSelector(
+    (state: RootState) => state?.auth
+  );
+  const pagination = useSelector((state: RootState) => state.user.pagination);
   const location = useLocation();
 
-  const getAuthPerson = () => {
-    if (user) {
-      return user;
-    }
-    if (trainer) {
-      return trainer;
-    }
-    if (admin) {
-      return admin;
-    }
-  };
+  const getAuthPerson = () => user || trainer || admin || null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [location,pagination]);
+  }, [location, pagination]);
 
   return (
     <div className="bg-white min-h-screen flex flex-col w-full">

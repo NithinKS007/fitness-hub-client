@@ -1,9 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { userState } from "./userType";
-import {
-  getTrainerDetailsWithSubscription,
-  getApprovedTrainers,
-} from "./userThunk";
+import { getTrainerWithSubscription, getApprovedTrainers } from "./userThunk";
 
 const initialState: userState = {
   isLoading: false,
@@ -43,16 +40,16 @@ const user = createSlice({
       })
 
       //get approved trainer details
-      .addCase(getTrainerDetailsWithSubscription.pending, (state) => {
+      .addCase(getTrainerWithSubscription.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getTrainerDetailsWithSubscription.fulfilled, (state, action) => {
+      .addCase(getTrainerWithSubscription.fulfilled, (state, action) => {
         console.log("payloaddata", action.payload.data);
         state.isLoading = false;
         state.error = null;
         state.trainerDetailsWithSubscription = action.payload.data;
       })
-      .addCase(getTrainerDetailsWithSubscription.rejected, (state, action) => {
+      .addCase(getTrainerWithSubscription.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"

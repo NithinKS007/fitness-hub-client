@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { useEffect } from "react";
 import TrainerProfileCard from "./TrainerProfileCard ";
 import { useNavigate, useParams } from "react-router-dom";
-import { getTrainerDetailsWithSubscription } from "../../redux/user/userThunk";
+import { getTrainerWithSubscription } from "../../redux/user/userThunk";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
@@ -40,7 +40,7 @@ const ViewTrainerDetailsUS = () => {
 
   useEffect(() => {
     if (trainerId) {
-      dispatch(getTrainerDetailsWithSubscription(trainerId));
+      dispatch(getTrainerWithSubscription(trainerId));
       if (user && user.role === "user") {
         dispatch(isSubscribedToTheTrainer(trainerId));
       }

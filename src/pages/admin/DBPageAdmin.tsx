@@ -9,28 +9,52 @@ import {
   TrendingUp,
 } from "@mui/icons-material";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import useAdminDashBoard from "../../hooks/useAdminDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ReusableLineChart from "../../components/dashboard/LineChart";
 import ProgressBar from "../../components/dashboard/ProgressBar";
 import Error from "../../components/shared/Error";
 
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { getAdminDashBoardData } from "../../redux/dashboard/dashboardThunk";
+import { SelectChangeEvent } from "@mui/material";
+
 const DBPageAdmin = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [selectedTimePeriod, setSelectedTimePeriod] =
+    useState<string>("This week");
+  const timePeriods = ["Today", "This week", "This month", "This year"];
+
   const {
-    selectedTimePeriod,
-    handleTimePeriodChange,
-    totalUsersCount,
-    totalTrainersCount,
-    pendingTrainerApprovalCount,
-    totalPlatFormFee,
-    totalCommission,
-    totalRevenue,
-    transformedChartData,
-    topTrainersList,
+    adminDashboard: {
+      totalUsersCount,
+      totalTrainersCount,
+      pendingTrainerApprovalCount,
+      totalPlatFormFee,
+      totalCommission,
+      totalRevenue,
+      chartData,
+      topTrainersList,
+    },
     isLoading,
     error,
-    timePeriods,
-  } = useAdminDashBoard();
+  } = useSelector((state: RootState) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(getAdminDashBoardData({ period: selectedTimePeriod }));
+  }, [dispatch, selectedTimePeriod]);
+
+  const handleTimePeriodChange = (event: SelectChangeEvent<string>) => {
+    setSelectedTimePeriod(event.target.value);
+  };
+
+  const transformedChartData = chartData.map((item) => ({
+    ...item,
+    PlatformRevenue: item.platformRevenue,
+    Commission: item.commission,
+    TotalRevenue: item.totalRevenue,
+  }));
 
   const dashboardItems = [
     {
@@ -86,7 +110,7 @@ const DBPageAdmin = () => {
   }
 
   if (error) {
-    return <Error />;
+    return <Error message={error} />;
   }
 
   return (
@@ -141,14 +165,14 @@ const DBPageAdmin = () => {
               <ReusableLineChart
                 data={transformedChartData}
                 lines={lines}
-                xAxisKey={"_id"}
+                xAxisKey={"id"}
               />
             )}
           </Box>
           <Box sx={{ flex: 1, height: 300 }}>
             <Typography variant="h6">Top 5 Trainers</Typography>
             {trainersWithPercentages.map((trainer) => (
-              <Box key={trainer?._id} sx={{ mb: 2 }}>
+              <Box key={trainer?.id} sx={{ mb: 2 }}>
                 <Typography>
                   {trainer?.fname} {trainer?.lname} (Total:{" "}
                   {trainer?.totalSubscriptions})

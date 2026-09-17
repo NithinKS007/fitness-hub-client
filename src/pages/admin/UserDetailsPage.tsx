@@ -7,16 +7,16 @@ import { userDetails } from "../../redux/admin/adminThunk";
 import UserProfile from "../../components/profile/UserProfile";
 
 const UserDetailsPage: React.FC = () => {
-  const { _id } = useParams<{ _id: string }>();
+  const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
 
   const authPerson = useSelector((state: RootState) => state?.auth?.user);
   const userData = useSelector((state: RootState) => state.admin.userDetails);
   useEffect(() => {
-    if (_id) {
-      dispatch(userDetails({_id}));
+    if (id) {
+      dispatch(userDetails({id}));
     }
-  }, [dispatch, _id]);
+  }, [dispatch, id]);
 
   const isEditable = authPerson?.role === "user" ? true : false;
   const { formik } = useUpdateProfileForm(userData);
