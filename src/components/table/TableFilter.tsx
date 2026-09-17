@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 interface TableFilterProps {
-  filter: { value: string; _id?: string }[];
+  filter: { value: string; id?: string }[];
   selectedFilter: string[];
   handleFilterChange: (value: string[]) => void;
 }
@@ -30,7 +30,7 @@ const TableFilter: React.FC<TableFilterProps> = ({
         onChange={(e) => handleFilterChange(e.target.value as string[])}
         renderValue={(selected) => {
           const selectedValues = filter
-            .filter((option) => selected.includes(option._id || option.value))
+            .filter((option) => selected.includes(option.id || option.value))
             .map((option) => option.value);
 
           return selectedValues.length > 0
@@ -49,7 +49,7 @@ const TableFilter: React.FC<TableFilterProps> = ({
         }}
       >
         {filter.map((option) => {
-          const filterValue = option._id ? option._id : option.value;
+          const filterValue = option.id ? option.id : option.value;
           return (
             <MenuItem key={filterValue} value={filterValue}>
               <Checkbox checked={selectedFilter?.includes(filterValue)} />

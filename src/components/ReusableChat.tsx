@@ -18,7 +18,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import SearchIcon from "@mui/icons-material/Search";
 
 interface ChatContact {
-  _id: string;
+  id: string;
   contactId: string;
   name: string;
   lastMessage: ChatMessage | null;
@@ -28,7 +28,7 @@ interface ChatContact {
 }
 
 interface ChatMessage {
-  _id: string;
+  id: string;
   senderId: string;
   receiverId: string;
   message: string;
@@ -151,7 +151,7 @@ const ReusableChat = ({
             ) : (
               <List sx={{ p: 0 }}>
                 {contacts.map((contact) => (
-                  <ListItem key={contact._id} disablePadding>
+                  <ListItem key={contact.id} disablePadding>
                     <ListItemButton
                       onClick={() => onContactClick(contact.contactId)}
                       sx={{
@@ -308,7 +308,7 @@ const ReusableChat = ({
                 <>
                   {messages.map((message) => (
                     <Box
-                      key={message._id}
+                      key={message.id}
                       sx={{
                         display: "flex",
                         mb: 2,

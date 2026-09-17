@@ -33,20 +33,20 @@ const PlanSelector: React.FC<PlanSelectorProps> = ({
   onPlanChange,
 }) => {
   return (
-    <RadioGroup value={selectedPlan?._id || ""} onChange={onPlanChange}>
+    <RadioGroup value={selectedPlan?.id || ""} onChange={onPlanChange}>
       <Box sx={styles.container}>
         {subscriptionDetails.map((plan) => (
           <Paper
-            key={plan._id}
+            key={plan.id}
             sx={{
               borderRadius: 2,
               border:
-                selectedPlan?._id === plan._id
+                selectedPlan?.id === plan.id
                   ? "2px solid #1976d2"
                   : "1px solid #e0e0e0",
               cursor: "pointer",
               backgroundColor:
-                selectedPlan?._id === plan._id ? "#f5f9ff" : "#ffffff",
+                selectedPlan?.id === plan.id ? "#f5f9ff" : "#ffffff",
               transition: "all 0.2s ease-in-out",
               "&:hover": {
                 borderColor: "#1976d2",
@@ -56,7 +56,7 @@ const PlanSelector: React.FC<PlanSelectorProps> = ({
             onClick={() => handlePlanClick(plan)}
           >
             <FormControlLabel
-              value={plan._id}
+              value={plan.id}
               control={<Radio />}
               label={
                 <Box sx={{ width: "100%", p: 2 }}>

@@ -96,7 +96,7 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
 
   const handleConfirmCancel = () => {
     if (selectedAppointment) {
-      handleCancelAppointmentScheduleUser(selectedAppointment._id);
+      handleCancelAppointmentScheduleUser(selectedAppointment.id);
       handleConfirmationModalClose();
       handleAppointmentSchedulesCloseMenu();
       setSelectedAppointment(null);
@@ -146,7 +146,7 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
                 onClick={(event) =>
                   handleAppointmentSchedulesMenuClick(
                     event,
-                    appointmentData?._id as string
+                    appointmentData?.id as string
                   )
                 }
                 sx={{ minWidth: "0", width: "25px", height: "20px" }}
@@ -158,7 +158,7 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
               <Menu
                 anchorEl={anchorAppointmentSchedulesEl}
                 open={
-                  open && selectedAppointmentScheduleId === appointmentData?._id
+                  open && selectedAppointmentScheduleId === appointmentData?.id
                 }
                 onClose={handleAppointmentSchedulesCloseMenu}
                 sx={{

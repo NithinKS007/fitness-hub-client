@@ -67,9 +67,9 @@ const workoutSlice = createSlice({
         console.log("action data for deletion workout", action.payload.data);
         state.isLoading = false;
         state.error = null;
-        const deletedWorkoutId = action.payload.data._id;
+        const deletedWorkoutId = action.payload.data.id;
         state.workouts = state.workouts.filter(
-          (workout) => workout._id !== deletedWorkoutId
+          (workout) => workout.id !== deletedWorkoutId
         );
       })
       .addCase(deleteSet.rejected, (state, action) => {
@@ -87,12 +87,12 @@ const workoutSlice = createSlice({
       .addCase(markCompleted.fulfilled, (state, action) => {
         console.log("action data for mark as completed", action.payload.data);
         state.isLoading = false;
-        const workoutId = action.payload.data._id;
+        const workoutId = action.payload.data.id;
         console.log("workoutId", workoutId);
 
         const updatedWorkout = action.payload.data;
         const workoutIndex = state.workouts.findIndex(
-          (workout) => workout._id === updatedWorkout._id
+          (workout) => workout.id === updatedWorkout.id
         );
 
         if (workoutIndex !== -1) {

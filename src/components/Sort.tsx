@@ -2,15 +2,19 @@ import React from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 interface SortProps {
-  sortOption: {value:string}[];
-  sortValue:string
+  sortOption: { value: string }[];
+  sortValue: string;
   onChange: (value: string) => void;
 }
 
-const ReuseSort: React.FC<SortProps> = ({ sortOption, onChange,sortValue }) => {
+const ReuseSort: React.FC<SortProps> = ({
+  sortOption,
+  onChange,
+  sortValue,
+}) => {
   return (
     <FormControl sx={{ minWidth: 120 }}>
-      <InputLabel 
+      <InputLabel
         id="sort-select-label"
         sx={{
           color: "#333",
@@ -24,8 +28,8 @@ const ReuseSort: React.FC<SortProps> = ({ sortOption, onChange,sortValue }) => {
       </InputLabel>
       <Select
         labelId="sort-select-label"
-        onChange={(e)=>onChange(e.target.value as string)}
-        label="Sort by" 
+        onChange={(e) => onChange(e.target.value)}
+        label="Sort by"
         value={sortValue}
         sx={{
           display: "flex",

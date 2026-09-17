@@ -18,7 +18,7 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const { subscriptions } = useSubscription();
 
-  const { _id } = useParams();
+  const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const trainerSubscriptionData = useSelector(
     (state: RootState) => state.subscription.subscriptions
@@ -29,10 +29,10 @@ const TrainerSubscriptionDetailsPage: React.FC = () => {
   );
 
   useEffect(() => {
-    if (_id) {
-      dispatch(getTrainerSubscriptionById(_id));
+    if (id) {
+      dispatch(getTrainerSubscriptionById(id));
     }
-  }, [dispatch, _id]);
+  }, [dispatch, id]);
 
   const columns: TableColumn[] = [
     { label: "Sl No", field: "slno" },

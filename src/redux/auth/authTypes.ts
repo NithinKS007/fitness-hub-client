@@ -1,9 +1,8 @@
 import { Subscription } from "../subscription/subscriptionTypes";
 
 export type Role = "user" | "admin" | "trainer";
-
 export interface User {
-  _id: string;
+  id: string;
   fname: string;
   lname: string;
   email: string;
@@ -26,8 +25,9 @@ export interface User {
   medicalConditions?: string;
   otherConcerns?: string;
 }
+
 export interface Admin {
-  _id: string;
+  id: string;
   fname: string;
   lname: string;
   email: string;
@@ -39,8 +39,9 @@ export interface Admin {
   createdAt: string;
   updatedAt: string;
 }
+
 export interface Trainer {
-  _id: string;
+  id: string;
   fname: string;
   lname: string;
   email: string;
@@ -58,13 +59,19 @@ export interface Trainer {
   gender?: "male" | "female";
   height?: string;
   weight?: string;
+  bloodGroup?: string;
+  medicalConditions?: string;
+  otherConcerns?: string;
 
-  userId: string;
-  yearsOfExperience?: string;
-  specializations?: string[];
-  certifications?: { fileName: string; url: string }[];
-  isApproved?: boolean;
-  aboutMe?: string;
+  trainerDetails: {
+    id: string;
+    userId: string;
+    yearsOfExperience?: string;
+    specializations?: string[];
+    certifications?: { fileName: string; url: string }[];
+    isApproved?: boolean;
+    aboutMe?: string;
+  };
 }
 
 export interface TrainerWithSubscriptionDetails extends Trainer {
@@ -77,6 +84,7 @@ export interface SignupUser {
   email: string;
   password: string;
 }
+
 export interface SignupTrainer extends SignupUser {
   phone?: string;
   dateOfBirth?: string;
@@ -96,36 +104,35 @@ export interface Auth {
   admin: Admin | null;
   isLoading: boolean;
   error: string | null;
+  accessToken: string | null;
+  isAuthenticated: boolean;
 }
 
-export interface ResendOtpRequest {
+export interface ResendOtp {
   email: string;
 }
 
-export interface verifyOtpRequest {
+export interface VerifyOtp {
   email: string;
   otp: string;
 }
 
-export interface RequestSignin {
+export interface Signin {
   email: string;
   password: string;
 }
 
-export interface RequestGenLink {
-  email: string;
-}
 
-export interface RequestPasswordChange {
+export interface PasswordChange {
   token: string;
   password: string;
 }
 
-export interface RequestGoogleAuth {
+export interface GoogleAuth {
   token: string;
 }
 
-export interface RequestUpdatePassword {
+export interface UpdatePassword {
   password: string;
   newPassword: string;
 }

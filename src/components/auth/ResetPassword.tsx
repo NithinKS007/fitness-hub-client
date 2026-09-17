@@ -1,13 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { TextField, Box, Button, Typography } from "@mui/material";;
+import { TextField, Box, Button, Typography } from "@mui/material";
+import { FormikProps } from "formik";
+import { ResetPasswordFormik } from "../../pages/auth/ResetPasswordPage";
+
 const authImage = import.meta.env.VITE_AUTHENTICATION_PAGE_IMAGE;
-interface ForgotPasswordProps {
-  formik: any;
+
+interface ResetPasswordProps {
+  formik: FormikProps<ResetPasswordFormik>;
 }
 
 const styles = {
-  root: {
+  container: {
     minHeight: "100vh",
     display: "flex",
     alignItems: "center",
@@ -16,7 +20,7 @@ const styles = {
     width: "100%",
     overflow: "hidden",
   },
-  container: {
+  box: {
     width: "100%",
     display: "flex",
     flexDirection: { xs: "column", md: "row" },
@@ -24,7 +28,7 @@ const styles = {
     borderRadius: 2,
     boxShadow: 3,
   },
-  imageContainer: {
+  imageBox: {
     width: { xs: "100%", md: "50%" },
     display: { xs: "none", md: "flex" },
     alignItems: "center",
@@ -39,19 +43,19 @@ const styles = {
     objectFit: "cover",
     display: "block",
   },
-  formContainer: {
+  formBox: {
     width: { xs: "100%", md: "50%" },
     p: 4,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  formBox: {
+  formContainer: {
     width: "100%",
     maxWidth: "550px",
     textAlign: "center",
   },
-  formFields: {
+  inputBox: {
     display: "flex",
     flexDirection: "column",
     gap: 2,
@@ -59,32 +63,26 @@ const styles = {
   textField: {
     "& .MuiOutlinedInput-root": { borderRadius: 2 },
   },
-  submitButton: {
+  button: {
     mt: 2,
     bgcolor: "black",
-    "&:hover": { bgcolor: "grey.800" },
+    "&:hover": {
+      bgcolor: "grey.800",
+    },
     height: "48px",
     borderRadius: 2,
   },
-  backLinkContainer: {
+  linkBox: {
     mt: 2,
     textAlign: "center",
   },
-  backLinkText: {
-    variant: "body2",
-    color: "text.secondary",
-  },
-  backLink: {
-    color: "blue",
-    textDecoration: "none",
-  },
 };
 
-const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
+const ResetPassword: React.FC<ResetPasswordProps> = ({ formik }) => {
   return (
-    <Box sx={styles.root}>
-      <Box sx={styles.container}>
-        <Box sx={styles.imageContainer}>
+    <Box sx={styles.container}>
+      <Box sx={styles.box}>
+        <Box sx={styles.imageBox}>
           <Box
             component="img"
             src={authImage}
@@ -92,25 +90,39 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
             sx={styles.image}
           />
         </Box>
-        <Box sx={styles.formContainer}>
-          <Box sx={styles.formBox}>
-            <Typography variant="h6" gutterBottom>
-              Forgot Password?
-            </Typography>
-
+        <Box sx={styles.formBox}>
+          <Box sx={styles.formContainer}>
             <form onSubmit={formik.handleSubmit}>
-              <Box sx={styles.formFields}>
+              <Box sx={styles.inputBox}>
                 <TextField
                   fullWidth
-                  name="email"
-                  label="Enter your email address"
-                  type="email"
-                  variant="outlined"
+                  name="password"
                   size="small"
-                  value={formik.values.email}
+                  label="New Password"
+                  type="password"
+                  variant="outlined"
+                  value={formik.values.password}
                   onChange={formik.handleChange}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={formik.touched.email && formik.errors.email}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
+                  helperText={formik.touched.password && formik.errors.password}
+                  sx={styles.textField}
+                />
+
+                <TextField
+                  fullWidth
+                  name="cPassword"
+                  size="small"
+                  label="Confirm Password"
+                  type="password"
+                  variant="outlined"
+                  value={formik.values.cPassword}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.cPassword && Boolean(formik.errors.cPassword)
+                  }
+                  helperText={formik.touched.cPassword && formik.errors.cPassword}
                   sx={styles.textField}
                 />
 
@@ -118,18 +130,21 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
                   type="submit"
                   variant="contained"
                   fullWidth
-                  sx={styles.submitButton}
+                  sx={styles.button}
                   disabled={formik.isSubmitting}
                 >
-                  {formik.isSubmitting ? "Sending Link..." : "Send Link"}
+                  {formik.isSubmitting ? "Resetting..." : "Reset Password"}
                 </Button>
               </Box>
             </form>
 
-            <Box sx={styles.backLinkContainer}>
-              <Typography sx={styles.backLinkText}>
-                <Link to="/" style={styles.backLink}>
-                  Back to website
+            <Box sx={styles.linkBox}>
+              <Typography variant="body2" color="text.secondary">
+                <Link
+                  to="/sign-in"
+                  style={{ color: "blue", textDecoration: "none" }}
+                >
+                  Back to Sign In
                 </Link>
               </Typography>
             </Box>
@@ -140,4 +155,4 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ formik }) => {
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

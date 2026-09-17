@@ -34,7 +34,7 @@ export interface AddnewWorkout {
 }
 
 export interface WorkoutsData {
-  _id: string;
+  id: string;
   bodyPart: string;
   date: string;
   exerciseName: string;

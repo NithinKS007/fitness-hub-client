@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios";
-import { ListApprovedTrainersQuery } from "./userType";
+import { TrainersQuery } from "./userType";
 
 export const getApprovedTrainers = createAsyncThunk(
   "user/getApprovedTrainers",
-  async (params: ListApprovedTrainersQuery, { rejectWithValue }) => {
+  async (params: TrainersQuery, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("user/trainers", {
+      const response = await axiosInstance.get("public/trainers", {
         params,
       });
       return response.data;
@@ -20,11 +20,11 @@ export const getApprovedTrainers = createAsyncThunk(
     }
   }
 );
-export const getTrainerDetailsWithSubscription = createAsyncThunk(
-  "user/getTrainerDetailsWithSubscription",
-  async (_id: string, { rejectWithValue }) => {
+export const getTrainerWithSubscription = createAsyncThunk(
+  "user/getTrainerWithSubscription",
+  async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/trainers/${_id}`);
+      const response = await axiosInstance.get(`public/trainers/${id}`);
       return response.data;
     } catch (error: any) {
       console.log(error);

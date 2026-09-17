@@ -223,7 +223,20 @@ const AccountDropDown: React.FC<AccountDropDownProps> = ({
               <AccountCircleIcon sx={styles.accountIcon} />
             )}
           </IconButton>
-          <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            slotProps={{
+              paper: {
+                sx: {
+                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
+                  borderRadius: "8px", 
+                  border: "1px solid #e5e7eb",
+                },
+              },
+            }}
+          >
             {getMenuItems().map((item, index) => (
               <MenuItem
                 key={index}

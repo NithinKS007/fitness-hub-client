@@ -18,17 +18,20 @@ const styles = {
   },
 };
 const VideoPlayerPage: React.FC = () => {
-  const { videoId } = useParams();
+  const { videoId, trainerId } = useParams<{
+    videoId: string;
+    trainerId: string;
+  }>();
   const dispatch = useDispatch<AppDispatch>();
   const { videoData, isLoading, error } = useSelector(
     (state: RootState) => state.content
   );
 
   useEffect(() => {
-    if (videoId) {
-      dispatch(fetchVideoDataById({ videoId }));
+    if (videoId&&trainerId) {
+      dispatch(fetchVideoDataById({ trainerId, videoId }));
     }
-  }, [dispatch, videoId]);
+  }, [dispatch, videoId, trainerId]);
 
   if (error) {
     return <Error message={error} />;
@@ -43,7 +46,7 @@ const VideoPlayerPage: React.FC = () => {
       <VideoPlayer
         videoUrl={videoData?.video}
         thumbnail={videoData?.thumbnail}
-        videoId={videoData?._id}
+        videoId={videoData?.id}
         title={videoData?.title}
         duration={videoData?.duration}
         description={videoData?.description}

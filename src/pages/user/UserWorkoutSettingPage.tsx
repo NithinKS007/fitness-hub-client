@@ -3,7 +3,7 @@ import { Button, Box, IconButton, MenuItem, Menu } from "@mui/material";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import useWorkouts from "../../hooks/useWorkouts";
-import WorkOutModal from "../../components/modals/WorkOutModal";
+import WorkOutModal from "../../components/modals/workout/WorkOutModal";
 import ReuseTable from "../../components/table/ReuseTable";
 import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import { Filter, TableColumn } from "../../types/tableTypes";
@@ -17,7 +17,6 @@ import useSearchFilter from "../../hooks/useSearchFilter";
 import { getWorkouts } from "../../redux/workout/workoutThunk";
 import { useDispatch } from "react-redux";
 import TableFilter from "../../components/table/TableFilter";
-import { Dayjs } from "dayjs";
 import ConfirmationModalDialog from "../../components/modals/ConfirmationModalDialog";
 import NavigationTabs from "../../components/Tabs";
 
@@ -64,6 +63,7 @@ const UserWorkoutsPage: React.FC = () => {
 
     anchorEl,
     selectedWorkoutSetId,
+    selectedExercises,
   } = useWorkouts();
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -178,7 +178,7 @@ const UserWorkoutsPage: React.FC = () => {
               aria-controls="simple-menu"
               aria-haspopup="true"
               onClick={(event) =>
-                handleMenuClick(event, workout._id.toString())
+                handleMenuClick(event, workout.id.toString())
               }
               sx={{
                 padding: "2px",
@@ -203,13 +203,13 @@ const UserWorkoutsPage: React.FC = () => {
               }}
               open={
                 Boolean(anchorEl) &&
-                selectedWorkoutSetId === workout._id.toString()
+                selectedWorkoutSetId === workout.id.toString()
               }
               onClose={handleMenuClose}
             >
               <MenuItem
                 onClick={() => {
-                  setSelectedWorkoutId(workout._id.toString());
+                  setSelectedWorkoutId(workout.id.toString());
                   setOpenDeleteModal(true);
                 }}
               >
@@ -217,7 +217,7 @@ const UserWorkoutsPage: React.FC = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  setSelectedWorkoutId(workout._id.toString());
+                  setSelectedWorkoutId(workout.id.toString());
                   setOpenCompleteModal(true);
                 }}
                 disabled={workout.isCompleted}
@@ -250,7 +250,7 @@ const UserWorkoutsPage: React.FC = () => {
             }}
           >
             <SearchBarTable
-              searchTerm={searchTerm as string}
+              searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
             />
             <Box
@@ -263,13 +263,13 @@ const UserWorkoutsPage: React.FC = () => {
               }}
             >
               <TableFilter
-                selectedFilter={selectedFilter as string[]}
+                selectedFilter={selectedFilter}
                 handleFilterChange={handleFilterChange}
                 filter={filter}
               />
               <DateAndTimeFilter
-                fromDate={fromDate as Dayjs | null}
-                toDate={toDate as Dayjs | null}
+                fromDate={fromDate}
+                toDate={toDate}
                 onFromDateChange={handleFromDateChange}
                 onToDateChange={handleToDateChange}
                 onReset={handleResetDates}
@@ -312,7 +312,8 @@ const UserWorkoutsPage: React.FC = () => {
             </>
           )}
           <WorkOutModal
-            open={open as boolean}
+            selectedExercises={selectedExercises}
+            open={open}
             selectedDate={selectedDate}
             workoutData={workoutData}
             formik={formik}

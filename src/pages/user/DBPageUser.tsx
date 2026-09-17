@@ -8,25 +8,63 @@ import {
 import { Box } from "@mui/material";
 import { Timer, Pending, DirectionsRun } from "@mui/icons-material";
 import DashBoardBox from "../../components/dashboard/DashBoardBox";
-import useUserDashBoard from "../../hooks/useUserDashBoard";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ReusableLineChart from "../../components/dashboard/LineChart";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { getUserDashBoardData } from "../../redux/dashboard/dashboardThunk";
+import { SelectChangeEvent } from "@mui/material/Select";
 
 const DBPageUser = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [selectedTimePeriod, setSelectedTimePeriod] =
+    useState<string>("This month");
+  const [selectedBodyPart, setSelectedBodyPart] = useState<string>("All");
+  const timePeriods = ["Today", "This week", "This month", "This year"];
+  const bodyParts = [
+    "All",
+    "Chest",
+    "Back",
+    "Legs",
+    "Arms",
+    "Shouldrs",
+    "Core",
+  ];
+
   const {
-    selectedTimePeriod,
-    selectedBodyPart,
-    handleTimePeriodChange,
-    handleBodyPartChange,
-    lineChartData,
-    todaysTotalCompletedWorkouts,
-    todaysTotalPendingWorkouts,
-    totalWorkoutTime,
+    userDashboard: {
+      chartData,
+      todaysTotalCompletedWorkouts,
+      todaysTotalPendingWorkouts,
+      totalWorkoutTime,
+    },
     isLoading,
     error,
-    timePeriods,
-    bodyParts,
-  } = useUserDashBoard();
+  } = useSelector((state: RootState) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(
+      getUserDashBoardData({
+        period: selectedTimePeriod,
+        bodyPart: selectedBodyPart,
+      })
+    );
+  }, [dispatch, selectedTimePeriod, selectedBodyPart]);
+
+  const handleTimePeriodChange = (event: SelectChangeEvent<string>) => {
+    setSelectedTimePeriod(event.target.value);
+  };
+
+  const handleBodyPartChange = (event: SelectChangeEvent<string>) => {
+    setSelectedBodyPart(event.target.value);
+  };
+
+  const lineChartData =
+    chartData?.map((item: { id: string; totalWeight: number }) => ({
+      date: item.id,
+      "Total weight": item.totalWeight,
+    })) || [];
 
   if (isLoading) {
     return <LoadingSpinner size={60} thickness={4} />;
@@ -108,7 +146,7 @@ const DBPageUser = () => {
             </Select>
           </FormControl>
         </Box>
-        
+
         {lineChartData && lineChartData.length > 0 ? (
           <Typography variant="h6" sx={{ mb: 3, textAlign: "center" }}>
             Workout Progress (Completed)

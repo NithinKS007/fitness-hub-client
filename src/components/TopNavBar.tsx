@@ -5,7 +5,6 @@ import {
   Button,
   Container,
   Toolbar,
-  Typography,
   IconButton,
   Drawer,
   List,
@@ -99,9 +98,6 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ authPerson }) => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={styles.drawerBox}>
-      <Typography variant="h6" sx={styles.drawerText}>
-        FT HUB
-      </Typography>
       <List>
         {navItems.map((item) => (
           <ListItem key={item.label} disablePadding>
@@ -122,9 +118,6 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ authPerson }) => {
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={styles.toolbar}>
           <Box component="a" href="/" sx={styles.logoBox}>
-            <Typography variant="h6" sx={styles.logoText}>
-              FT HUB
-            </Typography>
           </Box>
           <IconButton
             color="inherit"

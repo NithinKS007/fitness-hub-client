@@ -73,7 +73,7 @@ const CallLogsTab: React.FC<CallLogsTabProps> = ({ isActive }) => {
     (log, index) => ({
       ...log,
       slno: index + 1 + (currentPage - 1) * 9,
-      _id: log._id,
+      id: log.id,
       appointmentDate: new Date(
         log.appointmentData.appointmentDate
       ).toLocaleDateString(),

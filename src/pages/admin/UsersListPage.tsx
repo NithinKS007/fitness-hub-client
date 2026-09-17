@@ -95,14 +95,14 @@ const UsersListPage: React.FC = () => {
     getQueryParams().filters,
   ]);
 
-  const handleUserDetails = (_id: string) => {
-    navigate(`/admin/user-details/${_id}`);
+  const handleUserDetails = (id: string) => {
+    navigate(`/admin/user-details/${id}`);
     handleClose();
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, _id: string) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
     setAnchorEl(event.currentTarget);
-    setSelectedTrainerId(_id);
+    setSelectedTrainerId(id);
   };
 
   const handleClose = () => {
@@ -119,7 +119,7 @@ const UsersListPage: React.FC = () => {
   const handleConfirmBlockStatus = () => {
     if (selectedUser) {
       handleUpdateBlockStatus({
-        _id: selectedUser._id,
+        id: selectedUser.id,
         isBlocked: !selectedUser.isBlocked,
       });
       handleConfirmationModalClose();
@@ -149,7 +149,7 @@ const UsersListPage: React.FC = () => {
             details: (
               <>
                 <IconButton
-                  onClick={(event) => handleClick(event, user?._id as string)}
+                  onClick={(event) => handleClick(event, user?.id as string)}
                   aria-label="More options"
                   sx={{
                     padding: "16px",
@@ -163,7 +163,7 @@ const UsersListPage: React.FC = () => {
                 <Paper>
                   <Menu
                     anchorEl={anchorEl}
-                    open={open && selectedTrainerId === user?._id}
+                    open={open && selectedTrainerId === user?.id}
                     onClose={handleClose}
                     sx={{
                       "& .MuiPaper-root": {
@@ -175,7 +175,7 @@ const UsersListPage: React.FC = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() => handleUserDetails(user?._id as string)}
+                      onClick={() => handleUserDetails(user?.id as string)}
                     >
                       Details
                     </MenuItem>

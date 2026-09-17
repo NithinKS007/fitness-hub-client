@@ -7,14 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 const useSignOut = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleSignout = async () => {
     try {
       const response = await dispatch(signOutUser()).unwrap();
-      dispatch(clearAuthPerson())
-      localStorage.clear()
-      showSuccessToast(response.message)
-      navigate("/sign-in")
+      dispatch(clearAuthPerson());
+      showSuccessToast(response.message);
+      navigate("/sign-in");
     } catch (error) {
       console.log(`API Error: ${error}`);
       showErrorToast(`${error}`);

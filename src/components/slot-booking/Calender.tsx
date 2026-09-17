@@ -8,18 +8,23 @@ interface CalendarProps {
   selectedDate: Dayjs | null;
   handleDateChange: (newDate: Dayjs) => void;
   shouldDisableDate: (date: Dayjs) => boolean;
+  handleMonthChange: (newMonth: Dayjs) => void;
+  displayMonth: Dayjs;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
-  selectedDate,
+  // selectedDate,
   handleDateChange,
   shouldDisableDate,
+  handleMonthChange,
+  displayMonth,
 }) => (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     <DateCalendar
-      value={selectedDate}
+      value={displayMonth}
       onChange={handleDateChange}
       shouldDisableDate={shouldDisableDate}
+      onMonthChange={handleMonthChange}
     />
   </LocalizationProvider>
 );

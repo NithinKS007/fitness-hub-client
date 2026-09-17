@@ -4,9 +4,11 @@ import { RootState } from "../../redux/store";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedUser: React.FC = () => {
-  const user = useSelector((state: RootState) => state?.auth?.user);
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state?.auth
+  );
 
-  return !user ? (
+  return !user || !isAuthenticated ? (
     <Navigate to="/" />
   ) : user.role !== "user" ? (
     <Navigate to="/" />

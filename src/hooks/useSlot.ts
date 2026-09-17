@@ -3,17 +3,21 @@ import { useModal } from "./useModal";
 import {
   addBookingSlot,
   deleteAvailableBookingSlot,
-  fetchAvailableSlots,
+  fetchSlotsTrainer,
 } from "../redux/booking/bookingThunk";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { createSlotSchema } from "../utils/validationSchema";
+import { slotSchema } from "../utils/validationSchema";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import useSearchFilter from "./useSearchFilter";
 import { timeOptions } from "../utils/timeOptions";
 
+export interface SlotFormik {
+  date: string;
+  time: string;
+}
 const useSlot = () => {
   const {
     handleClose: modalHandleClose,
@@ -47,19 +51,20 @@ const useSlot = () => {
 
   const [filteredTimeOptions, setFilteredTimeOptions] = useState(timeOptions);
 
-  const slotFormik = useFormik({
+  const slotFormik = useFormik<SlotFormik>({
     initialValues: {
       date: "",
       time: "",
     },
-    validationSchema: createSlotSchema,
+    validationSchema: slotSchema,
     onSubmit: async (values) => {
       try {
+        const { date, time } = values;
         const response = await dispatch(
-          addBookingSlot({ date: values.date, time: values.time })
+          addBookingSlot({ date, time })
         ).unwrap();
         showSuccessToast(response.message);
-        dispatch(fetchAvailableSlots(getQueryParams()));
+        dispatch(fetchSlotsTrainer(getQueryParams()));
         modalHandleClose();
         slotFormik.resetForm();
       } catch (error) {
@@ -90,10 +95,10 @@ const useSlot = () => {
     setFilteredTimeOptions(newAvailableTimes);
   }, [slotFormik.values.date, slots]);
 
-  const deleteAvailableSlot = async (_id: string) => {
+  const deleteAvailableSlot = async (id: string) => {
     try {
       const response = await dispatch(
-        deleteAvailableBookingSlot({ bookingSlotId: _id })
+        deleteAvailableBookingSlot({ bookingSlotId: id })
       ).unwrap();
       showSuccessToast(response.message);
     } catch (error) {

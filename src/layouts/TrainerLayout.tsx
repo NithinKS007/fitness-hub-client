@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Dashboard from "@mui/icons-material/Dashboard";
 import People from "@mui/icons-material/People";
@@ -8,12 +8,14 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { PostAddRounded, SubscriptionsRounded } from "@mui/icons-material";
 import SideNavBar from "../components/dashboard/DashBoardSideNavBar";
 import TopNavbar from "../components/dashboard/DashBoardTopBar";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { socket } from "../config/socket";
+import { showErrorToast } from "../utils/toast";
+import { SocketContext } from "../context/SocketContext";
 
 const TrainerLayout: React.FC = () => {
-  const trainer = useSelector((state: RootState) => state.auth.trainer);
+  const { socket, isSocketConnected } = useContext(SocketContext) || {
+    socket: null,
+    isSocketConnected: false,
+  };
 
   const trainerNavItems = [
     {
@@ -54,16 +56,21 @@ const TrainerLayout: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (trainer?._id) {
-      socket.emit("register", trainer._id);
-      socket.on("connect", () => {
-        socket.emit("register", trainer._id);
-      });
-    }
+    if (!socket || !isSocketConnected) return;
+
+    socket.on(
+      "error",
+      async ({ message, code }: { message: string; code: number }) => {
+        console.log("status code", message, code);
+        showErrorToast(message);
+        console.log("Unhandled error code:", message, code);
+      }
+    );
     return () => {
-      socket.off("connect");
+      socket.off("error");
     };
-  }, [trainer?._id]);
+  }, [socket, isSocketConnected]);
+
   return (
     <div className="flex flex-col min-h-screen w-full">
       <TopNavbar />

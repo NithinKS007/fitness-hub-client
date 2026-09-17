@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import dayjs, { Dayjs } from "dayjs";
-import { workoutValidationSchema } from "../utils/validationSchema";
+import { workoutSchema } from "../utils/validationSchema";
 import { useModal } from "./useModal";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
@@ -14,12 +14,12 @@ import {
 } from "../redux/workout/workoutThunk";
 import useSearchFilter from "./useSearchFilter";
 
-interface WorkoutItem {
+export interface WorkoutItem {
   bodyPart: string;
   exercises: string[];
 }
 
-interface Workout {
+export interface Workout {
   bodyPart: string;
   exercise: string;
   kg: number;
@@ -61,6 +61,10 @@ export interface WorkoutDTO {
   date: Date;
   exercises: Exercise[];
 }
+export interface WorkoutFormik {
+  selectedBodyPart: string;
+  workouts: Workout[];
+}
 
 const useWorkouts = () => {
   const { open, handleOpen, handleClose } = useModal();
@@ -84,12 +88,12 @@ const useWorkouts = () => {
   ];
 
   const { getQueryParams } = useSearchFilter();
-  const formik = useFormik({
+  const formik = useFormik<WorkoutFormik>({
     initialValues: {
       selectedBodyPart: "",
-      workouts: [] as Workout[],
+      workouts: [],
     },
-    validationSchema: workoutValidationSchema,
+    validationSchema: workoutSchema,
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values) => {
@@ -178,7 +182,7 @@ const useWorkouts = () => {
     try {
       const response = await dispatch(deleteSet(setId)).unwrap();
       showSuccessToast(response.message);
-       dispatch(getWorkouts(getQueryParams()));
+      dispatch(getWorkouts(getQueryParams()));
     } catch (err) {
       showErrorToast(`${err}`);
     }
@@ -208,6 +212,11 @@ const useWorkouts = () => {
     setSelectedWorkoutSetId(null);
   };
 
+  const handleGetExercises = (bodyPart: string) => {
+    const bodyPartData = workoutData.find((item) => item.bodyPart === bodyPart);
+    return bodyPartData ? bodyPartData.exercises : [];
+  };
+
   return {
     open,
     selectedDate,
@@ -224,7 +233,7 @@ const useWorkouts = () => {
     handleDateChange: (newValue: Dayjs | null) => setSelectedDate(newValue),
     isExerciseDisabled,
     handleBodyPartChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-      const value = e.target.value as string;
+      const value = e.target.value;
       formik.setFieldValue("selectedBodyPart", value);
       formik.setFieldValue("workouts", []);
     },
@@ -232,7 +241,7 @@ const useWorkouts = () => {
     handleMenuClose,
     handleComplete,
     handleDelete,
-
+    selectedExercises: handleGetExercises(formik.values.selectedBodyPart),
     anchorEl,
     selectedWorkoutSetId,
   };

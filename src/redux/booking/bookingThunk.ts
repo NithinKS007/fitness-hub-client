@@ -4,11 +4,11 @@ import {
   ApproveRejectBooking,
   AvailableSlotsQueryParams,
   CreateBookingSlot,
+  FetchSlotsCalendar,
   HandleBookingRequestsQueryParams,
   RequestBookSlot,
   RequestCancelAppointmentSchedule,
   RequestDeleteBookingSlot,
-  RequestTrainerAvailableSlot,
   ScheduledAppointmentsQueryParams,
   VideoCallLogsQueryParams,
 } from "./bookingTypes";
@@ -27,17 +27,18 @@ export const addBookingSlot = createAsyncThunk(
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
-        return rejectWithValue("Failed to add slot");
+        return rejectWithValue(
+          "An error occurred while adding the slot. Please try again later."
+        );
       }
     }
   }
 );
 
-export const fetchAvailableSlots = createAsyncThunk(
-  "bookingSlot/fetchAvailableSlots",
+export const fetchSlotsTrainer = createAsyncThunk(
+  "bookingSlot/fetchSlotsTrainer",
   async (params: AvailableSlotsQueryParams, { rejectWithValue }) => {
     try {
-      console.log("sending params", params);
       const response = await axiosInstance.get(`trainer/slots/`, {
         params,
       });
@@ -47,18 +48,25 @@ export const fetchAvailableSlots = createAsyncThunk(
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
-        return rejectWithValue("Failed to get available slots");
+        return rejectWithValue(
+          "An error occurred while loading the available slots. Please try again later."
+        );
       }
     }
   }
 );
 
-export const fetchTrainerSlots = createAsyncThunk(
-  "bookingSlot/fetchTrainerSlots",
-  async ({ trainerId }: RequestTrainerAvailableSlot, { rejectWithValue }) => {
+export const fetchSlotsCalender = createAsyncThunk(
+  "bookingSlot/fetchSlotsCalender",
+  async (
+    { trainerId, limit, fromDate, toDate }: FetchSlotsCalendar,
+    { rejectWithValue }
+  ) => {
     try {
+      const params = { trainerId, limit, fromDate, toDate };
       const response = await axiosInstance.get(
-        `user/slots/${trainerId}/available`
+        `user/trainers/${trainerId}/slots/calender`,
+        { params }
       );
       return response.data;
     } catch (error: any) {
@@ -66,14 +74,16 @@ export const fetchTrainerSlots = createAsyncThunk(
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
-        return rejectWithValue("Failed to get available slots for the user");
+        return rejectWithValue(
+          "An error occurred while loading the available slots. Please try again later."
+        );
       }
     }
   }
 );
 
-export const fetchAvailableSlotsFromToday = createAsyncThunk(
-  "bookingSlot/fetchAvailableSlotsFromToday",
+export const fetchSlotsUser = createAsyncThunk(
+  "bookingSlot/fetchSlotsUser",
   async (
     {
       trainerId,
@@ -83,7 +93,7 @@ export const fetchAvailableSlotsFromToday = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(
-        `user/slots/${trainerId}/upcoming`,
+        `user/trainers/${trainerId}/slots`,
         { params }
       );
       return response.data;
@@ -100,9 +110,11 @@ export const fetchAvailableSlotsFromToday = createAsyncThunk(
 
 export const bookSlot = createAsyncThunk(
   "bookingSlot/bookSlot",
-  async ({ slotId }: RequestBookSlot, { rejectWithValue }) => {
+  async ({ slotId, trainerId }: RequestBookSlot, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`user/slots/${slotId}`);
+      const response = await axiosInstance.post(
+        `user/trainers/${trainerId}/slots/${slotId}`
+      );
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -146,10 +158,11 @@ export const approveRejectAppointmentBooking = createAsyncThunk(
     });
 
     try {
-      const response = await axiosInstance.patch(
-        `trainer/bookings/`,
-        { appointmentId, bookingSlotId, action }
-      );
+      const response = await axiosInstance.patch(`trainer/bookings/`, {
+        appointmentId,
+        bookingSlotId,
+        action,
+      });
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -166,10 +179,9 @@ export const getScheduledAppointments = createAsyncThunk(
   "bookingSlot/getScheduledAppointments",
   async (params: ScheduledAppointmentsQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(
-        `trainer/appointments/`,
-        { params }
-      );
+      const response = await axiosInstance.get(`trainer/appointments/`, {
+        params,
+      });
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -308,6 +320,23 @@ export const getAppointmentVideoCallLogsUser = createAsyncThunk(
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue("Failed to get video call logs for user");
+      }
+    }
+  }
+);
+
+export const createZegocloudToken = createAsyncThunk(
+  "bookingSlot/createZegocloudToken",
+  async (_, { rejectWithValue }) => {
+    try {
+      console.log("api triggering for creating tokens for video call");
+      const response = await axiosInstance.get(`zegocloud/token/`);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed to get token");
       }
     }
   }

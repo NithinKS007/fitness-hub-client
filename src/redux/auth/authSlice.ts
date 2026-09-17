@@ -22,6 +22,8 @@ const initialState: Auth = {
   admin: null,
   isLoading: false,
   error: null,
+  accessToken: localStorage.getItem("accessToken") ?? null,
+  isAuthenticated: !!localStorage.getItem("accessToken"),
 };
 
 const authSlice = createSlice({
@@ -48,15 +50,23 @@ const authSlice = createSlice({
     setAdmin: (state, action) => {
       state.admin = action.payload;
     },
+    setToken: (state, action) => {
+      state.accessToken = action.payload;
+      localStorage.setItem("accessToken", action.payload);
+      state.isAuthenticated = true;
+    },
     clearAuthPerson: (state) => {
       state.user = null;
       state.admin = null;
       state.trainer = null;
+      state.otp = null;
+      state.isAuthenticated = false;
+      localStorage.removeItem("accessToken");
     },
   },
   extraReducers: (builder) => {
     builder
-      //signup user
+      // Signup user
       .addCase(signUpUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -70,7 +80,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to create user";
       })
-      //resendOtp
+      // ResendOtp
       .addCase(resendOtp.pending, (state) => {
         state.isLoading = true;
       })
@@ -85,7 +95,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to resend otp";
       })
-      //verifyOtp
+      // VerifyOtp
       .addCase(verifyOtp.pending, (state) => {
         state.isLoading = true;
       })
@@ -101,7 +111,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to verify otp";
       })
-      //signin user
+      // Signin user
       .addCase(signinUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -116,7 +126,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to signin user";
       })
-      //forgotPassword
+      // ForgotPassword
       .addCase(forgotPassLink.pending, (state) => {
         state.isLoading = true;
       })
@@ -131,7 +141,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to send link";
       })
-      //resetPassword
+      // ResetPassword
       .addCase(forgotPassword.pending, (state) => {
         state.isLoading = true;
       })
@@ -146,7 +156,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to reset password ";
       })
-      //google authentication
+      // Google authentication
       .addCase(googleAuth.pending, (state) => {
         state.isLoading = true;
       })
@@ -161,7 +171,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to verify google user ";
       })
-      //trainer entrollment
+      // Trainer signup
       .addCase(trainerEntroll.pending, (state) => {
         state.isLoading = true;
       })
@@ -176,7 +186,7 @@ const authSlice = createSlice({
             : "Failed to create trainer";
       })
 
-      //update user profile
+      // Update user profile
       .addCase(updateUserProfile.pending, (state) => {
         state.isLoading = true;
       })
@@ -192,7 +202,7 @@ const authSlice = createSlice({
             : "Failed to update user profile";
       })
 
-      //update trainer profile
+      // Update trainer profile
       .addCase(updateTrainerProfile.pending, (state) => {
         state.isLoading = true;
       })
@@ -208,7 +218,7 @@ const authSlice = createSlice({
             : "Failed to update trainer profile";
       })
 
-      //sign out user
+      // Sign out user
       .addCase(signOutUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -223,7 +233,7 @@ const authSlice = createSlice({
             ? action.payload
             : "Failed to sign out user";
       })
-      //change Password in user profile
+      // Change password in profile
       .addCase(updatePassword.pending, (state) => {
         state.isLoading = true;
       })
@@ -249,5 +259,6 @@ export const {
   setTrainer,
   clearOtpDetails,
   clearAuthPerson,
+  setToken,
 } = authSlice.actions;
 export default authSlice.reducer;

@@ -77,7 +77,7 @@ const subscriptionSlice = createSlice({
 
         console.log("subscription payload");
         state.subscriptions = state.subscriptions.map((sub) =>
-          sub._id === updatedSubscription._id ? updatedSubscription : sub
+          sub.id === updatedSubscription.id ? updatedSubscription : sub
         );
         state.error = null;
       })
@@ -98,7 +98,7 @@ const subscriptionSlice = createSlice({
         state.isLoading = false;
         const updatedSubscription = action.payload.data;
         state.subscriptions = state.subscriptions.filter(
-          (sub) => sub._id !== updatedSubscription._id
+          (sub) => sub.id !== updatedSubscription.id
         );
         state.error = null;
       })
@@ -117,7 +117,7 @@ const subscriptionSlice = createSlice({
         state.isLoading = false;
         const updatedSubscription = action.payload.data;
         state.subscriptions = state.subscriptions.map((sub) =>
-          sub._id === updatedSubscription._id ? updatedSubscription : sub
+          sub.id === updatedSubscription.id ? updatedSubscription : sub
         );
         state.error = null;
       })

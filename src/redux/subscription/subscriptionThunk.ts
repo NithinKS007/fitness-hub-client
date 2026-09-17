@@ -50,10 +50,10 @@ export const getTrainerSubscriptions = createAsyncThunk(
 
 export const updateSubscriptionBlockStatus = createAsyncThunk(
   "subscription/updateSubscriptionBlockStatus",
-  async ({ _id, isBlocked }: updateBlockStatus, { rejectWithValue }) => {
+  async ({ id, isBlocked }: updateBlockStatus, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.patch(
-        `trainer/subscriptions/${_id}`,
+        `trainer/subscriptions/${id}`,
         { isBlocked }
       );
       return response.data;
@@ -70,10 +70,10 @@ export const updateSubscriptionBlockStatus = createAsyncThunk(
 
 export const deleteSubscription = createAsyncThunk(
   "subscription/deleteSubscription",
-  async ({ _id }: RequestDeleteSubscription, { rejectWithValue }) => {
+  async ({ id }: RequestDeleteSubscription, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
-        `trainer/subscriptions/${_id}`
+        `trainer/subscriptions/${id}`
       );
       return response.data;
     } catch (error: any) {
@@ -93,12 +93,12 @@ export const updateSubscription = createAsyncThunk(
     { subscriptionData }: { subscriptionData: Subscription },
     { rejectWithValue }
   ) => {
-    const { _id } = subscriptionData;
+    const { id } = subscriptionData;
 
-    console.log("id to be updated", _id);
+    console.log("id to be updated", id);
     try {
       const response = await axiosInstance.put(
-        `trainer/subscriptions/${_id}`,
+        `trainer/subscriptions/${id}`,
         subscriptionData
       );
       return response.data;
@@ -115,10 +115,10 @@ export const updateSubscription = createAsyncThunk(
 
 export const getTrainerSubscriptionById = createAsyncThunk(
   "subscription/getTrainerSubscriptionById",
-  async (_id: string, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `admin/trainers/${_id}/subscriptions`
+        `admin/trainers/${id}/subscriptions`
       );
       return response.data;
     } catch (error: any) {
@@ -207,10 +207,10 @@ export const getUserSubscriptionsData = createAsyncThunk(
 
 export const isSubscribedToTheTrainer = createAsyncThunk(
   "user/isSubscribedToTheTrainer",
-  async (_id: string, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `user/subscriptions/${_id}/status/`
+        `user/subscriptions/trainers/${id}/status/`
       );
       return response.data;
     } catch (error: any) {
@@ -282,7 +282,7 @@ export const getUserTrainersList = createAsyncThunk(
   "subscription/getUserTrainersList",
   async (params: UserTrainersListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/my-trainers/`, { params });
+      const response = await axiosInstance.get(`user/trainers/`, { params });
       return response.data;
     } catch (error: any) {
       console.log(error);

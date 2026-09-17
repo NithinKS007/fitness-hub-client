@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getTrainerDetailsWithSubscription } from "../../redux/user/userThunk";
+// import { getTrainerWithSubscription } from "../../redux/user/userThunk";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
@@ -8,7 +8,6 @@ import {
   purchaseSubscription,
   isSubscribedToTheTrainer,
 } from "../../redux/subscription/subscriptionThunk";
-import { showErrorToast } from "../../utils/toast";
 import { useStripe } from "@stripe/react-stripe-js";
 import { Subscription } from "../../redux/subscription/subscriptionTypes";
 import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
@@ -39,7 +38,7 @@ const ShowPlansPage = () => {
 
   useEffect(() => {
     if (trainerId) {
-      dispatch(getTrainerDetailsWithSubscription(trainerId));
+      // dispatch(getTrainesub(trainerId));
       dispatch(isSubscribedToTheTrainer(trainerId));
       if (isHeSubscribedToTheTrainer) {
         navigate(`/trainer-details/${trainerId}`);
@@ -53,7 +52,7 @@ const ShowPlansPage = () => {
 
   const handlePlanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = subscriptionDetails.find(
-      (plan) => plan._id === e.target.value
+      (plan) => plan.id === e.target.value
     );
     if (selected) handlePlanClick(selected);
   };
@@ -63,20 +62,28 @@ const ShowPlansPage = () => {
   ): void => {
     event.preventDefault();
 
-    if (selectedPlan && stripe) {
-      dispatch(
-        purchaseSubscription({
-          subscriptionId: selectedPlan._id as string,
-          stripe,
-        })
-      );
-    } else if (!selectedPlan) {
-      showErrorToast("Please select before continuing");
-    }
+    if (!selectedPlan || !stripe || !selectedPlan.id) return;
+    dispatch(
+      purchaseSubscription({
+        subscriptionId: selectedPlan?.id,
+        stripe,
+      })
+    );
   };
 
   if (isTrainerDataLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div
+        style={{
+          height: "90vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <LoadingSpinner size={50} />
+      </div>
+    );
   }
 
   if (error) {

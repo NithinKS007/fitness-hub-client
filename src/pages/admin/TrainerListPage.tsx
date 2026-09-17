@@ -102,10 +102,10 @@ const TrainerListPage: React.FC = () => {
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
-    _id: string
+    id: string
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedTrainerId(_id);
+    setSelectedTrainerId(id);
   };
 
   const handleMenuClose = () => {
@@ -113,13 +113,13 @@ const TrainerListPage: React.FC = () => {
     setSelectedTrainerId(null);
   };
 
-  const handleTrainerDetails = async (_id: string) => {
-    navigate(`/admin/trainer-details/${_id}`);
+  const handleTrainerDetails = async (id: string) => {
+    navigate(`/admin/trainer-details/${id}`);
     handleMenuClose();
   };
 
-  const handleTrainerSubscriptions = (_id: string) => {
-    navigate(`/admin/trainer-subscriptions/${_id}`);
+  const handleTrainerSubscriptions = (id: string) => {
+    navigate(`/admin/trainer-subscriptions/${id}`);
     handleMenuClose();
   };
 
@@ -131,7 +131,7 @@ const TrainerListPage: React.FC = () => {
   const handleConfirmBlockStatus = () => {
     if (selectedTrainer) {
       handleUpdateBlockStatus({
-        _id: selectedTrainer.userId,
+        id: selectedTrainer.trainerDetails.userId,
         isBlocked: !selectedTrainer.isBlocked,
       });
       handleConfirmationModalClose();
@@ -141,18 +141,31 @@ const TrainerListPage: React.FC = () => {
   const fetchedTrainersData =
     trainers?.length > 0
       ? trainers.map((trainer: Trainer, index: number) => {
-          const dateObj = new Date(trainer.createdAt as string);
-          const formattedDate = dateObj.toLocaleDateString("en-GB");
-          const formattedTime = dateObj.toLocaleTimeString("en-GB");
-          const isBlocked = GetBlockStatusIcon(trainer?.isBlocked as boolean);
-          const verified = GetVerificationStatusIcon(
-            (trainer.otpVerified as boolean) ||
-              (trainer.googleVerified as boolean)
-          );
-          const isApproved = GetApprovalStatusIcon(
-            trainer.isApproved as boolean
-          );
-          const profilePic = GetProfilePic(trainer.profilePic as string);
+          const dateObj = trainer?.createdAt
+            ? new Date(trainer.createdAt)
+            : null;
+
+          const formattedDate = dateObj
+            ? dateObj.toLocaleDateString("en-GB")
+            : "N/A";
+          const formattedTime = dateObj
+            ? dateObj.toLocaleTimeString("en-GB")
+            : "N/A";
+          const isBlocked =
+            typeof trainer?.isBlocked === "boolean"
+              ? GetBlockStatusIcon(trainer?.isBlocked)
+              : "N/A";
+
+          const verified =
+            trainer?.otpVerified || trainer?.googleVerified
+              ? GetVerificationStatusIcon(true)
+              : "N/A";
+
+          const isApproved =
+            trainer?.trainerDetails?.isApproved !== undefined
+              ? GetApprovalStatusIcon(trainer.trainerDetails.isApproved)
+              : "N/A";
+          const profilePic = GetProfilePic(trainer.profilePic);
           return {
             ...trainer,
             profilePic: profilePic,
@@ -165,7 +178,7 @@ const TrainerListPage: React.FC = () => {
             details: (
               <>
                 <IconButton
-                  onClick={(e) => handleMenuClick(e, trainer._id as string)}
+                  onClick={(e) => handleMenuClick(e, trainer.id)}
                   aria-label="More options"
                   sx={{
                     padding: "16px",
@@ -179,7 +192,7 @@ const TrainerListPage: React.FC = () => {
                 <Paper>
                   <Menu
                     anchorEl={anchorEl}
-                    open={isMenuOpen && selectedTrainerId === trainer?._id}
+                    open={isMenuOpen && selectedTrainerId === trainer?.id}
                     onClose={handleMenuClose}
                     sx={{
                       "& .MuiPaper-root": {
@@ -191,16 +204,12 @@ const TrainerListPage: React.FC = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() =>
-                        handleTrainerDetails(trainer?._id as string)
-                      }
+                      onClick={() => handleTrainerDetails(trainer?.trainerDetails.userId)}
                     >
                       Details
                     </MenuItem>
                     <MenuItem
-                      onClick={() =>
-                        handleTrainerSubscriptions(trainer?._id as string)
-                      }
+                      onClick={() => handleTrainerSubscriptions(trainer?.id)}
                     >
                       Subscriptions
                     </MenuItem>
@@ -226,7 +235,7 @@ const TrainerListPage: React.FC = () => {
         <>
           <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
             <SearchBarTable
-              searchTerm={searchTerm as string}
+              searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
             />
             <Box
@@ -235,7 +244,7 @@ const TrainerListPage: React.FC = () => {
             >
               <TableFilter
                 filter={filter}
-                selectedFilter={selectedFilter as string[]}
+                selectedFilter={selectedFilter}
                 handleFilterChange={handleFilterChange}
               />
             </Box>
@@ -244,7 +253,7 @@ const TrainerListPage: React.FC = () => {
           {isLoading ? (
             <ShimmerTableLoader columns={columns} />
           ) : error ? (
-            <Error message={error as string} />
+            <Error message={error} />
           ) : (
             <>
               <ReuseTable columns={columns} data={fetchedTrainersData} />
@@ -257,7 +266,7 @@ const TrainerListPage: React.FC = () => {
           )}
 
           <ConfirmationModalDialog
-            open={confirmationModalOpen as boolean}
+            open={confirmationModalOpen}
             content={
               selectedTrainer
                 ? `Are you sure you want to ${

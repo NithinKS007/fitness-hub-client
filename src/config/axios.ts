@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import store from "../redux/store";
-import { clearAuthPerson } from "../redux/auth/authSlice";
+import { clearAuthPerson, setToken } from "../redux/auth/authSlice";
 import { showErrorToast } from "../utils/toast";
-const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL.replace("{cloud_name}",import.meta.env.VITE_CLOUDINARY_NAME)
+import { refreshAT } from "../redux/auth/authThunk";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -12,20 +12,11 @@ const axiosInstance: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
-export const cloudinaryAxiosInstance = axios.create({
-  baseURL: `${CLOUDINARY_URL}`,
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-  withCredentials:false
-})
-
-
 axiosInstance.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = store.getState().auth.accessToken;
     if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
     return config;
   },
@@ -36,27 +27,30 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-  
-     if(error.response && error.response.data.status===403) {
-      
+
+    if (error.response && error.response.data.status === 403) {
       store.dispatch(clearAuthPerson());
       showErrorToast(error.response.data.message);
-      window.location.href = '/sign-in';
-     }
-    if (error.response && error.response.data.status === 401 && !originalRequest._retry) {
+      window.location.href = "/sign-in";
+      return;
+    }
+
+    if (
+      error.response &&
+      error.response.data.status === 401 &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
 
       try {
-        const response = await axiosInstance.post('/auth/refresh-token', {}, { withCredentials: true });
-        const { newAccessToken } = response.data.data
-        localStorage.setItem('accessToken', newAccessToken);
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        const newAccessToken = await store.dispatch(refreshAT()).unwrap();
+        store.dispatch(setToken(newAccessToken));
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (err) {
-        console.log("getting inside catch block axios for refreshing")
-        console.log('Refresh token failed', err)
+        console.log("Refresh token failed", err);
         store.dispatch(clearAuthPerson());
-        window.location.href = '/sign-in';
+        window.location.href = "/sign-in";
         showErrorToast("Your session has expired. Please sign-in again.");
       }
     }
@@ -65,4 +59,19 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance
+export const cloudinaryAxiosInstance = (cloudName: string) => {
+  const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL.replace(
+    "{cloud_name}",
+    cloudName
+  );
+
+  return axios.create({
+    baseURL: `${CLOUDINARY_URL}`,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    withCredentials: false,
+  });
+};
+
+export default axiosInstance;

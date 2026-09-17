@@ -18,122 +18,34 @@ import CloseIcon from "@mui/icons-material/Close";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Dayjs } from "dayjs";
+import { styles } from "./styleWorkout";
+import {
+  Workout,
+  WorkoutFormik,
+  WorkoutItem,
+} from "../../../hooks/useWorkouts";
+import { FormikErrors, FormikProps } from "formik";
 
 interface WorkOutModalProps {
   open: boolean;
-  selectedDate: any;
-  workoutData: any[];
-  formik: any;
+  selectedDate: Dayjs | null;
+  workoutData: WorkoutItem[];
+  formik: FormikProps<WorkoutFormik>;
   handleClose: () => void;
   addWorkout: (bodyPart: string, exercise: string) => void;
   removeWorkout: (index: number) => void;
   addNewRow: (index: number) => void;
-  handleDateChange: (date: any) => void;
+  handleDateChange: (date: Dayjs | null) => void;
   isExerciseDisabled: (bodyPart: string, exercise: string) => boolean;
   handleBodyPartChange: (event: any) => void;
+  selectedExercises: string[];
 }
 
-const modalBoxStyles = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: { xs: "90%", sm: 500, md: 1000 },
-  maxHeight: "80vh",
-  bgcolor: "white",
-  borderRadius: 2,
-  boxShadow: 24,
-  p: { xs: 2, sm: 3, md: 4 },
-  overflowY: "auto",
-};
-
-const headerBoxStyles = {
-  display: "flex",
-  justifyContent: "space-between",
-  mb: 2,
-};
-
-const closeButtonStyles = {
-  p: 1,
-};
-
-const formContainerStyles = {
-  display: "flex",
-  flexDirection: "column",
-  gap: 2,
-};
-
-const selectStyles = {
-  mb: 1,
-};
-
-const exerciseContainerStyles = {
-  display: "flex",
-  flexWrap: "wrap",
-  gap: 1,
-  mt: 1,
-};
-
-const workoutListStyles = {
-  mt: 3,
-  mb: 2,
-};
-
-const noWorkoutsStyles = {
-  mt: 1,
-};
-
-const workoutRowStyles = {
-  display: "flex",
-  alignItems: "flex-start",
-  mb: 2,
-  gap: 1,
-};
-
-const exerciseTextStyles = {
-  flex: 1,
-  mt: 1.5,
-};
-
-const kgFieldStyles = {
-  minWidth: 100,
-};
-
-const repsFieldStyles = {
-  minWidth: 100,
-};
-
-const timeFieldStyles = {
-  minWidth: 120,
-};
-
-const addButtonStyles = {
-  mt: 1,
-};
-
-const deleteButtonStyles = {
-  mt: 1,
-};
-
-const buttonContainerStyles = {
-  display: "flex",
-  gap: 2,
-  justifyContent: "flex-end",
-  flexDirection: { xs: "column", sm: "row" },
-};
-
-const cancelButtonStyles = {
-  width: { xs: "100%", sm: "auto" },
-};
-
-const saveButtonStyles = {
-  width: { xs: "100%", sm: "auto" },
-  backgroundColor: "#1f2937",
-  color: "white",
-};
-
-const calendarIconStyles = {
-  fontSize: "large",
+const isWorkoutError = (
+  error: string | FormikErrors<Workout> | undefined
+): error is FormikErrors<Workout> => {
+  return typeof error === "object" && error !== null;
 };
 
 const WorkOutModal: React.FC<WorkOutModalProps> = ({
@@ -148,19 +60,20 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
   handleDateChange,
   isExerciseDisabled,
   handleBodyPartChange,
+  selectedExercises,
 }) => {
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box sx={modalBoxStyles}>
-        <Box sx={headerBoxStyles}>
-          <Typography variant="h6">Add Workout</Typography>
-          <IconButton onClick={handleClose} sx={closeButtonStyles}>
+      <Box sx={styles.modalBox}>
+        <Box sx={styles.headerBox}>
+          <Typography variant="h6">ADD WORKOUT</Typography>
+          <IconButton onClick={handleClose} sx={styles.closeButton}>
             <CloseIcon />
           </IconButton>
         </Box>
 
         <form onSubmit={formik.handleSubmit}>
-          <Box sx={formContainerStyles}>
+          <Box sx={styles.formContainer}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <FormControl fullWidth>
                 <MobileDatePicker
@@ -176,7 +89,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       InputProps: {
                         endAdornment: (
                           <InputAdornment position="end">
-                            <CalendarTodayIcon sx={calendarIconStyles} />
+                            <CalendarTodayIcon sx={styles.calendarIcon} />
                           </InputAdornment>
                         ),
                       },
@@ -195,7 +108,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                 displayEmpty
                 fullWidth
                 size="medium"
-                sx={selectStyles}
+                sx={styles.select}
                 renderValue={(selected) =>
                   selected ? selected : "Select a Body Part"
                 }
@@ -218,44 +131,40 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                 )}
 
               {formik.values.selectedBodyPart && (
-                <Box sx={exerciseContainerStyles}>
-                  {workoutData
-                    .find(
-                      (item) => item.bodyPart === formik.values.selectedBodyPart
-                    )
-                    ?.exercises.map((exercise: string) => (
-                      <Button
-                        key={`${formik.values.selectedBodyPart}-${exercise}`}
-                        onClick={() =>
-                          addWorkout(formik.values.selectedBodyPart, exercise)
-                        }
-                        variant="outlined"
-                        size="medium"
-                        disabled={isExerciseDisabled(
-                          formik.values.selectedBodyPart,
-                          exercise
-                        )}
-                      >
-                        {exercise}
-                      </Button>
-                    ))}
+                <Box sx={styles.exerciseContainer}>
+                  {selectedExercises.map((exercise: string) => (
+                    <Button
+                      key={`${formik.values.selectedBodyPart}-${exercise}`}
+                      onClick={() =>
+                        addWorkout(formik.values.selectedBodyPart, exercise)
+                      }
+                      variant="outlined"
+                      size="medium"
+                      disabled={isExerciseDisabled(
+                        formik.values.selectedBodyPart,
+                        exercise
+                      )}
+                    >
+                      {exercise}
+                    </Button>
+                  ))}
                 </Box>
               )}
             </Box>
           </Box>
 
-          <Box sx={workoutListStyles}>
+          <Box sx={styles.workoutList}>
             {formik.values.workouts.length === 0 ? (
-              <Typography color="text.secondary" sx={noWorkoutsStyles}>
+              <Typography color="text.secondary" sx={styles.noWorkouts}>
                 No workouts added yet.
               </Typography>
             ) : (
-              formik.values.workouts.map((workout: any, index: number) => (
-                <Box key={index} sx={workoutRowStyles}>
-                  <Typography sx={exerciseTextStyles}>
+              formik.values.workouts.map((workout: Workout, index: number) => (
+                <Box key={index} sx={styles.workoutRow}>
+                  <Typography sx={styles.exerciseText}>
                     {workout.exercise}
                   </Typography>
-                  <Box sx={kgFieldStyles}>
+                  <Box sx={styles.kgField}>
                     <TextField
                       label="Kg"
                       type="number"
@@ -267,10 +176,12 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       fullWidth
                       error={
                         formik.touched.workouts?.[index]?.kg &&
+                        isWorkoutError(formik.errors.workouts?.[index]) &&
                         Boolean(formik.errors.workouts?.[index]?.kg)
                       }
                       helperText={
                         formik.touched.workouts?.[index]?.kg &&
+                        isWorkoutError(formik.errors.workouts?.[index]) &&
                         formik.errors.workouts?.[index]?.kg ? (
                           formik.errors.workouts[index].kg
                         ) : (
@@ -281,7 +192,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       }
                     />
                   </Box>
-                  <Box sx={repsFieldStyles}>
+                  <Box sx={styles.repsField}>
                     <TextField
                       label="Reps"
                       type="number"
@@ -293,10 +204,12 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       fullWidth
                       error={
                         formik.touched.workouts?.[index]?.reps &&
+                        isWorkoutError(formik.errors.workouts?.[index]) &&
                         Boolean(formik.errors.workouts?.[index]?.reps)
                       }
                       helperText={
                         formik.touched.workouts?.[index]?.reps &&
+                        isWorkoutError(formik.errors.workouts?.[index]) &&
                         formik.errors.workouts?.[index]?.reps ? (
                           formik.errors.workouts[index].reps
                         ) : (
@@ -307,7 +220,7 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       }
                     />
                   </Box>
-                  <Box sx={timeFieldStyles}>
+                  <Box sx={styles.timeField}>
                     <TextField
                       label="Time (min)"
                       type="number"
@@ -319,10 +232,12 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                       fullWidth
                       error={
                         formik.touched.workouts?.[index]?.time &&
+                        isWorkoutError(formik.errors.workouts?.[index]) &&
                         Boolean(formik.errors.workouts?.[index]?.time)
                       }
                       helperText={
                         formik.touched.workouts?.[index]?.time &&
+                        isWorkoutError(formik.errors.workouts?.[index]) &&
                         formik.errors.workouts?.[index]?.time ? (
                           formik.errors.workouts[index].time
                         ) : (
@@ -335,14 +250,14 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
                   </Box>
                   <IconButton
                     onClick={() => addNewRow(index)}
-                    sx={addButtonStyles}
+                    sx={styles.addButton}
                     color="primary"
                   >
                     <AddIcon />
                   </IconButton>
                   <IconButton
                     color="error"
-                    sx={deleteButtonStyles}
+                    sx={styles.deleteButton}
                     onClick={() => removeWorkout(index)}
                     aria-label="remove workout"
                   >
@@ -360,16 +275,21 @@ const WorkOutModal: React.FC<WorkOutModalProps> = ({
               )}
           </Box>
 
-          <Box sx={buttonContainerStyles}>
+          <Box sx={styles.buttonContainer}>
             <Button
               variant="outlined"
               onClick={handleClose}
-              sx={cancelButtonStyles}
+              sx={styles.cancelButton}
             >
-              Cancel
+              CANCEL
             </Button>
-            <Button type="submit" variant="contained" sx={saveButtonStyles}>
-              Save
+            <Button
+              disabled={formik.isSubmitting}
+              type="submit"
+              variant="contained"
+              sx={styles.saveButton}
+            >
+              ADD
             </Button>
           </Box>
         </form>

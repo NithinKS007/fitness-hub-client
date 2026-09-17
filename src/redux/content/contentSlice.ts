@@ -147,7 +147,7 @@ const content = createSlice({
         const updatedVideo = action.payload.data;
 
         state.videos = state?.videos?.map((v) =>
-          v._id === updatedVideo._id
+          v.id === updatedVideo.id
             ? { ...v, privacy: updatedVideo.privacy }
             : v
         );
@@ -170,7 +170,7 @@ const content = createSlice({
         state.isLoading = false;
         const updatedPlayList = action.payload.data;
         state.playLists = state?.playLists?.map((p) =>
-          p._id === updatedPlayList._id
+          p.id === updatedPlayList.id
             ? { ...p, privacy: updatedPlayList.privacy }
             : p
         );
@@ -229,7 +229,7 @@ const content = createSlice({
         state.error = null;
         const updatedVideo = action.payload.data;
         state.videos = state.videos.map((video) =>
-          video._id === updatedVideo._id ? { ...video, ...updatedVideo } : video
+          video.id === updatedVideo.id ? { ...video, ...updatedVideo } : video
         );
       })
       .addCase(editVideo.rejected, (state, action) => {
@@ -248,7 +248,7 @@ const content = createSlice({
         state.error = null;
         const updatedPlayList = action.payload.data;
         state.playLists = state.playLists.map((p) =>
-          p._id === updatedPlayList._id ? { ...p, ...updatedPlayList } : p
+          p.id === updatedPlayList.id ? { ...p, ...updatedPlayList } : p
         );
       })
       .addCase(editPlayList.rejected, (state, action) => {

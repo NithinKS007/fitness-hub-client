@@ -37,11 +37,11 @@ interface userTrainersList {
   trainerId: string;
   updatedAt: string;
   userId: string;
-  _id: string;
+  id: string;
 }
 
 export interface Subscription {
-  _id?: string | null;
+  id?: string | null;
   trainerId?: string;
   subPeriod: string;
   price: number;
@@ -75,7 +75,7 @@ export interface UserSubscribedTrainerPlans {
   trainerId: string;
   updatedAt: string;
   userId: string;
-  _id: string;
+  id: string;
 }
 
 export interface subscribersOfTrainer extends UserSubscribedTrainerPlans {
@@ -89,7 +89,7 @@ export interface subscribersOfTrainer extends UserSubscribedTrainerPlans {
 }
 
 export interface RequestDeleteSubscription {
-  _id: string;
+  id: string;
 }
 
 export interface RequestSessionIdForSubscription {

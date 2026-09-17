@@ -9,7 +9,7 @@ const UserBookingsPage: React.FC = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
-    console.log("event",event)
+    console.log("event", event);
   };
 
   const renderContent = () => {
@@ -27,7 +27,7 @@ const UserBookingsPage: React.FC = () => {
     <>
       <Tabs
         tabItems={tabItems}
-        value={selectedTab as number}
+        value={selectedTab}
         handleChange={handleTabChange}
       />
       {renderContent()}

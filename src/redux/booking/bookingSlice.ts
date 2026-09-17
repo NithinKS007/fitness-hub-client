@@ -1,9 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { bookingSlotState } from "./bookingTypes";
+import { BookingSlotState } from "./bookingTypes";
 import {
   addBookingSlot,
-  fetchAvailableSlots,
-  fetchTrainerSlots,
   bookSlot,
   fetchBookingRequests,
   approveRejectAppointmentBooking,
@@ -14,13 +12,17 @@ import {
   deleteAvailableBookingSlot,
   getAppointmentVideoCallLogsTrainer,
   getAppointmentVideoCallLogsUser,
-  fetchAvailableSlotsFromToday,
+  fetchSlotsTrainer,
+  fetchSlotsUser,
+  fetchSlotsCalender,
+  createZegocloudToken,
 } from "./bookingThunk";
 
-const initialState: bookingSlotState = {
+const initialState: BookingSlotState = {
   isLoading: false,
   error: null,
   slots: [],
+  slotsCalender: [],
   appointMentRequests: [],
   scheduledAppointmentsTrainer: [],
   scheduledAppointmentsUser: [],
@@ -35,7 +37,7 @@ const bookingSlot = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // create slot
+      // Create slot
       .addCase(addBookingSlot.pending, (state) => {
         state.isLoading = true;
       })
@@ -49,14 +51,14 @@ const bookingSlot = createSlice({
         state.error =
           typeof action.payload === "string"
             ? action.payload
-            : "Failed to add slot";
+            : "An error occurred while adding the slot. Please try again later.";
       })
 
-      //get added slots trainer
-      .addCase(fetchAvailableSlots.pending, (state) => {
+      // Get added slots trainer
+      .addCase(fetchSlotsTrainer.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchAvailableSlots.fulfilled, (state, action) => {
+      .addCase(fetchSlotsTrainer.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
         state.slots = action.payload.data.availableSlotsList;
@@ -65,34 +67,34 @@ const bookingSlot = createSlice({
         state.pagination.totalPages =
           action.payload.data.paginationData.totalPages;
       })
-      .addCase(fetchAvailableSlots.rejected, (state, action) => {
+      .addCase(fetchSlotsTrainer.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
-            : "Failed to fetch available slots";
+            : "An error occurred while loading the available slots. Please try again later.";
       })
-      // fetch slots for user for booking
-      .addCase(fetchTrainerSlots.pending, (state) => {
+      // Fetch slots calender
+      .addCase(fetchSlotsCalender.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchTrainerSlots.fulfilled, (state, action) => {
+      .addCase(fetchSlotsCalender.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.slotsCalender = action.payload.data.availableSlotsList;
         state.error = null;
-        state.slots = action.payload.data;
       })
-      .addCase(fetchTrainerSlots.rejected, (state, action) => {
+      .addCase(fetchSlotsCalender.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
-            : "Failed to fetch available slots for the user";
+            : "An error occurred while loading the available slots. Please try again later.";
       })
 
-      .addCase(fetchAvailableSlotsFromToday.pending, (state) => {
+      .addCase(fetchSlotsUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchAvailableSlotsFromToday.fulfilled, (state, action) => {
+      .addCase(fetchSlotsUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
         state.slots = action.payload.data.availableSlotsList;
@@ -101,7 +103,7 @@ const bookingSlot = createSlice({
         state.pagination.totalPages =
           action.payload.data.paginationData.totalPages;
       })
-      .addCase(fetchAvailableSlotsFromToday.rejected, (state, action) => {
+      .addCase(fetchSlotsUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error =
           typeof action.payload === "string"
@@ -116,7 +118,10 @@ const bookingSlot = createSlice({
       .addCase(bookSlot.fulfilled, (state, action) => {
         state.isLoading = false;
         state.slots = state.slots.filter((slot) => {
-          return slot._id !== action.payload.data.bookingSlotId;
+          return slot.id !== action.payload.data.bookingSlotId;
+        });
+        state.slotsCalender = state.slotsCalender.filter((slot) => {
+          return slot.id !== action.payload.data.bookingSlotId;
         });
         state.error = null;
       })
@@ -156,10 +161,10 @@ const bookingSlot = createSlice({
       .addCase(approveRejectAppointmentBooking.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        const appointmentId = action.payload.data._id;
+        const appointmentId = action.payload.data.id;
         state.appointMentRequests = state.appointMentRequests.filter(
           (appointment) =>
-            appointment._id.toString() !== appointmentId.toString()
+            appointment.id.toString() !== appointmentId.toString()
         );
       })
       .addCase(approveRejectAppointmentBooking.rejected, (state, action) => {
@@ -204,8 +209,8 @@ const bookingSlot = createSlice({
           state.scheduledAppointmentsTrainer =
             state.scheduledAppointmentsTrainer?.filter(
               (appointment) =>
-                appointment._id.toString() !==
-                action.payload.data._id.toString()
+                appointment.id.toString() !==
+                action.payload.data.id.toString()
             );
         }
       )
@@ -248,7 +253,7 @@ const bookingSlot = createSlice({
         state.scheduledAppointmentsUser =
           state.scheduledAppointmentsUser?.filter(
             (appointment) =>
-              appointment._id.toString() !== action.payload.data._id.toString()
+              appointment.id.toString() !== action.payload.data.id.toString()
           );
       })
       .addCase(cancelAppointmentScheduleByUser.rejected, (state, action) => {
@@ -267,7 +272,7 @@ const bookingSlot = createSlice({
         state.isLoading = false;
         state.error = null;
         state.slots = state.slots?.filter(
-          (slot) => slot._id.toString() !== action.payload.data._id.toString()
+          (slot) => slot.id.toString() !== action.payload.data.id.toString()
         );
       })
       .addCase(deleteAvailableBookingSlot.rejected, (state, action) => {
@@ -324,6 +329,22 @@ const bookingSlot = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : "Failed to get appointment call logs for user";
+      })
+
+      // Token generation for zego cloud
+      .addCase(createZegocloudToken.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createZegocloudToken.fulfilled, (state, _) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(createZegocloudToken.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : "Failed to create token ";
       });
   },
 });

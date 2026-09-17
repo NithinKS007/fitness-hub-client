@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { updatePassword } from "../redux/auth/authThunk";
 import { useFormik } from "formik";
-import { changePasswordValidationSchema } from "../utils/validationSchema";
+import { changePasswordSchema } from "../utils/validationSchema";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 const useChangePassword = () => {
@@ -13,7 +13,7 @@ const useChangePassword = () => {
       newPassword: "",
       cPassword: "",
     },
-    validationSchema: changePasswordValidationSchema(),
+    validationSchema: changePasswordSchema,
     onSubmit: async (values) => {
       const { password, newPassword } = values;
       try {
@@ -21,8 +21,8 @@ const useChangePassword = () => {
           updatePassword({ password, newPassword })
         ).unwrap();
         console.log("response for changing the password", response);
-        showSuccessToast(response.message)
-        changePasswordFormik.resetForm()
+        showSuccessToast(response.message);
+        changePasswordFormik.resetForm();
       } catch (error) {
         console.log(`API Error ${error}`);
         showErrorToast(`${error}`);

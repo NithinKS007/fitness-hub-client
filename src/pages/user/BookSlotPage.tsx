@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "../../redux/store";
 import {
-  fetchAvailableSlotsFromToday,
-  fetchTrainerSlots,
+  fetchSlotsCalender,
+  fetchSlotsUser,
 } from "../../redux/booking/bookingThunk";
 import Tabs from "../../components/Tabs";
 import Error from "../../components/shared/Error";
-import { Box, Container, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useSelector } from "react-redux";
 import useIsUserSubscribedToTrainer from "../../hooks/useIsUserSubscribedToTrainer";
@@ -19,7 +19,6 @@ import PaginationTable from "../../components/Pagination";
 import { TableColumn } from "../../types/tableTypes";
 import dayjs, { Dayjs } from "dayjs";
 import DateAndTimeFilter from "../../components/table/DateFilter";
-import ShimmerTableLoader from "../../components/table/ShimmerTable";
 import useSlotBooking from "../../hooks/useSlotBooking";
 import Calendar from "../../components/slot-booking/Calender";
 import TimeSelector from "../../components/slot-booking/TimeSelector";
@@ -68,10 +67,20 @@ const BookSlotPage: React.FC = () => {
     (state: RootState) => state.subscription
   );
 
+  const {
+    slots,
+    isLoading: SlotLoading,
+    error: SlotError,
+    pagination,
+  } = useSelector((state: RootState) => state.bookingSlot);
+  const { totalPages, currentPage } = pagination;
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
     console.log("event", event);
   };
+
+  console.log("slots in bookslot page in listings", slots);
 
   const {
     handlePageChange,
@@ -93,13 +102,56 @@ const BookSlotPage: React.FC = () => {
     handleBooking,
   } = useSlotBooking();
 
+  const [monthRange, setMonthRange] = useState<{
+    start: Dayjs;
+    end: Dayjs;
+  } | null>(null);
+
+  const selectedMonthRef = useRef<Dayjs>(dayjs().startOf("month"));
+
+  const handleMonthChange = (newMonth: Dayjs) => {
+    const startOfMonth = newMonth.startOf("month");
+    const endOfMonth = newMonth.endOf("month");
+    setMonthRange({ start: startOfMonth, end: endOfMonth });
+    selectedMonthRef.current = newMonth;
+  };
+
+  useEffect(() => {
+    if (trainerId && monthRange) {
+      const { start, end } = monthRange;
+      const parsedFromDate = start ? dayjs(start) : null;
+      const parsedToDate = end ? dayjs(end) : null;
+
+      dispatch(
+        fetchSlotsCalender({
+          trainerId,
+          fromDate: parsedFromDate,
+          toDate: parsedToDate,
+          limit: 31,
+        })
+      );
+    }
+  }, [monthRange, trainerId, dispatch]);
+
+  useEffect(() => {
+    if (trainerId) {
+      dispatch(
+        fetchSlotsCalender({
+          trainerId,
+          fromDate: dayjs().startOf("month"),
+          toDate: dayjs().endOf("month"),
+          limit: 31,
+        })
+      );
+    }
+  }, [trainerId]);
+
   useEffect(() => {
     if (trainerId) {
       const { page, limit, fromDate, toDate } = getQueryParams();
-      dispatch(fetchTrainerSlots({ trainerId }));
       dispatch(isSubscribedToTheTrainer(trainerId));
       dispatch(
-        fetchAvailableSlotsFromToday({
+        fetchSlotsUser({
           trainerId: trainerId,
           params: { page, limit, fromDate, toDate },
         })
@@ -113,18 +165,10 @@ const BookSlotPage: React.FC = () => {
     getQueryParams().toDate,
   ]);
 
-  const {
-    slots,
-    isLoading: SlotLoading,
-    error: SlotError,
-    pagination,
-  } = useSelector((state: RootState) => state.bookingSlot);
-  const { totalPages, currentPage } = pagination;
-
-  const fetchedAddedSlots =
+  const fetchSlots =
     slots.length > 0
       ? slots.map((slot, index) => {
-          const dateObj = new Date(slot?.createdAt as string);
+          const dateObj = new Date(slot?.createdAt);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
           const slotDate = new Date(slot?.date);
@@ -140,134 +184,84 @@ const BookSlotPage: React.FC = () => {
         })
       : [];
 
-  const isSubscribed = useIsUserSubscribedToTrainer(trainerId as string);
+  const isSubscribed = trainerId ? useIsUserSubscribedToTrainer(trainerId) : "";
 
   const renderContent = () => {
     switch (selectedTab) {
       case 0:
-        if (isSubscribed) {
-          if (SlotLoading) {
-            return <ShimmerTableLoader columns={availableSlotColumns} />;
-          }
-
-          if (SlotError) {
-            return <Box>{SlotError}</Box>;
-          }
-
-          if (fetchedAddedSlots.length === 0) {
-            return (
-              <Box
-                sx={{
-                  textAlign: "center",
-                  fontSize: "18px",
-                  marginTop: "20px",
-                }}
-              >
-                No slots available.
-              </Box>
-            );
-          }
-
-          return (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  mb: 1,
-                }}
-              >
-                <DateAndTimeFilter
-                  fromDate={fromDate as Dayjs | null}
-                  toDate={toDate as Dayjs | null}
-                  onFromDateChange={handleFromDateChange}
-                  onToDateChange={handleToDateChange}
-                  onReset={handleResetDates}
-                />
-              </Box>
-
-              <ReuseTable
-                columns={availableSlotColumns}
-                data={fetchedAddedSlots}
-              />
-              <PaginationTable
-                handlePageChange={handlePageChange}
-                page={currentPage}
-                totalPages={totalPages}
-              />
-              <Box sx={{ mb: 2, mt: 2 }}>
-                <Container
-                  sx={{
-                    width: "100%",
-                    maxWidth: "100%",
-                    padding: { xs: 0, sm: 0 },
-                    margin: 0,
-                  }}
-                  maxWidth={false}
-                >
-                  <Paper
-                    sx={{
-                      p: { xs: 1.5, sm: 2 },
-                      borderRadius: "8px",
-                      elevation: 3,
-                      width: "100%",
-                      maxWidth: "100%",
-                      boxSizing: "border-box",
-                      border: "2px solid #e0e0e0",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: { xs: "column", md: "row" },
-                        gap: 3,
-                        width: "100%",
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <Box
-                        sx={{ flex: { xs: "100%", md: "50%" }, width: "100%" }}
-                      >
-                        <Calendar
-                          selectedDate={
-                            selectedSlot ? dayjs(selectedSlot.date) : null
-                          }
-                          handleDateChange={handleDateChange}
-                          shouldDisableDate={shouldDisableDate}
-                        />
-                      </Box>
-                      <Box
-                        sx={{
-                          flex: { xs: "100%", md: "50%" },
-                          marginTop: { xs: 2, md: 2 },
-                          width: "100%",
-                        }}
-                      >
-                        <TimeSelector
-                          selectedSlotTime={selectedSlot?.time}
-                          handleTimeChange={handleTimeChange}
-                          filteredSlots={getFilteredTimeSlots()}
-                        />
-                        <Summary
-                          selectedSlot={selectedSlot}
-                          handleBooking={handleBooking}
-                          selectedSlotId={selectedSlotId}
-                        />
-                      </Box>
-                    </Box>
-                  </Paper>
-                </Container>
-              </Box>
-            </>
-          );
-        } else {
+        if (!isSubscribed) {
           return (
             <Box sx={styles.subscribeMessage}>
               You need to subscribe to this trainer to book slots.
             </Box>
           );
         }
+
+        if (fetchSlots.length === 0) {
+          return (
+            <Box
+              sx={{
+                textAlign: "center",
+                fontSize: "18px",
+                marginTop: "20px",
+              }}
+            >
+              No slots available.
+            </Box>
+          );
+        }
+
+        return (
+          <>
+            <div className="flex justify-end items-center mb-1">
+              <DateAndTimeFilter
+                fromDate={fromDate}
+                toDate={toDate}
+                onFromDateChange={handleFromDateChange}
+                onToDateChange={handleToDateChange}
+                onReset={handleResetDates}
+              />
+            </div>
+
+            <ReuseTable columns={availableSlotColumns} data={fetchSlots} />
+            <PaginationTable
+              handlePageChange={handlePageChange}
+              page={currentPage}
+              totalPages={totalPages}
+            />
+            <div className="mb-2 mt-2">
+              <div className="w-full max-w-full p-0 sm:p-0 m-0">
+                <div className="p-4 sm:p-5 rounded-lg shadow-md w-full max-w-full box-border border-2 border-gray-300">
+                  <div className="flex flex-col md:flex-row gap-3 w-full box-border">
+                    <div className="flex-1 w-full">
+                      <Calendar
+                        selectedDate={
+                          selectedSlot ? dayjs(selectedSlot.date) : null
+                        }
+                        displayMonth={selectedMonthRef.current}
+                        handleDateChange={handleDateChange}
+                        shouldDisableDate={shouldDisableDate}
+                        handleMonthChange={handleMonthChange}
+                      />
+                    </div>
+                    <div className="flex-1 w-full mt-2 md:mt-0">
+                      <TimeSelector
+                        selectedSlotTime={selectedSlot?.time}
+                        handleTimeChange={handleTimeChange}
+                        filteredSlots={getFilteredTimeSlots()}
+                      />
+                      <Summary
+                        selectedSlot={selectedSlot}
+                        handleBooking={handleBooking}
+                        selectedSlotId={selectedSlotId}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        );
       default:
         return null;
     }
@@ -293,7 +287,7 @@ const BookSlotPage: React.FC = () => {
     <>
       <Tabs
         tabItems={tabItems}
-        value={selectedTab as number}
+        value={selectedTab}
         handleChange={handleTabChange}
       />
       <Box sx={{ marginTop: 1, width: "100%" }}> {renderContent()}</Box>

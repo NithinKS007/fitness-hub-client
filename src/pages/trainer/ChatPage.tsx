@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { socket } from "../../config/socket";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import {
@@ -17,8 +16,10 @@ import { Box } from "@mui/material";
 import ReusableChat from "../../components/ReusableChat";
 import Picker from "emoji-picker-react";
 import useSearchFilter from "../../hooks/useSearchFilter";
+import { SocketContext } from "../../context/SocketContext";
+
 export interface Ichat {
-  _id: string;
+  id: string;
   senderId: string;
   receiverId: string;
   message: string;
@@ -28,7 +29,7 @@ export interface Ichat {
 }
 
 interface UnreadCountPayload {
-  _id: string;
+  id: string;
   userId: string;
   trainerId: string;
   lastMessage: Ichat;
@@ -36,6 +37,11 @@ interface UnreadCountPayload {
   stripeSubscriptionStatus: string;
 }
 const ChatPage = () => {
+  const { socket, isSocketConnected } = useContext(SocketContext) || {
+    socket: null,
+    isSocketConnected: false,
+  };
+
   const [input, setInput] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [showPicker, setShowPicker] = useState(false);
@@ -62,7 +68,7 @@ const ChatPage = () => {
   const { trainer } = useSelector((state: RootState) => state.auth);
 
   const fetchedSubscribers = trainerChatList.map((user) => ({
-    _id: user._id,
+    id: user.id,
     contactId: user.userId,
     lastMessage: user.lastMessage,
     unReadCount: user.unreadCount,
@@ -85,6 +91,7 @@ const ChatPage = () => {
   }, []);
 
   useEffect(() => {
+    if (!socket || !isSocketConnected) return;
     socket.on(
       "receiveMessage",
       (message: {
@@ -93,9 +100,8 @@ const ChatPage = () => {
         message: string;
         senderId: string;
         receiverId: string;
-        _id: string;
+        id: string;
       }) => {
-        console.log("Received message:", message);
         dispatch(
           updateTrainerLastMessage({
             ...message,
@@ -113,11 +119,11 @@ const ChatPage = () => {
         );
         if (
           selectedUserId &&
-          trainer?._id &&
-          ((message.senderId === trainer._id &&
+          trainer?.id &&
+          ((message.senderId === trainer.id &&
             message.receiverId === selectedUserId) ||
             (message.senderId === selectedUserId &&
-              message.receiverId === trainer._id))
+              message.receiverId === trainer.id))
         ) {
           dispatch(
             addMessage({
@@ -138,15 +144,15 @@ const ChatPage = () => {
       }
     );
 
-    if (selectedUserId && trainer?._id) {
+    if (selectedUserId && trainer?.id && socket && isSocketConnected) {
       dispatch(
         fetchChatMessages({
-          senderId: trainer?._id,
+          senderId: trainer?.id,
           receiverId: selectedUserId,
         })
       );
-      socket.emit("setActiveChat", {
-        userId: trainer._id,
+      socket.emit("openChat", {
+        userId: trainer.id,
         partnerId: selectedUserId,
       });
 
@@ -156,7 +162,7 @@ const ChatPage = () => {
           if (userId === selectedUserId) setIsOnline(isOnline);
         }
       );
-      socket.on("typing", ({ senderId }: { senderId: string }) => {
+      socket.on("startTyping", ({ senderId }: { senderId: string }) => {
         if (senderId === selectedUserId) {
           setTyping(senderId);
         }
@@ -168,10 +174,6 @@ const ChatPage = () => {
         }
       });
       socket.on("messageRead", ({ messageIds }: { messageIds: string[] }) => {
-        console.log(
-          "Received messageRead for the mark as read it will be as arrays:",
-          messageIds
-        );
         if (messageIds && messageIds.length > 0) {
           messageIds?.forEach((messageId) =>
             dispatch(updateMessageReadStatus({ messageId }))
@@ -180,16 +182,16 @@ const ChatPage = () => {
       });
 
       return () => {
-        socket.emit("closeChat", trainer._id);
+        socket.emit("closeChat", trainer.id);
         socket.off("onlineStatusResponse");
         socket.off("receiveMessage");
         socket.off("messageRead");
         socket.off("unreadCountUpdated");
-        socket.off("typing");
+        socket.off("startTyping");
         socket.off("stopTyping");
       };
     }
-  }, [dispatch, trainer?._id, selectedUserId]);
+  }, [dispatch, trainer?.id, selectedUserId, socket, isSocketConnected]);
 
   useEffect(() => {
     if (typing && typingIndicatorRef.current && !chatLoading) {
@@ -200,9 +202,10 @@ const ChatPage = () => {
   }, [messages, selectedUserId, chatLoading, typing]);
 
   const handleSendMessage = () => {
-    if (input && selectedUserId && trainer?._id) {
+    if (!socket || !isSocketConnected) return;
+    if (input && selectedUserId && trainer?.id) {
       const message = {
-        senderId: trainer._id,
+        senderId: trainer.id,
         receiverId: selectedUserId,
         message: input,
         createdAt: new Date().toISOString(),
@@ -210,13 +213,14 @@ const ChatPage = () => {
       socket.emit("sendMessage", message);
       setInput("");
       socket.emit("stopTyping", {
-        senderId: trainer._id,
+        senderId: trainer.id,
         receiverId: selectedUserId,
       });
     }
   };
 
   const handleUserClick = (userId: string) => {
+    if (!socket || !isSocketConnected) return;
     setSelectedUserId(userId);
     setIsOnline(false);
     setTyping(null);
@@ -232,9 +236,10 @@ const ChatPage = () => {
   );
 
   const handleTyping = () => {
-    if (selectedUser && trainer?._id) {
-      socket.emit("typing", {
-        senderId: trainer._id,
+    if (!socket || !isSocketConnected) return;
+    if (selectedUser && trainer?.id) {
+      socket.emit("startTyping", {
+        senderId: trainer.id,
         receiverId: selectedUserId,
       });
 
@@ -244,7 +249,7 @@ const ChatPage = () => {
 
       typingTimeoutRef.current = window.setTimeout(() => {
         socket.emit("stopTyping", {
-          senderId: trainer._id,
+          senderId: trainer.id,
           receiverId: selectedUserId,
         });
       }, 2000);
@@ -256,20 +261,20 @@ const ChatPage = () => {
       <ReusableChat
         contacts={fetchedSubscribers}
         messages={messages}
-        selectedId={selectedUserId as string}
-        input={input as string}
+        selectedId={selectedUserId}
+        input={input}
         isPlanActive={selectedUser?.planStatus === "active"}
-        isOnline={isOnline as boolean}
+        isOnline={isOnline}
         onContactClick={handleUserClick}
         onInputChange={setInput}
         onSendClick={handleSendMessage}
         onEmojiClick={() => setShowPicker((prev) => !prev)}
         messagesEndRef={messagesEndRef}
-        currentUserId={trainer?._id || ""}
+        currentUserId={trainer?.id || ""}
         typing={typing}
         onTyping={handleTyping}
         typingIndicatorRef={typingIndicatorRef}
-        searchTerm={searchTerm as string}
+        searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         chatLoading={chatLoading}
       />

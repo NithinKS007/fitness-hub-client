@@ -70,7 +70,7 @@ const styles = {
 };
 
 interface Video {
-  _id: string;
+  id: string;
   title: string;
   thumbnail: string;
   duration: number;
@@ -84,7 +84,7 @@ interface VideoCardProps {
 
 const VideoCard: React.FC<VideoCardProps> = ({ video, onVideoClick }) => {
   return (
-    <Box sx={styles.cardContainer} onClick={() => onVideoClick(video._id)}>
+    <Box sx={styles.cardContainer} onClick={() => onVideoClick(video.id)}>
       <Box sx={styles.thumbnailWrapper}>
         <Box
           component="img"

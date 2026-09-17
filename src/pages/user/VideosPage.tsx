@@ -55,6 +55,14 @@ const styles = {
     alignItems: "center",
     mb: 2,
   },
+  subscribeMessage: {
+    fontSize: "18px",
+    color: "#f44336",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: "20px",
+    padding: "16px",
+  },
 };
 
 const VideosPage: React.FC = () => {
@@ -97,18 +105,19 @@ const VideosPage: React.FC = () => {
   const { isLoading: isSubscriptionLoading } = useSelector(
     (state: RootState) => state.subscription
   );
-  const isHeSubscribedToTheTrainer = useIsUserSubscribedToTrainer(
-    trainerId as string
-  );
+
+  const isHeSubscribedToTheTrainer = trainerId
+    ? useIsUserSubscribedToTrainer(trainerId)
+    : "";
 
   const handleVideoClick = (videoId: string) => {
-    navigate(`/user/trainer/video/${videoId}`);
+    navigate(`/user/trainer/${trainerId}/video/${videoId}`);
   };
 
   const fetchedPlayListsData =
     playListsData.length > 0
       ? playListsData.map((p) => {
-          return { value: p.title, _id: p._id };
+          return { value: p.title, id: p.id };
         })
       : [];
 
@@ -154,7 +163,7 @@ const VideosPage: React.FC = () => {
                 >
                   {videosData.map((video) => (
                     <VideoCard
-                      key={video._id}
+                      key={video.id}
                       video={video}
                       onVideoClick={handleVideoClick}
                     />
@@ -178,10 +187,8 @@ const VideosPage: React.FC = () => {
                 No videos available
               </Typography>
             ) : (
-              <Box sx={styles.noVideosText}>
-                <Typography variant="h6" color="text.secondary">
-                  Please subscribe to watch videos
-                </Typography>
+              <Box sx={styles.subscribeMessage}>
+                You need to subscribe to this trainer to watch videos.
               </Box>
             )}
           </Container>

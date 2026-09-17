@@ -1,9 +1,10 @@
 import { QueryParams } from "../commonTypes/tableTypes";
 
-export interface bookingSlotState {
+export interface BookingSlotState {
   isLoading: boolean;
   error: string | null;
-  slots: bookingSlots[];
+  slots: BookingSlots[];
+  slotsCalender: BookingSlots[];
   appointMentRequests: AppointmentRequests[];
   scheduledAppointmentsTrainer: ScheduledAppointmentsTrainer[];
   scheduledAppointmentsUser: ScheduledAppointmentsUser[];
@@ -13,7 +14,7 @@ export interface bookingSlotState {
 }
 
 export interface AppointmentVideoCallLogsUser {
-  _id: string;
+  id: string;
   slotBookedDate: Date;
   appointmentData: {
     appointmentDate: Date;
@@ -34,7 +35,7 @@ export interface AppointmentVideoCallLogsUser {
 }
 
 export interface AppointmentVideoCallLogsTrainer {
-  _id: string;
+  id: string;
   slotBookedDate: Date;
   appointmentData: {
     appointmentDate: Date;
@@ -48,36 +49,37 @@ export interface AppointmentVideoCallLogsTrainer {
   userData: { fname: string; lname: string; email: string; profilePic: string };
 }
 
-export interface bookingSlots {
-  _id: string;
+export interface BookingSlots {
+  id: string;
   trainerId: string;
   time: string;
   date: Date;
   status: "pending" | "booked" | "completed";
-  createdAt: string;
+  createdAt: Date;
 }
 export interface CreateBookingSlot {
   date: string;
   time: string;
 }
 
-export interface RequestTrainerAvailableSlot {
+export type FetchSlotsCalendar = Omit<QueryParams, "filters" | "search" | "page"> & {
   trainerId: string;
-}
+};
 
 export interface RequestBookSlot {
   slotId: string;
+  trainerId: string;
 }
 
 export interface AppointmentRequests {
-  _id: string;
+  id: string;
   appointmentDate: string;
   appointmentTime: string;
   trainerId: string;
   status: string;
-  createdAt: string;
+  createdAt: Date;
   userData: {
-    _id: string;
+    id: string;
     fname: string;
     lname: string;
     email: string;
@@ -85,20 +87,20 @@ export interface AppointmentRequests {
     profilePic: string;
   };
   bookingSlotData: {
-    _id: string;
-    createdAt: string;
+    id: string;
+    createdAt: Date;
   };
 }
 
 export interface ScheduledAppointmentsTrainer {
-  _id: string;
+  id: string;
   appointmentDate: string;
   appointmentTime: string;
   trainerId: string;
   status: string;
-  createdAt: string;
+  createdAt: Date;
   userData: {
-    _id: string;
+    id: string;
     fname: string;
     lname: string;
     email: string;
@@ -106,19 +108,19 @@ export interface ScheduledAppointmentsTrainer {
     profilePic: string;
   };
   bookingSlotData: {
-    _id: string;
-    createdAt: string;
+    id: string;
+    createdAt: Date;
   };
 }
 export interface ScheduledAppointmentsUser {
-  _id: string;
+  id: string;
   appointmentDate: string;
   appointmentTime: string;
   trainerId: string;
   status: string;
-  createdAt: string;
+  createdAt: Date;
   trainerData: {
-    _id: string;
+    id: string;
     fname: string;
     lname: string;
     email: string;
@@ -126,8 +128,8 @@ export interface ScheduledAppointmentsUser {
     profilePic: string;
   };
   bookingSlotData: {
-    _id: string;
-    createdAt: string;
+    id: string;
+    createdAt: Date;
   };
 }
 

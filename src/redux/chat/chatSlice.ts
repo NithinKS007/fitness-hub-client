@@ -20,13 +20,13 @@ const chat = createSlice({
   reducers: {
     addMessage: (state, action) => {
       const newMessage = action.payload;
-      if (!state.ChatMessages.some((msg) => msg._id === newMessage._id)) {
+      if (!state.ChatMessages.some((msg) => msg.id === newMessage.id)) {
         state.ChatMessages.push(newMessage);
       }
     },
     updateMessageReadStatus: (state, action) => {
       const messageId = action.payload.messageId;
-      const message = state.ChatMessages.find((msg) => msg._id === messageId);
+      const message = state.ChatMessages.find((msg) => msg.id === messageId);
       if (message) {
         message.isRead = true;
       }
@@ -97,7 +97,7 @@ const chat = createSlice({
       const { countUpdatedDocument } = action.payload;
 
       const stateCountToUpdate = state.trainerChatList.find(
-        (ch) => ch._id === countUpdatedDocument?._id
+        (ch) => ch.id === countUpdatedDocument?.id
       );
       if (
         stateCountToUpdate &&
@@ -109,7 +109,7 @@ const chat = createSlice({
     updateUserChatListUnReadCount: (state, action) => {
       const { countUpdatedDocument } = action.payload;
       const stateCountToUpdate = state.userChatList.find(
-        (ch) => ch._id === countUpdatedDocument?._id
+        (ch) => ch.id === countUpdatedDocument?.id
       );
 
       if (

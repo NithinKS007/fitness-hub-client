@@ -19,7 +19,7 @@ const GetApprovalStatusIcon = (isApproved: boolean) => {
   return isApproved ? <ApprovedIcon /> : <CanceledIcon />;
 };
 
-const GetProfilePic = (profilePic: string | null) => {
+const GetProfilePic = (profilePic: string | null | undefined) => {
   return profilePic ? (
     <Avatar
       src={profilePic}

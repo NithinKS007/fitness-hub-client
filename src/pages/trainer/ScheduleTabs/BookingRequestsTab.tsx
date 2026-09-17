@@ -114,8 +114,8 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({
   const handleConfirmApprove = () => {
     if (selectedBookingRequest) {
       handleAppointmentApproveOrReject(
-        selectedBookingRequest._id,
-        selectedBookingRequest.bookingSlotData._id,
+        selectedBookingRequest.id,
+        selectedBookingRequest.bookingSlotData.id,
         "approved"
       );
       handleApproveModalClose();
@@ -130,8 +130,8 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({
   const handleConfirmReject = () => {
     if (selectedBookingRequest) {
       handleAppointmentApproveOrReject(
-        selectedBookingRequest._id,
-        selectedBookingRequest.bookingSlotData._id,
+        selectedBookingRequest.id,
+        selectedBookingRequest.bookingSlotData.id,
         "rejected"
       );
       handleRejectModalClose();
@@ -172,7 +172,7 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({
         actions: (
           <>
             <IconButton
-              onClick={(event) => handleBookingRequestMenuClick(event, req._id)}
+              onClick={(event) => handleBookingRequestMenuClick(event, req.id)}
               sx={{ minWidth: "0", width: "20px", height: "20px" }}
             >
               <MoreVertIcon sx={{ fontSize: "20px" }} />
@@ -181,7 +181,7 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({
               anchorEl={anchorBookingRequestEl}
               open={
                 Boolean(anchorBookingRequestEl) &&
-                selectedBookingRequestId === req._id
+                selectedBookingRequestId === req.id
               }
               onClose={handleBookingRequestCloseMenu}
               sx={{

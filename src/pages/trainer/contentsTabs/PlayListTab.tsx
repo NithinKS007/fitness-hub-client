@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useContent from "../../../hooks/useTrainerContent";
-import PlayListModal from "../../../components/modals/PlayListModal";
+import PlayListModal from "../../../components/modals/playlist/PlayListModal";
 import ReuseTable from "../../../components/table/ReuseTable";
 import ShimmerTableLoader from "../../../components/table/ShimmerTable";
 import { useSelector } from "react-redux";
@@ -12,7 +12,6 @@ import SearchBarTable from "../../../components/table/SearchBarTable";
 import TableFilter from "../../../components/table/TableFilter";
 import DateAndTimeFilter from "../../../components/table/DateFilter";
 import useSearchFilter from "../../../hooks/useSearchFilter";
-import { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
 import {
   getPlayListsOfTrainer,
@@ -102,7 +101,7 @@ const PlaylistSection = () => {
   };
 
   const editPlaylist = (id: string) => {
-    const playlistToEdit = playLists.find((p) => p._id === id);
+    const playlistToEdit = playLists.find((p) => p.id === id);
     if (playlistToEdit) {
       handleEditPlayList(playlistToEdit);
     }
@@ -120,7 +119,7 @@ const PlaylistSection = () => {
       try {
         const response = await dispatch(
           updatePlayListPrivacyStatus({
-            playListId: selectedPlaylist._id,
+            playListId: selectedPlaylist.id,
             privacy: !selectedPlaylist.privacy,
           })
         ).unwrap();
@@ -147,7 +146,7 @@ const PlaylistSection = () => {
   const fetchedPlayLists =
     playLists.length > 0
       ? playLists.map((list, index) => {
-          const dateObj = new Date(list?.createdAt as string);
+          const dateObj = new Date(list?.createdAt);
           const formattedDate = dateObj.toLocaleDateString("en-GB");
           const formattedTime = dateObj.toLocaleTimeString("en-GB");
 
@@ -161,7 +160,7 @@ const PlaylistSection = () => {
             actions: (
               <>
                 <IconButton
-                  onClick={(event) => handlePlayListMenuClick(event, list._id)}
+                  onClick={(event) => handlePlayListMenuClick(event, list.id)}
                   sx={{
                     padding: "16px",
                     minWidth: "0",
@@ -173,7 +172,7 @@ const PlaylistSection = () => {
                 </IconButton>
                 <Menu
                   anchorEl={anchorPlayListEl}
-                  open={openMenuPlayList && selectedPlaylistId === list._id}
+                  open={openMenuPlayList && selectedPlaylistId === list.id}
                   onClose={handlePlayListCloseMenu}
                   sx={{
                     "& .MuiPaper-root": {
@@ -184,7 +183,7 @@ const PlaylistSection = () => {
                     },
                   }}
                 >
-                  <MenuItem onClick={() => editPlaylist(list._id)}>
+                  <MenuItem onClick={() => editPlaylist(list.id)}>
                     Edit
                   </MenuItem>
                   <MenuItem onClick={() => handleBlockAction(list)}>
@@ -209,7 +208,7 @@ const PlaylistSection = () => {
         }}
       >
         <SearchBarTable
-          searchTerm={searchTerm as string}
+          searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
         />
         <Box
@@ -222,13 +221,13 @@ const PlaylistSection = () => {
           }}
         >
           <TableFilter
-            selectedFilter={selectedFilter as string[]}
+            selectedFilter={selectedFilter}
             handleFilterChange={handleFilterChange}
             filter={playListfilter}
           />
           <DateAndTimeFilter
-            fromDate={fromDate as Dayjs | null}
-            toDate={toDate as Dayjs | null}
+            fromDate={fromDate}
+            toDate={toDate}
             onFromDateChange={handleFromDateChange}
             onToDateChange={handleToDateChange}
             onReset={handleResetDates}
@@ -245,7 +244,7 @@ const PlaylistSection = () => {
               minHeight: "41px",
             }}
           >
-           Add
+            Add
           </Button>
         </Box>
       </Box>
@@ -258,9 +257,9 @@ const PlaylistSection = () => {
       )}
       <PlayListModal
         formik={playListFormik}
-        open={modalPlayListOpen as boolean}
+        open={modalPlayListOpen}
         onClose={modalPlayListHandleClose}
-        isEditMode={isEditMode as boolean}
+        isEditMode={isEditMode}
       />
       <PaginationTable
         handlePageChange={handlePageChange}
@@ -268,12 +267,13 @@ const PlaylistSection = () => {
         totalPages={totalPages}
       />
       <ConfirmationModalDialog
-        open={confirmationModalOpen as boolean}
+        open={confirmationModalOpen}
         content={
-          (selectedPlaylist &&
-            `Are you sure you want to make ${
-              selectedPlaylist.privacy ? "public" : "private"
-            } ${selectedPlaylist.title}?`) as string
+          selectedPlaylist
+            ? `Are you sure you want to make ${
+                selectedPlaylist.privacy ? "public" : "private"
+              } ${selectedPlaylist.title}?`
+            : ""
         }
         onConfirm={handleConfirmBlockStatus}
         onCancel={handleConfirmationModalClose}

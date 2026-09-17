@@ -10,14 +10,56 @@ import {
 import FilterButton from "../../components/FilterIconButton";
 import FilterSidebar from "../../components/FilterSideBar";
 import TrainerGridShimmer from "../../components/trainer-card/TrainerCardShimmer";
-import useUserTrainerSearch from "../../hooks/useUserTrainerSearch";
 import SearchIcon from "@mui/icons-material/Search";
 import PaginationTable from "../../components/Pagination";
-import { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
 import ReuseSort from "../../components/Sort";
 import Error from "../../components/shared/Error";
 import TrainerCard from "../../components/trainer-card/TrainerCard";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../../redux/store";
+import { getApprovedTrainers } from "../../redux/user/userThunk";
+import { Sort } from "../../types/tableTypes";
+
+export interface FilterValues {
+  Specialization?: string[];
+  Experience?: string[];
+  Gender?: string[];
+}
+
+export interface Filter {
+  label: string;
+  options: string[];
+}
+
+const filters: Filter[] = [
+  {
+    label: "Specialization",
+    options: [
+      "Fitness & Nutrition",
+      "Strength And Conditioning",
+      "Yoga",
+      "Zumba",
+      "Muscle Building",
+      "Injury Rehab",
+      "Competition Prep",
+      "Pre & Post Natal Training",
+      "Cardio",
+      "Nutrition Coaching",
+    ],
+  },
+  {
+    label: "Experience",
+
+    options: ["Less than 1", "1-3", "3-5", "Greater than 5"],
+  },
+  {
+    label: "Gender",
+
+    options: ["Male", "Female"],
+  },
+];
 
 const styles = {
   container: { py: 4 },
@@ -75,34 +117,136 @@ const styles = {
 };
 
 const GetTrainer: React.FC = () => {
-  const {
-    filters,
-    isSidebarOpen,
-    filterValues,
-    openFilters,
-    trainersList,
-    isLoading,
-    error,
-    toggleSidebar,
-    handleCloseSidebar,
-    handleTrainerDetails,
-    handleSearchChange,
-    handleCheckboxChange,
-    handleResetAll,
-    handleSearchWithFilterTrainer,
-    setOpenFilters,
-    handlePageChange,
-    searchTerm,
-    handleSortChange,
-    sortValue,
-    sortOptions,
-  } = useUserTrainerSearch();
+  const sortOptions: Sort[] = [{ value: "aA - zz" }, { value: "zz - aa" }];
+
+  const rowsPerPage: number = 12;
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filterValues, setFilterValues] = useState<FilterValues>({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [openFilters, setOpenFilters] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [sortValue, setSortValue] = useState<string>("");
+
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { trainersList, isLoading, error } = useSelector(
+    (state: RootState) => state.user
+  );
+
+  useEffect(() => {
+    dispatch(getApprovedTrainers({ page: 1, limit: rowsPerPage }));
+  }, [dispatch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchTerm) {
+        setDebouncedSearchTerm(searchTerm);
+        setFilterValues((prev) => ({ ...prev, Search: searchTerm }));
+      }
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    dispatch(
+      getApprovedTrainers({
+        search: debouncedSearchTerm,
+        page: page,
+        limit: rowsPerPage,
+        sort: sortValue,
+      })
+    );
+  }, [debouncedSearchTerm, page, dispatch, sortValue]);
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    newPage: number
+  ) => {
+    console.log("event", event);
+    setPage(newPage);
+  };
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const handleCloseSidebar = () => setIsSidebarOpen(false);
+
+  const handleTrainerDetails = (id: string) => {
+    navigate(`/trainer-details/${id}`);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setPage(1);
+  };
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    filterLabel: keyof FilterValues
+  ) => {
+    const { value, checked } = event.target;
+    setFilterValues((prev) => {
+      const currentValues = prev[filterLabel] || [];
+      const updatedValues = checked
+        ? [...currentValues, value]
+        : currentValues?.filter((item: string) => item !== value);
+      return { ...prev, [filterLabel]: updatedValues };
+    });
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortValue(value);
+    setPage(1);
+  };
+
+  const handleResetAll = () => {
+    setFilterValues({});
+    setSearchTerm("");
+    setDebouncedSearchTerm("");
+    setSortValue("");
+    setPage(1);
+    dispatch(getApprovedTrainers({ page: 1, limit: rowsPerPage }));
+    handleCloseSidebar();
+  };
+
+  const handleSearchWithFilterTrainer = () => {
+    const transformedFilterValues = Object.entries(filterValues).reduce(
+      (acc: { [key: string]: string[] }, [key, value]) => {
+        const newKey = key.charAt(0).toLowerCase() + key.slice(1);
+        acc[newKey] = value;
+        return acc;
+      },
+      {}
+    );
+    setPage(1);
+    dispatch(
+      getApprovedTrainers({
+        ...transformedFilterValues,
+        search: debouncedSearchTerm,
+        page: 1,
+        limit: rowsPerPage,
+        sort: sortValue,
+      })
+    );
+    handleCloseSidebar();
+  };
 
   const { totalPages, currentPage } = useSelector(
     (state: RootState) => state.user.pagination
   );
 
-  if (error) return <Error message={error} />;
+  if (error)
+    return (
+      <>
+        <div className="flex items-center justify-center h-screen bg-gray-100">
+          <div className="text-center text-xl text-red-600">
+            <Error message={error} />;
+          </div>
+        </div>
+      </>
+    );
 
   return (
     <Container maxWidth="xl" sx={styles.container}>
@@ -128,7 +272,7 @@ const GetTrainer: React.FC = () => {
         <Box sx={styles.sortFilterBox}>
           <ReuseSort
             onChange={handleSortChange}
-            sortValue={sortValue as string}
+            sortValue={sortValue}
             sortOption={sortOptions}
           />
           <FilterButton onClick={toggleSidebar} />
@@ -162,7 +306,7 @@ const GetTrainer: React.FC = () => {
               <Box sx={styles.gridContainer}>
                 {trainersList && trainersList.length > 0 ? (
                   trainersList.map((trainer) => (
-                    <Box key={trainer._id} sx={styles.trainerBox}>
+                    <Box key={trainer.id} sx={styles.trainerBox}>
                       <TrainerCard
                         trainer={trainer}
                         handleTrainerDetails={handleTrainerDetails}

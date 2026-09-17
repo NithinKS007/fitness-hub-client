@@ -4,7 +4,7 @@ import { Select, MenuItem, Box } from "@mui/material";
 interface TimeSelectorProps {
   selectedSlotTime: string | undefined;
   handleTimeChange: (newTime: string) => void;
-  filteredSlots: { _id: string; time: string }[];
+  filteredSlots: { id: string; time: string }[]
 }
 
 const TimeSelector: React.FC<TimeSelectorProps> = ({
@@ -28,7 +28,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
     >
       {filteredSlots.length > 0 ? (
         filteredSlots.map((slot) => (
-          <MenuItem key={slot._id} value={slot.time}>
+          <MenuItem key={slot.id} value={slot.time}>
             {slot.time}
           </MenuItem>
         ))

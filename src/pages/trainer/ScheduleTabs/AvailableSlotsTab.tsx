@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
-import SlotModal from "../../../components/modals/SlotModal";
+import SlotModal from "../../../components/modals/slot/SlotModal";
 import useSlot from "../../../hooks/useSlot";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
-import { fetchAvailableSlots } from "../../../redux/booking/bookingThunk";
+import { fetchSlotsTrainer } from "../../../redux/booking/bookingThunk";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import ReuseTable from "../../../components/table/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -15,8 +15,7 @@ import PaginationTable from "../../../components/Pagination";
 import { useModal } from "../../../hooks/useModal";
 import ConfirmationModalDialog from "../../../components/modals/ConfirmationModalDialog";
 import { TableColumn } from "../../../types/tableTypes";
-import { Dayjs } from "dayjs";
-import { bookingSlots } from "../../../redux/booking/bookingTypes";
+import { BookingSlots } from "../../../redux/booking/bookingTypes";
 import Error from "../../../components/shared/Error";
 
 const availableSlotColumns: TableColumn[] = [
@@ -38,7 +37,7 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
     (state: RootState) => state.bookingSlot
   );
   const { totalPages, currentPage } = pagination;
-  const [selectedSlot, setSelectedSlot] = useState<bookingSlots | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<BookingSlots | null>(null);
 
   const {
     modalHandleOpen,
@@ -71,7 +70,7 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
   } = useSearchFilter();
 
   useEffect(() => {
-    dispatch(fetchAvailableSlots(getQueryParams()));
+    dispatch(fetchSlotsTrainer(getQueryParams()));
   }, [
     dispatch,
     isActive,
@@ -80,21 +79,21 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
     getQueryParams().toDate,
   ]);
 
-  const handleDeleteSlot = (slot: any) => {
+  const handleDeleteSlot = (slot: BookingSlots) => {
     setSelectedSlot(slot);
     handleDeleteModalOpen();
   };
 
   const handleConfirmDelete = () => {
     if (selectedSlot) {
-      deleteAvailableSlot(selectedSlot._id);
+      deleteAvailableSlot(selectedSlot.id);
       handleDeleteModalClose();
       handleAvailableSlotCloseMenu();
     }
   };
 
   const fetchedAddedSlots = slots.map((slot, index) => {
-    const dateObj = new Date(slot?.createdAt as string);
+    const dateObj = new Date(slot?.createdAt);
     const formattedDate = dateObj.toLocaleDateString("en-GB");
     const formattedTime = dateObj.toLocaleTimeString("en-GB");
     const slotDate = new Date(slot?.date);
@@ -110,7 +109,7 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
       actions: (
         <>
           <IconButton
-            onClick={(event) => handleAvailableSlotMenuClick(event, slot._id)}
+            onClick={(event) => handleAvailableSlotMenuClick(event, slot.id)}
             sx={{ minWidth: "0", width: "25px", height: "25px" }}
           >
             <MoreVertIcon sx={{ fontSize: "20px" }} />
@@ -119,7 +118,7 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
             anchorEl={anchorAvailableSlotEl}
             open={
               Boolean(anchorAvailableSlotEl) &&
-              selectedAvailableSlotId === slot._id
+              selectedAvailableSlotId === slot.id
             }
             onClose={handleAvailableSlotCloseMenu}
             sx={{
@@ -161,8 +160,8 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
           Add New Slot
         </Button>
         <DateAndTimeFilter
-          fromDate={fromDate as Dayjs | null}
-          toDate={toDate as Dayjs | null}
+          fromDate={fromDate}
+          toDate={toDate}
           onFromDateChange={handleFromDateChange}
           onToDateChange={handleToDateChange}
           onReset={handleResetDates}
@@ -183,14 +182,14 @@ const AvailableSlotsTab: React.FC<AvailableSlotsTabProps> = ({ isActive }) => {
         </>
       )}
       <SlotModal
-        open={modalOpen as boolean}
+        open={modalOpen}
         handleClose={modalHandleClose}
         formik={slotFormik}
-        timeOptions={timeOptions!! as string[]}
+        timeOptions={timeOptions}
         handleDateChange={handleDateChange}
       />
       <ConfirmationModalDialog
-        open={deleteModalOpen as boolean}
+        open={deleteModalOpen}
         content={
           selectedSlot
             ? `Are you sure you want to delete the slot for ${new Date(

@@ -8,17 +8,17 @@ import { trainerDetails } from "../../redux/admin/adminThunk";
 import usePdfDownload from "../../hooks/usePdfDownload";
 
 const TrainerDetailsPage: React.FC = () => {
-  const { _id } = useParams<{ _id: string }>();
+  const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const authPerson = useSelector((state: RootState) => state?.auth?.trainer);
   const trainerData = useSelector(
     (state: RootState) => state.admin.trainerDetails
   );
   useEffect(() => {
-    if (_id) {
-      dispatch(trainerDetails({ _id }));
+    if (id) {
+      dispatch(trainerDetails({ id }));
     }
-  }, [dispatch, _id]);
+  }, [dispatch, id]);
 
   const isEditable = authPerson?.role === "trainer" ? true : false;
   const { formik } = useUpdateProfileForm(trainerData);

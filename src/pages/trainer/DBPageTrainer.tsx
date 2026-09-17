@@ -9,24 +9,63 @@ import {
 import { Box, List, ListItem, ListItemText } from "@mui/material";
 import { People } from "@mui/icons-material";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import useTrainerDashBoard from "../../hooks/useTrainerDashBoard";
 import ReusableLineChart from "../../components/dashboard/LineChart";
 import ReusablePieChart from "../../components/dashboard/ReuseablePieChart";
 import Error from "../../components/shared/Error";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { getTrainerDashBoardData } from "../../redux/dashboard/dashboardThunk";
+import { SelectChangeEvent } from "@mui/material/Select";
 
 const DBPageTrainer = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [selectedTimePeriod, setSelectedTimePeriod] =
+    useState<string>("This week");
+
   const {
-    selectedTimePeriod,
-    handleTimePeriodChange,
-    totalSubscribersCount,
-    activeSubscribersCount,
-    canceledSubscribersCount,
-    transformedChartData,
-    pieChartFormattedData,
+    trainerDashboard: {
+      totalSubscribersCount,
+      activeSubscribersCount,
+      canceledSubscribersCount,
+      chartData,
+      pieChartData,
+    },
     isLoading,
     error,
-    timePeriods,
-  } = useTrainerDashBoard();
+  } = useSelector((state: RootState) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(getTrainerDashBoardData({ period: selectedTimePeriod }));
+  }, [dispatch, selectedTimePeriod]);
+
+  const handleTimePeriodChange = (event: SelectChangeEvent<string>) => {
+    setSelectedTimePeriod(event.target.value);
+  };
+
+  const transformedChartData = chartData.map((item) => ({
+    ...item,
+    Total: item.total,
+    Active: item.active,
+    Canceled: item.canceled,
+  }));
+
+  const colorMapping: Record<string, string> = {
+    quarterly: "#8884d8",
+    monthly: "#82ca9d",
+    halfYearly: "#ff7300",
+    yearly: "#d0ed57",
+  };
+  const timePeriods = ["Today", "This week", "This month", "This year"];
+  const allPeriods = ["quarterly", "monthly", "halfYearly", "yearly"];
+  const pieChartFormattedData = allPeriods.map((period) => {
+    const periodData = pieChartData?.find((item) => item.id === period);
+    return {
+      name: period,
+      value: periodData ? periodData.value : 0,
+      color: colorMapping[period] || "#8884d8",
+    };
+  });
 
   if (isLoading) {
     return <LoadingSpinner size={60} thickness={4} />;
@@ -110,7 +149,7 @@ const DBPageTrainer = () => {
             <ReusableLineChart
               data={transformedChartData}
               lines={lines}
-              xAxisKey={"_id"}
+              xAxisKey={"id"}
             />
           )}
         </Box>

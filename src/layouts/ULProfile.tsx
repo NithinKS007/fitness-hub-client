@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -6,21 +6,43 @@ import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import SideNavBar from "../components/dashboard/DashBoardSideNavBar";
 import TopNavbar from "../components/dashboard/DashBoardTopBar";
-import { socket } from "../config/socket";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { AppDispatch, RootState } from "../redux/store";
 import ZegoCloudVideoCall from "../components/VideoCallZego";
 import ConfirmationModalDialog from "../components/modals/ConfirmationModalDialog";
 import { FiTrendingUp } from "react-icons/fi";
 import { AccountCircle } from "@mui/icons-material";
+import { showErrorToast } from "../utils/toast";
+import { SocketContext } from "../context/SocketContext";
+import { useDispatch } from "react-redux";
+import { createZegocloudToken } from "../redux/booking/bookingThunk";
+
+interface IncomingCallData {
+  trainerName: string;
+  appointmentTime: string;
+  appointmentDate: string;
+  callerId: string;
+  roomId: string;
+  token: string;
+  appId: number;
+  appointmentId: string;
+}
 
 const ULProfile: React.FC = () => {
   const user = useSelector((state: RootState) => state?.auth?.user);
   const [callActive, setCallActive] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [appId, setAppId] = useState<number | null>(null);
   const [callDialogOpen, setCallDialogOpen] = useState<boolean>(false);
-  const [incomingCallData, setIncomingCallData] = useState<any>(null);
+  const [incomingCallData, setIncomingCallData] =
+    useState<IncomingCallData | null>(null);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const { socket, isSocketConnected } = useContext(SocketContext) || {
+    socket: null,
+    isSocketConnected: false,
+  };
   const userNavItems = [
     {
       icon: <GridViewIcon />,
@@ -60,75 +82,83 @@ const ULProfile: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (!user?._id) {
-      console.log("No user ID, skipping socket setup");
-      return;
-    }
-    socket.emit("register", user._id);
-    socket.on("connect", () => {
-      console.log("Socket connected in ULProfile:", socket.id);
-      socket.emit("register", user._id);
-    });
-
-    socket.on(
-      "incomingCall",
-      (data: {
-        callerId: string;
-        roomId: string;
-        appointmentId: string;
-        trainerName: string;
-        appointmentTime: string;
-        appointmentDate: string;
-      }) => {
-        const {
-          callerId,
+    if (!socket || !isSocketConnected) return;
+    socket.on("incomingCall", async (data: IncomingCallData) => {
+      const {
+        callerId,
+        roomId,
+        token,
+        appId,
+        appointmentId,
+        trainerName,
+        appointmentTime,
+        appointmentDate,
+      } = data;
+      if (
+        callerId &&
+        roomId &&
+        token &&
+        appId &&
+        appointmentId &&
+        trainerName &&
+        appointmentTime &&
+        appointmentDate
+      ) {
+        console.log(
+          "incoming in user profile for call in socket",
           roomId,
-          appointmentId,
+          token,
+          appId
+        );
+
+        const response = await dispatch(createZegocloudToken()).unwrap();
+        setIncomingCallData({
           trainerName,
           appointmentTime,
           appointmentDate,
-        } = data;
-        if (
-          callerId &&
-          roomId &&
-          appointmentId &&
-          trainerName &&
-          appointmentTime &&
-          appointmentDate
-        ) {
-          setIncomingCallData({
-            trainerName,
-            appointmentTime,
-            appointmentDate,
-            callerId,
-            roomId,
-            appointmentId,
-          });
-          setCallDialogOpen(true);
-        }
+          callerId,
+          roomId,
+          token:response.data.token,
+          appId:response.data.appId,
+          appointmentId,
+        });
+        setCallDialogOpen(true);
       }
-    );
+    });
 
     socket.on("callEnded", () => {
       setCallActive(false);
       setRoomId(null);
     });
 
+    socket.on(
+      "error",
+      async ({ message, code }: { message: string; code: number }) => {
+        console.log("status code", message, code);
+        showErrorToast(message);
+        console.log("Unhandled error code:", message, code);
+      }
+    );
+
     return () => {
-      socket.off("connect");
       socket.off("incomingCall");
       socket.off("callStarted");
       socket.off("callEnded");
+      socket.off("error");
     };
-  }, [user?._id]);
+  }, [socket, isSocketConnected]);
 
   const handleAcceptCall = () => {
-    if (incomingCallData) {
-      setRoomId(incomingCallData.roomId);
+    if (!socket || !isSocketConnected) return;
+    if (incomingCallData && user) {
+      const { roomId, token, appId } = incomingCallData;
+      setRoomId(roomId);
+      setToken(token);
+      setAppId(appId);
       setCallActive(true);
-      socket.emit("acceptVideoCall", {
-        roomId: incomingCallData.roomId,
-        userId: user?._id,
+      socket.emit("acceptVC", {
+        roomId: roomId,
+        userId: user?.id,
       });
     }
     setCallDialogOpen(false);
@@ -136,16 +166,19 @@ const ULProfile: React.FC = () => {
   };
 
   const handleRejectCall = () => {
+    if (!socket || !isSocketConnected) return;
     if (incomingCallData) {
-      socket.emit("rejectVideoCall", { roomId: incomingCallData.roomId });
+      const { roomId } = incomingCallData;
+      socket.emit("rejectVC", { roomId: roomId });
     }
     setCallDialogOpen(false);
     setIncomingCallData(null);
   };
 
   const handleEndCall = () => {
+    if (!socket || !isSocketConnected) return;
     if (roomId) {
-      socket.emit("videoCallEnded", { roomId });
+      socket.emit("endVC", { roomId });
     }
     setCallActive(false);
     setRoomId(null);
@@ -160,29 +193,32 @@ const ULProfile: React.FC = () => {
         </div>
         <div className="flex-1 pl-2 pr-2 pt-17 overflow-auto">
           <Outlet />
-          {callActive && roomId && (
+          {callActive && roomId && user && appId && token && (
             <div style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}>
               <ZegoCloudVideoCall
                 roomId={roomId}
-                userId={user?._id as string}
+                userId={user?.id}
                 userName={`${user?.fname} ${user?.lname}`}
                 onEndCall={handleEndCall}
+                token={token}
+                appId={appId}
               />
             </div>
           )}
         </div>
       </div>
       <ConfirmationModalDialog
-        open={callDialogOpen as boolean}
+        open={callDialogOpen}
         content={
-          incomingCallData &&
-          `Incoming call from ${
-            incomingCallData?.trainerName
-          } for appointment at ${
-            incomingCallData?.appointmentTime
-          } on ${new Date(
-            incomingCallData.appointmentDate
-          ).toLocaleDateString()}. Accept?`
+          incomingCallData
+            ? `Incoming call from ${
+                incomingCallData.trainerName
+              } for appointment at ${
+                incomingCallData.appointmentTime
+              } on ${new Date(
+                incomingCallData.appointmentDate
+              ).toLocaleDateString()}. Accept?`
+            : "No incoming call data available."
         }
         onConfirm={handleAcceptCall}
         onCancel={handleRejectCall}

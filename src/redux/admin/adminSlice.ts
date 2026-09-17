@@ -18,7 +18,7 @@ const initialState: AdminState = {
   error: null,
   userDetails: {},
   trainerDetails: {},
-  revenueData: [],
+  financialLog: [],
   pagination: { totalPages: 0, currentPage: 1 },
 };
 
@@ -78,13 +78,13 @@ const adminSlice = createSlice({
         const updatedUser = action.payload.data;
         if (updatedUser.role === "user") {
           state.users = state?.users?.map((user) =>
-            user._id === updatedUser._id
+            user.id === updatedUser.id
               ? { ...user, isBlocked: updatedUser.isBlocked }
               : user
           );
         } else if (updatedUser.role === "trainer") {
           state.trainers = state?.trainers?.map((trainer) =>
-            trainer.userId === updatedUser._id
+            trainer.trainerDetails.userId === updatedUser.id
               ? { ...trainer, isBlocked: updatedUser.isBlocked }
               : trainer
           );
@@ -129,7 +129,7 @@ const adminSlice = createSlice({
         state.isLoading = false;
         const updatedTrainer = action.payload.data;
         state.trainers = state.trainers.filter(
-          (trainer) => trainer._id !== updatedTrainer._id
+          (trainer) => trainer.id !== updatedTrainer.id
         );
         state.error = null;
       })
@@ -179,7 +179,7 @@ const adminSlice = createSlice({
       })
       .addCase(getRevenueData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.revenueData = action.payload.data.revenueData;
+        state.financialLog = action.payload.data.revenueData;
         state.pagination.currentPage =
           action.payload.data.paginationData.currentPage;
         state.pagination.totalPages =

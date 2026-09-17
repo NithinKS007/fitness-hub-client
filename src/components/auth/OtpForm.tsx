@@ -13,9 +13,13 @@ interface OtpFormProps {
   handleResendOtp: (event: React.FormEvent) => Promise<void>;
   handleVerifyOtp: (otp: string, event: React.FormEvent) => void;
   otpData: string[];
-  handleOtpChange: (e: React.ChangeEvent<HTMLInputElement>, idx: number) => void;
+  handleOtpChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    idx: number
+  ) => void;
   handleSubmit: (event: React.FormEvent) => void;
   otpBoxRef: React.RefObject<(HTMLInputElement | null)[]>;
+  handlePaste: (e: React.ClipboardEvent<HTMLInputElement>) => void;
 }
 
 const OtpForm: React.FC<OtpFormProps> = ({
@@ -26,6 +30,7 @@ const OtpForm: React.FC<OtpFormProps> = ({
   handleOtpChange,
   handleSubmit,
   otpBoxRef,
+  handlePaste,
 }) => {
   return (
     <Box
@@ -53,9 +58,9 @@ const OtpForm: React.FC<OtpFormProps> = ({
             width: { xs: "100%", md: "50%" },
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "100vh", 
-            bgcolor: "black", 
-            overflow: "hidden", 
+            minHeight: "100vh",
+            bgcolor: "black",
+            overflow: "hidden",
           }}
         >
           <Box
@@ -65,7 +70,7 @@ const OtpForm: React.FC<OtpFormProps> = ({
             sx={{
               width: "100%",
               height: "100%",
-              objectFit: "cover", 
+              objectFit: "cover",
               display: "block",
             }}
           />
@@ -97,7 +102,12 @@ const OtpForm: React.FC<OtpFormProps> = ({
                 </Typography>
               )}
 
-              <Grid container spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+              <Grid
+                container
+                spacing={2}
+                justifyContent="center"
+                sx={{ mt: 3 }}
+              >
                 {otpData.map((digit, idx) => (
                   <Grid item key={idx}>
                     <TextField
@@ -110,6 +120,9 @@ const OtpForm: React.FC<OtpFormProps> = ({
                           otpBoxRef.current[idx] = reference;
                         }
                       }}
+                      onPaste={(e: React.ClipboardEvent<HTMLInputElement>) =>
+                        handlePaste(e)
+                      }
                       sx={{
                         width: 50,
                         height: 50,

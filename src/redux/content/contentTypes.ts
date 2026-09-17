@@ -14,7 +14,7 @@ export interface Pagination {
 }
 
 export interface PlayList {
-  _id: string;
+  id: string;
   trainerId: string;
   title: string;
   privacy: boolean;
@@ -23,7 +23,7 @@ export interface PlayList {
 }
 
 export interface Video {
-  _id: string;
+  id: string;
   trainerId: string;
   title: string;
   description: string;
@@ -63,6 +63,7 @@ export interface UpdatePlayListBlockStatus {
 }
 
 export interface RequestVideoId {
+  trainerId: string;
   videoId: string;
 }
 

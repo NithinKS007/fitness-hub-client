@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, IconButton, Menu, MenuItem, Paper } from "@mui/material";
-import TrainerSubscriptionForm from "../../components/modals/SubscriptionSetting";
+import SubscriptionModal from "../../components/modals/subscription/SubscriptionModal";
 import useSubscription from "../../hooks/useSubscription";
 import ReuseTable from "../../components/table/ReuseTable";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import NavigationTabs from "../../components/Tabs";
 import { GetBlockStatusIcon } from "../../components/icons/IconIndex";
+import { Subscription } from "../../redux/subscription/subscriptionTypes";
 
 const columns: TableColumn[] = [
   { label: "Sl No", field: "slno" },
@@ -52,9 +53,9 @@ const SubscriptionSettingPage: React.FC = () => {
     string | null
   >(null);
   const [selectedSubscriptionForDelete, setSelectedSubscriptionForDelete] =
-    useState<any | null>(null);
+    useState<Subscription | null>(null);
   const [selectedSubscriptionForBlock, setSelectedSubscriptionForBlock] =
-    useState<any | null>(null);
+    useState<Subscription | null>(null);
 
   const openMenu = Boolean(anchorEl);
   const {
@@ -74,10 +75,10 @@ const SubscriptionSettingPage: React.FC = () => {
   );
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
-    _id: string
+    id: string
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedSubscriptionId(_id);
+    setSelectedSubscriptionId(id);
   };
 
   const handleCloseMenu = () => {
@@ -99,7 +100,7 @@ const SubscriptionSettingPage: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (selectedSubscriptionForDelete) {
-      deleteSubs(selectedSubscriptionForDelete._id as string);
+      deleteSubs(selectedSubscriptionForDelete.id as string);
       handleConfirmationDeleteModalClose();
       setSelectedSubscriptionForDelete(null);
     }
@@ -108,7 +109,7 @@ const SubscriptionSettingPage: React.FC = () => {
   const handleConfirmBlock = () => {
     if (selectedSubscriptionForBlock) {
       UpdateSubsBlockstatus({
-        _id: selectedSubscriptionForBlock._id as string,
+        id: selectedSubscriptionForBlock.id as string,
         isBlocked: !selectedSubscriptionForBlock.isBlocked,
       });
       handleConfirmationBlockModalClose();
@@ -130,7 +131,7 @@ const SubscriptionSettingPage: React.FC = () => {
               <>
                 <IconButton
                   onClick={(event) =>
-                    handleMenuClick(event, sub?._id as string)
+                    handleMenuClick(event, sub?.id as string)
                   }
                   sx={{
                     color: "gray",
@@ -141,7 +142,7 @@ const SubscriptionSettingPage: React.FC = () => {
                 <Paper>
                   <Menu
                     anchorEl={anchorEl}
-                    open={openMenu && selectedSubscriptionId === sub?._id}
+                    open={openMenu && selectedSubscriptionId === sub?.id}
                     onClose={handleCloseMenu}
                     sx={{
                       "& .MuiPaper-root": {
@@ -154,7 +155,7 @@ const SubscriptionSettingPage: React.FC = () => {
                     }}
                   >
                     <MenuItem
-                      onClick={() => editSubscription(sub?._id as string)}
+                      onClick={() => editSubscription(sub?.id as string)}
                     >
                       Edit
                     </MenuItem>
@@ -171,7 +172,6 @@ const SubscriptionSettingPage: React.FC = () => {
           };
         })
       : [];
-  console.log(SubscriptionsData);
 
   return (
     <>
@@ -204,12 +204,12 @@ const SubscriptionSettingPage: React.FC = () => {
       </Box>
       {selectedTab === 0 && (
         <>
-          <TrainerSubscriptionForm
-            open={open as boolean}
+          <SubscriptionModal
+            open={open}
             onClose={handleClose}
             subPeriods={subPeriods}
             formik={formik}
-            isEditMode={isEditMode!! as boolean}
+            isEditMode={isEditMode}
           />
           {isLoading ? (
             <ShimmerTableLoader columns={columns} />
@@ -222,7 +222,7 @@ const SubscriptionSettingPage: React.FC = () => {
       )}
 
       <ConfirmationModalDialog
-        open={confirmationDeleteModalOpen as boolean}
+        open={confirmationDeleteModalOpen}
         content={
           selectedSubscriptionForDelete
             ? `Are you sure you want to delete the ${
@@ -241,7 +241,7 @@ const SubscriptionSettingPage: React.FC = () => {
         cancelColor="error"
       />
       <ConfirmationModalDialog
-        open={confirmationBlockblockModalOpen as boolean}
+        open={confirmationBlockblockModalOpen}
         content={
           selectedSubscriptionForBlock
             ? `Are you sure you want to ${
