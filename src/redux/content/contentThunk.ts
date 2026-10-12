@@ -18,7 +18,7 @@ export const fetchVideosByTrainerUser = createAsyncThunk(
     try {
       const { trainerId, ...queryParams } = videosQueryParams;
       const response = await axiosInstance.get(
-        `user/trainers/${trainerId}/videos/`,
+        `trainers/${trainerId}/videos/`,
         {
           params: queryParams,
         }
@@ -40,7 +40,7 @@ export const getPlayListsAvailableByTrainerId = createAsyncThunk(
   async ({ trainerId }: RequestPlayListsByTrainerId, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `user/trainers/${trainerId}/playlists`
+        `trainers/${trainerId}/playlists`
       );
       return response.data;
     } catch (error: any) {
@@ -58,7 +58,7 @@ export const getUploadedVideosOfTrainer = createAsyncThunk(
   "content/getUploadedVideosOfTrainer",
   async (params: VideosQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/videos/`, { params });
+      const response = await axiosInstance.get(`videos/`, { params });
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -76,7 +76,7 @@ export const addVideo = createAsyncThunk(
   async (createdVideoData: AddVideo, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
-        `trainer/videos/`,
+        `videos/`,
         createdVideoData
       );
       return response.data;
@@ -95,7 +95,7 @@ export const addPlayList = createAsyncThunk(
   "content/addPlayList",
   async (title: createPlayList, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`trainer/playlists/`, title);
+      const response = await axiosInstance.post(`playlists/`, title);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -112,7 +112,7 @@ export const getPlayListsOfTrainer = createAsyncThunk(
   "content/getPlayListsOfTrainer",
   async (params: PlayListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/playlists/`, {
+      const response = await axiosInstance.get(`playlists/`, {
         params,
       });
       return response.data;
@@ -132,7 +132,7 @@ export const fetchVideoDataById = createAsyncThunk(
   async ({ videoId, trainerId }: RequestVideoId, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `user/trainers/${trainerId}/videos/${videoId}`
+        `trainers/${trainerId}/videos/${videoId}`
       );
       return response.data;
     } catch (error: any) {
@@ -150,7 +150,7 @@ export const updateVideoPrivacyStatus = createAsyncThunk(
   "content/updateVideoPrivacyStatus",
   async ({ videoId, privacy }: UpdateVideoBlockStatus, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.patch(`trainer/videos/${videoId}`, {
+      const response = await axiosInstance.patch(`videos/${videoId}`, {
         privacy,
       });
       return response.data;
@@ -173,7 +173,7 @@ export const updatePlayListPrivacyStatus = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `trainer/playlists/${playListId}`,
+        `playlists/${playListId}`,
         {
           privacy,
         }
@@ -213,7 +213,7 @@ export const editVideo = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.put(`trainer/videos/${id}`, {
+      const response = await axiosInstance.put(`videos/${id}`, {
         title,
         description,
         video,
@@ -240,7 +240,7 @@ export const editPlayList = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.put(`trainer/playlists/${id}`, {
+      const response = await axiosInstance.put(`playlists/${id}`, {
         title,
       });
       return response.data;
@@ -259,7 +259,9 @@ export const fetchFullPlayListOfTrainer = createAsyncThunk(
   "content/fetchFullPlayListOfTrainer",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/playlists/all/`);
+      const response = await axiosInstance.get(`playlists/`, {
+        params: { all: true },
+      });
       return response.data;
     } catch (error: any) {
       console.log(error);

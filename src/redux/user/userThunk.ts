@@ -10,7 +10,7 @@ export const getApprovedTrainers = createAsyncThunk(
   async (params: TrainersQuery, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get<ApiResponse<TrainerListData<Trainer>>>("public/trainers", {
-        params,
+        params: { ...params, view: "trainers", isApproved: true },
       });
       return response.data;
     } catch (error: unknown) {

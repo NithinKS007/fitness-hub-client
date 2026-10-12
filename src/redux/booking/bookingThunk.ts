@@ -18,7 +18,7 @@ export const addBookingSlot = createAsyncThunk(
   async (bookingSlotData: CreateBookingSlot, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
-        `trainer/slots/`,
+        `slots/`,
         bookingSlotData
       );
       return response.data;
@@ -39,7 +39,7 @@ export const fetchSlotsTrainer = createAsyncThunk(
   "bookingSlot/fetchSlotsTrainer",
   async (params: AvailableSlotsQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/slots/`, {
+      const response = await axiosInstance.get(`slots/`, {
         params,
       });
       return response.data;
@@ -65,7 +65,7 @@ export const fetchSlotsCalender = createAsyncThunk(
     try {
       const params = { trainerId, limit, fromDate, toDate };
       const response = await axiosInstance.get(
-        `user/trainers/${trainerId}/slots/calender`,
+        `trainers/${trainerId}/slots`,
         { params }
       );
       return response.data;
@@ -93,7 +93,7 @@ export const fetchSlotsUser = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(
-        `user/trainers/${trainerId}/slots`,
+        `trainers/${trainerId}/slots`,
         { params }
       );
       return response.data;
@@ -110,10 +110,10 @@ export const fetchSlotsUser = createAsyncThunk(
 
 export const bookSlot = createAsyncThunk(
   "bookingSlot/bookSlot",
-  async ({ slotId, trainerId }: RequestBookSlot, { rejectWithValue }) => {
+  async ({ slotId }: RequestBookSlot, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
-        `user/trainers/${trainerId}/slots/${slotId}`
+        `slots/${slotId}`
       );
       return response.data;
     } catch (error: any) {
@@ -131,7 +131,7 @@ export const fetchBookingRequests = createAsyncThunk(
   "bookingSlot/fetchBookingRequests",
   async (params: HandleBookingRequestsQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/bookings/`, {
+      const response = await axiosInstance.get(`appointments/`, {
         params,
       });
       return response.data;
@@ -158,7 +158,7 @@ export const approveRejectAppointmentBooking = createAsyncThunk(
     });
 
     try {
-      const response = await axiosInstance.patch(`trainer/bookings/`, {
+      const response = await axiosInstance.patch(`appointments/${appointmentId}`, {
         appointmentId,
         bookingSlotId,
         action,
@@ -179,7 +179,7 @@ export const getScheduledAppointments = createAsyncThunk(
   "bookingSlot/getScheduledAppointments",
   async (params: ScheduledAppointmentsQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`trainer/appointments/`, {
+      const response = await axiosInstance.get(`appointments/`, {
         params,
       });
       return response.data;
@@ -201,7 +201,7 @@ export const cancelAppointmentScheduleByTrainer = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `trainer/appointments/${appointmentId}`
+        `appointments/${appointmentId}`
       );
       return response.data;
     } catch (error: any) {
@@ -222,7 +222,7 @@ export const cancelAppointmentScheduleByUser = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `user/appointments/${appointmentId}`
+        `appointments/${appointmentId}`
       );
       return response.data;
     } catch (error: any) {
@@ -239,7 +239,7 @@ export const getScheduledAppointmentsUser = createAsyncThunk(
   "bookingSlot/getScheduledAppointmentsForUser",
   async (params: ScheduledAppointmentsQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`user/appointments/`, {
+      const response = await axiosInstance.get(`appointments/`, {
         params,
       });
       return response.data;
@@ -258,7 +258,7 @@ export const deleteAvailableBookingSlot = createAsyncThunk(
   async ({ bookingSlotId }: RequestDeleteBookingSlot, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
-        `trainer/slots/${bookingSlotId}`
+        `slots/${bookingSlotId}`
       );
       return response.data;
     } catch (error: any) {
@@ -275,7 +275,7 @@ export const appointmentVideoCallLogsUser = createAsyncThunk(
   "bookingSlot/appointmentVideoCallLogsUser",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`user/video-call-logs/`);
+      const response = await axiosInstance.get(`video-call-logs/`);
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -292,7 +292,7 @@ export const getAppointmentVideoCallLogsTrainer = createAsyncThunk(
   async (params: VideoCallLogsQueryParams, { rejectWithValue }) => {
     try {
       console.log("api triggering", params);
-      const response = await axiosInstance.get(`trainer/video-call-logs/`, {
+      const response = await axiosInstance.get(`video-call-logs/`, {
         params,
       });
       return response.data;
@@ -311,7 +311,7 @@ export const getAppointmentVideoCallLogsUser = createAsyncThunk(
   async (params: VideoCallLogsQueryParams, { rejectWithValue }) => {
     try {
       console.log("api triggering for user call lgos");
-      const response = await axiosInstance.get(`user/video-call-logs/`, {
+      const response = await axiosInstance.get(`video-call-logs/`, {
         params,
       });
       return response.data;

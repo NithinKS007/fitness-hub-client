@@ -15,7 +15,9 @@ export const getUsers = createAsyncThunk(
   "admin/getUsers",
   async (params: UsersListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/users`, { params });
+      const response = await axiosinstance.get(`/users`, {
+        params: { ...params, view: "users" },
+      });
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -31,7 +33,9 @@ export const getTrainers = createAsyncThunk(
   async (params: TrainersListQueryParams, { rejectWithValue }) => {
     try {
       console.log("params for searching and filtering", params);
-      const response = await axiosinstance.get(`/admin/trainers`, { params });
+      const response = await axiosinstance.get(`/users`, {
+        params: { ...params, view: "trainers" },
+      });
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -46,7 +50,7 @@ export const updateUserBlockStatus = createAsyncThunk(
   "admin/updateUserBlockStatus",
   async ({ id, isBlocked }: updateBlockStatus, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.patch(`/admin/users/${id}`, {
+      const response = await axiosinstance.patch(`/users/${id}`, {
         isBlocked,
       });
       return response.data;
@@ -64,8 +68,8 @@ export const getApprovalPendingList = createAsyncThunk(
   "admin/getApprovalPendingList",
   async (params: InboxListQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/trainers/approval/`, {
-        params,
+      const response = await axiosinstance.get(`/users`, {
+        params: { ...params, view: "trainers", isApproved: false },
       });
       return response.data;
     } catch (error: any) {
@@ -82,7 +86,7 @@ export const updatedApprovalStatus = createAsyncThunk(
   "admin/updatedApprovalStatus",
   async ({ id, action }: RequestTrainerVerification, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.patch(`/admin/trainers/${id}/approval`, {
+      const response = await axiosinstance.patch(`/trainers/${id}/approval`, {
         action,
       });
       return response.data;
@@ -100,7 +104,7 @@ export const userDetails = createAsyncThunk(
   "admin/userDetails",
   async ({ id }: RequestUserDetails, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/users/${id}`);
+      const response = await axiosinstance.get(`/users/${id}`);
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -116,7 +120,7 @@ export const trainerDetails = createAsyncThunk(
   "admin/trainerDetails",
   async ({ id }: RequestTrainerDetails, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/trainers/${id}`);
+      const response = await axiosinstance.get(`/users/${id}`);
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -132,7 +136,7 @@ export const getRevenueData = createAsyncThunk(
   "admin/getRevenueData",
   async (params: RevenueDataQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosinstance.get(`/admin/revenue/`, { params });
+      const response = await axiosinstance.get(`/revenue/`, { params });
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {

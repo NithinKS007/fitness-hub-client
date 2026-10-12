@@ -11,7 +11,7 @@ export const getTrainerDashBoardData = createAsyncThunk(
   async (period: TrainerDateRangeQuery, { rejectWithValue }) => {
     console.log("query", period);
     try {
-      const response = await axiosInstance.get(`trainer/dashboard/`, {
+      const response = await axiosInstance.get(`trainers/dashboard/`, {
         params: { period: period },
       });
       return response.data;
@@ -30,7 +30,7 @@ export const getAdminDashBoardData = createAsyncThunk(
   "dashboard/getAdminDashBoardData",
   async (period: AdminDateRangeQuery, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`admin/dashboard/`, {
+      const response = await axiosInstance.get(`admins/dashboard/`, {
         params: { period: period },
       });
       return response.data;
@@ -50,7 +50,7 @@ export const getUserDashBoardData = createAsyncThunk(
   async (QueryFilterData: UserDashboardQuery, { rejectWithValue }) => {
     try {
       const { period, bodyPart } = QueryFilterData;
-      const response = await axiosInstance.get(`user/dashboard/`, {
+      const response = await axiosInstance.get(`users/dashBoard/`, {
         params: { period: period, bodyPart: bodyPart },
       });
       return response.data;

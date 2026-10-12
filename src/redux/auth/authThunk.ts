@@ -166,7 +166,7 @@ export const updateUserProfile = createAsyncThunk(
   "auth/updateUserProfile",
   async ({ userData }: { userData: User }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`user/profile/`, userData);
+      const response = await axiosInstance.put(`users`, userData);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -184,7 +184,7 @@ export const updateTrainerProfile = createAsyncThunk(
   async ({ TrainerData }: { TrainerData: TrainerProfileUpdate }, { rejectWithValue }) => {
     console.log("trainer data for updating the profile", TrainerData);
     try {
-      const response = await axiosInstance.put(`trainer/profile/`, TrainerData);
+      const response = await axiosInstance.put(`users`, TrainerData);
       return response.data;
     } catch (error: any) {
       console.log(error);

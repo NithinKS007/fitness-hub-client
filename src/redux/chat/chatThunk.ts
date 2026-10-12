@@ -10,7 +10,7 @@ export const fetchChatMessages = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(
-        `chat/messages/${senderId}/${receiverId}`
+        `chats/messages/${senderId}/${receiverId}`
       );
       return response.data;
     } catch (error: any) {
@@ -27,7 +27,7 @@ export const getTrainerChatList = createAsyncThunk(
   "chat/getTrainerChatList",
   async (params: ChatQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`chat/trainer`, { params });
+      const response = await axiosInstance.get(`chats/trainer`, { params });
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -44,7 +44,7 @@ export const getUserChatList = createAsyncThunk(
   "chat/getUserChatList",
   async (params: ChatQueryParams, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`chat/user`, { params });
+      const response = await axiosInstance.get(`chats/user`, { params });
       return response.data;
     } catch (error: any) {
       console.log(error);
