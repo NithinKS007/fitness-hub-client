@@ -78,6 +78,13 @@ export interface TrainerWithSubscriptionDetails extends Trainer {
   subscriptionDetails: Subscription[];
 }
 
+export type TrainerProfileUpdate = Omit<Trainer, "trainerDetails"> & {
+  yearsOfExperience: string;
+  specializations: string[];
+  certifications: { fileName: string; url: string }[];
+  aboutMe?: string;
+};
+
 export interface SignupUser {
   fname: string;
   lname: string;

@@ -9,9 +9,28 @@ import {
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { setTrainer, setUser } from "../redux/auth/authSlice";
 import { imageSchema, pdfSchema } from "../utils/validationSchema";
+import type { TrainerProfileUpdate, User } from "../redux/auth/authTypes";
 
-const useUpdateProfileForm = (profileData: any) => {
+type Certification = { fileName: string; url: string };
+type ProfileData = Partial<User> & {
+  trainerDetails?: {
+    id?: string;
+    userId?: string;
+    yearsOfExperience?: string;
+    specializations?: string[];
+    certifications?: Certification[];
+    aboutMe?: string;
+  };
+};
+
+export type TrainerProfileFormValues = Omit<TrainerProfileUpdate, "id"> & {
+  id: string;
+};
+
+const useUpdateProfileForm = (profileData: ProfileData | null | undefined) => {
   const dispatch = useDispatch<AppDispatch>();
+  const profile = profileData ?? {};
+  const trainerDetails = profile.trainerDetails ?? {};
 
   const handleTrainerProfilePicChange: React.ChangeEventHandler<
     HTMLInputElement
@@ -26,9 +45,10 @@ const useUpdateProfileForm = (profileData: any) => {
           trainerFormik.setFieldTouched("profilePic", true);
         };
         reader.readAsDataURL(file);
-      } catch (error: any) {
-        showErrorToast(error.message);
-        trainerFormik.setFieldError("profilePic", error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Invalid image";
+        showErrorToast(message);
+        trainerFormik.setFieldError("profilePic", message);
         e.target.value = "";
       }
     }
@@ -47,9 +67,10 @@ const useUpdateProfileForm = (profileData: any) => {
           userFormik.setFieldTouched("profilePic", true);
         };
         reader.readAsDataURL(file);
-      } catch (error: any) {
-        showErrorToast(error.message);
-        userFormik.setFieldError("profilePic", error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Invalid image";
+        showErrorToast(message);
+        userFormik.setFieldError("profilePic", message);
         e.target.value = "";
       }
     }
@@ -60,7 +81,7 @@ const useUpdateProfileForm = (profileData: any) => {
     if (files) {
       const selectedFilesArray = Array.from(files);
       try {
-        const filesData: any = [];
+        const filesData: Certification[] = [];
         for (const file of selectedFilesArray) {
           await pdfSchema.validate(file);
           const base64String = await new Promise<string>((resolve, reject) => {
@@ -71,47 +92,44 @@ const useUpdateProfileForm = (profileData: any) => {
           });
           filesData.push({ fileName: file.name, url: base64String });
         }
-        trainerFormik.setFieldValue("trainerDetails.certifications", [
-          ...trainerFormik.values.trainerDetails.certifications,
+        trainerFormik.setFieldValue("certifications", [
+          ...trainerFormik.values.certifications,
           ...filesData,
         ]);
-        trainerFormik.setFieldTouched("trainerDetails.certifications", true);
-      } catch (error: any) {
-        showErrorToast(error.message);
+        trainerFormik.setFieldTouched("certifications", true);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Invalid PDF";
+        showErrorToast(message);
         trainerFormik.setFieldError(
-          "trainerDetails.certifications",
-          error.message
+          "certifications",
+          message
         );
         e.target.value = "";
       }
     }
   };
 
-  const trainerFormik = useFormik({
+  const trainerFormik = useFormik<TrainerProfileFormValues>({
     initialValues: {
-      id: profileData.id,
-      fname: profileData.fname,
-      lname: profileData.lname,
-      email: profileData.email,
-      dateOfBirth: profileData.dateOfBirth || "",
-      phone: profileData.phone || "",
-      profilePic: profileData.profilePic || "",
-      role: profileData.role || undefined,
-      gender: profileData.gender || undefined,
-      age: profileData.age || "",
-      height: profileData.height || "",
-      weight: profileData.weight || "",
-      bloodGroup: profileData.bloodGroup || "",
-      medicalConditions: profileData.medicalConditions || "",
-      otherConcerns: profileData.otherConcerns || "",
-      trainerDetails: {
-        id: profileData.trainerDetails?.id || "",
-        aboutMe: profileData?.trainerDetails?.aboutMe || "",
-        yearsOfExperience: profileData.trainerDetails?.yearsOfExperience || "",
-        certifications: profileData.trainerDetails?.certifications || [],
-        specializations: profileData.trainerDetails?.specializations || [],
-        userId: profileData.trainerDetails?.userId || "",
-      },
+      id: profile.id ?? "",
+      fname: profile.fname ?? "",
+      lname: profile.lname ?? "",
+      email: profile.email ?? "",
+      dateOfBirth: profile.dateOfBirth ?? "",
+      phone: profile.phone ?? "",
+      profilePic: profile.profilePic ?? "",
+      role: profile.role,
+      gender: profile.gender,
+      age: profile.age ?? "",
+      height: profile.height ?? "",
+      weight: profile.weight ?? "",
+      bloodGroup: profile.bloodGroup ?? "",
+      medicalConditions: profile.medicalConditions ?? "",
+      otherConcerns: profile.otherConcerns ?? "",
+      yearsOfExperience: trainerDetails.yearsOfExperience ?? "",
+      aboutMe: trainerDetails.aboutMe ?? "",
+      certifications: trainerDetails.certifications ?? [],
+      specializations: trainerDetails.specializations ?? [],
     },
     validationSchema: trainerSchema,
     onSubmit: async (values) => {
@@ -120,13 +138,7 @@ const useUpdateProfileForm = (profileData: any) => {
           updateTrainerProfile({
             TrainerData: {
               ...values,
-              trainerDetails: {
-                ...values.trainerDetails,
-                certifications:
-                  trainerFormik.values.trainerDetails.certifications,
-              },
-              role: values.role,
-              gender: values.gender,
+              ...values,
             },
           })
         ).unwrap();
@@ -140,23 +152,23 @@ const useUpdateProfileForm = (profileData: any) => {
     enableReinitialize: true,
   });
 
-  const userFormik = useFormik({
+  const userFormik = useFormik<User>({
     initialValues: {
-      id: profileData.id,
-      fname: profileData.fname,
-      lname: profileData.lname,
-      email: profileData.email,
-      dateOfBirth: profileData.dateOfBirth || "",
-      phone: profileData.phone || "",
-      profilePic: profileData.profilePic || "",
-      role: profileData.role || undefined,
-      gender: profileData.gender || undefined,
-      age: profileData.age || "",
-      height: profileData.height || "",
-      weight: profileData.weight || "",
-      bloodGroup: profileData.bloodGroup || "",
-      medicalConditions: profileData.medicalConditions || "",
-      otherConcerns: profileData.otherConcerns || "",
+      id: profile.id ?? "",
+      fname: profile.fname ?? "",
+      lname: profile.lname ?? "",
+      email: profile.email ?? "",
+      dateOfBirth: profile.dateOfBirth ?? "",
+      phone: profile.phone ?? "",
+      profilePic: profile.profilePic ?? "",
+      role: profile.role,
+      gender: profile.gender,
+      age: profile.age ?? "",
+      height: profile.height ?? "",
+      weight: profile.weight ?? "",
+      bloodGroup: profile.bloodGroup ?? "",
+      medicalConditions: profile.medicalConditions ?? "",
+      otherConcerns: profile.otherConcerns ?? "",
     },
     validationSchema: userSchema,
     onSubmit: async (values) => {
@@ -172,7 +184,7 @@ const useUpdateProfileForm = (profileData: any) => {
         ).unwrap();
         dispatch(setUser(response.data));
         showSuccessToast(response.message);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.log(`API Error ${error}`);
         showErrorToast(`${error}`);
       }

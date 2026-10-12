@@ -140,17 +140,17 @@ const BookingRequestsTab: React.FC<BookingRequestsTabProps> = ({
 
   const fetchedBookingAppointmentRequests = appointMentRequests.map(
     (req, index) => {
-      const reqDateObj = new Date(req?.createdAt as string);
+      const reqDateObj = new Date(String(req?.createdAt));
       const formattedReqDate = reqDateObj.toLocaleDateString("en-GB");
       const formattedReqTime = reqDateObj.toLocaleTimeString("en-GB");
       const bookingSlotCreatedAt = new Date(
-        req?.bookingSlotData.createdAt as string
+        String(req?.bookingSlotData.createdAt)
       );
       const formattedbookingSlotDate =
         bookingSlotCreatedAt.toLocaleDateString("en-GB");
       const formattedbookingSlotTime =
         bookingSlotCreatedAt.toLocaleTimeString("en-GB");
-      const appointmentDate = new Date(req?.appointmentDate as string);
+      const appointmentDate = new Date(String(req?.appointmentDate));
       const formattedAppointmentDate =
         appointmentDate.toLocaleDateString("en-GB");
       const today = new Date();

@@ -10,7 +10,7 @@ const TrainerProfilePage: React.FC = () => {
     (state: RootState) => state?.auth?.trainer
   );
   const isEditable = trainerProfileData?.role === "trainer";
-  const { formik, handleProfilePicChange, handlePdfChange } =
+  const { trainerFormik, handleTrainerProfilePicChange, handlePdfChange } =
     useUpdateProfileForm(trainerProfileData);
 
   const {handleDownload} = usePdfDownload()
@@ -18,8 +18,8 @@ const TrainerProfilePage: React.FC = () => {
   return (
     <>
       <TrainerProfileProps
-        formik={formik}
-        handleProfilePicChange={handleProfilePicChange}
+        formik={trainerFormik}
+        handleProfilePicChange={handleTrainerProfilePicChange}
         handlePdfChange={handlePdfChange}
         isEditable={isEditable}
         handleDownload={handleDownload}

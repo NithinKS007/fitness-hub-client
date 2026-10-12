@@ -19,11 +19,11 @@ const UserDetailsPage: React.FC = () => {
   }, [dispatch, id]);
 
   const isEditable = authPerson?.role === "user" ? true : false;
-  const { formik } = useUpdateProfileForm(userData);
+  const { userFormik } = useUpdateProfileForm(userData);
 
   return (
     <>
-      <UserProfile formik={formik} isEditable={isEditable} />
+    <UserProfile formik={userFormik} isEditable={isEditable} />
     </>
   );
 };

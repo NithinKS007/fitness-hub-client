@@ -16,8 +16,8 @@ const initialState: AdminState = {
   trainers: [],
   isLoading: false,
   error: null,
-  userDetails: {},
-  trainerDetails: {},
+  userDetails: null,
+  trainerDetails: null,
   financialLog: [],
   pagination: { totalPages: 0, currentPage: 1 },
 };

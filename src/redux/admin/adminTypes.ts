@@ -6,8 +6,8 @@ export interface AdminState {
   trainers: Trainer[];
   isLoading: boolean;
   error: string | null;
-  userDetails: User | {};
-  trainerDetails: Trainer | {};
+  userDetails: User | null;
+  trainerDetails: Trainer | null;
   pagination: Pagination;
   financialLog: FinancialLog[];
 }

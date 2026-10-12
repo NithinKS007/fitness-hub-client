@@ -97,10 +97,10 @@ const ViewTrainerDetailsUS = () => {
             }}
           >
             <TRSpecification
-              certifications={trainerDetails?.certifications || []}
-              specializations={trainerDetails?.specializations || []}
+              certifications={trainerDetails?.trainerDetails?.certifications || []}
+              specializations={trainerDetails?.trainerDetails?.specializations || []}
             />
-            <TRAboutMe aboutMe={trainerDetails?.aboutMe || ""} />
+            <TRAboutMe aboutMe={trainerDetails?.trainerDetails?.aboutMe || ""} />
           </Box>
         </Box>
       </Box>

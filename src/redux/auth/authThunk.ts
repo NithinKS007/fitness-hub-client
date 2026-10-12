@@ -10,7 +10,7 @@ import {
   SignupUser,
   SignupTrainer,
   UpdatePassword,
-  Trainer,
+  TrainerProfileUpdate,
 } from "./authTypes";
 
 export const signUpUser = createAsyncThunk(
@@ -181,7 +181,7 @@ export const updateUserProfile = createAsyncThunk(
 
 export const updateTrainerProfile = createAsyncThunk(
   "auth/updateTrainerProfile",
-  async ({ TrainerData }: { TrainerData: Trainer }, { rejectWithValue }) => {
+  async ({ TrainerData }: { TrainerData: TrainerProfileUpdate }, { rejectWithValue }) => {
     console.log("trainer data for updating the profile", TrainerData);
     try {
       const response = await axiosInstance.put(`trainer/profile/`, TrainerData);

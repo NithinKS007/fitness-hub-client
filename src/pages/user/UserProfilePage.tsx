@@ -8,16 +8,16 @@ import useChangePassword from "../../hooks/useChangePassword";
 const UserProfilePage: React.FC = () => {
   const userData = useSelector((state: RootState) => state?.auth?.user);
   const isEditable = userData?.role === "user" ? true : false;
-  const { formik, handleProfilePicChange } = useUpdateProfileForm(userData);
+  const { userFormik, handleUserProfilePicChange } = useUpdateProfileForm(userData);
 
   const { changePasswordFormik } = useChangePassword();
 
   return (
     <>
       <UserProfile
-        formik={formik}
+        formik={userFormik}
         isEditable={isEditable}
-        handleProfilePicChange={handleProfilePicChange}
+        handleProfilePicChange={handleUserProfilePicChange}
         changePasswordFormik={changePasswordFormik}
       />
     </>

@@ -105,11 +105,11 @@ const BookingsTab: React.FC<BookingsTabProps> = ({ isActive }) => {
 
   const fetchedscheduledAppointments = scheduledAppointmentsUser.map(
     (appointmentData, index) => {
-      const reqDateObj = new Date(appointmentData?.createdAt as string);
+      const reqDateObj = new Date(String(appointmentData?.createdAt));
       const formattedReqDate = reqDateObj.toLocaleDateString("en-GB");
       const formattedReqTime = reqDateObj.toLocaleTimeString("en-GB");
       const appointmentDate = new Date(
-        appointmentData?.appointmentDate as string
+        String(appointmentData?.appointmentDate)
       );
       const formattedAppointmentDate =
         appointmentDate.toLocaleDateString("en-GB");

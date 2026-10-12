@@ -21,13 +21,13 @@ const TrainerDetailsPage: React.FC = () => {
   }, [dispatch, id]);
 
   const isEditable = authPerson?.role === "trainer" ? true : false;
-  const { formik } = useUpdateProfileForm(trainerData);
+  const { trainerFormik } = useUpdateProfileForm(trainerData);
 
   const { handleDownload } = usePdfDownload();
   return (
     <>
       <Profile
-        formik={formik}
+        formik={trainerFormik}
         isEditable={isEditable}
         handleDownload={handleDownload}
       />

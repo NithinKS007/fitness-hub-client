@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import store from "../redux/store";
 import { clearAuthPerson, setToken } from "../redux/auth/authSlice";
 import { showErrorToast } from "../utils/toast";
@@ -11,6 +11,9 @@ const axiosInstance: AxiosInstance = axios.create({
   },
   withCredentials: true,
 });
+
+type RetryableRequestConfig = InternalAxiosRequestConfig & { _retry?: boolean };
+let refreshPromise: Promise<string> | null = null;
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -26,32 +29,32 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    const status = error.response?.data?.status ?? error.response?.status;
+    const originalRequest = error.config as RetryableRequestConfig | undefined;
 
-    if (error.response && error.response.data.status === 403) {
+    if (status === 403) {
       store.dispatch(clearAuthPerson());
-      showErrorToast(error.response.data.message);
+      showErrorToast(error.response?.data?.message ?? "Access denied");
       window.location.href = "/sign-in";
       return;
     }
 
-    if (
-      error.response &&
-      error.response.data.status === 401 &&
-      !originalRequest._retry
-    ) {
+    const isRefreshRequest = originalRequest?.url?.includes("/auth/refresh-token");
+    if (status === 401 && originalRequest && !originalRequest._retry && !isRefreshRequest) {
       originalRequest._retry = true;
 
       try {
-        const newAccessToken = await store.dispatch(refreshAT()).unwrap();
+        refreshPromise ??= store.dispatch(refreshAT()).unwrap();
+        const newAccessToken = await refreshPromise;
         store.dispatch(setToken(newAccessToken));
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
-      } catch (err) {
-        console.log("Refresh token failed", err);
+      } catch {
         store.dispatch(clearAuthPerson());
         window.location.href = "/sign-in";
         showErrorToast("Your session has expired. Please sign-in again.");
+      } finally {
+        refreshPromise = null;
       }
     }
 

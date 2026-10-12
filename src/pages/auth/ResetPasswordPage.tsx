@@ -15,9 +15,7 @@ export interface ResetPasswordFormik {
 const ResetPasswordPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { token } = useParams<{ token: string }>();
-  if (!token) {
-    return;
-  }
+  const resetToken = token ?? "";
   const formik = useFormik<ResetPasswordFormik>({
     initialValues: {
       password: "",
@@ -28,7 +26,7 @@ const ResetPasswordPage: React.FC = () => {
       try {
         const { password } = values;
         const response = await dispatch(
-          forgotPassword({ password, token })
+          forgotPassword({ password, token: resetToken })
         ).unwrap();
         showSuccessToast(`${response.message}`);
         formik.resetForm();
@@ -38,7 +36,7 @@ const ResetPasswordPage: React.FC = () => {
       }
     },
   });
-  return <ResetPassword formik={formik} />;
+  return token ? <ResetPassword formik={formik} /> : null;
 };
 
 export default ResetPasswordPage;
